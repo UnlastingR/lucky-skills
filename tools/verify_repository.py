@@ -18,6 +18,7 @@ TOKEN_ASSIGNMENT = re.compile(
 )
 MARKDOWN_LINK = re.compile(r"(?<!!)\[[^]]*]\(([^)]+)\)")
 SKILL_FRONTMATTER = re.compile(r"\A---\s*\n(?P<body>.*?)\n---\s*\n", re.DOTALL)
+SEMVER = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$")
 
 
 def fail(message: str) -> None:
@@ -51,11 +52,15 @@ def check_local_links() -> None:
 
 
 def check_skill_packaging() -> None:
-    skill_path = ROOT / ".agents" / "skills" / "lucky" / "SKILL.md"
-    if not skill_path.is_file():
-        fail("Lucky skill is missing from .agents/skills/lucky/SKILL.md")
+    repo_skill_path = ROOT / ".agents" / "skills" / "lucky" / "SKILL.md"
+    plugin_skill_path = ROOT / "skills" / "lucky" / "SKILL.md"
+    for path in (repo_skill_path, plugin_skill_path):
+        if not path.is_file():
+            fail(f"Lucky skill is missing from {path.relative_to(ROOT)}")
+    if repo_skill_path.read_bytes() != plugin_skill_path.read_bytes():
+        fail("repository and plugin Lucky SKILL.md copies must remain byte-identical")
 
-    text = skill_path.read_text(encoding="utf-8")
+    text = repo_skill_path.read_text(encoding="utf-8")
     match = SKILL_FRONTMATTER.match(text)
     if not match:
         fail("Lucky SKILL.md is missing YAML frontmatter")
@@ -83,8 +88,44 @@ def check_skill_packaging() -> None:
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     if manifest.get("name") != "lucky-skills":
         fail("Codex plugin name must be 'lucky-skills'")
-    if manifest.get("skills") != "./.agents/skills/":
-        fail("Codex plugin must reuse the repository .agents/skills directory")
+    version = manifest.get("version", "")
+    if not isinstance(version, str) or not SEMVER.fullmatch(version):
+        fail("Codex plugin version must use strict semver")
+    if not manifest.get("description"):
+        fail("Codex plugin description is required")
+    author = manifest.get("author")
+    if not isinstance(author, dict) or not author.get("name"):
+        fail("Codex plugin author.name is required")
+    if manifest.get("skills") != "./skills/":
+        fail("Codex plugin skills must use the supported ./skills/ directory")
+
+    interface = manifest.get("interface")
+    if not isinstance(interface, dict):
+        fail("Codex plugin interface metadata is required")
+    required_interface_fields = {
+        "displayName",
+        "shortDescription",
+        "longDescription",
+        "developerName",
+        "category",
+        "capabilities",
+        "defaultPrompt",
+    }
+    missing = sorted(field for field in required_interface_fields if not interface.get(field))
+    if missing:
+        fail(f"Codex plugin interface is missing required fields: {', '.join(missing)}")
+    capabilities = interface["capabilities"]
+    if not isinstance(capabilities, list) or not all(isinstance(item, str) and item for item in capabilities):
+        fail("Codex plugin interface.capabilities must be a non-empty string array")
+    default_prompt = interface["defaultPrompt"]
+    if not isinstance(default_prompt, list) or not 1 <= len(default_prompt) <= 3:
+        fail("Codex plugin interface.defaultPrompt must contain 1 to 3 prompts")
+    if not all(isinstance(item, str) and 0 < len(item) <= 128 for item in default_prompt):
+        fail("Codex plugin default prompts must be non-empty strings up to 128 characters")
+    for field in ("websiteURL", "privacyPolicyURL", "termsOfServiceURL"):
+        value = interface.get(field)
+        if value is not None and (not isinstance(value, str) or not value.startswith("https://")):
+            fail(f"Codex plugin interface.{field} must be an absolute https URL when present")
 
 
 def check_generated_artifacts() -> None:
