@@ -124,6 +124,8 @@ class Route:
 
     @property
     def risk(self) -> OperationRisk:
+        if self.method == "UNKNOWN":
+            return OperationRisk.UNKNOWN
         return classify_known_operation(self.method, self.path)
 
     def matches(self, method: str, path: str) -> bool:

@@ -51,6 +51,7 @@ class ClientTests(unittest.TestCase):
                 route("/api/cron/enable", "GET"),
                 route("/api/ddns", "PUT"),
                 route("/api/docker/containers/{param}/restart", "POST"),
+                route("/api/status/ws", "UNKNOWN"),
             ],
             version="test",
         )
@@ -183,6 +184,7 @@ class ClientTests(unittest.TestCase):
             self.catalog.classify("POST", "/api/docker/containers/abc/restart"),
             OperationRisk.DANGEROUS,
         )
+        self.assertEqual(self.catalog.search(risk=OperationRisk.UNKNOWN)[0].path, "/api/status/ws")
 
 
 if __name__ == "__main__":
