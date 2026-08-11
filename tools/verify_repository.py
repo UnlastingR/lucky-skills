@@ -27,11 +27,59 @@ SEMVER = re.compile(
     r"(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*))*)?"
     r"(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$"
 )
+PLUGIN_MANIFEST_FIELDS = {
+    "name",
+    "version",
+    "description",
+    "author",
+    "homepage",
+    "repository",
+    "keywords",
+    "skills",
+    "interface",
+}
+PLUGIN_AUTHOR_FIELDS = {"name", "url"}
+PLUGIN_INTERFACE_FIELDS = {
+    "displayName",
+    "shortDescription",
+    "longDescription",
+    "developerName",
+    "category",
+    "capabilities",
+    "websiteURL",
+    "privacyPolicyURL",
+    "termsOfServiceURL",
+    "defaultPrompt",
+}
 
 
 def fail(message: str) -> None:
     print(f"ERROR: {message}", file=sys.stderr)
     raise SystemExit(1)
+
+
+def require_non_empty_string(payload: dict[str, object], field: str, *, prefix: str = "") -> str:
+    value = payload.get(field)
+    qualified = f"{prefix}.{field}" if prefix else field
+    if not isinstance(value, str) or not value.strip():
+        fail(f"Codex plugin {qualified} must be a non-empty string")
+    return value
+
+
+def require_https_url(payload: dict[str, object], field: str, *, prefix: str = "") -> str:
+    value = require_non_empty_string(payload, field, prefix=prefix)
+    parsed = urlparse(value)
+    qualified = f"{prefix}.{field}" if prefix else field
+    if parsed.scheme != "https" or not parsed.netloc:
+        fail(f"Codex plugin {qualified} must be an absolute https URL")
+    return value
+
+
+def reject_unknown_fields(payload: dict[str, object], allowed: set[str], *, prefix: str = "") -> None:
+    unknown = sorted(set(payload) - allowed)
+    if unknown:
+        qualified = f"{prefix} fields" if prefix else "fields"
+        fail(f"Codex plugin has unsupported {qualified}: {', '.join(unknown)}")
 
 
 def check_secrets() -> None:
@@ -94,22 +142,36 @@ def check_skill_packaging() -> None:
     if not manifest_path.is_file():
         fail("Codex plugin manifest is missing")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if not isinstance(manifest, dict):
+        fail("Codex plugin manifest must be a JSON object")
+    reject_unknown_fields(manifest, PLUGIN_MANIFEST_FIELDS)
     if manifest.get("name") != "lucky-skills":
         fail("Codex plugin name must be 'lucky-skills'")
-    version = manifest.get("version", "")
-    if not isinstance(version, str) or not SEMVER.fullmatch(version):
+    version = require_non_empty_string(manifest, "version")
+    if not SEMVER.fullmatch(version):
         fail("Codex plugin version must use strict semver")
-    if not manifest.get("description"):
-        fail("Codex plugin description is required")
+    require_non_empty_string(manifest, "description")
+    require_https_url(manifest, "homepage")
+    require_https_url(manifest, "repository")
+    keywords = manifest.get("keywords")
+    if not isinstance(keywords, list) or not all(
+        isinstance(item, str) and item.strip() for item in keywords
+    ):
+        fail("Codex plugin keywords must be an array of strings")
+
     author = manifest.get("author")
-    if not isinstance(author, dict) or not author.get("name"):
-        fail("Codex plugin author.name is required")
+    if not isinstance(author, dict):
+        fail("Codex plugin author must be an object")
+    reject_unknown_fields(author, PLUGIN_AUTHOR_FIELDS, prefix="author")
+    require_non_empty_string(author, "name", prefix="author")
+    require_https_url(author, "url", prefix="author")
     if manifest.get("skills") != "./skills/":
         fail("Codex plugin skills must use the supported ./skills/ directory")
 
     interface = manifest.get("interface")
     if not isinstance(interface, dict):
         fail("Codex plugin interface metadata is required")
+    reject_unknown_fields(interface, PLUGIN_INTERFACE_FIELDS, prefix="interface")
     for field in (
         "displayName",
         "shortDescription",
@@ -117,9 +179,7 @@ def check_skill_packaging() -> None:
         "developerName",
         "category",
     ):
-        value = interface.get(field)
-        if not isinstance(value, str) or not value.strip():
-            fail(f"Codex plugin interface.{field} must be a non-empty string")
+        require_non_empty_string(interface, field, prefix="interface")
     if "defaultPrompt" not in interface:
         fail("Codex plugin interface.defaultPrompt is required")
     capabilities = interface.get("capabilities")
@@ -130,15 +190,14 @@ def check_skill_packaging() -> None:
     default_prompt = interface["defaultPrompt"]
     if not isinstance(default_prompt, list) or not 1 <= len(default_prompt) <= 3:
         fail("Codex plugin interface.defaultPrompt must contain 1 to 3 prompts")
-    if not all(isinstance(item, str) and 0 < len(item) <= 128 for item in default_prompt):
+    if not all(
+        isinstance(item, str) and item.strip() and len(item) <= 128 for item in default_prompt
+    ):
         fail("Codex plugin default prompts must be non-empty strings up to 128 characters")
-    for field in ("websiteURL", "privacyPolicyURL", "termsOfServiceURL"):
-        value = interface.get(field)
-        if value is None:
-            continue
-        parsed = urlparse(value) if isinstance(value, str) else None
-        if parsed is None or parsed.scheme != "https" or not parsed.netloc:
-            fail(f"Codex plugin interface.{field} must be an absolute https URL when present")
+    require_https_url(interface, "websiteURL", prefix="interface")
+    for field in ("privacyPolicyURL", "termsOfServiceURL"):
+        if interface.get(field) is not None:
+            require_https_url(interface, field, prefix="interface")
 
 
 def check_generated_artifacts() -> None:
