@@ -21,6 +21,18 @@ Authorization: <token>
 
 `Authorization` 在 Lucky 中还可能用于网页登录会话或上传流程，不能与 OpenToken 混用。
 
+## 统一存储与注入
+
+不要把 token 加入 `.bashrc`、`.zshrc`、PowerShell Profile 或项目 `.env`。本仓库推荐使用[统一凭据工具](credentials.md)：
+
+```bash
+python3 tools/lucky_credentials.py install
+python3 tools/lucky_credentials.py run -- \
+  python3 tools/lucky_api.py status
+```
+
+凭据工具将 token 保存在用户私有文件中，并只向被调用的子进程注入环境变量。它不会打印 token，也不会把 token 放入进程命令行参数。
+
 ## 安全入口仍是地址的一部分
 
 OpenToken 不替代安全入口。请求仍应发往：

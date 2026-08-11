@@ -10,23 +10,39 @@ permissions:
 
 jobs:
   verify:
+    name: Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Compile Python sources
+        run: python -m compileall -q lucky_api tools examples tests
+
       - name: Verify committed documentation
-        run: python3 tools/verify_repository.py
+        run: python tools/verify_repository.py
+
+      - name: Run test suite
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
 
       - name: Exercise frontend extractor
         run: |
-          python3 tools/extract_lucky_frontend.py tests/fixtures \
+          python tools/extract_lucky_frontend.py tests/fixtures \
             --version test \
             --output /tmp/lucky-fixture.json \
             --markdown /tmp/lucky-fixture.md \
             --openapi /tmp/lucky-fixture.openapi.json
-          python3 - <<'PY'
+          python - <<'PY'
           import json
           from pathlib import Path
 

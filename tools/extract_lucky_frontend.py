@@ -12,8 +12,16 @@ import datetime as dt
 import hashlib
 import json
 import re
+import sys
 from collections import defaultdict
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) in sys.path:
+    sys.path.remove(str(ROOT))
+sys.path.insert(0, str(ROOT))
+
+from lucky_api.catalog import classify_known_operation
 
 
 URL_CALL_RE = re.compile(
@@ -240,15 +248,28 @@ def write_markdown(snapshot: dict, output: Path) -> None:
         "",
     ]
     for module in sorted(groups):
-        lines.extend([f"## `{module}`", "", "| 方法 | 路径 | 查询字段 | 请求体 | 证据等级 |", "|---|---|---|---|---|"])
+        lines.extend(
+            [
+                f"## `{module}`",
+                "",
+                "| 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |",
+                "|---|---|---|---|---|---|---|",
+            ]
+        )
         for route in groups[module]:
             query = ", ".join(f"`{key}`" for key in route["query_keys"]) or "—"
             if route["body_keys"]:
                 body = ", ".join(f"`{key}`" for key in route["body_keys"])
             else:
                 body = "有" if route["has_body"] else "—"
+            risk = (
+                "unknown"
+                if route["method"] == "UNKNOWN"
+                else classify_known_operation(route["method"], route["path"]).value
+            )
             lines.append(
-                f"| `{route['method']}` | `{route['path']}` | {query} | {body} | `{route['confidence']}` |"
+                f"| `{route['method']}` | `{route['path']}` | `{risk}` | {query} | {body} | "
+                f"`{route['response_type']}` | `{route['confidence']}` |"
             )
         lines.append("")
     output.write_text("\n".join(lines), encoding="utf-8")
@@ -262,15 +283,13 @@ def write_openapi(snapshot: dict, output: Path) -> None:
         operation = {
             "summary": f"Lucky frontend call: {route['method']} {route['path']}",
             "description": "Inferred from the Lucky frontend; request and response schemas may be incomplete.",
+            "operationId": operation_id(route["method"], route["path"]),
             "tags": [route["module"]],
             "security": [{"OpenToken": []}],
-            "responses": {
-                "200": {
-                    "description": "Lucky JSON envelope or binary response, depending on the endpoint.",
-                    "content": {"application/json": {"schema": {"$ref": "#/components/schemas/LuckyEnvelope"}}},
-                }
-            },
+            "responses": response_spec(route),
             "x-evidence-confidence": route["confidence"],
+            "x-evidence-bundles": route["evidence"],
+            "x-lucky-risk": classify_known_operation(route["method"], route["path"]).value,
         }
         parameters = []
         for name in re.findall(r"\{([^}]+)\}", route["path"]):
@@ -317,6 +336,31 @@ def write_openapi(snapshot: dict, output: Path) -> None:
         },
     }
     output.write_text(json.dumps(document, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def operation_id(method: str, path: str) -> str:
+    clean = re.sub(r"[^A-Za-z0-9]+", "_", path.strip("/"))
+    return f"{method.lower()}_{clean}".strip("_")
+
+
+def response_spec(route: dict) -> dict:
+    if route["response_type"] in {"blob", "arraybuffer"}:
+        content = {
+            "application/octet-stream": {
+                "schema": {"type": "string", "format": "binary"}
+            }
+        }
+        description = "Binary download inferred from the frontend responseType."
+    else:
+        content = {"application/json": {"schema": {"$ref": "#/components/schemas/LuckyEnvelope"}}}
+        description = "Lucky JSON response; envelope shape varies by endpoint."
+    return {
+        "200": {"description": description, "content": content},
+        "default": {
+            "description": "HTTP error or a Lucky business error (which may also use HTTP 200).",
+            "content": {"application/json": {"schema": {"$ref": "#/components/schemas/LuckyEnvelope"}}},
+        },
+    }
 
 
 def main() -> None:
