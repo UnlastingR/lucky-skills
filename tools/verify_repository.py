@@ -165,14 +165,11 @@ def validate_prompt_list(value: object, field: str) -> None:
 def validate_default_prompts(interface: dict[str, object]) -> None:
     if "defaultPrompt" not in interface and "default_prompt" not in interface:
         fail("Codex plugin interface.defaultPrompt or interface.default_prompt is required")
+    # The public plugin spec defines the camelCase field as 1–3 strings capped at
+    # 128 characters. The legacy snake_case alias is accepted by the canonical
+    # ingestion validator based on key presence alone, so do not narrow it here.
     if "defaultPrompt" in interface:
         validate_prompt_list(interface.get("defaultPrompt"), "interface.defaultPrompt")
-    if "default_prompt" in interface:
-        legacy = interface.get("default_prompt")
-        if isinstance(legacy, list):
-            validate_prompt_list(legacy, "interface.default_prompt")
-        elif not isinstance(legacy, str) or not legacy.strip() or len(legacy) > 128:
-            fail("Codex plugin interface.default_prompt must be a non-empty prompt or prompt list")
 
 
 def load_companion_json(path: Path, label: str) -> dict[str, object]:
