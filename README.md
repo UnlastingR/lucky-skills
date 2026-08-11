@@ -1,0 +1,63 @@
+# Lucky OpenToken API 文档（非官方）
+
+这是面向 Lucky 管理后台 OpenToken 的可复现、尽可能完整的中文 API 文档仓库。它不是 Lucky 上游发布的稳定接口规范，而是基于以下证据整理：
+
+- Lucky v3 本机实例的只读请求实测；
+- Lucky v3 Web 前端构建产物的静态调用分析；
+- Lucky 最后公开源码及官方更新日志的交叉核对。
+
+当前快照目标为 **Lucky 3.0.0 wanji / Linux x86_64**。已静态提取 600 余条“HTTP 方法 + 路径”调用记录，并生成 OpenAPI 3.1 文档。真实 OpenToken、安全入口、运行配置和业务数据均未写入仓库。
+
+## 从这里开始
+
+1. 阅读[快速开始](docs/quickstart.md)，完成第一个只读请求。
+2. 阅读[鉴权与安全](docs/authentication.md)，理解 OpenToken、安全入口和轮换要求。
+3. 查看[接口约定](docs/conventions.md)和[模块指南](docs/modules.md)。
+4. 在[完整路由表](docs/generated/api-routes.md)中查找具体接口。
+5. 将 [OpenAPI 3.1](openapi/lucky-v3.openapi.json) 导入支持 OpenAPI 的客户端。
+
+## 最重要的结论
+
+- 请求地址必须包含 Lucky 的安全入口：`http://主机:端口/<安全入口>/api/...`。
+- 推荐使用请求头 `openToken: <token>`；查询参数 `?openToken=...` 虽受支持，但容易泄露到日志和历史记录，不推荐。
+- `openToken` 不是 `Authorization: Bearer ...`，也不是网页登录产生的会话令牌。
+- OpenToken 应视为管理员密钥。前端暴露的接口包含改配置、执行任务、管理容器、读写文件和打开终端等高权限操作。
+- 不要仅凭 HTTP 方法判断安全性；Lucky 的部分有副作用操作历史上使用过 `GET`。
+- 本机实测 `GET /api/status`、`GET /api/info`、`GET /api/modules/list` 成功；状态接口响应显示每秒 20 次的限流头。
+
+## 仓库结构
+
+```text
+docs/                 手写指南与自动生成路由表
+evidence/             脱敏后的派生端点快照
+examples/             默认只读、从环境变量取密钥的客户端
+openapi/              自动生成的 OpenAPI 3.1
+tests/fixtures/        提取器的最小测试夹具
+tools/                 路由提取和仓库验证脚本
+.github/workflows/     GitHub Actions 云端验证
+```
+
+## 本地验证
+
+```bash
+python3 tools/verify_repository.py
+python3 tools/extract_lucky_frontend.py tests/fixtures \
+  --version test \
+  --output /tmp/lucky-fixture.json \
+  --markdown /tmp/lucky-fixture.md \
+  --openapi /tmp/lucky-fixture.openapi.json
+```
+
+GitHub Actions 会在 push、pull request 和手动触发时重复这些检查，包括密钥误提交检测、文档本地链接检查、端点快照与 OpenAPI 一致性检查。
+
+## 准确性边界
+
+“完整”在此表示尽可能覆盖当前前端实际调用面，不表示上游兼容性承诺。闭源版本的后端可能还存在前端未使用的接口；静态分析也无法完整推导所有 JSON 字段、条件分支、WebSocket 消息和错误码。每条记录都带有证据等级，详见[证据与覆盖范围](docs/evidence-and-limitations.md)。
+
+## 上游
+
+- [Lucky 官方仓库](https://github.com/gdy666/lucky)
+- [Lucky 官方文档](https://lucky666.cn/)
+- [Lucky v2 更新日志](https://lucky666.cn/docs/updatelogs/v2.X/)
+
+本仓库与 Lucky 作者无隶属关系。请仅对你拥有或获授权管理的实例调用接口。

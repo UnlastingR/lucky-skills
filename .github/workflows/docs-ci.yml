@@ -1,0 +1,47 @@
+name: docs-ci
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Verify committed documentation
+        run: python3 tools/verify_repository.py
+
+      - name: Exercise frontend extractor
+        run: |
+          python3 tools/extract_lucky_frontend.py tests/fixtures \
+            --version test \
+            --output /tmp/lucky-fixture.json \
+            --markdown /tmp/lucky-fixture.md \
+            --openapi /tmp/lucky-fixture.openapi.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          snapshot = json.loads(Path('/tmp/lucky-fixture.json').read_text())
+          observed = {(item['path'], item['method']) for item in snapshot['routes']}
+          expected = {
+              ('/api/status', 'GET'),
+              ('/api/docker/containers', 'GET'),
+              ('/api/docker/containers/{param}/start', 'POST'),
+              ('/api/ddns/task/{key}', 'PUT'),
+          }
+          missing = expected - observed
+          if missing:
+              raise SystemExit(f'missing expected fixture routes: {sorted(missing)}')
+          PY
+
+      - name: Check whitespace errors
+        run: git diff --check

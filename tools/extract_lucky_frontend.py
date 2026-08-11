@@ -1,0 +1,342 @@
+#!/usr/bin/env python3
+"""Extract a best-effort Lucky API inventory from built frontend JavaScript.
+
+The script stores derived route metadata only. It never copies the frontend
+bundles into the repository and it does not need an OpenToken.
+"""
+
+from __future__ import annotations
+
+import argparse
+import datetime as dt
+import hashlib
+import json
+import re
+from collections import defaultdict
+from pathlib import Path
+
+
+URL_CALL_RE = re.compile(
+    r"url\s*:\s*(?P<expr>(?:(?!,\s*method\s*:).){1,600}?),\s*"
+    r"method\s*:\s*[\"'](?P<method>get|post|put|delete|patch)[\"']",
+    re.IGNORECASE | re.DOTALL,
+)
+ROUTE_LITERAL_RE = re.compile(r"/api/[A-Za-z0-9_./${}:-]+")
+PLACEHOLDER_RE = re.compile(r"\$\{([^}]+)\}")
+KEY_RE = re.compile(r"(?:^|,)\s*([A-Za-z_$][\w$-]*)\s*:")
+
+
+def split_top_level_plus(expression: str) -> list[str]:
+    parts: list[str] = []
+    start = 0
+    quote = ""
+    escaped = False
+    depth = 0
+    for index, char in enumerate(expression):
+        if escaped:
+            escaped = False
+            continue
+        if quote:
+            if char == "\\":
+                escaped = True
+            elif char == quote:
+                quote = ""
+            continue
+        if char in "'\"`":
+            quote = char
+        elif char in "([{":
+            depth += 1
+        elif char in ")]}":
+            depth = max(0, depth - 1)
+        elif char == "+" and depth == 0:
+            parts.append(expression[start:index].strip())
+            start = index + 1
+    parts.append(expression[start:].strip())
+    return [part for part in parts if part]
+
+
+def placeholder_name(raw: str, number: int) -> str:
+    identifiers = re.findall(r"[A-Za-z_$][\w$]*", raw)
+    ignored = {"encodeURIComponent", "String", "Number"}
+    identifiers = [item for item in identifiers if item not in ignored]
+    candidate = identifiers[-1] if identifiers else "param"
+    if len(candidate) <= 2 or candidate.startswith("_"):
+        candidate = "param"
+    return candidate if number == 1 else f"{candidate}{number}"
+
+
+def normalize_path_expression(expression: str) -> str | None:
+    expression = expression.strip()
+    if expression.startswith("`") and expression.endswith("`"):
+        body = expression[1:-1]
+        counter = 0
+
+        def replace(match: re.Match[str]) -> str:
+            nonlocal counter
+            counter += 1
+            return "{" + placeholder_name(match.group(1), counter) + "}"
+
+        path = PLACEHOLDER_RE.sub(replace, body)
+    else:
+        pieces: list[str] = []
+        dynamic_count = 0
+        for part in split_top_level_plus(expression):
+            if len(part) >= 2 and part[0] in "'\"`" and part[-1] == part[0]:
+                literal = part[1:-1]
+                if part[0] == "`":
+                    literal = PLACEHOLDER_RE.sub("{param}", literal)
+                pieces.append(literal)
+            else:
+                dynamic_count += 1
+                pieces.append("{" + placeholder_name(part, dynamic_count) + "}")
+        path = "".join(pieces)
+    if not path.startswith("/api/"):
+        return None
+    path = re.sub(r"/{2,}", "/", path)
+    return path.rstrip("/") or "/api"
+
+
+def object_keys(snippet: str, field: str) -> list[str]:
+    match = re.search(rf"\b{re.escape(field)}\s*:\s*\{{([^{{}}]{{0,500}})\}}", snippet)
+    if not match:
+        return []
+    return sorted(set(KEY_RE.findall(match.group(1))))
+
+
+def route_module(path: str) -> str:
+    parts = path.split("/")
+    return parts[2] if len(parts) > 2 else "core"
+
+
+def matching_brace(text: str, start: int) -> int | None:
+    if start < 0 or text[start] != "{":
+        return None
+    depth = 0
+    quote = ""
+    escaped = False
+    for index in range(start, min(len(text), start + 2500)):
+        char = text[index]
+        if escaped:
+            escaped = False
+            continue
+        if quote:
+            if char == "\\":
+                escaped = True
+            elif char == quote:
+                quote = ""
+            continue
+        if char in "'\"`":
+            quote = char
+        elif char == "{":
+            depth += 1
+        elif char == "}":
+            depth -= 1
+            if depth == 0:
+                return index
+    return None
+
+
+def extract(assets_dir: Path, version: str) -> dict:
+    routes: dict[tuple[str, str], dict] = {}
+    route_only: dict[str, set[str]] = defaultdict(set)
+    bundle_hashes: dict[str, str] = {}
+
+    files = sorted(assets_dir.glob("*.js"))
+    if not files:
+        raise SystemExit(f"no JavaScript bundles found in {assets_dir}")
+
+    for file_path in files:
+        raw = file_path.read_bytes()
+        text = raw.decode("utf-8", errors="replace")
+        bundle_hashes[file_path.name] = hashlib.sha256(raw).hexdigest()
+        for match in URL_CALL_RE.finditer(text):
+            path = normalize_path_expression(match.group("expr"))
+            if not path:
+                continue
+            method = match.group("method").upper()
+            object_start = text.rfind("{", max(0, match.start() - 180), match.start())
+            object_end = matching_brace(text, object_start)
+            if object_end is not None and object_end >= match.end():
+                snippet = text[object_start : object_end + 1]
+            else:
+                snippet = text[match.start() : min(len(text), match.end() + 220)]
+            key = (path, method)
+            item = routes.setdefault(
+                key,
+                {
+                    "path": path,
+                    "method": method,
+                    "module": route_module(path),
+                    "query_keys": [],
+                    "body_keys": [],
+                    "has_body": False,
+                    "response_type": "json",
+                    "evidence": [],
+                    "confidence": "frontend-call",
+                },
+            )
+            item["query_keys"] = sorted(
+                set(item["query_keys"]) | set(object_keys(snippet, "params"))
+            )
+            body_match = re.search(r"\bdata\s*:\s*([^,})]+|\{[^{}]{0,500}\})", snippet)
+            if body_match:
+                item["has_body"] = True
+                item["body_keys"] = sorted(
+                    set(item["body_keys"]) | set(object_keys(snippet, "data"))
+                )
+            response_match = re.search(r"responseType\s*:\s*[\"']([^\"']+)", snippet)
+            if response_match:
+                item["response_type"] = response_match.group(1)
+            if file_path.name not in item["evidence"]:
+                item["evidence"].append(file_path.name)
+
+        for literal in ROUTE_LITERAL_RE.findall(text):
+            literal = literal.rstrip(".,;:/")
+            if literal in {"/api", "/api/."} or re.match(r"^/api/\d", literal):
+                continue
+            if "${" in literal:
+                continue
+            literal = PLACEHOLDER_RE.sub("{param}", literal)
+            route_only[literal].add(file_path.name)
+
+    known_paths = {item["path"] for item in routes.values()}
+    for path, evidence in sorted(route_only.items()):
+        if path in known_paths:
+            continue
+        routes[(path, "UNKNOWN")] = {
+            "path": path,
+            "method": "UNKNOWN",
+            "module": route_module(path),
+            "query_keys": [],
+            "body_keys": [],
+            "has_body": False,
+            "response_type": "unknown",
+            "evidence": sorted(evidence),
+            "confidence": "route-literal-only",
+        }
+
+    route_list = sorted(routes.values(), key=lambda item: (item["module"], item["path"], item["method"]))
+    return {
+        "schema_version": 1,
+        "generated_at": dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat(),
+        "target": {"product": "Lucky", "version": version},
+        "methodology": "Static analysis of locally served, built frontend JavaScript bundles.",
+        "bundle_count": len(files),
+        "bundle_sha256": bundle_hashes,
+        "route_count": len(route_list),
+        "routes": route_list,
+    }
+
+
+def write_markdown(snapshot: dict, output: Path) -> None:
+    groups: dict[str, list[dict]] = defaultdict(list)
+    for route in snapshot["routes"]:
+        groups[route["module"]].append(route)
+    lines = [
+        "# API 路由参考",
+        "",
+        f"> 目标版本：Lucky {snapshot['target']['version']}。共收录 {snapshot['route_count']} 个“路径 + 方法”记录。",
+        "> 此表由前端构建产物静态生成，不代表上游承诺的稳定公共 API；`UNKNOWN` 表示只发现路径字面量。",
+        "",
+    ]
+    for module in sorted(groups):
+        lines.extend([f"## `{module}`", "", "| 方法 | 路径 | 查询字段 | 请求体 | 证据等级 |", "|---|---|---|---|---|"])
+        for route in groups[module]:
+            query = ", ".join(f"`{key}`" for key in route["query_keys"]) or "—"
+            if route["body_keys"]:
+                body = ", ".join(f"`{key}`" for key in route["body_keys"])
+            else:
+                body = "有" if route["has_body"] else "—"
+            lines.append(
+                f"| `{route['method']}` | `{route['path']}` | {query} | {body} | `{route['confidence']}` |"
+            )
+        lines.append("")
+    output.write_text("\n".join(lines), encoding="utf-8")
+
+
+def write_openapi(snapshot: dict, output: Path) -> None:
+    paths: dict[str, dict] = {}
+    for route in snapshot["routes"]:
+        if route["method"] == "UNKNOWN":
+            continue
+        operation = {
+            "summary": f"Lucky frontend call: {route['method']} {route['path']}",
+            "description": "Inferred from the Lucky frontend; request and response schemas may be incomplete.",
+            "tags": [route["module"]],
+            "security": [{"OpenToken": []}],
+            "responses": {
+                "200": {
+                    "description": "Lucky JSON envelope or binary response, depending on the endpoint.",
+                    "content": {"application/json": {"schema": {"$ref": "#/components/schemas/LuckyEnvelope"}}},
+                }
+            },
+            "x-evidence-confidence": route["confidence"],
+        }
+        parameters = []
+        for name in re.findall(r"\{([^}]+)\}", route["path"]):
+            parameters.append({"name": name, "in": "path", "required": True, "schema": {"type": "string"}})
+        for name in route["query_keys"]:
+            parameters.append({"name": name, "in": "query", "required": False, "schema": {}})
+        if parameters:
+            operation["parameters"] = parameters
+        if route["has_body"]:
+            properties = {name: {} for name in route["body_keys"]}
+            operation["requestBody"] = {
+                "required": True,
+                "content": {"application/json": {"schema": {"type": "object", "properties": properties}}},
+            }
+        paths.setdefault(route["path"], {})[route["method"].lower()] = operation
+    document = {
+        "openapi": "3.1.0",
+        "info": {
+            "title": "Lucky OpenToken API (unofficial)",
+            "version": snapshot["target"]["version"],
+            "description": "Reverse-documented, best-effort API inventory. Not an upstream compatibility promise.",
+        },
+        "servers": [
+            {
+                "url": "http://127.0.0.1:16601/{safeEntry}",
+                "variables": {"safeEntry": {"default": "your-safe-entry", "description": "Lucky 安全入口，不含前导斜杠。"}},
+            }
+        ],
+        "security": [{"OpenToken": []}],
+        "paths": paths,
+        "components": {
+            "securitySchemes": {"OpenToken": {"type": "apiKey", "in": "header", "name": "openToken"}},
+            "schemas": {
+                "LuckyEnvelope": {
+                    "type": "object",
+                    "properties": {
+                        "ret": {"type": "integer", "description": "0 usually means success."},
+                        "msg": {"type": "string"},
+                        "data": {},
+                    },
+                    "additionalProperties": True,
+                }
+            },
+        },
+    }
+    output.write_text(json.dumps(document, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("assets_dir", type=Path)
+    parser.add_argument("--version", required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--markdown", type=Path)
+    parser.add_argument("--openapi", type=Path)
+    args = parser.parse_args()
+    snapshot = extract(args.assets_dir, args.version)
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    if args.markdown:
+        args.markdown.parent.mkdir(parents=True, exist_ok=True)
+        write_markdown(snapshot, args.markdown)
+    if args.openapi:
+        args.openapi.parent.mkdir(parents=True, exist_ok=True)
+        write_openapi(snapshot, args.openapi)
+
+
+if __name__ == "__main__":
+    main()
