@@ -19,6 +19,9 @@ jobs:
       - name: Verify committed documentation
         run: python3 tools/verify_repository.py
 
+      - name: Test secure credential tooling
+        run: python3 -m unittest discover -s tests -p 'test_*.py' -v
+
       - name: Exercise frontend extractor
         run: |
           python3 tools/extract_lucky_frontend.py tests/fixtures \

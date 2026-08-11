@@ -8,23 +8,20 @@
 - Lucky 设置中的“安全入口”；
 - 已启用的 OpenToken。
 
-将基础地址设置到安全入口这一层，不要以 `/api` 结尾：
+推荐使用统一凭据安装器。基础地址应设置到安全入口这一层，不要以 `/api` 结尾：
 
 ```bash
-export LUCKY_BASE_URL='http://127.0.0.1:16601/<安全入口>'
-read -rsp 'Lucky OpenToken: ' LUCKY_OPEN_TOKEN
-export LUCKY_OPEN_TOKEN
-printf '\n'
+python3 tools/lucky_credentials.py install
+python3 tools/lucky_credentials.py doctor
 ```
 
-`read -s` 可以避免密钥出现在终端回显和 shell 历史中。也可以由系统密钥管理器或 CI secret 注入环境变量。
+安装器隐藏 token 输入，将凭据原子写入仅当前用户可读的文件。完整说明见[统一安全凭据安装与调用](credentials.md)。
 
 ## 第一个只读请求
 
 ```bash
-curl --fail-with-body --silent --show-error \
-  --header "openToken: ${LUCKY_OPEN_TOKEN}" \
-  "${LUCKY_BASE_URL}/api/status"
+python3 tools/lucky_credentials.py run -- \
+  python3 examples/lucky_api.py /api/status
 ```
 
 典型成功响应是 JSON 对象，并包含 `ret: 0`。本机 Lucky 3.0.0 的状态响应还包含 CPU、内存、网络累计流量、连接数、运行时间和查询时间等字段。
@@ -32,17 +29,17 @@ curl --fail-with-body --silent --show-error \
 继续检查应用信息与模块：
 
 ```bash
-examples/lucky-readonly.sh status
-examples/lucky-readonly.sh info
-examples/lucky-readonly.sh modules
+python3 tools/lucky_credentials.py run -- examples/lucky-readonly.sh status
+python3 tools/lucky_credentials.py run -- examples/lucky-readonly.sh info
+python3 tools/lucky_credentials.py run -- examples/lucky-readonly.sh modules
 ```
 
 ## Python 示例
 
 ```bash
-python3 examples/lucky_api.py /api/status
-python3 examples/lucky_api.py /api/info
-python3 examples/lucky_api.py /api/modules/list
+python3 tools/lucky_credentials.py run -- python3 examples/lucky_api.py /api/status
+python3 tools/lucky_credentials.py run -- python3 examples/lucky_api.py /api/info
+python3 tools/lucky_credentials.py run -- python3 examples/lucky_api.py /api/modules/list
 ```
 
 示例客户端默认只允许 `GET`，并额外拦截名称上明显有副作用的 GET 路径。写请求必须显式添加 `--allow-write`；执行前仍应查看[模块指南](modules.md)和[完整路由表](generated/api-routes.md)。

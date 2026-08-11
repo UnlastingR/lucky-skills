@@ -11,10 +11,11 @@
 ## 从这里开始
 
 1. 阅读[快速开始](docs/quickstart.md)，完成第一个只读请求。
-2. 阅读[鉴权与安全](docs/authentication.md)，理解 OpenToken、安全入口和轮换要求。
-3. 查看[接口约定](docs/conventions.md)和[模块指南](docs/modules.md)。
-4. 在[完整路由表](docs/generated/api-routes.md)中查找具体接口。
-5. 将 [OpenAPI 3.1](openapi/lucky-v3.openapi.json) 导入支持 OpenAPI 的客户端。
+2. 使用[统一安全凭据安装与调用](docs/credentials.md)保存并注入 OpenToken。
+3. 阅读[鉴权与安全](docs/authentication.md)，理解 OpenToken、安全入口和轮换要求。
+4. 查看[接口约定](docs/conventions.md)和[模块指南](docs/modules.md)。
+5. 在[完整路由表](docs/generated/api-routes.md)中查找具体接口。
+6. 将 [OpenAPI 3.1](openapi/lucky-v3.openapi.json) 导入支持 OpenAPI 的客户端。
 
 ## 最重要的结论
 
@@ -24,6 +25,17 @@
 - OpenToken 应视为管理员密钥。前端暴露的接口包含改配置、执行任务、管理容器、读写文件和打开终端等高权限操作。
 - 不要仅凭 HTTP 方法判断安全性；Lucky 的部分有副作用操作历史上使用过 `GET`。
 - 本机实测 `GET /api/status`、`GET /api/info`、`GET /api/modules/list` 成功；状态接口响应显示每秒 20 次的限流头。
+
+## 统一安全调用
+
+```bash
+python3 tools/lucky_credentials.py install
+python3 tools/lucky_credentials.py doctor
+python3 tools/lucky_credentials.py run -- \
+  python3 examples/lucky_api.py /api/status
+```
+
+安装器隐藏输入、原子写入用户私有凭据文件，并设置 POSIX `700/600` 权限。`run` 只向单个子进程注入 `LUCKY_BASE_URL` 和 `LUCKY_OPEN_TOKEN`，不会把 token 放进命令行参数或全局 shell 配置。
 
 ## 仓库结构
 
