@@ -39,7 +39,7 @@ python3 tools/lucky_api.py info
 python3 tools/lucky_api.py modules
 ```
 
-CLI 在未设置 `LUCKY_BASE_URL` / `LUCKY_OPEN_TOKEN` 时自动使用平台/配置对应的默认凭据文件；`--credentials-file PATH` 可显式覆盖。`lucky_credentials.py run -- ...` 仍保留兼容，但会把凭据注入子进程环境。
+CLI 只在 `LUCKY_BASE_URL` 与 `LUCKY_OPEN_TOKEN` 同时为非空值时使用环境凭据；两者都未设置/为空时自动使用平台/配置对应的默认凭据文件。只有一个非空时会 fail-closed，避免写操作误用另一套默认凭据。`--credentials-file PATH` 可显式覆盖。`lucky_credentials.py run -- ...` 仍保留兼容，但会把凭据注入子进程环境。
 
 查看状态码、内容类型和限流元数据：
 

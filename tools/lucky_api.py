@@ -46,16 +46,21 @@ def read_json_body(args: argparse.Namespace) -> Any:
 
 def make_client(args: argparse.Namespace, catalog: RouteCatalog) -> LuckyClient:
     credentials_file = getattr(args, "credentials_file", None)
-    if credentials_file is None and (
-        os.environ.get("LUCKY_BASE_URL") is not None
-        and os.environ.get("LUCKY_OPEN_TOKEN") is not None
-    ):
-        return LuckyClient.from_environment(
-            timeout=args.timeout,
-            retries=args.retries,
-            max_response_bytes=args.max_response_bytes,
-            catalog=catalog,
-        )
+    if credentials_file is None:
+        env_base_url = os.environ.get("LUCKY_BASE_URL", "").strip()
+        env_open_token = os.environ.get("LUCKY_OPEN_TOKEN", "").strip()
+        if env_base_url and env_open_token:
+            return LuckyClient.from_environment(
+                timeout=args.timeout,
+                retries=args.retries,
+                max_response_bytes=args.max_response_bytes,
+                catalog=catalog,
+            )
+        if bool(env_base_url) != bool(env_open_token):
+            raise CredentialError(
+                "incomplete Lucky credential environment; set both LUCKY_BASE_URL and "
+                "LUCKY_OPEN_TOKEN, unset both, or use --credentials-file"
+            )
     values = load_credentials(Path(credentials_file) if credentials_file else default_credentials_path())
     return LuckyClient(
         values["base_url"],

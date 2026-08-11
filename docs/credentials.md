@@ -6,7 +6,7 @@
 默认/配置凭据文件（600） → lucky_api.py → Lucky OpenToken API
 ```
 
-API CLI 在未设置 `LUCKY_BASE_URL` / `LUCKY_OPEN_TOKEN` 时自动使用 `default_credentials_path()`，因此会遵循 Windows、`XDG_CONFIG_HOME` 和 `LUCKY_CREDENTIALS_FILE`。`--credentials-file PATH` 可显式覆盖。兼容模式仍可使用 `lucky_credentials.py run` 注入子进程环境变量，但同进程读取凭据文件能减少 token 的传播范围。不把 token 写入命令行参数、shell 历史、Git、`.env` 或全局 shell 启动文件。
+API CLI 只在 `LUCKY_BASE_URL` 与 `LUCKY_OPEN_TOKEN` **同时为非空值**时使用环境凭据；两者都未设置/为空时自动使用 `default_credentials_path()`，因此会遵循 Windows、`XDG_CONFIG_HOME` 和 `LUCKY_CREDENTIALS_FILE`。如果只有一个为非空值，CLI 会 fail-closed 并要求补齐或清空环境变量，避免写操作误落到默认文件中的另一台 Lucky。`--credentials-file PATH` 可显式覆盖。兼容模式仍可使用 `lucky_credentials.py run` 注入子进程环境变量，但同进程读取凭据文件能减少 token 的传播范围。不把 token 写入命令行参数、shell 历史、Git、`.env` 或全局 shell 启动文件。
 
 ## 1. 安装凭据
 

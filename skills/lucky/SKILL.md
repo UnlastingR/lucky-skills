@@ -34,7 +34,7 @@ python3 tools/lucky_credentials.py install
 python3 tools/lucky_api.py status
 ```
 
-- With no credential environment variables, the CLI reads the platform/configured default credential path from `lucky_credentials.py`. `--credentials-file PATH` explicitly overrides it. The older `lucky_credentials.py run -- ...` wrapper remains available for compatibility.
+- The CLI uses environment credentials only when both `LUCKY_BASE_URL` and `LUCKY_OPEN_TOKEN` are non-empty. If both are empty/unset, it reads the platform/configured default credential path from `lucky_credentials.py`; if only one is non-empty, it fails closed to avoid targeting the wrong Lucky instance. `--credentials-file PATH` explicitly overrides this selection. The older `lucky_credentials.py run -- ...` wrapper remains available for compatibility.
 
 ## Start read-only
 

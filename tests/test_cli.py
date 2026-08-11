@@ -69,8 +69,7 @@ class CLITests(unittest.TestCase):
         loader.assert_called_once_with(path)
         self.assertEqual(client.base_url, "http://127.0.0.1:16601/safe-entry")
 
-    def test_make_client_ignores_partial_legacy_environment(self) -> None:
-        path = Path("/tmp/default-lucky-credentials.json")
+    def test_make_client_rejects_partial_legacy_environment(self) -> None:
         args = Namespace(
             credentials_file=None,
             timeout=3.0,
@@ -79,6 +78,24 @@ class CLITests(unittest.TestCase):
         )
         with patch.dict(
             "tools.lucky_api.os.environ", {"LUCKY_BASE_URL": "https://stale.example/safe"}, clear=True
+        ), patch("tools.lucky_api.load_credentials") as loader:
+            with self.assertRaises(CredentialError) as context:
+                make_client(args, RouteCatalog([]))
+        loader.assert_not_called()
+        self.assertIn("incomplete Lucky credential environment", str(context.exception))
+
+    def test_make_client_treats_blank_legacy_environment_as_unset(self) -> None:
+        path = Path("/tmp/default-lucky-credentials.json")
+        args = Namespace(
+            credentials_file=None,
+            timeout=3.0,
+            retries=0,
+            max_response_bytes=1024,
+        )
+        with patch.dict(
+            "tools.lucky_api.os.environ",
+            {"LUCKY_BASE_URL": "", "LUCKY_OPEN_TOKEN": "   "},
+            clear=True,
         ), patch(
             "tools.lucky_api.default_credentials_path", return_value=path
         ), patch(

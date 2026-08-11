@@ -30,7 +30,7 @@ python3 tools/lucky_credentials.py install
 python3 tools/lucky_api.py status
 ```
 
-凭据工具将 token 保存在用户私有文件中。API CLI 在未设置凭据环境变量时自动读取平台/配置对应的默认凭据文件；`--credentials-file PATH` 可显式覆盖。该模式不会打印 token，也不会把 token 放入进程命令行参数或子进程环境；旧的 `lucky_credentials.py run -- ...` 方式保留兼容。
+凭据工具将 token 保存在用户私有文件中。API CLI 只在 `LUCKY_BASE_URL` 与 `LUCKY_OPEN_TOKEN` 同时非空时使用环境凭据；两者都为空/未设置时读取平台/配置对应的默认凭据文件，只有一个非空则 fail-closed；`--credentials-file PATH` 可显式覆盖。该模式不会打印 token，也不会把 token 放入进程命令行参数或子进程环境；旧的 `lucky_credentials.py run -- ...` 方式保留兼容。
 
 ## 安全入口仍是地址的一部分
 
