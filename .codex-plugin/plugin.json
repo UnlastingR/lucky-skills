@@ -1,6 +1,37 @@
 {
   "name": "lucky-skills",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Safely inspect and manage authorized Lucky v3 instances through the OpenToken API.",
-  "skills": "./.agents/skills/"
+  "author": {
+    "name": "UnlastingR",
+    "url": "https://github.com/UnlastingR"
+  },
+  "homepage": "https://github.com/UnlastingR/lucky-skills",
+  "repository": "https://github.com/UnlastingR/lucky-skills",
+  "keywords": [
+    "lucky",
+    "opentoken",
+    "reverse-proxy",
+    "ddns",
+    "self-hosted"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Lucky Skills",
+    "shortDescription": "Inspect and manage authorized Lucky v3 instances safely",
+    "longDescription": "Use guarded OpenToken workflows to inspect Lucky status and modules, troubleshoot reverse proxies, DDNS and certificates, and make explicitly requested configuration changes with read-before-write safeguards.",
+    "developerName": "UnlastingR",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/UnlastingR/lucky-skills",
+    "defaultPrompt": [
+      "Check my Lucky status and summarize anything unusual.",
+      "Inspect my Lucky reverse-proxy rules without changing them.",
+      "Help me make a safe Lucky configuration change."
+    ]
+  }
 }
