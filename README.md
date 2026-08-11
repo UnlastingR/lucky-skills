@@ -14,8 +14,9 @@
 2. 使用[统一安全凭据安装与调用](docs/credentials.md)保存并注入 OpenToken。
 3. 阅读[鉴权与安全](docs/authentication.md)，理解 OpenToken、安全入口和轮换要求。
 4. 查看[接口约定](docs/conventions.md)和[模块指南](docs/modules.md)。
-5. 在[完整路由表](docs/generated/api-routes.md)中查找具体接口。
-6. 将 [OpenAPI 3.1](openapi/lucky-v3.openapi.json) 导入支持 OpenAPI 的客户端。
+5. 使用[安全 API 客户端与 CLI](docs/api-client.md)进行受控调用。
+6. 在[完整路由表](docs/generated/api-routes.md)中查找具体接口。
+7. 将 [OpenAPI 3.1](openapi/lucky-v3.openapi.json) 导入支持 OpenAPI 的客户端。
 
 ## 最重要的结论
 
@@ -25,6 +26,7 @@
 - OpenToken 应视为管理员密钥。前端暴露的接口包含改配置、执行任务、管理容器、读写文件和打开终端等高权限操作。
 - 不要仅凭 HTTP 方法判断安全性；Lucky 的部分有副作用操作历史上使用过 `GET`。
 - 本机实测 `GET /api/status`、`GET /api/info`、`GET /api/modules/list` 成功；状态接口响应显示每秒 20 次的限流头。
+- 内置客户端依据当前 623 条路由证据做模板匹配和风险分级；未知端点、写请求及有副作用的 GET 默认全部拒绝。
 
 ## 统一安全调用
 
@@ -32,7 +34,7 @@
 python3 tools/lucky_credentials.py install
 python3 tools/lucky_credentials.py doctor
 python3 tools/lucky_credentials.py run -- \
-  python3 examples/lucky_api.py /api/status
+  python3 tools/lucky_api.py status
 ```
 
 安装器隐藏输入、原子写入用户私有凭据文件，并设置 POSIX `700/600` 权限。`run` 只向单个子进程注入 `LUCKY_BASE_URL` 和 `LUCKY_OPEN_TOKEN`，不会把 token 放进命令行参数或全局 shell 配置。
@@ -40,12 +42,13 @@ python3 tools/lucky_credentials.py run -- \
 ## 仓库结构
 
 ```text
+lucky_api/             可复用的无依赖 Python 客户端与路由风险策略
 docs/                 手写指南与自动生成路由表
 evidence/             脱敏后的派生端点快照
 examples/             默认只读、从环境变量取密钥的客户端
 openapi/              自动生成的 OpenAPI 3.1
 tests/fixtures/        提取器的最小测试夹具
-tools/                 路由提取和仓库验证脚本
+tools/                 API CLI、路由提取、产物生成和仓库验证脚本
 .github/workflows/     GitHub Actions 云端验证
 ```
 
@@ -60,7 +63,7 @@ python3 tools/extract_lucky_frontend.py tests/fixtures \
   --openapi /tmp/lucky-fixture.openapi.json
 ```
 
-GitHub Actions 会在 push、pull request 和手动触发时重复这些检查，包括密钥误提交检测、文档本地链接检查、端点快照与 OpenAPI 一致性检查。
+GitHub Actions 会在 Python 3.10–3.13 上云端编译并运行全部测试，同时执行密钥误提交检测、文档本地链接检查、端点快照/OpenAPI 一致性检查和生成产物可复现性检查。
 
 ## 准确性边界
 

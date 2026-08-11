@@ -28,7 +28,7 @@ Authorization: <token>
 ```bash
 python3 tools/lucky_credentials.py install
 python3 tools/lucky_credentials.py run -- \
-  python3 examples/lucky_api.py /api/status
+  python3 tools/lucky_api.py status
 ```
 
 凭据工具将 token 保存在用户私有文件中，并只向被调用的子进程注入环境变量。它不会打印 token，也不会把 token 放入进程命令行参数。

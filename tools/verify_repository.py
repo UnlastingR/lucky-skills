@@ -6,7 +6,10 @@ from __future__ import annotations
 import json
 import re
 import sys
+import tempfile
 from pathlib import Path
+
+from extract_lucky_frontend import write_markdown, write_openapi
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -53,6 +56,16 @@ def check_generated_artifacts() -> None:
     openapi = json.loads(openapi_path.read_text(encoding="utf-8"))
     if snapshot["route_count"] != len(snapshot["routes"]):
         fail("snapshot route_count does not match routes")
+    if snapshot["bundle_count"] != len(snapshot["bundle_sha256"]):
+        fail("snapshot bundle_count does not match bundle hashes")
+    route_keys = [(item["path"], item["method"]) for item in snapshot["routes"]]
+    if len(route_keys) != len(set(route_keys)):
+        fail("snapshot contains duplicate path/method routes")
+    for item in snapshot["routes"]:
+        if not item["path"].startswith("/api/"):
+            fail(f"snapshot contains invalid API path: {item['path']}")
+        if item["method"] not in {"GET", "POST", "PUT", "DELETE", "PATCH", "UNKNOWN"}:
+            fail(f"snapshot contains invalid HTTP method: {item['method']}")
     if openapi.get("openapi") != "3.1.0":
         fail("OpenAPI document is not 3.1.0")
     if openapi["components"]["securitySchemes"]["OpenToken"]["name"] != "openToken":
@@ -75,6 +88,24 @@ def check_generated_artifacts() -> None:
     }
     if documented != inferred:
         fail("OpenAPI paths are out of sync with the endpoint snapshot")
+    operation_ids = [
+        operation["operationId"]
+        for item in openapi["paths"].values()
+        for method, operation in item.items()
+        if method.upper() in {"GET", "POST", "PUT", "DELETE", "PATCH"}
+    ]
+    if len(operation_ids) != len(set(operation_ids)):
+        fail("OpenAPI operationId values are not unique")
+    with tempfile.TemporaryDirectory() as directory:
+        generated_markdown = Path(directory) / "api-routes.md"
+        generated_openapi = Path(directory) / "lucky-v3.openapi.json"
+        write_markdown(snapshot, generated_markdown)
+        write_openapi(snapshot, generated_openapi)
+        committed_markdown = ROOT / "docs" / "generated" / "api-routes.md"
+        if generated_markdown.read_bytes() != committed_markdown.read_bytes():
+            fail("generated API route Markdown is stale")
+        if generated_openapi.read_bytes() != openapi_path.read_bytes():
+            fail("generated OpenAPI document is stale")
 
 
 def main() -> None:

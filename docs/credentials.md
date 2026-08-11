@@ -62,27 +62,17 @@ python3 tools/lucky_credentials.py doctor
 
 ```bash
 python3 tools/lucky_credentials.py run -- \
-  python3 examples/lucky_api.py /api/status
+  python3 tools/lucky_api.py status
 ```
 
 应用信息与模块清单：
 
 ```bash
-python3 tools/lucky_credentials.py run -- examples/lucky-readonly.sh info
-python3 tools/lucky_credentials.py run -- examples/lucky-readonly.sh modules
+python3 tools/lucky_credentials.py run -- python3 tools/lucky_api.py info
+python3 tools/lucky_credentials.py run -- python3 tools/lucky_api.py modules
 ```
 
-使用 curl 时，让 shell 在凭据注入后的子进程中展开环境变量：
-
-```bash
-python3 tools/lucky_credentials.py run -- sh -c '
-  curl --fail-with-body --silent --show-error \
-    --header "openToken: ${LUCKY_OPEN_TOKEN}" \
-    "${LUCKY_BASE_URL}/api/status"
-'
-```
-
-外层必须使用单引号，否则当前 shell 会在凭据尚未注入前展开变量。
+不建议使用 `sh -c` 拼接 curl 鉴权头：shell 展开后，Token 可能短暂出现在 curl 的进程参数中。仓库 CLI 直接从子进程环境读取凭据并在进程内部构造请求。
 
 ## 4. 更新或轮换
 
@@ -104,7 +94,7 @@ export LUCKY_BASE_URL='https://lucky.example.com/<安全入口>'
 read -rsp 'Lucky OpenToken: ' LUCKY_OPEN_TOKEN
 export LUCKY_OPEN_TOKEN
 printf '\n'
-python3 examples/lucky_api.py /api/status
+python3 tools/lucky_api.py status
 unset LUCKY_OPEN_TOKEN LUCKY_BASE_URL
 ```
 
