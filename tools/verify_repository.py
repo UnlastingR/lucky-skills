@@ -17,6 +17,7 @@ TOKEN_ASSIGNMENT = re.compile(
     r"(?i)(?:open[_-]?token|authorization)\s*[:=]\s*[\"']?(?!\$\{|<|your-|example|replace)[A-Za-z0-9_-]{24,}"
 )
 MARKDOWN_LINK = re.compile(r"(?<!!)\[[^]]*]\(([^)]+)\)")
+SKILL_FRONTMATTER = re.compile(r"\A---\s*\n(?P<body>.*?)\n---\s*\n", re.DOTALL)
 
 
 def fail(message: str) -> None:
@@ -47,6 +48,43 @@ def check_local_links() -> None:
             resolved = (path.parent / target).resolve()
             if not resolved.exists():
                 fail(f"broken local link in {path.relative_to(ROOT)}: {target}")
+
+
+def check_skill_packaging() -> None:
+    skill_path = ROOT / ".agents" / "skills" / "lucky" / "SKILL.md"
+    if not skill_path.is_file():
+        fail("Lucky skill is missing from .agents/skills/lucky/SKILL.md")
+
+    text = skill_path.read_text(encoding="utf-8")
+    match = SKILL_FRONTMATTER.match(text)
+    if not match:
+        fail("Lucky SKILL.md is missing YAML frontmatter")
+
+    metadata: dict[str, str] = {}
+    for line in match.group("body").splitlines():
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        key, separator, value = line.partition(":")
+        if not separator:
+            fail(f"invalid Lucky SKILL.md frontmatter line: {line}")
+        metadata[key.strip()] = value.strip()
+
+    if metadata.get("name") != "lucky":
+        fail("Lucky SKILL.md name must be 'lucky'")
+    description = metadata.get("description", "")
+    if not description:
+        fail("Lucky SKILL.md description is required")
+    if len(description) > 1024:
+        fail("Lucky SKILL.md description exceeds the 1024-character host limit")
+
+    manifest_path = ROOT / ".codex-plugin" / "plugin.json"
+    if not manifest_path.is_file():
+        fail("Codex plugin manifest is missing")
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if manifest.get("name") != "lucky-skills":
+        fail("Codex plugin name must be 'lucky-skills'")
+    if manifest.get("skills") != "./.agents/skills/":
+        fail("Codex plugin must reuse the repository .agents/skills directory")
 
 
 def check_generated_artifacts() -> None:
@@ -111,6 +149,7 @@ def check_generated_artifacts() -> None:
 def main() -> None:
     check_secrets()
     check_local_links()
+    check_skill_packaging()
     check_generated_artifacts()
     print("repository verification passed")
 

@@ -1,0 +1,6 @@
+{
+  "name": "lucky-skills",
+  "version": "0.1.0",
+  "description": "Safely inspect and manage authorized Lucky v3 instances through the OpenToken API.",
+  "skills": "./.agents/skills/"
+}
