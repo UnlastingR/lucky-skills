@@ -1,14 +1,12 @@
 # 统一安全凭据安装与调用
 
-本仓库的统一方式是 `tools/lucky_credentials.py`。它把基础 URL 和 OpenToken 存入用户私有配置文件，并只在启动一个子命令时注入：
+本仓库使用 `tools/lucky_credentials.py` 安装和检查凭据，并优先让 `tools/lucky_api.py` 在同一进程中直接读取私有凭据文件：
 
 ```text
-凭据文件（600） → lucky_credentials.py run → 子进程环境变量
-                                           ├─ LUCKY_BASE_URL
-                                           └─ LUCKY_OPEN_TOKEN
+默认/配置凭据文件（600） → lucky_api.py → Lucky OpenToken API
 ```
 
-不把 token 写入命令行参数、shell 历史、Git、`.env` 或全局 shell 启动文件。
+API CLI 只在 `LUCKY_BASE_URL` 与 `LUCKY_OPEN_TOKEN` **同时为非空值**时使用环境凭据；两者都未设置/为空时自动使用 `default_credentials_path()`，因此会遵循 Windows、`XDG_CONFIG_HOME` 和 `LUCKY_CREDENTIALS_FILE`。如果只有一个为非空值，CLI 会 fail-closed 并要求补齐或清空环境变量，避免写操作误落到默认文件中的另一台 Lucky。`--credentials-file PATH` 可显式覆盖。兼容模式仍可使用 `lucky_credentials.py run` 注入子进程环境变量，但同进程读取凭据文件能减少 token 的传播范围。不把 token 写入命令行参数、shell 历史、Git、`.env` 或全局 shell 启动文件。
 
 ## 1. 安装凭据
 
@@ -58,21 +56,32 @@ python3 tools/lucky_credentials.py doctor
 
 ## 3. 统一调用
 
-只读状态：
+推荐直接使用安装器配置的默认私有凭据文件：
 
 ```bash
-python3 tools/lucky_credentials.py run -- \
-  python3 tools/lucky_api.py status
+python3 tools/lucky_api.py status
 ```
 
 应用信息与模块清单：
 
 ```bash
-python3 tools/lucky_credentials.py run -- python3 tools/lucky_api.py info
-python3 tools/lucky_credentials.py run -- python3 tools/lucky_api.py modules
+python3 tools/lucky_api.py info
+python3 tools/lucky_api.py modules
 ```
 
-不建议使用 `sh -c` 拼接 curl 鉴权头：shell 展开后，Token 可能短暂出现在 curl 的进程参数中。仓库 CLI 直接从子进程环境读取凭据并在进程内部构造请求。
+如需显式使用另一份凭据：
+
+```bash
+python3 tools/lucky_api.py --credentials-file /path/to/credentials.json status
+```
+
+兼容旧流程时仍可使用：
+
+```bash
+python3 tools/lucky_credentials.py run -- python3 tools/lucky_api.py status
+```
+
+不建议使用 `sh -c` 拼接 curl 鉴权头：shell 展开后，Token 可能短暂出现在 curl 的进程参数中。默认凭据文件或 `--credentials-file` 方式都在同一进程中读取并校验凭据，再构造 OpenToken 请求头。
 
 ## 4. 更新或轮换
 
@@ -114,7 +123,7 @@ env:
 
 ## 安全边界
 
-- 子进程必须获得 token 才能调用 API，因此同一用户或 root 仍可能通过进程环境读取它。
+- 使用兼容的 `lucky_credentials.py run` 模式时，子进程必须获得 token，因此同一用户或 root 仍可能通过进程环境读取它；优先使用 `--credentials-file` 可避免这一步传播。
 - Windows 上 Python 的 `chmod` 不能完整表达 ACL；安装后应确认只有当前账号可以读取文件。
 - 备份软件可能复制凭据文件；应对备份加密并限制访问。
 - OpenToken 权限很高。业务服务最好通过只暴露允许接口的代理调用，而不是直接获得 token。

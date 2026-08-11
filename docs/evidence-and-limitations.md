@@ -25,12 +25,13 @@
 | 容器镜像 | `gdy666/lucky:v3` |
 | 成功只读请求 | `/api/status`、`/api/info`、`/api/modules/list`；新客户端再次验证均为 HTTP 200、业务成功 |
 | 可逆写入实测 | Web 规则 `POST /api/webservice/rules` → `GET /api/webservice/rule/{key}` → `DELETE /api/webservice/rule/{key}`；禁用回读成功且基线恢复 |
+| 308 重定向实测 | 经明确授权，用 `POST /api/webservice/rules` 创建启用的 80 端口 redirect 规则；`DefaultProxy.OtherParams.RedirectType="308"` 被 API 回读保留，GET/POST 均实测返回 `308 Permanent Redirect` |
 | 认证 | 安全入口 + `openToken` 请求头 |
 | 状态接口限流 | 实测响应头显示 20 请求/秒窗口 |
 
 未在仓库记录实例的 OpenToken、安全入口、域名、配置或业务数据。
 
-Web 规则写入测试使用唯一名称、禁用状态、回环地址、关闭自动防火墙和空代理列表。测试完成后独立确认规则无残留、测试端口未监听、iptables/nftables 无匹配规则。没有启用规则，也没有向规则发送业务流量。
+最初的通用 Web 规则写入 smoke test 使用唯一名称、禁用状态、回环地址、关闭自动防火墙和空代理列表；测试完成后独立确认规则无残留、测试端口未监听、iptables/nftables 无匹配规则。后续在同一获授权测试实例上另行通过 OpenToken API 创建了一条启用的 80 → HTTPS 308 重定向规则，用本机 GET/POST 请求验证状态码和 `Location`，不涉及业务后端代理。
 
 ## 静态快照
 

@@ -20,8 +20,7 @@ python3 tools/lucky_credentials.py doctor
 ## 第一个只读请求
 
 ```bash
-python3 tools/lucky_credentials.py run -- \
-  python3 tools/lucky_api.py status
+python3 tools/lucky_api.py status
 ```
 
 典型成功响应是 JSON 对象，并包含 `ret: 0`。本机 Lucky 3.0.0 的状态响应还包含 CPU、内存、网络累计流量、连接数、运行时间和查询时间等字段。
@@ -29,17 +28,17 @@ python3 tools/lucky_credentials.py run -- \
 继续检查应用信息与模块：
 
 ```bash
-python3 tools/lucky_credentials.py run -- python3 tools/lucky_api.py status
-python3 tools/lucky_credentials.py run -- python3 tools/lucky_api.py info
-python3 tools/lucky_credentials.py run -- python3 tools/lucky_api.py modules
+python3 tools/lucky_api.py status
+python3 tools/lucky_api.py info
+python3 tools/lucky_api.py modules
 ```
 
 ## Python 示例
 
 ```bash
-python3 tools/lucky_credentials.py run -- python3 tools/lucky_api.py status
-python3 tools/lucky_credentials.py run -- python3 tools/lucky_api.py info
-python3 tools/lucky_credentials.py run -- python3 tools/lucky_api.py modules
+python3 tools/lucky_api.py status
+python3 tools/lucky_api.py info
+python3 tools/lucky_api.py modules
 ```
 
 客户端会将实际路径与证据目录匹配。未知端点、非 GET 请求和已知有副作用的 GET 默认拒绝；写请求还需要精确确认。完整用法见[安全 API 客户端与 CLI](api-client.md)。

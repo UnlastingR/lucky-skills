@@ -22,6 +22,7 @@ class WebRuleSmokeTests(unittest.TestCase):
         self.assertEqual(default["Locations"], [])
         self.assertEqual(default["ProxyAddr"], "")
         self.assertEqual(default["ProxyPassword"], "")
+        self.assertEqual(default["OtherParams"]["RedirectType"], "307")
 
     def test_rule_list_requires_the_observed_envelope(self) -> None:
         self.assertEqual(rule_list({"ret": 0, "ruleList": [{"RuleKey": "fixture"}]}), [{"RuleKey": "fixture"}])

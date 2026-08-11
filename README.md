@@ -42,11 +42,10 @@ Skill 的安全约束与客户端一致：默认只读；修改操作必须是�
 ```bash
 python3 tools/lucky_credentials.py install
 python3 tools/lucky_credentials.py doctor
-python3 tools/lucky_credentials.py run -- \
-  python3 tools/lucky_api.py status
+python3 tools/lucky_api.py status
 ```
 
-安装器隐藏输入、原子写入用户私有凭据文件，并设置 POSIX `700/600` 权限。`run` 只向单个子进程注入 `LUCKY_BASE_URL` 和 `LUCKY_OPEN_TOKEN`，不会把 token 放进命令行参数或全局 shell 配置。
+安装器隐藏输入、原子写入用户私有凭据文件，并设置 POSIX `700/600` 权限。API CLI 仅在 `LUCKY_BASE_URL` 与 `LUCKY_OPEN_TOKEN` 同时非空时使用环境凭据；两者都为空/未设置时自动读取当前平台/配置对应的默认凭据文件，只有一个非空则 fail-closed。不会把 token 放进命令行参数或子进程环境；可用 `--credentials-file PATH` 显式覆盖，旧 `run -- ...` 方式仍保留兼容。
 
 ## 仓库结构
 

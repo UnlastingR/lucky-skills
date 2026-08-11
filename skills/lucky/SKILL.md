@@ -28,20 +28,22 @@ python3 tools/lucky_credentials.py doctor
 python3 tools/lucky_credentials.py install
 ```
 
-- Execute authenticated commands through the credential wrapper so credentials are injected only into the child process:
+- Prefer direct in-process credential loading so the OpenToken never has to be copied into a child-process environment:
 
 ```bash
-python3 tools/lucky_credentials.py run -- python3 tools/lucky_api.py status
+python3 tools/lucky_api.py status
 ```
+
+- The CLI uses environment credentials only when both `LUCKY_BASE_URL` and `LUCKY_OPEN_TOKEN` are non-empty. If both are empty/unset, it reads the platform/configured default credential path from `lucky_credentials.py`; if only one is non-empty, it fails closed to avoid targeting the wrong Lucky instance. `--credentials-file PATH` explicitly overrides this selection. The older `lucky_credentials.py run -- ...` wrapper remains available for compatibility.
 
 ## Start read-only
 
 For inspection or troubleshooting, establish a baseline before proposing changes:
 
 ```bash
-python3 tools/lucky_credentials.py run -- python3 tools/lucky_api.py status
-python3 tools/lucky_credentials.py run -- python3 tools/lucky_api.py info
-python3 tools/lucky_credentials.py run -- python3 tools/lucky_api.py modules
+python3 tools/lucky_api.py status
+python3 tools/lucky_api.py info
+python3 tools/lucky_api.py modules
 ```
 
 Search the catalog before using an arbitrary endpoint:
@@ -62,8 +64,7 @@ Then call cataloged read-only routes with `call`. Prefer narrow responses and th
 - The client rejects writes by default. For a confirmed write, use both `--allow-write` and the exact confirmation string required by `--confirm`, for example:
 
 ```bash
-python3 tools/lucky_credentials.py run -- \
-  python3 tools/lucky_api.py call /api/example \
+python3 tools/lucky_api.py call /api/example \
   --method PUT --json-file /path/to/reviewed-payload.json \
   --allow-write --confirm 'PUT /api/example'
 ```
@@ -74,6 +75,8 @@ python3 tools/lucky_credentials.py run -- \
 ## Web Service / reverse proxy work
 
 For domain migration or reverse-proxy changes, inspect `/api/webservice/rules` (or the narrow rule-detail endpoint) first. Preserve the existing rule key, listener/TLS settings, proxy target, authentication, security groups, WAF, and unrelated domains. When adding a new hostname for a migration, prefer temporarily keeping both old and new hostnames until end-to-end validation succeeds.
+
+For Lucky v3 Web-service redirects, the redirect status is stored at `DefaultProxy.OtherParams.RedirectType` (and equivalently on redirect subrules). Lucky 3.0.0 has been API-verified to accept `"308"`; a rule with `WebServiceType: "redirect"`, `Locations: ["https://{host}{path}{args}"]`, and `RedirectType: "308"` returned HTTP 308 for both GET and POST. Create a new listener with `POST /api/webservice/rules`; update an existing listener by GETting its full object and PUTting the preserved object to `/api/webservice/rule/{RuleKey}`.
 
 ## Report results
 

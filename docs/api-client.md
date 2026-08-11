@@ -30,20 +30,21 @@
 
 ## CLI 快速使用
 
-先安装凭据，再通过单个子进程注入：
+先安装凭据，再优先让 API CLI 在同一进程中读取私有凭据文件：
 
 ```bash
 python3 tools/lucky_credentials.py install
-python3 tools/lucky_credentials.py run -- python3 tools/lucky_api.py status
-python3 tools/lucky_credentials.py run -- python3 tools/lucky_api.py info
-python3 tools/lucky_credentials.py run -- python3 tools/lucky_api.py modules
+python3 tools/lucky_api.py status
+python3 tools/lucky_api.py info
+python3 tools/lucky_api.py modules
 ```
+
+CLI 只在 `LUCKY_BASE_URL` 与 `LUCKY_OPEN_TOKEN` 同时为非空值时使用环境凭据；两者都未设置/为空时自动使用平台/配置对应的默认凭据文件。只有一个非空时会 fail-closed，避免写操作误用另一套默认凭据。`--credentials-file PATH` 可显式覆盖。`lucky_credentials.py run -- ...` 仍保留兼容，但会把凭据注入子进程环境。
 
 查看状态码、内容类型和限流元数据：
 
 ```bash
-python3 tools/lucky_credentials.py run -- \
-  python3 tools/lucky_api.py status --show-meta
+python3 tools/lucky_api.py status --show-meta
 ```
 
 ## 查询路由目录
@@ -63,16 +64,14 @@ python3 tools/lucky_api.py catalog --search logs --json
 重复使用 `--query KEY=VALUE`，客户端负责 URL 编码：
 
 ```bash
-python3 tools/lucky_credentials.py run -- \
-  python3 tools/lucky_api.py call /api/docker/containers \
+python3 tools/lucky_api.py call /api/docker/containers \
   --query all=true --query includeStats=false
 ```
 
 下载端点应写入文件；二进制内容默认不会直接打印到交互终端：
 
 ```bash
-python3 tools/lucky_credentials.py run -- \
-  python3 tools/lucky_api.py call '/api/docker/containers/ID/export' \
+python3 tools/lucky_api.py call '/api/docker/containers/ID/export' \
   --method POST --output container.tar \
   --allow-write --confirm 'POST /api/docker/containers/ID/export'
 ```
@@ -84,13 +83,11 @@ python3 tools/lucky_credentials.py run -- \
 请求体优先从文件或标准输入读取，避免敏感字段出现在 shell 历史和进程参数中：
 
 ```bash
-python3 tools/lucky_credentials.py run -- \
-  python3 tools/lucky_api.py call /api/ddns --method PUT \
+python3 tools/lucky_api.py call /api/ddns --method PUT \
   --json-file reviewed-ddns.json \
   --allow-write --confirm 'PUT /api/ddns'
 
-python3 tools/lucky_credentials.py run -- \
-  python3 tools/lucky_api.py call /api/ddns --method PUT --json-stdin \
+python3 tools/lucky_api.py call /api/ddns --method PUT --json-stdin \
   --allow-write --confirm 'PUT /api/ddns' < reviewed-ddns.json
 ```
 
@@ -118,6 +115,35 @@ python3 tools/lucky_credentials.py run -- \
 ```
 
 当前 Lucky 3.0.0 实例已实际通过该流程。实测后规则数量和原有 RuleKey 集合恢复，测试名称无残留，16666 未监听，iptables/nftables 未出现 16666 规则。此结果只证明禁用规则的创建、读取和删除链路，不证明启用监听、TLS、域名匹配或反向代理流量链路。
+
+## Web 服务 307 / 308 重定向
+
+Lucky v3 的重定向状态码位于 Web 服务对象的嵌套字段：
+
+```text
+DefaultProxy.OtherParams.RedirectType
+```
+
+对普通子规则则位于该子规则自己的 `OtherParams.RedirectType`。Lucky 3.0.0 已通过 OpenToken API 实测接受 `"308"`。一个标准的 80 → HTTPS 永久跳转至少应保持这些语义：
+
+```json
+{
+  "ListenPort": 80,
+  "Enable": true,
+  "EnableTLS": false,
+  "DefaultProxy": {
+    "WebServiceType": "redirect",
+    "Locations": ["https://{host}{path}{args}"],
+    "OtherParams": {
+      "RedirectType": "308"
+    }
+  }
+}
+```
+
+上面只是关键字段，不是可直接覆盖现有规则的完整请求体。Lucky Web 规则对象包含大量监听、认证、日志、WAF、缓存和兼容字段；更新现有规则时应先 `GET /api/webservice/rule/{RuleKey}`，只修改目标字段，再把完整对象 `PUT` 回同一路径。新建监听器使用 `POST /api/webservice/rules`。
+
+实测在 Lucky 3.0.0 上创建 `WebServiceType="redirect"`、`Locations=["https://{host}{path}{args}"]`、`RedirectType="308"` 的 80 端口规则后，GET 与 POST 请求均返回 `308 Permanent Redirect`，并保留 Host、Path 与 Query。
 
 ## Python 调用
 
