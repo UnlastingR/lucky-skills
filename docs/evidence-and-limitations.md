@@ -24,10 +24,13 @@
 | 构建日期 | 2026-07-09 |
 | 容器镜像 | `gdy666/lucky:v3` |
 | 成功只读请求 | `/api/status`、`/api/info`、`/api/modules/list`；新客户端再次验证均为 HTTP 200、业务成功 |
+| 可逆写入实测 | Web 规则 `POST /api/webservice/rules` → `GET /api/webservice/rule/{key}` → `DELETE /api/webservice/rule/{key}`；禁用回读成功且基线恢复 |
 | 认证 | 安全入口 + `openToken` 请求头 |
 | 状态接口限流 | 实测响应头显示 20 请求/秒窗口 |
 
 未在仓库记录实例的 OpenToken、安全入口、域名、配置或业务数据。
+
+Web 规则写入测试使用唯一名称、禁用状态、回环地址、关闭自动防火墙和空代理列表。测试完成后独立确认规则无残留、测试端口未监听、iptables/nftables 无匹配规则。没有启用规则，也没有向规则发送业务流量。
 
 ## 静态快照
 

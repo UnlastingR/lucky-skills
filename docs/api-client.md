@@ -98,6 +98,27 @@ python3 tools/lucky_credentials.py run -- \
 
 原始内容可通过 `--raw-file` 和 `--content-type` 发送。JSON 与原始请求体互斥。
 
+## 可逆 Web 规则写入测试
+
+`tools/lucky_web_rule_smoke.py` 是专门验证 Web 服务规则写入链路的集成测试。它执行：
+
+```text
+读取基线 → POST 创建禁用规则 → GET 列表定位 → GET 详情回读
+         → DELETE 删除规则 → GET 确认基线恢复
+```
+
+测试对象固定为禁用状态、仅绑定 `127.0.0.1`、关闭 TLS 和自动防火墙、无域名、无路径、无子规则、无代理目标。清理位于 `finally` 中；即便主验证失败，也会再次按唯一名称查找并尝试删除测试规则。
+
+该测试会真实修改 Lucky 配置，只能在明确授权、已备份且有人值守时运行：
+
+```bash
+python3 tools/lucky_credentials.py run -- \
+  python3 tools/lucky_web_rule_smoke.py \
+  --confirm CREATE-AND-DELETE-DISABLED-WEB-RULE
+```
+
+当前 Lucky 3.0.0 实例已实际通过该流程。实测后规则数量和原有 RuleKey 集合恢复，测试名称无残留，16666 未监听，iptables/nftables 未出现 16666 规则。此结果只证明禁用规则的创建、读取和删除链路，不证明启用监听、TLS、域名匹配或反向代理流量链路。
+
 ## Python 调用
 
 ```python
