@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -16,6 +17,7 @@ sys.path.insert(0, str(ROOT))
 
 from lucky_api import LuckyClient, LuckyClientError, OperationRisk, RouteCatalog  # noqa: E402
 from lucky_api.catalog import CatalogError  # noqa: E402
+from tools.lucky_credentials import CredentialError, default_credentials_path, load_credentials  # noqa: E402
 
 
 def parse_query(values: list[str]) -> list[tuple[str, str]]:
@@ -43,7 +45,21 @@ def read_json_body(args: argparse.Namespace) -> Any:
 
 
 def make_client(args: argparse.Namespace, catalog: RouteCatalog) -> LuckyClient:
-    return LuckyClient.from_environment(
+    credentials_file = getattr(args, "credentials_file", None)
+    if credentials_file is None and (
+        os.environ.get("LUCKY_BASE_URL") is not None
+        and os.environ.get("LUCKY_OPEN_TOKEN") is not None
+    ):
+        return LuckyClient.from_environment(
+            timeout=args.timeout,
+            retries=args.retries,
+            max_response_bytes=args.max_response_bytes,
+            catalog=catalog,
+        )
+    values = load_credentials(Path(credentials_file) if credentials_file else default_credentials_path())
+    return LuckyClient(
+        values["base_url"],
+        values["open_token"],
         timeout=args.timeout,
         retries=args.retries,
         max_response_bytes=args.max_response_bytes,
@@ -127,6 +143,11 @@ def command_catalog(args: argparse.Namespace, catalog: RouteCatalog) -> int:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--catalog-file", type=Path, help="override the endpoint evidence JSON")
+    parser.add_argument(
+        "--credentials-file",
+        type=Path,
+        help=f"override the private credential file (default when env is unset: {default_credentials_path()})",
+    )
     parser.add_argument("--timeout", type=float, default=10.0)
     parser.add_argument("--retries", type=int, default=2, help="read-only 429/502/503/504 retries")
     parser.add_argument("--max-response-bytes", type=int, default=16 * 1024 * 1024)
@@ -178,7 +199,7 @@ def main() -> int:
             args.allow_write = False
             args.confirm = None
         return command_call(args, catalog)
-    except (CatalogError, LuckyClientError, OSError, ValueError, json.JSONDecodeError) as error:
+    except (CatalogError, CredentialError, LuckyClientError, OSError, ValueError, json.JSONDecodeError) as error:
         print(f"error: {error}", file=sys.stderr)
         return 2
 
