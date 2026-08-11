@@ -18,6 +18,14 @@
 6. 在[完整路由表](docs/generated/api-routes.md)中查找具体接口。
 7. 将 [OpenAPI 3.1](openapi/lucky-v3.openapi.json) 导入支持 OpenAPI 的客户端。
 
+## Codex / ChatGPT Skill
+
+仓库内置标准 Agent Skill：`.agents/skills/lucky/SKILL.md`。当 Codex/devspace 在本仓库中工作时，会按官方仓库级 Skill 发现规则自动加载它；可显式使用 `$lucky`，也可由模型根据描述自动匹配 Lucky 管理任务。
+
+同时提供 `.codex-plugin/plugin.json`，把同一份 `.agents/skills/` 目录作为插件 Skill 来源，避免维护两份 `SKILL.md`。完整插件安装应包含整个仓库/插件目录，因为 Skill 会调用本仓库的 `tools/lucky_credentials.py`、`tools/lucky_api.py`、路由证据和文档。
+
+Skill 的安全约束与客户端一致：默认只读；修改操作必须是用户明确请求，并通过路由风险分级、`--allow-write` 与精确 `--confirm` 才会执行。OpenToken 仍由[统一安全凭据安装与调用](docs/credentials.md)管理，不写入 Skill 或插件清单。
+
 ## 最重要的结论
 
 - 请求地址必须包含 Lucky 的安全入口：`http://主机:端口/<安全入口>/api/...`。
@@ -43,6 +51,8 @@ python3 tools/lucky_credentials.py run -- \
 ## 仓库结构
 
 ```text
+.agents/skills/lucky/  Codex/devspace 可自动发现的 Lucky Agent Skill
+.codex-plugin/         可复用插件 manifest，复用同一份 Skill
 lucky_api/             可复用的无依赖 Python 客户端与路由风险策略
 docs/                 手写指南与自动生成路由表
 evidence/             脱敏后的派生端点快照
