@@ -8,6 +8,7 @@ import re
 import sys
 import tempfile
 from pathlib import Path
+from urllib.parse import urlparse
 
 from extract_lucky_frontend import write_markdown, write_openapi
 
@@ -109,21 +110,23 @@ def check_skill_packaging() -> None:
     interface = manifest.get("interface")
     if not isinstance(interface, dict):
         fail("Codex plugin interface metadata is required")
-    required_interface_fields = {
+    for field in (
         "displayName",
         "shortDescription",
         "longDescription",
         "developerName",
         "category",
-        "capabilities",
-        "defaultPrompt",
-    }
-    missing = sorted(field for field in required_interface_fields if not interface.get(field))
-    if missing:
-        fail(f"Codex plugin interface is missing required fields: {', '.join(missing)}")
-    capabilities = interface["capabilities"]
-    if not isinstance(capabilities, list) or not all(isinstance(item, str) and item for item in capabilities):
-        fail("Codex plugin interface.capabilities must be a non-empty string array")
+    ):
+        value = interface.get(field)
+        if not isinstance(value, str) or not value.strip():
+            fail(f"Codex plugin interface.{field} must be a non-empty string")
+    if "defaultPrompt" not in interface:
+        fail("Codex plugin interface.defaultPrompt is required")
+    capabilities = interface.get("capabilities")
+    if not isinstance(capabilities, list) or not all(
+        isinstance(item, str) and item.strip() for item in capabilities
+    ):
+        fail("Codex plugin interface.capabilities must be an array of strings")
     default_prompt = interface["defaultPrompt"]
     if not isinstance(default_prompt, list) or not 1 <= len(default_prompt) <= 3:
         fail("Codex plugin interface.defaultPrompt must contain 1 to 3 prompts")
@@ -131,7 +134,10 @@ def check_skill_packaging() -> None:
         fail("Codex plugin default prompts must be non-empty strings up to 128 characters")
     for field in ("websiteURL", "privacyPolicyURL", "termsOfServiceURL"):
         value = interface.get(field)
-        if value is not None and (not isinstance(value, str) or not value.startswith("https://")):
+        if value is None:
+            continue
+        parsed = urlparse(value) if isinstance(value, str) else None
+        if parsed is None or parsed.scheme != "https" or not parsed.netloc:
             fail(f"Codex plugin interface.{field} must be an absolute https URL when present")
 
 
