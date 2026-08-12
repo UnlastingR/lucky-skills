@@ -519,10 +519,11 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             f"expected at most 147 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 198:
-        fail(f"response-schema coverage regressed below 198 routes: {response_schema_count}")
+    if response_schema_count < 199:
+        fail(f"response-schema coverage regressed below 199 routes: {response_schema_count}")
 
     safe_utility_response_routes = {
+        ("GET", "/api/baseconfigure"),
         ("GET", "/api/ipfliter/porttrap/blockedips"),
         ("GET", "/api/ipfliter/porttrap/blockedips/search"),
         ("GET", "/api/cron/expressioncheck"),
@@ -550,6 +551,29 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     for route_key in safe_utility_response_routes:
         if not isinstance(merged_by_key[route_key].response_schema, dict):
             fail(f"safe utility response schema missing for {route_key}")
+
+    baseconfigure = merged_by_key[("GET", "/api/baseconfigure")].response_schema
+    baseconfigure_props = (
+        baseconfigure.get("properties", {}).get("baseconfigure", {}).get("properties", {})
+        if isinstance(baseconfigure, dict)
+        else {}
+    )
+    expected_safe_baseconfigure_fields = {
+        "AdminWebListenPort", "AdminWebListenTLS", "AdminWebListenHttpsPort", "ForceHTTPS",
+        "TokenExpirationHour", "MaxConsecutiveLoginFailures", "TimeZone", "FrontendTheme",
+        "FrontendLanguage", "EnableStatusHistory", "StatusHistoryRetentionDays",
+        "StatusHistorySampleIntervalSeconds",
+    }
+    if set(baseconfigure_props) != expected_safe_baseconfigure_fields:
+        fail("baseconfigure safe response whitelist regressed")
+    forbidden_baseconfigure_fields = {
+        "AdminAccount", "AdminPassword", "OpenToken", "TwoFAKey", "SafeURL", "DeviceID",
+        "Keys", "ThirdAuthLoginUserList", "BackendServerListBackup", "CustomDNSA", "CustomDNSB",
+        "CustomDNSC", "CustomDNSD", "CustomDNSList", "OriginsList", "ProxyProtocolTrustedCIDRs",
+        "GlobalNoLimitCIDRs", "StatNetInterfaceList", "DisableModules", "hiddenModules", "BackgroundImage",
+    }
+    if set(baseconfigure_props) & forbidden_baseconfigure_fields:
+        fail("baseconfigure sensitive/network-identifying fields leaked into response schema")
 
     portforward_response_routes = {
         ("POST", "/api/portforward"),
