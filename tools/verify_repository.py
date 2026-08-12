@@ -497,8 +497,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             f"expected at most 147 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 104:
-        fail(f"response-schema coverage regressed below 104 routes: {response_schema_count}")
+    if response_schema_count < 126:
+        fail(f"response-schema coverage regressed below 126 routes: {response_schema_count}")
 
     service_response_routes = {
         ("GET", "/api/dlnaservice/configure"),
@@ -541,18 +541,80 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         "ShowTime": {"type": "boolean"},
         "Level": {"type": "string"},
     }
-    for module in ("dlnaservice", "ftpserver", "smb", "webdav"):
-        for suffix, field in (("lastlogs", "lastLogs"), ("logs", "logs")):
-            route_key = ("GET", f"/api/{module}/{suffix}")
-            response_schema = merged_by_key[route_key].response_schema
-            item_properties = (
-                response_schema.get("properties", {})
-                .get(field, {})
-                .get("items", {})
-                .get("properties", {})
-            )
-            if item_properties != expected_log_item_properties:
-                fail(f"service log item schema regressed for {route_key}")
+    typed_log_routes = {
+        ("GET", "/api/dlnaservice/lastlogs"): "lastLogs",
+        ("GET", "/api/dlnaservice/logs"): "logs",
+        ("GET", "/api/ftpserver/lastlogs"): "lastLogs",
+        ("GET", "/api/ftpserver/logs"): "logs",
+        ("GET", "/api/smb/lastlogs"): "lastLogs",
+        ("GET", "/api/smb/logs"): "logs",
+        ("GET", "/api/webdav/lastlogs"): "lastLogs",
+        ("GET", "/api/webdav/logs"): "logs",
+        ("GET", "/api/cron/lastlogs"): "lastLogs",
+        ("GET", "/api/cron/logs"): "logs",
+        ("GET", "/api/ddns/lastlogs"): "lastLogs",
+        ("GET", "/api/ddns/logs"): "logs",
+        ("GET", "/api/docker/logs"): "logs",
+        ("GET", "/api/ipfliter/porttrap/logs"): "logs",
+        ("GET", "/api/third/filebrowser/lastlogs"): "lastLogs",
+        ("GET", "/api/third/filebrowser/logs"): "logs",
+        ("GET", "/api/webservice/lastlogs"): "lastLogs",
+        ("GET", "/api/webservice/logs"): "logs",
+        ("GET", "/api/webterminal/logs"): "logs",
+    }
+    for route_key, field in typed_log_routes.items():
+        response_schema = merged_by_key[route_key].response_schema
+        if not isinstance(response_schema, dict):
+            fail(f"typed log response schema missing for {route_key}")
+        item_properties = (
+            response_schema.get("properties", {})
+            .get(field, {})
+            .get("items", {})
+            .get("properties", {})
+        )
+        if item_properties != expected_log_item_properties:
+            fail(f"typed log item schema regressed for {route_key}")
+
+    nullable_log_routes = {
+        ("GET", "/api/coraza/logs"): "logs",
+        ("GET", "/api/frp/logs"): "logs",
+        ("GET", "/api/ipdb/logs"): "logs",
+        ("GET", "/api/rclone/lastlogs"): "lastLogs",
+        ("GET", "/api/rclone/logs"): "logs",
+        ("GET", "/api/storagemanagement/lastlogs"): "lastLogs",
+        ("GET", "/api/storagemanagement/logs"): "logs",
+        ("GET", "/api/thirdPartyAuthManager/logs"): "logs",
+        ("GET", "/api/wol/lastlogs"): "lastLogs",
+        ("GET", "/api/wol/logs"): "logs",
+    }
+    for route_key, field in nullable_log_routes.items():
+        response_schema = merged_by_key[route_key].response_schema
+        if not isinstance(response_schema, dict):
+            fail(f"nullable log response schema missing for {route_key}")
+        collection_schema = response_schema.get("properties", {}).get(field)
+        if collection_schema != {"type": ["array", "null"], "items": {}}:
+            fail(f"nullable log collection schema regressed for {route_key}")
+
+    global_logs = merged_by_key[("GET", "/api/logs")].response_schema
+    if not isinstance(global_logs, dict):
+        fail("global log response schema is missing")
+    global_log_item = global_logs.get("properties", {}).get("logs", {}).get("items", {})
+    if global_log_item.get("properties") != {
+        "timestamp": {"type": "string"},
+        "log": {"type": "string"},
+        "time": {"type": "string"},
+    }:
+        fail("global log item schema regressed")
+
+    webservice_logs = merged_by_key[("GET", "/api/webservice/logs")].response_schema
+    webservice_log_props = webservice_logs.get("properties", {}) if isinstance(webservice_logs, dict) else {}
+    for field, expected in {
+        "hasMore": {"type": "boolean"},
+        "loadedCount": {"type": "integer"},
+        "totalExact": {"type": "boolean"},
+    }.items():
+        if webservice_log_props.get(field) != expected:
+            fail(f"WebService log pagination field regressed: {field}")
 
     ddns_task = merged_by_key[("POST", "/api/ddns")].request_body_schema
     if not isinstance(ddns_task, dict):
