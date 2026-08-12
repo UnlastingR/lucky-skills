@@ -50,7 +50,7 @@
 
 [运行时验证 JSON](../evidence/lucky-v3-runtime-verification.json)保存脱敏后的方法、查询键、风险覆盖、验证说明、请求/响应 schema 补充和需要抑制的字面量误报。它同时记录静态端点快照的 SHA-256；`RouteCatalog.load_default()` 只有在 Lucky 版本和**精确静态快照哈希**都一致时才合并两层证据，并要求每个 suppression/runtime route 都能在该静态快照中找到对应证据。`schema_evidence` 单独描述字段来源，例如前端显式对象、前端模型直传、只读 GET 的字段形状或二者交叉验证；它不把未执行的写接口伪装成运行时成功验证。运行时层不会修改原始静态快照。仓库 verifier 强制检查这些绑定、重复项、风险值和 schema 元数据格式，并要求合并后的默认目录不再残留 `unknown`。
 
-运行时方法探针不发送 OpenToken：对已知 GET/POST/PUT/DELETE/PATCH 做过校准后，确认“路由+方法存在”会先进入 Lucky 鉴权并返回 `login invalid`，而不存在的方法返回 404。校准过程中还通过正常 OpenToken API 比较 Web 规则数量，确认未认证 POST 没有产生配置变化。危险 handler 的**方法发现**因此停在鉴权层，不执行实际动作。请求 schema 验证另行区分证据强度；仅最后 6 条缺少当前 UI 调用点的 Docker legacy wrapper 在用户明确授权后使用专用临时资源、校验失败路径或 mock Docker API 做了隔离写验证，具体边界记录在每条 `schema_evidence` 中。
+运行时方法探针不发送 OpenToken：对已知 GET/POST/PUT/DELETE/PATCH 做过校准后，确认“路由+方法存在”会先进入 Lucky 鉴权并返回 `login invalid`，而不存在的方法返回 404。校准过程中还通过正常 OpenToken API 比较 Web 规则数量，确认未认证 POST 没有产生配置变化。危险 handler 的**方法发现**因此停在鉴权层，不执行实际动作。请求/响应 schema 验证另行区分证据强度：本轮嵌套类型补全只读取当前 Lucky 3.0.0 前端 bundle 和获授权 GET 响应，并把响应即时压缩成字段名/JSON 类型树；动态 RuleKey、域名、容器/网络标识、路径、地址和秘密值不会写入证据。仅最后 6 条缺少当前 UI 调用点的 Docker legacy wrapper 在用户明确授权后使用专用临时资源、校验失败路径或 mock Docker API 做了隔离写验证，具体边界记录在每条 `schema_evidence` 中。
 
 生成的静态路由表额外包含客户端风险等级；默认 CLI 目录再叠加运行时风险覆盖。风险等级是本仓库的保守调用策略，不是 Lucky 上游提供的权限声明；升级后必须重新审核。
 
@@ -64,7 +64,7 @@
 6. 错误码、并发控制和事务语义不能仅从前端或路由存在性可靠推导。
 7. 运行时方法探针只能证明 `METHOD + path` 被路由器接受；除明确执行的只读 GET 外，不证明请求体 schema 或业务成功语义。请求 schema 的可信度应以每条记录的 `schema_evidence` 为准。
 8. Lucky 闭源版本可能随时改变接口，不承诺向后兼容。
-9. 当前“有请求体但字段/schema 为空”的 122 条原始缺口已缩减到 0 条。最后 6 条 Docker legacy wrapper 缺少当前 UI 调用点，因此采用额外隔离验证：临时 BusyBox 容器/镜像只用于 `upgrade`/`build` 成功路径；Git/ZIP/import 通过后端校验差异确认最小必填字段；`prune` 则在第二个临时 Lucky 实例连接到非破坏性 mock Docker API 后验证 `{all, volumes}` 行为，真实 Docker daemon 从未收到 prune 请求。
+9. 当前“有请求体但字段/schema 为空”的 122 条原始缺口已缩减到 0 条；更严格地看，当前 merged catalog 共有 **242 条 POST/PUT/PATCH**，其中 **218 条**标记 `has_body=true` 并在 OpenAPI 生成 `requestBody`。这 218 条中仍有 **160 条**在 OpenAPI 顶层保留至少一个未类型化属性，后续应继续下降。显式 response schema 当前为 **20 条**。本轮已优先补深 DDNS Task/DNS Callback、WebService DefaultProxy/ProxyList、Docker container/config/network/volume 与 FRP proxy/visitor。最后 6 条 Docker legacy wrapper 缺少当前 UI 调用点，因此采用额外隔离验证：临时 BusyBox 容器/镜像只用于 `upgrade`/`build` 成功路径；Git/ZIP/import 通过后端校验差异确认最小必填字段；`prune` 则在第二个临时 Lucky 实例连接到非破坏性 mock Docker API 后验证 `{all, volumes}` 行为，真实 Docker daemon 从未收到 prune 请求。
 
 ## 为什么不自动调用全部接口
 
