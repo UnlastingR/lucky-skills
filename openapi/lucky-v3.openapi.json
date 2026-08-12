@@ -21510,11 +21510,19 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "ip": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -21535,6 +21543,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/ipregtest using a documentation-only IPv4 regex returned success; the matched IP value was not retained",
         "parameters": [
           {
             "name": "ipreg",
@@ -21963,11 +21972,28 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "challengeId": {
+                      "type": "string"
+                    },
+                    "expiresIn": {
+                      "type": "integer"
+                    },
+                    "nonce": {
+                      "type": "string"
+                    },
+                    "publicKey": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -21987,7 +22013,8 @@
         "x-evidence-bundles": [
           "lucky_index-DND3_xvE.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/login/challenge observed challenge field names and primitive JSON types only; challenge, nonce and public-key values were not retained"
       }
     },
     "/api/logout": {
@@ -28614,11 +28641,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "list": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -28638,7 +28677,8 @@
         "x-evidence-bundles": [
           "lucky_dnsCredentialSources-CyE9Tpw6.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/ssl/syncclients observed list=null on this instance; sync-client endpoint, credential and certificate item fields remain unspecified"
       }
     },
     "/api/ssl/{param}": {
@@ -31944,11 +31984,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "list": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -31968,7 +32020,8 @@
         "x-evidence-bundles": [
           "lucky_thirdPartyAuthManager-C0VqZjAx.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/thirdPartyAuthManager/list observed list=null on this instance; provider/account/credential item fields remain unspecified"
       },
       "post": {
         "summary": "Lucky frontend call: POST /api/thirdPartyAuthManager/list",
@@ -37144,11 +37197,40 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "found": {
+                      "type": "boolean"
+                    },
+                    "ip": {
+                      "type": "string"
+                    },
+                    "item": {
+                      "type": "object",
+                      "properties": {
+                        "clientIP": {
+                          "type": "string"
+                        },
+                        "clientIPGeo": {
+                          "type": "object"
+                        }
+                      }
+                    },
+                    "total": {
+                      "type": "integer"
+                    },
+                    "visits": {
+                      "type": "array",
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -37168,7 +37250,8 @@
         "x-evidence-bundles": [
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/webservice/statistics/recent-ips/visits with a TEST-NET IP observed the minimal profile/visit envelope; no IP/geo values were retained and current visit items remain unspecified"
       }
     },
     "/api/webservice/statistics/summary": {
