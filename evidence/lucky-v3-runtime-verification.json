@@ -1319,6 +1319,132 @@
     },
     {
       "path": "/api/dlnaservice/configure",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "status": {"type": "boolean"}, "configure": {"type": "object", "properties": {"Enable": {"type": "boolean"}, "MountList": {"type": ["array", "null"], "items": {}}, "ListenPort": {"type": "integer"}, "ListenIP": {"type": "string"}, "NetInterfaceList": {"type": ["array", "null"], "items": {}}, "FriendlyName": {"type": "string"}, "DeviceUUID": {"type": "string"}, "ConfVersion": {"type": "integer"}}}, "netinterfaces": {"type": "array", "items": {"type": "object", "properties": {"index": {"type": "integer"}, "mtu": {"type": "integer"}, "name": {"type": "string"}, "hardwareAddr": {"type": "string"}, "flags": {"type": "array", "items": {"type": "string"}}, "addrs": {"type": "array", "items": {"type": "object", "properties": {"addr": {"type": "string"}}}}}}}}},
+      "schema_evidence": "authorized GET /api/dlnaservice/configure observed configuration/interface field names and JSON types only; live paths, interface names, hardware addresses and IP values were not retained"
+    },
+    {
+      "path": "/api/dlnaservice/status",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "status": {"type": "boolean"}, "errMsg": {"type": "string"}}},
+      "schema_evidence": "authorized GET /api/dlnaservice/status observed only status envelope types"
+    },
+    {
+      "path": "/api/ftpserver/configure",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "configure": {"type": "object", "properties": {"Enable": {"type": "boolean"}, "Network": {"type": "string"}, "Port": {"type": "integer"}, "PassivePortStart": {"type": "integer"}, "PassivePortEnd": {"type": "integer"}, "Users": {"type": ["array", "null"], "items": {}}, "AutoFireWall": {"type": "boolean"}, "AdvancedParametersShow": {"type": "boolean"}, "TLSRequired": {"type": "integer"}, "ActiveTransferPortNon20": {"type": "boolean"}, "IdleTimeout": {"type": "integer"}, "ConnectionTimeout": {"type": "integer"}, "DisableMLSD": {"type": "boolean"}, "DisableMLST": {"type": "boolean"}, "DisableMFMT": {"type": "boolean"}, "DisableLISTArgs ": {"type": "boolean"}, "DisableSite": {"type": "boolean"}, "DisableActiveMode": {"type": "boolean"}, "DisableSTAT": {"type": "boolean"}, "DisableSYST": {"type": "boolean"}, "EnableHASH": {"type": "boolean"}, "EnableCOMB": {"type": "boolean"}, "DefaultTransferType": {"type": "integer"}, "ActiveConnectionsCheck": {"type": "integer"}, "PasvConnectionsCheck": {"type": "integer"}, "ConfVersion": {"type": "integer"}}}}},
+      "schema_evidence": "authorized GET /api/ftpserver/configure observed server configuration field names/types; Users was null so user/password item schema is intentionally unspecified"
+    },
+    {
+      "path": "/api/ftpserver/status",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "status": {"type": "boolean"}, "errMsg": {"type": "string"}}},
+      "schema_evidence": "authorized GET /api/ftpserver/status observed only status envelope types"
+    },
+    {
+      "path": "/api/smb/configure",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "configure": {"type": "object", "properties": {"Enable": {"type": "boolean"}, "ListenIP": {"type": "string"}, "ListenPort": {"type": "integer"}, "DiscoveryIP": {"type": "string"}, "PublicMountList": {"type": ["array", "null"], "items": {}}, "Users": {"type": ["array", "null"], "items": {}}, "ListenNetwork": {"type": "string"}, "AutoFirewall": {"type": "boolean"}, "ServerName": {"type": "string"}, "Workgroup": {"type": "string"}, "Signing": {"type": "string"}, "Encryption": {"type": "string"}, "Multichannel": {"type": "boolean"}, "GuestEnable": {"type": "boolean"}, "MaxConnections": {"type": "integer"}, "LiteSMBLogLevel": {"type": "string"}, "LiteSMBLogToTerminal": {"type": "boolean"}, "EnableWSDD": {"type": "boolean"}, "EnableMDNS": {"type": "boolean"}, "EnableNBNS": {"type": "boolean"}, "SMBConfVersion": {"type": "integer"}}}}},
+      "schema_evidence": "authorized GET /api/smb/configure observed SMB configuration field names/types; Users/PublicMountList were null so account/share item schemas remain unspecified"
+    },
+    {
+      "path": "/api/smb/runtime",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "connections": {"type": ["array", "null"], "items": {}}, "users": {"type": ["array", "null"], "items": {}}, "summary": {"type": "object", "properties": {"enabled": {"type": "boolean"}, "running": {"type": "boolean"}, "errMsg": {"type": "string"}, "connectionCount": {"type": "integer"}, "sessionCount": {"type": "integer"}, "onlineUserCount": {"type": "integer"}, "openCount": {"type": "integer"}, "uploadBytesPerSec": {"type": "integer"}, "downloadBytesPerSec": {"type": "integer"}, "lastTransferAt": {"type": "string"}, "windowSeconds": {"type": "integer"}}}}},
+      "schema_evidence": "authorized GET /api/smb/runtime observed aggregate runtime counters only; current connections/users were null so per-session/user schemas remain unspecified"
+    },
+    {
+      "path": "/api/smb/status",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "status": {"type": "boolean"}, "errMsg": {"type": "string"}, "discoveryFailures": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET /api/smb/status observed status envelope; discovery failure item shape remains unspecified while current value is null"
+    },
+    {
+      "path": "/api/webdav/configure",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "configure": {"type": "object", "properties": {"Enable": {"type": "boolean"}, "ListenIP": {"type": "string"}, "ListenPort": {"type": "integer"}, "Users": {"type": ["array", "null"], "items": {}}, "ListenNetwork": {"type": "string"}, "TLSEnable": {"type": "boolean"}, "TLSListenPort": {"type": "integer"}, "HTTPEnable": {"type": "boolean"}, "AutoFirewall": {"type": "boolean"}, "TrustHostList": {"type": "string"}, "WebDavConfVersion": {"type": "integer"}}}}},
+      "schema_evidence": "authorized GET /api/webdav/configure observed service configuration field names/types; Users was null so user/password item schema is intentionally unspecified"
+    },
+    {
+      "path": "/api/webdav/status",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "status": {"type": "boolean"}, "errMsg": {"type": "string"}}},
+      "schema_evidence": "authorized GET /api/webdav/status observed only status envelope types"
+    },
+    {
+      "path": "/api/dlnaservice/lastlogs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "lastLogs": {"type": "array", "items": {"type": "object", "properties": {"LogContent": {"type": "string"}, "LogTime": {"type": "string"}, "ShowTime": {"type": "boolean"}, "Level": {"type": "string"}}}}}},
+      "schema_evidence": "authorized GET /api/dlnaservice/lastlogs observed the log envelope and item field types; log content and timestamps were not retained"
+    },
+    {
+      "path": "/api/dlnaservice/logs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": "array", "items": {"type": "object", "properties": {"LogContent": {"type": "string"}, "LogTime": {"type": "string"}, "ShowTime": {"type": "boolean"}, "Level": {"type": "string"}}}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/dlnaservice/logs observed the paginated log envelope and item field types; log content and timestamps were not retained"
+    },
+    {
+      "path": "/api/ftpserver/lastlogs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "lastLogs": {"type": "array", "items": {"type": "object", "properties": {"LogContent": {"type": "string"}, "LogTime": {"type": "string"}, "ShowTime": {"type": "boolean"}, "Level": {"type": "string"}}}}}},
+      "schema_evidence": "authorized GET /api/ftpserver/lastlogs observed the log envelope and item field types; log content and timestamps were not retained"
+    },
+    {
+      "path": "/api/ftpserver/logs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": "array", "items": {"type": "object", "properties": {"LogContent": {"type": "string"}, "LogTime": {"type": "string"}, "ShowTime": {"type": "boolean"}, "Level": {"type": "string"}}}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/ftpserver/logs observed the paginated log envelope and item field types; log content and timestamps were not retained"
+    },
+    {
+      "path": "/api/smb/lastlogs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "lastLogs": {"type": "array", "items": {"type": "object", "properties": {"LogContent": {"type": "string"}, "LogTime": {"type": "string"}, "ShowTime": {"type": "boolean"}, "Level": {"type": "string"}}}}}},
+      "schema_evidence": "authorized GET /api/smb/lastlogs observed the log envelope and item field types; log content and timestamps were not retained"
+    },
+    {
+      "path": "/api/smb/logs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": "array", "items": {"type": "object", "properties": {"LogContent": {"type": "string"}, "LogTime": {"type": "string"}, "ShowTime": {"type": "boolean"}, "Level": {"type": "string"}}}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/smb/logs observed the paginated log envelope and item field types; log content and timestamps were not retained"
+    },
+    {
+      "path": "/api/webdav/lastlogs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "lastLogs": {"type": "array", "items": {"type": "object", "properties": {"LogContent": {"type": "string"}, "LogTime": {"type": "string"}, "ShowTime": {"type": "boolean"}, "Level": {"type": "string"}}}}}},
+      "schema_evidence": "authorized GET /api/webdav/lastlogs observed the log envelope and item field types; log content and timestamps were not retained"
+    },
+    {
+      "path": "/api/webdav/logs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": "array", "items": {"type": "object", "properties": {"LogContent": {"type": "string"}, "LogTime": {"type": "string"}, "ShowTime": {"type": "boolean"}, "Level": {"type": "string"}}}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/webdav/logs observed the paginated log envelope and item field types; log content and timestamps were not retained"
+    },
+    {
+      "path": "/api/wol/client/state",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "enabled": {"type": "boolean"}, "state": {"type": "string"}, "msg": {"type": "string"}}},
+      "schema_evidence": "authorized GET /api/wol/client/state observed only state field names and primitive JSON types"
+    },
+    {
+      "path": "/api/dlnaservice/configure",
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["Enable", "ListenIP", "ListenPort", "NetInterfaceList", "FriendlyName", "DeviceUUID", "MountList"],
