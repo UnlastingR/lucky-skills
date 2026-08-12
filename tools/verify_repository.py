@@ -497,8 +497,43 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             f"expected at most 147 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 138:
-        fail(f"response-schema coverage regressed below 138 routes: {response_schema_count}")
+    if response_schema_count < 148:
+        fail(f"response-schema coverage regressed below 148 routes: {response_schema_count}")
+
+    webservice_stat_response_routes = {
+        ("GET", "/api/webservice/statistics/events"),
+        ("GET", "/api/webservice/statistics/geo/aggregate"),
+        ("GET", "/api/webservice/statistics/geo/rebuild/status"),
+        ("GET", "/api/webservice/statistics/history"),
+        ("GET", "/api/webservice/statistics/import/status"),
+        ("GET", "/api/webservice/statistics/rankings"),
+        ("GET", "/api/webservice/statistics/recent-ips"),
+        ("GET", "/api/webservice/statistics/waf/events"),
+        ("GET", "/api/webservice/statistics/waf/summary"),
+        ("GET", "/api/webservice/discovery/active"),
+    }
+    for route_key in webservice_stat_response_routes:
+        if not isinstance(merged_by_key[route_key].response_schema, dict):
+            fail(f"WebService statistics response schema missing for {route_key}")
+
+    for route_key, field in {
+        ("GET", "/api/webservice/statistics/events"): "list",
+        ("GET", "/api/webservice/statistics/history"): "points",
+        ("GET", "/api/webservice/statistics/rankings"): "items",
+        ("GET", "/api/webservice/statistics/waf/events"): "list",
+    }.items():
+        response_schema = merged_by_key[route_key].response_schema
+        collection = response_schema.get("properties", {}).get(field) if isinstance(response_schema, dict) else None
+        if collection != {"type": "array", "items": {}}:
+            fail(f"empty WebService statistics collection must remain untyped for {route_key}")
+
+    recent_ips = merged_by_key[("GET", "/api/webservice/statistics/recent-ips")].response_schema
+    recent_ip_props = recent_ips.get("properties", {}) if isinstance(recent_ips, dict) else {}
+    if recent_ip_props.get("items") != {"type": "array", "items": {}}:
+        fail("WebService recent-IP item schema must remain unspecified")
+    activity_items = recent_ip_props.get("activity", {}).get("properties", {}).get("items")
+    if activity_items != {"type": "array", "items": {}}:
+        fail("WebService recent-IP activity item schema must remain unspecified")
 
     docker_status_response_routes = {
         ("GET", "/api/netinterfaces"),

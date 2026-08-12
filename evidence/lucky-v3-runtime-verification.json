@@ -1675,6 +1675,76 @@
       "schema_evidence": "authorized GET /api/docker/volumes/backup/status returned empty in_progress/queue arrays; only the envelope and array shapes are claimed"
     },
     {
+      "path": "/api/webservice/statistics/events",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": "array", "items": {}}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/webservice/statistics/events returned an empty event list; only the envelope, list and total types are claimed"
+    },
+    {
+      "path": "/api/webservice/statistics/geo/aggregate",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "page": {"type": "object", "properties": {"items": {"type": "array", "items": {}}, "total": {"type": "integer"}, "metric": {"type": "string"}, "geoLevel": {"type": "string"}, "generated": {"type": "integer"}}}}},
+      "schema_evidence": "authorized GET /api/webservice/statistics/geo/aggregate observed the aggregate-page envelope; current items are empty so geo item schema remains unspecified"
+    },
+    {
+      "path": "/api/webservice/statistics/geo/rebuild/status",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "msg": {"type": "string"}, "status": {"type": "object", "properties": {"state": {"type": "string"}}}}},
+      "schema_evidence": "authorized GET /api/webservice/statistics/geo/rebuild/status observed only the rebuild-state envelope and primitive types"
+    },
+    {
+      "path": "/api/webservice/statistics/history",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "points": {"type": "array", "items": {}}}},
+      "schema_evidence": "authorized GET /api/webservice/statistics/history returned an empty points array; point item schema remains unspecified"
+    },
+    {
+      "path": "/api/webservice/statistics/import/status",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "status": {"type": "object", "properties": {"state": {"type": "string"}, "canCancel": {"type": "boolean"}}}}},
+      "schema_evidence": "authorized GET /api/webservice/statistics/import/status observed import-state and cancellation-capability primitive types only"
+    },
+    {
+      "path": "/api/webservice/statistics/rankings",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "items": {"type": "array", "items": {}}}},
+      "schema_evidence": "authorized GET /api/webservice/statistics/rankings returned an empty items array; ranking item schema remains unspecified"
+    },
+    {
+      "path": "/api/webservice/statistics/recent-ips",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "activity": {"type": "object", "properties": {"items": {"type": "array", "items": {}}, "ipLimit": {"type": "integer"}, "perIPLimit": {"type": "integer"}, "limit": {"type": "integer"}, "enabled": {"type": "boolean"}}}, "hasMore": {"type": "boolean"}, "items": {"type": "array", "items": {}}, "limit": {"type": "integer"}, "offset": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/webservice/statistics/recent-ips observed pagination/activity metadata only; current IP/activity item arrays are empty and no IP values were retained"
+    },
+    {
+      "path": "/api/webservice/statistics/waf/events",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": "array", "items": {}}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/webservice/statistics/waf/events returned an empty WAF event list; event item schema remains unspecified"
+    },
+    {
+      "path": "/api/webservice/statistics/waf/summary",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "summary": {"type": "object"}}},
+      "schema_evidence": "authorized GET /api/webservice/statistics/waf/summary returned an empty dynamic summary object; summary property schema remains unspecified"
+    },
+    {
+      "path": "/api/webservice/discovery/active",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "active": {"type": "boolean"}, "runtimePlatform": {"type": "string"}, "tcpCompatibilityModeSupported": {"type": "boolean"}}},
+      "schema_evidence": "authorized GET /api/webservice/discovery/active observed only discovery/runtime capability field names and primitive JSON types"
+    },
+    {
       "path": "/api/wol/client/state",
       "method": "GET",
       "risk": "read-only",
