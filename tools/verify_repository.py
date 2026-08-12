@@ -497,8 +497,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             f"expected at most 147 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 166:
-        fail(f"response-schema coverage regressed below 166 routes: {response_schema_count}")
+    if response_schema_count < 172:
+        fail(f"response-schema coverage regressed below 172 routes: {response_schema_count}")
 
     safe_utility_response_routes = {
         ("GET", "/api/ipfliter/porttrap/blockedips"),
@@ -558,6 +558,16 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         if flag_field is not None and props.get(flag_field) != {"type": "boolean"}:
             fail(f"module enable/disable flag schema regressed for {route_key}")
 
+    for route_key in {
+        ("GET", "/api/rclone/third/115pan/authuserlist"),
+        ("GET", "/api/rclone/third/alipan/authuserlist"),
+        ("GET", "/api/rclone/third/baidupan/authuserlist"),
+    }:
+        response_schema = merged_by_key[route_key].response_schema
+        data_schema = response_schema.get("properties", {}).get("data") if isinstance(response_schema, dict) else None
+        if data_schema != {"type": ["array", "null"], "items": {}}:
+            fail(f"Rclone auth-user item schema must remain unspecified for {route_key}")
+
     docker_resource_response_routes = {
         ("GET", "/api/docker/images/{param}"),
         ("GET", "/api/docker/images/{param}/history"),
@@ -598,6 +608,9 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("Docker per-container cached-stat dynamic port map schema regressed")
 
     webservice_stat_response_routes = {
+        ("GET", "/api/webservice/statistics/capabilities"),
+        ("GET", "/api/webservice/statistics/daily"),
+        ("GET", "/api/webservice/statistics/realtime"),
         ("GET", "/api/webservice/statistics/events"),
         ("GET", "/api/webservice/statistics/geo/aggregate"),
         ("GET", "/api/webservice/statistics/geo/rebuild/status"),
@@ -612,6 +625,40 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     for route_key in webservice_stat_response_routes:
         if not isinstance(merged_by_key[route_key].response_schema, dict):
             fail(f"WebService statistics response schema missing for {route_key}")
+
+    for route_key in {
+        ("GET", "/api/webservice/statistics/capabilities"),
+        ("GET", "/api/webservice/statistics/daily"),
+        ("GET", "/api/webservice/statistics/realtime"),
+    }:
+        response_schema = merged_by_key[route_key].response_schema
+        top_props = response_schema.get("properties", {}) if isinstance(response_schema, dict) else {}
+        if "meta" in top_props or "settings" in top_props:
+            fail(f"WebService statistics sensitive config fields leaked into schema for {route_key}")
+
+    capabilities = merged_by_key[("GET", "/api/webservice/statistics/capabilities")].response_schema
+    capability_props = (
+        capabilities.get("properties", {}).get("capabilities", {}).get("properties", {})
+        if isinstance(capabilities, dict)
+        else {}
+    )
+    if set(capability_props) != {
+        "contractVersion",
+        "timeRangeSemantics",
+        "bucketBoundary",
+        "granularities",
+        "retention",
+        "metrics",
+        "filters",
+        "rankingDimensions",
+        "geoDimensions",
+    }:
+        fail("WebService statistics capabilities schema must remain contract-only")
+
+    realtime = merged_by_key[("GET", "/api/webservice/statistics/realtime")].response_schema
+    realtime_props = realtime.get("properties", {}) if isinstance(realtime, dict) else {}
+    if realtime_props.get("lastMinute") != {"type": "array", "items": {}}:
+        fail("WebService realtime lastMinute item schema must remain unspecified")
 
     for route_key, field in {
         ("GET", "/api/webservice/statistics/events"): "list",
