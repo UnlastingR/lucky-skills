@@ -2000,6 +2000,20 @@
       "schema_evidence": "authorized GET /api/webservice/statistics/recent-ips/visits with a TEST-NET IP observed the minimal profile/visit envelope; no IP/geo values were retained and current visit items remain unspecified"
     },
     {
+      "path": "/api/ssl/lastlogs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "lastLogs": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET /api/ssl/lastlogs using one existing certificate key observed lastLogs=null; certificate key/domain and log item/content values were not retained"
+    },
+    {
+      "path": "/api/ssl/logs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/ssl/logs using one existing certificate key observed the paginated log envelope with logs=null; certificate key/domain and log item/content values were not retained"
+    },
+    {
       "path": "/api/ssl/syncclients",
       "method": "GET",
       "risk": "read-only",
