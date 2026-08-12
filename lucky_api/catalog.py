@@ -6,7 +6,7 @@ import hashlib
 import json
 import os
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
 from typing import Iterable
@@ -123,6 +123,10 @@ class Route:
     has_body: bool
     response_type: str
     risk_override: OperationRisk | None = None
+    request_body_schema: dict | None = field(default=None, compare=False)
+    request_content_type: str | None = field(default=None, compare=False)
+    response_schema: dict | None = field(default=None, compare=False)
+    schema_evidence: str | None = field(default=None, compare=False)
 
     @property
     def risk(self) -> OperationRisk:
@@ -226,6 +230,37 @@ def _apply_runtime_verification(
     return sorted(route_map.values(), key=lambda item: (str(item.get("module", "")), item["path"], item["method"]))
 
 
+def load_merged_snapshot(
+    path: str | Path,
+    *,
+    runtime_verification: str | Path | None = None,
+) -> dict:
+    source = Path(path).expanduser()
+    try:
+        source_bytes = source.read_bytes()
+        payload = json.loads(source_bytes.decode("utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise CatalogError(f"cannot read route catalog: {source}") from error
+    raw_routes = payload.get("routes")
+    if payload.get("schema_version") != 1 or not isinstance(raw_routes, list):
+        raise CatalogError("unsupported route catalog schema")
+    target = payload.get("target", {})
+    version = str(target.get("version", "unknown"))
+    if runtime_verification is not None:
+        raw_routes = _apply_runtime_verification(
+            raw_routes,
+            Path(runtime_verification).expanduser(),
+            version=version,
+            snapshot_sha256=hashlib.sha256(source_bytes).hexdigest(),
+        )
+    merged = dict(payload)
+    merged["routes"] = raw_routes
+    merged["route_count"] = len(raw_routes)
+    if runtime_verification is not None:
+        merged["runtime_verification_applied"] = True
+    return merged
+
+
 class RouteCatalog:
     def __init__(self, routes: Iterable[Route], *, version: str = "unknown") -> None:
         self.routes = tuple(routes)
@@ -238,24 +273,10 @@ class RouteCatalog:
         *,
         runtime_verification: str | Path | None = None,
     ) -> "RouteCatalog":
-        source = Path(path).expanduser()
-        try:
-            source_bytes = source.read_bytes()
-            payload = json.loads(source_bytes.decode("utf-8"))
-        except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
-            raise CatalogError(f"cannot read route catalog: {source}") from error
-        raw_routes = payload.get("routes")
-        if payload.get("schema_version") != 1 or not isinstance(raw_routes, list):
-            raise CatalogError("unsupported route catalog schema")
+        payload = load_merged_snapshot(path, runtime_verification=runtime_verification)
+        raw_routes = payload["routes"]
         target = payload.get("target", {})
         version = str(target.get("version", "unknown"))
-        if runtime_verification is not None:
-            raw_routes = _apply_runtime_verification(
-                raw_routes,
-                Path(runtime_verification).expanduser(),
-                version=version,
-                snapshot_sha256=hashlib.sha256(source_bytes).hexdigest(),
-            )
         routes = []
         for item in raw_routes:
             try:
@@ -274,6 +295,26 @@ class RouteCatalog:
                         has_body=bool(item.get("has_body", False)),
                         response_type=str(item.get("response_type", "unknown")),
                         risk_override=risk_override,
+                        request_body_schema=(
+                            dict(item["request_body_schema"])
+                            if isinstance(item.get("request_body_schema"), dict)
+                            else None
+                        ),
+                        request_content_type=(
+                            str(item["request_content_type"])
+                            if item.get("request_content_type") is not None
+                            else None
+                        ),
+                        response_schema=(
+                            dict(item["response_schema"])
+                            if isinstance(item.get("response_schema"), dict)
+                            else None
+                        ),
+                        schema_evidence=(
+                            str(item["schema_evidence"])
+                            if item.get("schema_evidence") is not None
+                            else None
+                        ),
                     )
                 )
             except (KeyError, TypeError, ValueError) as error:

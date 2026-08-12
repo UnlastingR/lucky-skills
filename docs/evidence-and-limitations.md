@@ -48,9 +48,9 @@
 
 构建文件本身不提交仓库，避免复制上游前端代码和意外带入运行时信息。
 
-[运行时验证 JSON](../evidence/lucky-v3-runtime-verification.json)只保存脱敏后的方法、查询键、风险覆盖、验证说明和需要抑制的字面量误报。它同时记录静态端点快照的 SHA-256；`RouteCatalog.load_default()` 只有在 Lucky 版本和**精确静态快照哈希**都一致时才合并两层证据，并要求每个 suppression/runtime route 都能在该静态快照中找到对应证据。运行时层不会修改原始静态快照。仓库 verifier 强制检查这些绑定、重复项、风险值，并要求合并后的默认目录不再残留 `unknown`。
+[运行时验证 JSON](../evidence/lucky-v3-runtime-verification.json)保存脱敏后的方法、查询键、风险覆盖、验证说明、请求/响应 schema 补充和需要抑制的字面量误报。它同时记录静态端点快照的 SHA-256；`RouteCatalog.load_default()` 只有在 Lucky 版本和**精确静态快照哈希**都一致时才合并两层证据，并要求每个 suppression/runtime route 都能在该静态快照中找到对应证据。`schema_evidence` 单独描述字段来源，例如前端显式对象、前端模型直传、只读 GET 的字段形状或二者交叉验证；它不把未执行的写接口伪装成运行时成功验证。运行时层不会修改原始静态快照。仓库 verifier 强制检查这些绑定、重复项、风险值和 schema 元数据格式，并要求合并后的默认目录不再残留 `unknown`。
 
-运行时方法探针不发送 OpenToken：对已知 GET/POST/PUT/DELETE 做过校准后，确认“路由+方法存在”会先进入 Lucky 鉴权并返回 `login invalid`，而不存在的方法返回 404。校准过程中还通过正常 OpenToken API 比较 Web 规则数量，确认未认证 POST 没有产生配置变化。危险 handler 的方法发现因此停在鉴权层，不执行实际动作。
+运行时方法探针不发送 OpenToken：对已知 GET/POST/PUT/DELETE/PATCH 做过校准后，确认“路由+方法存在”会先进入 Lucky 鉴权并返回 `login invalid`，而不存在的方法返回 404。校准过程中还通过正常 OpenToken API 比较 Web 规则数量，确认未认证 POST 没有产生配置变化。危险 handler 的方法发现因此停在鉴权层，不执行实际动作。
 
 生成的静态路由表额外包含客户端风险等级；默认 CLI 目录再叠加运行时风险覆盖。风险等级是本仓库的保守调用策略，不是 Lucky 上游提供的权限声明；升级后必须重新审核。
 
@@ -58,12 +58,13 @@
 
 1. 前端未调用的后端路由无法通过此方法发现。
 2. 动态字符串拼接只能归一化为 `{param}`，真实参数语义可能未知。
-3. 请求体若通过变量传递，只能确定“存在请求体”，无法自动恢复完整 schema。
+3. 请求体若通过变量传递，静态提取器本身通常只能确定“存在请求体”；本仓库会对高价值接口再用前端编辑器模型、显式对象构造和授权只读 GET 的字段形状补充 schema，但这仍不等于后端正式协议定义，尤其不能据此擅自标记必填字段。
 4. WebSocket 路由可以确认 HTTP 握手方法，但当前通用 CLI 不建立 WebSocket 会话；`status/ws`、`natdetect/ws`、Docker upgrade-check WS 只验证到路由/鉴权层。
 5. 条件编译模块、特殊镜像和授权模块会改变路由集合。
 6. 错误码、并发控制和事务语义不能仅从前端或路由存在性可靠推导。
-7. 运行时方法探针只能证明 `METHOD + path` 被路由器接受；除明确执行的只读 GET 外，不证明请求体 schema 或业务成功语义。
+7. 运行时方法探针只能证明 `METHOD + path` 被路由器接受；除明确执行的只读 GET 外，不证明请求体 schema 或业务成功语义。请求 schema 的可信度应以每条记录的 `schema_evidence` 为准。
 8. Lucky 闭源版本可能随时改变接口，不承诺向后兼容。
+9. 当前“有请求体但字段/schema 为空”的 122 条原始缺口已缩减到 6 条，全部是缺少可靠当前 UI 调用点的 Docker legacy wrapper：`POST /api/docker/containers/{param}/upgrade`、`POST /api/docker/images/build`、`POST /api/docker/images/build-from-git`、`POST /api/docker/images/build-from-zip`、`POST /api/docker/images/import`、`POST /api/docker/prune`。它们故意保持未解，直到获得足够证据。
 
 ## 为什么不自动调用全部接口
 
@@ -76,10 +77,13 @@
 ```bash
 python3 tools/extract_lucky_frontend.py /path/to/lucky-js-assets \
   --version <版本号> \
-  --output evidence/lucky-v3-endpoints.json \
+  --output evidence/lucky-v3-endpoints.json
+
+# 审核新静态快照，重新核验/重绑 runtime evidence 后再生成合并产物。
+python3 tools/render_lucky_artifacts.py evidence/lucky-v3-endpoints.json \
   --markdown docs/generated/api-routes.md \
   --openapi openapi/lucky-v3.openapi.json
 python3 tools/verify_repository.py
 ```
 
-更新时必须检查 diff 中是否出现真实安全入口、token、域名或配置值。只要静态端点快照发生变化（即使 Lucky 仍显示 3.0.0），现有运行时验证文件都不会自动套用；必须重新审核/核验并更新 `static_snapshot_sha256`。Lucky 版本变化时还必须重新执行方法核验并更新 `target.version`。任一绑定不一致都会直接 fail-closed。
+更新时必须检查 diff 中是否出现真实安全入口、token、域名或配置值。只要静态端点快照发生变化（即使 Lucky 仍显示 3.0.0），现有运行时验证文件都不会自动套用；必须重新审核/核验并更新 `static_snapshot_sha256`，然后使用 `render_lucky_artifacts.py` 生成绑定覆盖层已合并的提交产物。Lucky 版本变化时还必须重新执行方法核验并更新 `target.version`。任一绑定不一致都会直接 fail-closed。

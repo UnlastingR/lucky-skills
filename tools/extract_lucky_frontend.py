@@ -248,7 +248,7 @@ def write_markdown(snapshot: dict, output: Path) -> None:
         "# API 路由参考",
         "",
         f"> 目标版本：Lucky {snapshot['target']['version']}。共收录 {snapshot['route_count']} 个“路径 + 方法”记录。",
-        "> 此表由前端构建产物静态生成，不代表上游承诺的稳定公共 API；`UNKNOWN` 表示只发现路径字面量。",
+        "> 此表由前端构建产物静态证据与可选的版本绑定运行时验证合并生成，不代表上游承诺的稳定公共 API；`UNKNOWN` 表示仍只有路径字面量证据。",
         "",
     ]
     for module in sorted(groups):
@@ -264,9 +264,19 @@ def write_markdown(snapshot: dict, output: Path) -> None:
             query = ", ".join(f"`{key}`" for key in route["query_keys"]) or "—"
             if route["body_keys"]:
                 body = ", ".join(f"`{key}`" for key in route["body_keys"])
+            elif isinstance(route.get("request_body_schema"), dict):
+                schema = route["request_body_schema"]
+                if schema.get("type") == "array":
+                    item_type = schema.get("items", {}).get("type", "any")
+                    body = f"`array<{item_type}>`"
+                elif schema.get("type") == "object" and isinstance(schema.get("properties"), dict):
+                    keys = list(schema["properties"])
+                    body = ", ".join(f"`{key}`" for key in keys) or "`object`"
+                else:
+                    body = f"`{schema.get('type', 'schema')}`"
             else:
                 body = "有" if route["has_body"] else "—"
-            risk = (
+            risk = route.get("risk") or (
                 "unknown"
                 if route["method"] == "UNKNOWN"
                 else classify_known_operation(route["method"], route["path"]).value
@@ -286,15 +296,17 @@ def write_openapi(snapshot: dict, output: Path) -> None:
             continue
         operation = {
             "summary": f"Lucky frontend call: {route['method']} {route['path']}",
-            "description": "Inferred from the Lucky frontend; request and response schemas may be incomplete.",
+            "description": "Reverse-documented from frontend and optional runtime evidence; schemas may still be incomplete.",
             "operationId": operation_id(route["method"], route["path"]),
             "tags": [route["module"]],
             "security": [{"OpenToken": []}],
             "responses": response_spec(route),
             "x-evidence-confidence": route["confidence"],
-            "x-evidence-bundles": route["evidence"],
-            "x-lucky-risk": classify_known_operation(route["method"], route["path"]).value,
+            "x-evidence-bundles": route.get("evidence", []),
+            "x-lucky-risk": route.get("risk") or classify_known_operation(route["method"], route["path"]).value,
         }
+        if route.get("schema_evidence"):
+            operation["x-schema-evidence"] = route["schema_evidence"]
         parameters = []
         for name in re.findall(r"\{([^}]+)\}", route["path"]):
             parameters.append({"name": name, "in": "path", "required": True, "schema": {"type": "string"}})
@@ -303,10 +315,14 @@ def write_openapi(snapshot: dict, output: Path) -> None:
         if parameters:
             operation["parameters"] = parameters
         if route["has_body"]:
-            properties = {name: {} for name in route["body_keys"]}
+            schema = route.get("request_body_schema")
+            if not isinstance(schema, dict):
+                properties = {name: {} for name in route["body_keys"]}
+                schema = {"type": "object", "properties": properties}
+            content_type = route.get("request_content_type") or "application/json"
             operation["requestBody"] = {
                 "required": True,
-                "content": {"application/json": {"schema": {"type": "object", "properties": properties}}},
+                "content": {content_type: {"schema": schema}},
             }
         paths.setdefault(route["path"], {})[route["method"].lower()] = operation
     document = {
@@ -348,7 +364,10 @@ def operation_id(method: str, path: str) -> str:
 
 
 def response_spec(route: dict) -> dict:
-    if route["response_type"] in {"blob", "arraybuffer"}:
+    if isinstance(route.get("response_schema"), dict):
+        content = {"application/json": {"schema": route["response_schema"]}}
+        description = "Response schema observed from authorized read-only runtime evidence."
+    elif route["response_type"] in {"blob", "arraybuffer"}:
         content = {
             "application/octet-stream": {
                 "schema": {"type": "string", "format": "binary"}

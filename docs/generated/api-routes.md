@@ -1,48 +1,47 @@
 # API 路由参考
 
-> 目标版本：Lucky 3.0.0。共收录 623 个“路径 + 方法”记录。
-> 此表由前端构建产物静态生成，不代表上游承诺的稳定公共 API；`UNKNOWN` 表示只发现路径字面量。
+> 目标版本：Lucky 3.0.0。共收录 598 个“路径 + 方法”记录。
+> 此表由前端构建产物静态证据与可选的版本绑定运行时验证合并生成，不代表上游承诺的稳定公共 API；`UNKNOWN` 表示仍只有路径字面量证据。
 
 ## `2fa`
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
-| `PUT` | `/api/2fa/setting` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/2fa/setting` | `mutating` | — | `TwoFAEnable`, `TwoFAKey`, `TwoFACode` | `json` | `frontend-call` |
 
 ## `about-content`
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
 | `GET` | `/api/about-content` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/about-content` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/about-content` | `mutating` | — | `version`, `display`, `cards` | `json` | `frontend-call` |
 
 ## `baseconfigure`
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
 | `GET` | `/api/baseconfigure` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/baseconfigure` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/baseconfigure` | `mutating` | — | `AdminAccount`, `AdminPassword`, `AdminWebListenHttpsPort`, `AdminWebListenIP`, `AdminWebListenPort`, `AdminWebListenTLS`, `AllowAllThirdAuthUsers`, `AllowInternetaccess`, `AutoOptionsFirewall`, `BackendServerListBackup`, `BackgroundBlur`, `BackgroundColor`, `BackgroundImage`, `CatchPanic`, `ConfVer`, `CustomDNSA`, `CustomDNSB`, `CustomDNSC`, `CustomDNSD`, `CustomDNSList`, `DeviceID`, `DisableAllowAllOrigins`, `DisableModules`, `DisableNTPSync`, `DisableNTPSyncLog`, `EnableCustomBackgroundColor`, `EnableCustomBackgroundImage`, `EnableOpenToken`, `EnableStatusHistory`, `EnableThirdAuthLogin`, `FirewallInitDelay`, `ForceHTTPS`, `FrontendDisableAutoExpandLeftMenu`, `FrontendLanguage`, `FrontendTheme`, `GCPercent`, `GOMAXPROCS`, `GlobalDisableFirewallOpt`, `GlobalNoLimitCIDRs`, `HttpClientTimeout`, `IgnoreAuthInfoCheck`, `IgnoreSafeURLCheck`, `InsecureSkipVerify`, `Keys`, `LogMaxSize`, `MaxConsecutiveLoginFailures`, `OldPassword`, `OpenToken`, `OpenTokenConfirmed`, `OriginsList`, `ProxyProtocolTrustedCIDRs`, `RestartAfterPanic`, `SafeURL`, `SetGCPercent`, `StatNetInterfaceList`, `StatusHistoryRetentionDays`, `StatusHistorySampleIntervalSeconds`, `ThirdAuthLoginSkipTwoFA`, `ThirdAuthLoginUserList`, `TimeZone`, `TokenExpirationHour`, `TwoFADigits`, `TwoFAEnable`, `TwoFAKey`, `hiddenModules` | `json` | `frontend-call` |
 
 ## `cloudflared`
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
-| `UNKNOWN` | `/api/cloudflared` | `unknown` | — | — | `unknown` | `route-literal-only` |
 | `GET` | `/api/cloudflared/list` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/cloudflared/list` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/cloudflared/list` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/cloudflared/list` | `mutating` | — | `Key`, `Remark`, `Enable`, `Type`, `Params` | `json` | `frontend-call` |
+| `PUT` | `/api/cloudflared/list` | `mutating` | — | `Key`, `Remark`, `Enable`, `Type`, `Params` | `json` | `frontend-call` |
 | `DELETE` | `/api/cloudflared/list/{param}` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/cloudflared/list/{param}` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/cloudflared/list/{param}/{param2}` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/cloudflared/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
-| `PUT` | `/api/cloudflared/orderadjustment` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/cloudflared/orderadjustment` | `mutating` | — | `array<string>` | `json` | `frontend-call` |
 | `GET` | `/api/cloudflared/{param}/cname/check` | `read-only` | `hostname` | — | `json` | `frontend-call` |
-| `POST` | `/api/cloudflared/{param}/cname/create` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/cloudflared/{param}/cname/create` | `mutating` | — | `hostname`, `proxied` | `json` | `frontend-call` |
 | `DELETE` | `/api/cloudflared/{param}/cname/delete` | `dangerous` | `hostname` | — | `json` | `frontend-call` |
 | `DELETE` | `/api/cloudflared/{param}/ingress` | `mutating` | `hostname`, `path` | — | `json` | `frontend-call` |
 | `GET` | `/api/cloudflared/{param}/ingress` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/cloudflared/{param}/ingress` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/cloudflared/{param}/ingress` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/cloudflared/{param}/ingress` | `mutating` | — | `hostname`, `path`, `service`, `originRequest` | `json` | `frontend-call` |
+| `PUT` | `/api/cloudflared/{param}/ingress` | `mutating` | — | `oldHostname`, `oldPath`, `newRule` | `json` | `frontend-call` |
 | `GET` | `/api/cloudflared/{param}/lastlogs` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/cloudflared/{param}/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
 
@@ -50,7 +49,8 @@
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
-| `UNKNOWN` | `/api/configure` | `unknown` | — | — | `unknown` | `route-literal-only` |
+| `GET` | `/api/configure` | `dangerous` | — | — | `blob` | `runtime-verified` |
+| `POST` | `/api/configure` | `dangerous` | — | — | `unknown` | `runtime-verified` |
 
 ## `coraza`
 
@@ -58,10 +58,10 @@
 |---|---|---|---|---|---|---|
 | `GET` | `/api/coraza/OWASPCoreRuleset` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/coraza/instancelist` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/coraza/instanceorderadjustment` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/coraza/instanceorderadjustment` | `mutating` | — | `array<string>` | `json` | `frontend-call` |
 | `GET` | `/api/coraza/list` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/coraza/list` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/coraza/list` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/coraza/list` | `mutating` | — | `Key`, `Name`, `Enable`, `InboundScoreThreshold`, `OutboundScoreThreshold`, `CorazaWAFConfigList`, `RuleExclusions` | `json` | `frontend-call` |
+| `PUT` | `/api/coraza/list` | `mutating` | — | `Key`, `Name`, `Enable`, `InboundScoreThreshold`, `OutboundScoreThreshold`, `CorazaWAFConfigList`, `RuleExclusions` | `json` | `frontend-call` |
 | `DELETE` | `/api/coraza/list/{param}` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/coraza/list/{param}` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/coraza/list/{param}/{param2}` | `read-only` | — | — | `json` | `frontend-call` |
@@ -76,30 +76,30 @@
 | `GET` | `/api/cron/expressioncheck` | `read-only` | `expression` | — | `json` | `frontend-call` |
 | `DELETE` | `/api/cron/groups` | `mutating` | `key` | — | `json` | `frontend-call` |
 | `GET` | `/api/cron/groups` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/cron/groups` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/cron/groups` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/cron/groups` | `mutating` | — | `Name` | `json` | `frontend-call` |
+| `PUT` | `/api/cron/groups` | `mutating` | — | `Key`, `Name` | `json` | `frontend-call` |
 | `PUT` | `/api/cron/groups/collapsed` | `mutating` | — | `collapsed`, `key` | `json` | `frontend-call` |
 | `GET` | `/api/cron/groups/collapsed/states` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/cron/groups/orderadjustment` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/cron/groups/orderadjustment` | `mutating` | — | `array<string>` | `json` | `frontend-call` |
 | `GET` | `/api/cron/groups/taskcount` | `read-only` | `groupKey` | — | `json` | `frontend-call` |
 | `POST` | `/api/cron/jobs/trigger` | `mutating` | — | `cronKey`, `jobIndex` | `json` | `frontend-call` |
 | `GET` | `/api/cron/lastlogs` | `read-only` | — | — | `json` | `frontend-call` |
 | `DELETE` | `/api/cron/list` | `mutating` | `key` | — | `json` | `frontend-call` |
 | `GET` | `/api/cron/list` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/cron/list` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/cron/list` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/cron/list` | `mutating` | — | `Key`, `Name`, `Enable`, `OtherKey`, `Type`, `TypeParams`, `GroupKey`, `ExecSecond`, `ExecMinute`, `ExecHour`, `Jobs`, `Parallel`, `IOT_DianDeng_Enable`, `IOT_DianDeng_AUTHKEY`, `IOT_DianDeng_InsecureSkipVerify`, `IOT_DianDengVoiceAssistantTriggerCondition`, `IOT_DianDengBindComponentEnable`, `IOT_DianDengBindComponentTriggerCondition`, `IOT_DianDengBindComponent`, `IOT_DianDengBindComponentState`, `IOT_DianDengBindComponentType`, `IOT_Bemfa_Enable`, `IOT_Bemfa_SecretKey`, `IOT_Bemfa_Topic`, `IOT_BemfaVoiceAssistantTriggerCondition`, `IOT_Bemfa_InsecureSkipVerify` | `json` | `frontend-call` |
+| `PUT` | `/api/cron/list` | `mutating` | — | `Key`, `Name`, `Enable`, `OtherKey`, `Type`, `TypeParams`, `GroupKey`, `ExecSecond`, `ExecMinute`, `ExecHour`, `Jobs`, `Parallel`, `IOT_DianDeng_Enable`, `IOT_DianDeng_AUTHKEY`, `IOT_DianDeng_InsecureSkipVerify`, `IOT_DianDengVoiceAssistantTriggerCondition`, `IOT_DianDengBindComponentEnable`, `IOT_DianDengBindComponentTriggerCondition`, `IOT_DianDengBindComponent`, `IOT_DianDengBindComponentState`, `IOT_DianDengBindComponentType`, `IOT_Bemfa_Enable`, `IOT_Bemfa_SecretKey`, `IOT_Bemfa_Topic`, `IOT_BemfaVoiceAssistantTriggerCondition`, `IOT_Bemfa_InsecureSkipVerify` | `json` | `frontend-call` |
 | `GET` | `/api/cron/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
-| `PUT` | `/api/cron/taskgrouporderupdate` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/cron/taskgrouporderupdate` | `mutating` | — | `tasksMap`, `orderList` | `json` | `frontend-call` |
 
 ## `ddns`
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
 | `DELETE` | `/api/ddns` | `mutating` | `key` | — | `json` | `frontend-call` |
-| `POST` | `/api/ddns` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/ddns` | `mutating` | `key` | 有 | `json` | `frontend-call` |
+| `POST` | `/api/ddns` | `mutating` | — | `DNS`, `DUID`, `DebugMode`, `DiaglogShowMode`, `Domains`, `Enable`, `Expanded`, `FirstCheckDelay`, `GetIPCommand`, `GetType`, `GlobalWebhook`, `HttpClientTimeout`, `IPReg`, `IPSectionExpanded`, `IngoreWebhookVariablesNotFound`, `IngoreWebhookVariablesNotFoundList`, `InsecureSkipVerify`, `Intervals`, `NetInterface`, `Records`, `RetryCount`, `RetryInterval`, `TTL`, `TaskKey`, `TaskName`, `TaskType`, `URL`, `V4GetIPScript`, `V4NetInterface`, `V4NetInterfaceIPReg`, `V4QueryIPEnable`, `V4QueryIPType`, `V4QueryUrl`, `V6DUID`, `V6GetIPScript`, `V6NetInterface`, `V6NetInterfaceIPReg`, `V6QueryIPEnable`, `V6QueryIPType`, `V6QueryUrl`, `WebHookTimeout`, `WebhookDisableCallbackSuccessContentCheck`, `WebhookEnable`, `WebhookHeaders`, `WebhookInsecureSkipVerify`, `WebhookLocalAddr`, `WebhookMethod`, `WebhookNetworkType`, `WebhookProxy`, `WebhookProxyAddr`, `WebhookProxyPassword`, `WebhookProxyUser`, `WebhookRequestBody`, `WebhookSuccessContent`, `WebhookURL` | `json` | `frontend-call` |
+| `PUT` | `/api/ddns` | `mutating` | `key` | `DNS`, `DUID`, `DebugMode`, `DiaglogShowMode`, `Domains`, `Enable`, `Expanded`, `FirstCheckDelay`, `GetIPCommand`, `GetType`, `GlobalWebhook`, `HttpClientTimeout`, `IPReg`, `IPSectionExpanded`, `IngoreWebhookVariablesNotFound`, `IngoreWebhookVariablesNotFoundList`, `InsecureSkipVerify`, `Intervals`, `NetInterface`, `Records`, `RetryCount`, `RetryInterval`, `TTL`, `TaskKey`, `TaskName`, `TaskType`, `URL`, `V4GetIPScript`, `V4NetInterface`, `V4NetInterfaceIPReg`, `V4QueryIPEnable`, `V4QueryIPType`, `V4QueryUrl`, `V6DUID`, `V6GetIPScript`, `V6NetInterface`, `V6NetInterfaceIPReg`, `V6QueryIPEnable`, `V6QueryIPType`, `V6QueryUrl`, `WebHookTimeout`, `WebhookDisableCallbackSuccessContentCheck`, `WebhookEnable`, `WebhookHeaders`, `WebhookInsecureSkipVerify`, `WebhookLocalAddr`, `WebhookMethod`, `WebhookNetworkType`, `WebhookProxy`, `WebhookProxyAddr`, `WebhookProxyPassword`, `WebhookProxyUser`, `WebhookRequestBody`, `WebhookSuccessContent`, `WebhookURL` | `json` | `frontend-call` |
 | `GET` | `/api/ddns/configure` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/ddns/configure` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/ddns/configure` | `mutating` | — | `CustomDomainSuffix`, `CustomFullDomain`, `Enable`, `FirstCheckDelay`, `Intervals`, `LogLevel`, `RetryCount`, `RetryInterval`, `WebHookTimeout`, `WebhookDisableCallbackSuccessContentCheck`, `WebhookEnable`, `WebhookHeaders`, `WebhookInsecureSkipVerify`, `WebhookLocalAddr`, `WebhookMethod`, `WebhookNetworkType`, `WebhookProxy`, `WebhookProxyAddr`, `WebhookProxyPassword`, `WebhookProxyUser`, `WebhookRequestBody`, `WebhookSuccessContent`, `WebhookURL` | `json` | `frontend-call` |
 | `GET` | `/api/ddns/credential-sources` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/ddns/enable` | `mutating` | `enable`, `key` | — | `json` | `frontend-call` |
 | `GET` | `/api/ddns/expanded` | `mutating` | `expanded`, `key` | — | `json` | `frontend-call` |
@@ -107,15 +107,12 @@
 | `GET` | `/api/ddns/ipsectionexpanded` | `mutating` | `expanded`, `key` | — | `json` | `frontend-call` |
 | `GET` | `/api/ddns/lastlogs` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/ddns/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
-| `UNKNOWN` | `/api/ddns/manualSync` | `unknown` | — | — | `unknown` | `route-literal-only` |
 | `GET` | `/api/ddns/manualSync/{param}` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/ddns/odhcpdclients` | `read-only` | — | — | `json` | `frontend-call` |
-| `UNKNOWN` | `/api/ddns/recordOrderadjustment` | `unknown` | — | — | `unknown` | `route-literal-only` |
-| `PUT` | `/api/ddns/recordOrderadjustment/{param}` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `UNKNOWN` | `/api/ddns/task` | `unknown` | — | — | `unknown` | `route-literal-only` |
+| `PUT` | `/api/ddns/recordOrderadjustment/{param}` | `mutating` | — | `array<string>` | `json` | `frontend-call` |
 | `GET` | `/api/ddns/task/{param}` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/ddns/taskorderadjustment` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `POST` | `/api/ddns/webhooktest` | `mutating` | `key` | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/ddns/taskorderadjustment` | `mutating` | — | `array<string>` | `json` | `frontend-call` |
+| `POST` | `/api/ddns/webhooktest` | `mutating` | `key` | `WebhookURL`, `WebhookMethod`, `WebhookRequestBody`, `WebhookProxy`, `WebhookProxyAddr`, `WebhookProxyUser`, `RetryCount`, `RetryInterval`, `WebhookProxyPassword`, `WebhookHeaders`, `WebhookSuccessContent`, `WebhookDisableCallbackSuccessContentCheck` | `json` | `frontend-call` |
 | `DELETE` | `/api/ddns/{param}/{param2}` | `mutating` | — | `deleteFromProvider` | `json` | `frontend-call` |
 | `PUT` | `/api/ddns/{param}/{param2}/option/{param3}` | `mutating` | — | — | `json` | `frontend-call` |
 
@@ -125,18 +122,12 @@
 |---|---|---|---|---|---|---|
 | `GET` | `/api/ddnstasklist` | `read-only` | — | — | `json` | `frontend-call` |
 
-## `describeviewtree`
-
-| 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
-|---|---|---|---|---|---|---|
-| `UNKNOWN` | `/api/describeviewtree` | `unknown` | — | — | `unknown` | `route-literal-only` |
-
 ## `dlnaservice`
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
 | `GET` | `/api/dlnaservice/configure` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/dlnaservice/configure` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/dlnaservice/configure` | `mutating` | — | `Enable`, `ListenIP`, `ListenPort`, `NetInterfaceList`, `FriendlyName`, `DeviceUUID`, `MountList` | `json` | `frontend-call` |
 | `GET` | `/api/dlnaservice/lastlogs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
 | `GET` | `/api/dlnaservice/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
 | `GET` | `/api/dlnaservice/status` | `read-only` | — | — | `json` | `frontend-call` |
@@ -151,17 +142,17 @@
 | `GET` | `/api/docker/compose/containers-for-cron` | `read-only` | — | — | `json` | `frontend-call` |
 | `POST` | `/api/docker/compose/discover` | `mutating` | — | `scan_path` | `json` | `frontend-call` |
 | `POST` | `/api/docker/compose/dockerfile` | `mutating` | — | `project_path` | `json` | `frontend-call` |
-| `POST` | `/api/docker/compose/down` | `dangerous` | — | 有 | `json` | `frontend-call` |
-| `POST` | `/api/docker/compose/down-async` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/docker/compose/down` | `dangerous` | — | `project_name`, `project_path`, `config_file_name`, `remove_volumes` | `json` | `frontend-call` |
+| `POST` | `/api/docker/compose/down-async` | `mutating` | — | `project_name`, `project_path`, `config_file_name`, `remove_volumes` | `json` | `frontend-call` |
 | `GET` | `/api/docker/compose/projects` | `read-only` | — | — | `json` | `frontend-call` |
 | `POST` | `/api/docker/compose/read-file` | `mutating` | — | `filename`, `working_dir` | `json` | `frontend-call` |
-| `POST` | `/api/docker/compose/restart` | `dangerous` | — | 有 | `json` | `frontend-call` |
-| `POST` | `/api/docker/compose/restore` | `dangerous` | — | 有 | `json` | `frontend-call` |
-| `POST` | `/api/docker/compose/start` | `dangerous` | — | 有 | `json` | `frontend-call` |
-| `POST` | `/api/docker/compose/stop` | `dangerous` | — | 有 | `json` | `frontend-call` |
-| `POST` | `/api/docker/compose/stop-async` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `POST` | `/api/docker/compose/up` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `POST` | `/api/docker/compose/up-async` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/docker/compose/restart` | `dangerous` | — | `project_name`, `project_path`, `config_file_name` | `json` | `frontend-call` |
+| `POST` | `/api/docker/compose/restore` | `dangerous` | — | `file`, `target_path`, `project_name`, `auto_start`, `config_file_name` | `json` | `frontend-call` |
+| `POST` | `/api/docker/compose/start` | `dangerous` | — | `project_name`, `project_path`, `config_file_name` | `json` | `frontend-call` |
+| `POST` | `/api/docker/compose/stop` | `dangerous` | — | `project_name`, `project_path`, `config_file_name` | `json` | `frontend-call` |
+| `POST` | `/api/docker/compose/stop-async` | `mutating` | — | `project_name`, `project_path`, `config_file_name` | `json` | `frontend-call` |
+| `POST` | `/api/docker/compose/up` | `mutating` | — | `project_name`, `project_path`, `config_file_name`, `working_dir`, `compose_content`, `force_recreate`, `build` | `json` | `frontend-call` |
+| `POST` | `/api/docker/compose/up-async` | `mutating` | — | `project_name`, `project_path`, `config_file_name`, `working_dir`, `compose_content`, `force_recreate`, `build` | `json` | `frontend-call` |
 | `POST` | `/api/docker/compose/update-config` | `mutating` | — | `content`, `project_path` | `json` | `frontend-call` |
 | `POST` | `/api/docker/compose/update-dockerfile` | `mutating` | — | `content`, `project_path` | `json` | `frontend-call` |
 | `DELETE` | `/api/docker/compose/{param}/backup/cancel` | `dangerous` | — | — | `json` | `frontend-call` |
@@ -170,20 +161,20 @@
 | `DELETE` | `/api/docker/compose/{param}/backups/all` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/docker/compose/{param}/backups/download.tar.gz` | `read-only` | `backup` | — | `blob` | `frontend-call` |
 | `POST` | `/api/docker/compose/{param}/backups/restore` | `dangerous` | — | `backup` | `json` | `frontend-call` |
-| `POST` | `/api/docker/compose/{param}/backups/upload` | `dangerous` | — | 有 | `json` | `frontend-call` |
-| `POST` | `/api/docker/compose/{param}/logs` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/docker/compose/{param}/backups/upload` | `dangerous` | — | `file` | `json` | `frontend-call` |
+| `POST` | `/api/docker/compose/{param}/logs` | `mutating` | — | `project_name`, `project_path`, `services`, `tail`, `timestamps`, `follow` | `json` | `frontend-call` |
 | `GET` | `/api/docker/compose/{param}/ps` | `read-only` | `name`, `path` | — | `json` | `frontend-call` |
 | `GET` | `/api/docker/config` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/docker/config` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/docker/config` | `mutating` | — | `docker_host`, `volume_backup_path`, `volume_backup_default_max`, `volume_backup_max_per_volume`, `volume_backup_stop_containers`, `volume_backup_stop_containers_per_volume`, `compose_backup_path`, `compose_backup_default_max`, `compose_backup_max_per_project`, `compose_discover_path`, `temp_operation_path`, `quick_access_host`, `container_view_mode`, `container_show_stopped`, `container_selected_custom_group` | `json` | `frontend-call` |
 | `DELETE` | `/api/docker/container-groups` | `mutating` | `key` | — | `json` | `frontend-call` |
 | `GET` | `/api/docker/container-groups` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/docker/container-groups` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/docker/container-groups` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/docker/container-groups` | `mutating` | — | `Name` | `json` | `frontend-call` |
+| `PUT` | `/api/docker/container-groups` | `mutating` | — | `Key`, `Name` | `json` | `frontend-call` |
 | `PUT` | `/api/docker/container-groups/collapsed` | `mutating` | — | `collapsed`, `key` | `json` | `frontend-call` |
 | `GET` | `/api/docker/container-groups/collapsed/states` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/docker/container-groups/count` | `read-only` | `groupKey` | — | `json` | `frontend-call` |
 | `GET` | `/api/docker/containers` | `read-only` | `all`, `filters`, `includeNetworkMode`, `includeStats` | — | `json` | `frontend-call` |
-| `POST` | `/api/docker/containers` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/docker/containers` | `mutating` | — | `name`, `config`, `hostConfig` | `json` | `frontend-call` |
 | `PUT` | `/api/docker/containers/group` | `mutating` | — | `containerName`, `groupKey` | `json` | `frontend-call` |
 | `GET` | `/api/docker/containers/sort-config` | `read-only` | — | — | `json` | `frontend-call` |
 | `PUT` | `/api/docker/containers/sort/compose` | `mutating` | — | `containerOrders`, `groupOrder` | `json` | `frontend-call` |
@@ -193,10 +184,10 @@
 | `POST` | `/api/docker/containers/switch-version` | `mutating` | — | `container_ids`, `target_image_ref` | `json` | `frontend-call` |
 | `DELETE` | `/api/docker/containers/{param}` | `mutating` | `force`, `remove_volumes` | — | `json` | `frontend-call` |
 | `GET` | `/api/docker/containers/{param}` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/docker/containers/{param}/commit` | `dangerous` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/docker/containers/{param}/commit` | `dangerous` | — | `repository`, `tag`, `comment` | `json` | `frontend-call` |
 | `GET` | `/api/docker/containers/{param}/compose-config` | `read-only` | — | — | `json` | `frontend-call` |
 | `POST` | `/api/docker/containers/{param}/copy` | `dangerous` | — | `name` | `json` | `frontend-call` |
-| `POST` | `/api/docker/containers/{param}/edit` | `dangerous` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/docker/containers/{param}/edit` | `dangerous` | — | `name`, `config`, `hostConfig`, `auto_start`, `remove_old` | `json` | `frontend-call` |
 | `POST` | `/api/docker/containers/{param}/export` | `dangerous` | — | — | `blob` | `frontend-call` |
 | `DELETE` | `/api/docker/containers/{param}/files` | `mutating` | — | `path`, `recursive` | `json` | `frontend-call` |
 | `POST` | `/api/docker/containers/{param}/files/chmod` | `dangerous` | — | `path`, `permissions` | `json` | `frontend-call` |
@@ -213,7 +204,7 @@
 | `POST` | `/api/docker/containers/{param}/files/rename` | `dangerous` | — | `new_path`, `old_path` | `json` | `frontend-call` |
 | `POST` | `/api/docker/containers/{param}/files/search` | `mutating` | — | `file_type`, `keyword`, `max_depth`, `max_result`, `path` | `json` | `frontend-call` |
 | `POST` | `/api/docker/containers/{param}/files/touch` | `mutating` | — | `path` | `json` | `frontend-call` |
-| `POST` | `/api/docker/containers/{param}/files/upload` | `dangerous` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/docker/containers/{param}/files/upload` | `dangerous` | — | `file`, `path` | `json` | `frontend-call` |
 | `POST` | `/api/docker/containers/{param}/files/write` | `dangerous` | — | `content`, `path` | `json` | `frontend-call` |
 | `DELETE` | `/api/docker/containers/{param}/label` | `mutating` | — | — | `json` | `frontend-call` |
 | `POST` | `/api/docker/containers/{param}/label` | `mutating` | — | `label` | `json` | `frontend-call` |
@@ -237,7 +228,7 @@
 | `POST` | `/api/docker/images/build-from-zip` | `mutating` | — | 有 | `json` | `frontend-call` |
 | `GET` | `/api/docker/images/containers` | `read-only` | `image_ref` | — | `json` | `frontend-call` |
 | `POST` | `/api/docker/images/import` | `dangerous` | — | 有 | `json` | `frontend-call` |
-| `POST` | `/api/docker/images/load` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/docker/images/load` | `mutating` | — | `path`, `cleanup` | `json` | `frontend-call` |
 | `POST` | `/api/docker/images/pull` | `mutating` | — | `image`, `tag` | `json` | `frontend-call` |
 | `POST` | `/api/docker/images/pull-async` | `mutating` | — | `architecture`, `image`, `tag` | `json` | `frontend-call` |
 | `POST` | `/api/docker/images/pull-with-backup` | `mutating` | — | `architecture`, `backup_tag`, `image_ref` | `json` | `frontend-call` |
@@ -245,10 +236,10 @@
 | `POST` | `/api/docker/images/push` | `mutating` | — | `image`, `tag` | `json` | `frontend-call` |
 | `DELETE` | `/api/docker/images/remove` | `dangerous` | `force`, `noprune`, `tag` | — | `json` | `frontend-call` |
 | `POST` | `/api/docker/images/remove-saved-digest` | `mutating` | — | `image_id` | `json` | `frontend-call` |
-| `UNKNOWN` | `/api/docker/images/save.withoutcompression` | `unknown` | — | — | `unknown` | `route-literal-only` |
+| `GET` | `/api/docker/images/save.withoutcompression` | `dangerous` | `imageid` | — | `unknown` | `runtime-verified` |
 | `POST` | `/api/docker/images/search` | `mutating` | — | `limit`, `term` | `json` | `frontend-call` |
 | `POST` | `/api/docker/images/upgrade-check` | `mutating` | — | `image_ref` | `json` | `frontend-call` |
-| `UNKNOWN` | `/api/docker/images/upgrade-check-ws` | `unknown` | — | — | `unknown` | `route-literal-only` |
+| `GET` | `/api/docker/images/upgrade-check-ws` | `mutating` | — | — | `websocket` | `runtime-verified` |
 | `POST` | `/api/docker/images/upgrade-containers` | `mutating` | — | `container_ids`, `image_ref`, `upgrade_compose`, `upgrade_standalone` | `json` | `frontend-call` |
 | `POST` | `/api/docker/images/upgrade-containers-async` | `mutating` | — | `container_ids`, `image_ref`, `upgrade_compose`, `upgrade_standalone` | `json` | `frontend-call` |
 | `POST` | `/api/docker/images/upgrade-dismiss` | `mutating` | — | `image_id`, `image_ref` | `json` | `frontend-call` |
@@ -266,7 +257,7 @@
 | `GET` | `/api/docker/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
 | `GET` | `/api/docker/monitor/status` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/docker/networks` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/docker/networks` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/docker/networks` | `mutating` | — | `name`, `driver`, `internal`, `enable_ipv6`, `attachable`, `options`, `ipam` | `json` | `frontend-call` |
 | `DELETE` | `/api/docker/networks/{param}` | `mutating` | — | — | `json` | `frontend-call` |
 | `POST` | `/api/docker/prune` | `dangerous` | — | 有 | `json` | `frontend-call` |
 | `DELETE` | `/api/docker/registry/mirrors` | `mutating` | — | `mirror` | `json` | `frontend-call` |
@@ -282,47 +273,46 @@
 | `GET` | `/api/docker/tasks/{param}` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/docker/version` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/docker/volumes` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/docker/volumes` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/docker/volumes` | `mutating` | — | `name`, `driver` | `json` | `frontend-call` |
 | `GET` | `/api/docker/volumes/backup/status` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/docker/volumes/export` | `read-only` | `name` | — | `blob` | `frontend-call` |
-| `POST` | `/api/docker/volumes/import` | `dangerous` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/docker/volumes/import` | `dangerous` | — | `file`, `volume_name`, `driver` | `json` | `frontend-call` |
 | `DELETE` | `/api/docker/volumes/{param}` | `mutating` | — | — | `json` | `frontend-call` |
 | `POST` | `/api/docker/volumes/{param}/backup` | `dangerous` | — | — | `json` | `frontend-call` |
 | `DELETE` | `/api/docker/volumes/{param}/backup/cancel` | `dangerous` | — | — | `json` | `frontend-call` |
 | `DELETE` | `/api/docker/volumes/{param}/backups` | `mutating` | — | `backup` | `json` | `frontend-call` |
 | `GET` | `/api/docker/volumes/{param}/backups` | `read-only` | — | — | `json` | `frontend-call` |
 | `POST` | `/api/docker/volumes/{param}/backups/restore` | `dangerous` | — | `backup` | `json` | `frontend-call` |
-| `POST` | `/api/docker/volumes/{param}/backups/upload` | `dangerous` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/docker/volumes/{param}/backups/upload` | `dangerous` | — | `file` | `json` | `frontend-call` |
 
 ## `frontend-preferences`
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
-| `PUT` | `/api/frontend-preferences` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/frontend-preferences` | `mutating` | — | `theme`, `language` | `json` | `frontend-call` |
 
 ## `frp`
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
-| `UNKNOWN` | `/api/frp` | `unknown` | — | — | `unknown` | `route-literal-only` |
 | `GET` | `/api/frp/list` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/frp/list` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/frp/list` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/frp/list` | `mutating` | — | `Key`, `Remark`, `Enable`, `Type`, `ConfigMode`, `ConfigText`, `Params`, `Proxies`, `Visitors` | `json` | `frontend-call` |
+| `PUT` | `/api/frp/list` | `mutating` | — | `Key`, `Remark`, `Enable`, `Type`, `ConfigMode`, `ConfigText`, `Params`, `Proxies`, `Visitors` | `json` | `frontend-call` |
 | `DELETE` | `/api/frp/list/{param}` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/frp/list/{param}` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/frp/list/{param}/{param2}` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/frp/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
-| `PUT` | `/api/frp/orderadjustment` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/frp/orderadjustment` | `mutating` | — | `array<string>` | `json` | `frontend-call` |
 | `GET` | `/api/frp/{param}/lastlogs` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/frp/{param}/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
 | `GET` | `/api/frp/{param}/proxies` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/frp/{param}/proxies` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/frp/{param}/proxies` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/frp/{param}/proxies` | `mutating` | — | `allowUsers`, `annotations`, `bandwidthLimit`, `bandwidthLimitMode`, `customDomains`, `disabled`, `healthCheckHTTPHeaders`, `healthCheckInterval`, `healthCheckMaxFailed`, `healthCheckPath`, `healthCheckTimeout`, `healthCheckType`, `hostHeaderRewrite`, `httpPassword`, `httpUser`, `loadBalancerGroup`, `loadBalancerGroupKey`, `localIP`, `localPort`, `locations`, `metadatas`, `multiplexer`, `name`, `natTraversal`, `plugin`, `pluginCrtPath`, `pluginEnableHttp2`, `pluginHostHeaderRewrite`, `pluginHttpPassword`, `pluginHttpUser`, `pluginKeyPath`, `pluginLocalAddr`, `pluginLocalPath`, `pluginRequestHeaders`, `pluginStripPrefix`, `pluginUnixPath`, `proxyProtocolVersion`, `remotePort`, `requestHeaders`, `responseHeaders`, `routeByHTTPUser`, `secretKey`, `subdomain`, `type`, `useCompression`, `useEncryption` | `json` | `frontend-call` |
+| `PUT` | `/api/frp/{param}/proxies` | `mutating` | — | `oldName`, `newProxy` | `json` | `frontend-call` |
 | `DELETE` | `/api/frp/{param}/proxies/{param2}` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/frp/{param}/status` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/frp/{param}/visitors` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/frp/{param}/visitors` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/frp/{param}/visitors` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/frp/{param}/visitors` | `mutating` | — | `bindAddr`, `bindPort`, `disabled`, `fallbackTimeoutMs`, `fallbackTo`, `keepTunnelOpen`, `maxRetriesAnHour`, `minRetryInterval`, `name`, `natTraversal`, `plugin`, `protocol`, `secretKey`, `serverName`, `serverUser`, `transport`, `type` | `json` | `frontend-call` |
+| `PUT` | `/api/frp/{param}/visitors` | `mutating` | — | `oldName`, `newVisitor` | `json` | `frontend-call` |
 | `DELETE` | `/api/frp/{param}/visitors/{param2}` | `mutating` | — | — | `json` | `frontend-call` |
 
 ## `ftpserver`
@@ -330,28 +320,22 @@
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
 | `GET` | `/api/ftpserver/configure` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/ftpserver/configure` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/ftpserver/configure` | `mutating` | — | `ActiveConnectionsCheck`, `ActiveTransferPortNon20`, `AdvancedParametersShow`, `AutoFireWall`, `ConfVersion`, `ConnectionTimeout`, `DefaultTransferType`, `DisableActiveMode`, `DisableLISTArgs `, `DisableMFMT`, `DisableMLSD`, `DisableMLST`, `DisableSTAT`, `DisableSYST`, `DisableSite`, `Enable`, `EnableCOMB`, `EnableHASH`, `IdleTimeout`, `Network`, `PassivePortEnd`, `PassivePortStart`, `PasvConnectionsCheck`, `Port`, `TLSRequired`, `Users` | `json` | `frontend-call` |
 | `GET` | `/api/ftpserver/lastlogs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
 | `GET` | `/api/ftpserver/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
 | `GET` | `/api/ftpserver/status` | `read-only` | — | — | `json` | `frontend-call` |
-
-## `get-lines`
-
-| 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
-|---|---|---|---|---|---|---|
-| `UNKNOWN` | `/api/get-lines` | `unknown` | — | — | `unknown` | `route-literal-only` |
 
 ## `iconlib`
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
-| `UNKNOWN` | `/api/iconlib/icon` | `unknown` | — | — | `unknown` | `route-literal-only` |
+| `GET` | `/api/iconlib/icon` | `read-only` | `path` | — | `unknown` | `runtime-verified` |
 | `GET` | `/api/iconlib/icons` | `read-only` | `source` | — | `json` | `frontend-call` |
 | `GET` | `/api/iconlib/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
 | `GET` | `/api/iconlib/search` | `read-only` | `keyword`, `source` | — | `json` | `frontend-call` |
 | `GET` | `/api/iconlib/sources` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/iconlib/sources` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/iconlib/sources` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/iconlib/sources` | `mutating` | — | `Alias`, `Type`, `Path`, `RcloneKey`, `RcloneRoot`, `StoreKey`, `StoreRoot`, `Enable`, `Description` | `json` | `frontend-call` |
+| `PUT` | `/api/iconlib/sources` | `mutating` | — | `Alias`, `Type`, `Path`, `RcloneKey`, `RcloneRoot`, `StoreKey`, `StoreRoot`, `Enable`, `Description` | `json` | `frontend-call` |
 | `DELETE` | `/api/iconlib/sources/{param}` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/iconlib/sources/{param}/enable/{param2}` | `mutating` | — | — | `json` | `frontend-call` |
 
@@ -367,13 +351,13 @@
 |---|---|---|---|---|---|---|
 | `GET` | `/api/ipdb/avalidDBFiles` | `read-only` | `key` | — | `json` | `frontend-call` |
 | `GET` | `/api/ipdb/configure` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/ipdb/configure` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/ipdb/configure` | `mutating` | — | `CustomIPDBPath` | `json` | `frontend-call` |
 | `DELETE` | `/api/ipdb/dbfile` | `mutating` | `file`, `key` | — | `json` | `frontend-call` |
-| `UNKNOWN` | `/api/ipdb/download` | `unknown` | — | — | `unknown` | `route-literal-only` |
-| `PUT` | `/api/ipdb/instanceorderadjustment` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `GET` | `/api/ipdb/download` | `dangerous` | — | — | `unknown` | `runtime-verified` |
+| `PUT` | `/api/ipdb/instanceorderadjustment` | `mutating` | — | `array<string>` | `json` | `frontend-call` |
 | `DELETE` | `/api/ipdb/item` | `mutating` | `key` | — | `json` | `frontend-call` |
-| `POST` | `/api/ipdb/item` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/ipdb/item` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/ipdb/item` | `mutating` | — | `Key`, `Remark`, `Enable`, `Format`, `FilePath`, `SupportTypes`, `BufferType`, `DBParam1` | `json` | `frontend-call` |
+| `PUT` | `/api/ipdb/item` | `mutating` | — | `Key`, `Remark`, `Enable`, `Format`, `FilePath`, `SupportTypes`, `BufferType`, `DBParam1` | `json` | `frontend-call` |
 | `GET` | `/api/ipdb/item/{param}/{param2}` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/ipdb/items` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/ipdb/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
@@ -384,19 +368,17 @@
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
 | `GET` | `/api/ipfliter/autorecordipconf` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/ipfliter/autorecordipconf` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/ipfliter/autorecordipconf` | `mutating` | — | `SafeURL`, `BasicAccount`, `BasicPassword` | `json` | `frontend-call` |
 | `GET` | `/api/ipfliter/list` | `read-only` | — | — | `json` | `frontend-call` |
-| `UNKNOWN` | `/api/ipfliter/list/subrulelist` | `unknown` | — | — | `unknown` | `route-literal-only` |
-| `UNKNOWN` | `/api/ipfliter/list/subrulelist/order` | `unknown` | — | — | `unknown` | `route-literal-only` |
-| `PUT` | `/api/ipfliter/list/subrulelist/order/{param}` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/ipfliter/list/subrulelist/order/{param}` | `mutating` | — | `array<string>` | `json` | `frontend-call` |
 | `GET` | `/api/ipfliter/list/subrulelist/{param}` | `read-only` | — | — | `json` | `frontend-call` |
 | `DELETE` | `/api/ipfliter/list/{param}` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/ipfliter/list/{param}` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/ipfliter/list/{param}` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/ipfliter/list/{param}` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/ipfliter/list/{param}` | `mutating` | — | `Key`, `Remark`, `Enable`, `Type`, `LongTermValid`, `ValidTimestamp`, `IPTextSets`, `IPDBKeyWords`, `AutoDeleteOnExpiry`, `InvalidIPTextEntryCount`, `InvalidIPTextEntriesPreview`, `IPInfoKeywordFilter` | `json` | `frontend-call` |
+| `PUT` | `/api/ipfliter/list/{param}` | `mutating` | — | `Key`, `Name`, `Action`, `SubRuleList`, `AutoRecordTxtLimit`, `AutoRecordMemLimit` | `json` | `frontend-call` |
 | `DELETE` | `/api/ipfliter/list/{param}/{param2}` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/ipfliter/list/{param}/{param2}` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/ipfliter/list/{param}/{param2}` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/ipfliter/list/{param}/{param2}` | `mutating` | — | `Key`, `Remark`, `Enable`, `Type`, `LongTermValid`, `ValidTimestamp`, `IPTextSets`, `IPDBKeyWords`, `AutoDeleteOnExpiry`, `InvalidIPTextEntryCount`, `InvalidIPTextEntriesPreview`, `IPInfoKeywordFilter` | `json` | `frontend-call` |
 | `POST` | `/api/ipfliter/list/{param}/{param2}/match` | `mutating` | — | `ip` | `json` | `frontend-call` |
 | `GET` | `/api/ipfliter/list/{param}/{param2}/{param3}` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/ipfliter/listlite` | `read-only` | — | — | `json` | `frontend-call` |
@@ -412,7 +394,7 @@
 | `GET` | `/api/ipfliter/porttrap/stats` | `read-only` | — | — | `json` | `frontend-call` |
 | `POST` | `/api/ipfliter/porttrap/stats/reset` | `dangerous` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/ipfliter/porttrapconf` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/ipfliter/porttrapconf` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/ipfliter/porttrapconf` | `mutating` | — | `AllowRuleKeys`, `DefaultAllowIPs`, `Enable`, `IPv6PrefixLen`, `Script`, `ScriptEnable`, `ScriptTriggerInterval`, `TCPPorts`, `TargetRuleKey`, `UDPPorts`, `WebhookBody`, `WebhookDisableCallbackSuccessContentCheck`, `WebhookEnable`, `WebhookHeaders`, `WebhookMethod`, `WebhookProxy`, `WebhookProxyAddr`, `WebhookProxyPassword`, `WebhookProxyUser`, `WebhookRetryCount`, `WebhookRetryInterval`, `WebhookSuccessContent`, `WebhookTimeout`, `WebhookTriggerInterval`, `WebhookURL` | `json` | `frontend-call` |
 
 ## `ipregtest`
 
@@ -434,7 +416,7 @@
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
-| `POST` | `/api/login` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/login` | `mutating` | — | `challengeId`, `cipherText` | `json` | `frontend-call` |
 | `GET` | `/api/login/challenge` | `read-only` | — | — | `json` | `frontend-call` |
 
 ## `logout`
@@ -453,8 +435,7 @@
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
-| `UNKNOWN` | `/api/logscenter` | `unknown` | — | — | `unknown` | `route-literal-only` |
-| `UNKNOWN` | `/api/logscenter/query` | `unknown` | — | — | `unknown` | `route-literal-only` |
+| `GET` | `/api/logscenter/query` | `read-only` | — | — | `json` | `runtime-verified` |
 
 ## `lucky`
 
@@ -469,7 +450,7 @@
 | `PUT` | `/api/modules/hidden` | `mutating` | — | `hiddenModules` | `json` | `frontend-call` |
 | `GET` | `/api/modules/list` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/modules/{param}/2fa/config` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/modules/{param}/2fa/config` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/modules/{param}/2fa/config` | `mutating` | — | `enable`, `key`, `secret`, `validated`, `code`, `oldSecret`, `oldCode` | `json` | `frontend-call` |
 | `GET` | `/api/modules/{param}/2fa/status` | `read-only` | — | — | `json` | `frontend-call` |
 | `POST` | `/api/modules/{param}/verify2fa` | `mutating` | — | `code` | `json` | `frontend-call` |
 
@@ -477,7 +458,7 @@
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
-| `UNKNOWN` | `/api/natdetect/ws` | `unknown` | — | — | `unknown` | `route-literal-only` |
+| `GET` | `/api/natdetect/ws` | `mutating` | — | — | `websocket` | `runtime-verified` |
 
 ## `netinterfaces`
 
@@ -489,28 +470,28 @@
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
-| `POST` | `/api/oauth/login` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/oauth/login` | `mutating` | — | `challengeId`, `cipherText` | `json` | `frontend-call` |
 | `GET` | `/api/oauth/status` | `read-only` | `code`, `type` | — | `json` | `frontend-call` |
-| `UNKNOWN` | `/api/oauth/tmpcode` | `unknown` | — | — | `unknown` | `route-literal-only` |
+| `GET` | `/api/oauth/tmpcode` | `dangerous` | — | — | `json` | `runtime-verified` |
 | `GET` | `/api/oauth/userinfo` | `read-only` | `code`, `type` | — | `json` | `frontend-call` |
 
 ## `password`
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
-| `PUT` | `/api/password/verify` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/password/verify` | `mutating` | — | `oldPassword` | `json` | `frontend-call` |
 
 ## `portforward`
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
 | `DELETE` | `/api/portforward` | `mutating` | `key` | — | `json` | `frontend-call` |
-| `POST` | `/api/portforward` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/portforward` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/portforward` | `mutating` | — | `Name`, `Key`, `DiaglogShowMode`, `ForwardTypes`, `ListenAddress`, `ListenPorts`, `TargetAddressList`, `TargetPorts`, `Enable`, `LogLevel`, `OpenFirewallPorts`, `LogOutputToConsole`, `AccessLogMaxNum`, `WebListShowLastLogMaxCount`, `Options`, `LogStreamSettings` | `json` | `frontend-call` |
+| `PUT` | `/api/portforward` | `mutating` | — | `Name`, `Key`, `DiaglogShowMode`, `ForwardTypes`, `ListenAddress`, `ListenPorts`, `TargetAddressList`, `TargetPorts`, `Enable`, `LogLevel`, `OpenFirewallPorts`, `LogOutputToConsole`, `AccessLogMaxNum`, `WebListShowLastLogMaxCount`, `Options`, `LogStreamSettings` | `json` | `frontend-call` |
 | `GET` | `/api/portforward/configure` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/portforward/configure` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/portforward/configure` | `mutating` | — | `ConfVer`, `ConnectionDownloadRateLimit`, `ConnectionDownloadRateLimitEnabled`, `ConnectionUploadRateLimit`, `ConnectionUploadRateLimitEnabled`, `Enable`, `IPConnectionsLimit`, `IPDownloadRateLimit`, `IPDownloadRateLimitEnabled`, `IPMaxConnections`, `IPUploadRateLimit`, `IPUploadRateLimitEnabled`, `Nolimit`, `PortForwardsLimit`, `TCPPortforwardMaxConnections`, `UDPReadTargetDataMaxgoroutineCount` | `json` | `frontend-call` |
 | `GET` | `/api/portforward/enable` | `mutating` | `enable`, `key` | — | `json` | `frontend-call` |
-| `PUT` | `/api/portforward/ruleorderadjustment` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/portforward/ruleorderadjustment` | `mutating` | — | `array<string>` | `json` | `frontend-call` |
 | `GET` | `/api/portforward/{param}` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/portforward/{param}/lastlogs` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/portforward/{param}/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
@@ -532,44 +513,37 @@
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
 | `GET` | `/api/rclone/globalconfig` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/rclone/globalconfig` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/rclone/itemorderadjustment` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/rclone/globalconfig` | `mutating` | — | `DefaultCaCheDir`, `UploadFileTmpDir` | `json` | `frontend-call` |
+| `PUT` | `/api/rclone/itemorderadjustment` | `mutating` | — | `array<string>` | `json` | `frontend-call` |
 | `GET` | `/api/rclone/lastlogs` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/rclone/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
-| `UNKNOWN` | `/api/rclone/remote` | `unknown` | — | — | `unknown` | `route-literal-only` |
 | `GET` | `/api/rclone/remote/{param}` | `read-only` | — | — | `json` | `frontend-call` |
 | `DELETE` | `/api/rclone/remotelist` | `mutating` | `key` | — | `json` | `frontend-call` |
 | `GET` | `/api/rclone/remotelist` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/rclone/remotelist` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/rclone/remotelist` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/rclone/remotelist` | `mutating` | — | `Key`, `Type`, `Enable`, `Remark`, `Root`, `Params`, `HttpClienInsecureSkipVerify`, `HttpClientProxyType`, `HttpClientProxyAddr`, `HttpClientProxyUser`, `HttpClientProxyPassword`, `SystemMount` | `json` | `frontend-call` |
+| `PUT` | `/api/rclone/remotelist` | `mutating` | — | `Key`, `Type`, `Enable`, `Remark`, `Root`, `Params`, `HttpClienInsecureSkipVerify`, `HttpClientProxyType`, `HttpClientProxyAddr`, `HttpClientProxyUser`, `HttpClientProxyPassword`, `SystemMount` | `json` | `frontend-call` |
 | `GET` | `/api/rclone/remotelist/option` | `read-only` | `enable`, `key` | — | `json` | `frontend-call` |
 | `GET` | `/api/rclone/remotelistlite` | `read-only` | `vfs` | — | `json` | `frontend-call` |
-| `UNKNOWN` | `/api/rclone/sync` | `unknown` | — | — | `unknown` | `route-literal-only` |
 | `DELETE` | `/api/rclone/sync/list` | `mutating` | `key` | — | `json` | `frontend-call` |
 | `GET` | `/api/rclone/sync/list` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/rclone/sync/list` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/rclone/sync/list` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/rclone/sync/list` | `mutating` | — | `Key`, `Enable`, `Remark`, `SourceType`, `SourceRemoteKey`, `SourcePath`, `DestType`, `DestRemoteKey`, `DestPath`, `SyncMode`, `DeleteOnDest`, `DryRun`, `CreateEmptyDirs`, `IgnoreExisting`, `IgnoreErrors`, `CheckFirst`, `Transfers`, `Checkers`, `BandwidthLimit`, `MinAge`, `MaxAge`, `MinSize`, `MaxSize`, `IncludePatterns`, `ExcludePatterns`, `ExtraArgs`, `ScheduleEnable`, `ScheduleCron`, `ScheduleInterval`, `BisyncResync`, `BisyncCheckAccess`, `BisyncForce` | `json` | `frontend-call` |
+| `PUT` | `/api/rclone/sync/list` | `mutating` | — | `Key`, `Enable`, `Remark`, `SourceType`, `SourceRemoteKey`, `SourcePath`, `DestType`, `DestRemoteKey`, `DestPath`, `SyncMode`, `DeleteOnDest`, `DryRun`, `CreateEmptyDirs`, `IgnoreExisting`, `IgnoreErrors`, `CheckFirst`, `Transfers`, `Checkers`, `BandwidthLimit`, `MinAge`, `MaxAge`, `MinSize`, `MaxSize`, `IncludePatterns`, `ExcludePatterns`, `ExtraArgs`, `ScheduleEnable`, `ScheduleCron`, `ScheduleInterval`, `BisyncResync`, `BisyncCheckAccess`, `BisyncForce` | `json` | `frontend-call` |
 | `GET` | `/api/rclone/sync/option` | `read-only` | `enable`, `key` | — | `json` | `frontend-call` |
-| `UNKNOWN` | `/api/rclone/sync/run` | `unknown` | — | — | `unknown` | `route-literal-only` |
 | `POST` | `/api/rclone/sync/run/{param}` | `mutating` | `resync` | — | `json` | `frontend-call` |
-| `UNKNOWN` | `/api/rclone/sync/stop` | `unknown` | — | — | `unknown` | `route-literal-only` |
 | `POST` | `/api/rclone/sync/stop/{param}` | `dangerous` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/rclone/sync/{param}` | `read-only` | — | — | `json` | `frontend-call` |
-| `UNKNOWN` | `/api/rclone/third/115pan/authcheck` | `unknown` | — | — | `unknown` | `route-literal-only` |
 | `GET` | `/api/rclone/third/115pan/authcheck/{param}` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/rclone/third/115pan/authurl` | `read-only` | `cburl`, `lkbaseurl` | — | `json` | `frontend-call` |
 | `GET` | `/api/rclone/third/115pan/authuserlist` | `read-only` | — | — | `json` | `frontend-call` |
-| `UNKNOWN` | `/api/rclone/third/115pan/user` | `unknown` | — | — | `unknown` | `route-literal-only` |
-| `UNKNOWN` | `/api/rclone/third/alipan/authcheck` | `unknown` | — | — | `unknown` | `route-literal-only` |
+| `DELETE` | `/api/rclone/third/115pan/user` | `dangerous` | — | — | `json` | `runtime-verified` |
 | `GET` | `/api/rclone/third/alipan/authcheck/{param}` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/rclone/third/alipan/authurl` | `read-only` | `cburl`, `lkbaseurl` | — | `json` | `frontend-call` |
 | `GET` | `/api/rclone/third/alipan/authuserlist` | `read-only` | — | — | `json` | `frontend-call` |
-| `UNKNOWN` | `/api/rclone/third/alipan/user` | `unknown` | — | — | `unknown` | `route-literal-only` |
-| `UNKNOWN` | `/api/rclone/third/baidupan/authcheck` | `unknown` | — | — | `unknown` | `route-literal-only` |
+| `DELETE` | `/api/rclone/third/alipan/user` | `dangerous` | — | — | `json` | `runtime-verified` |
 | `GET` | `/api/rclone/third/baidupan/authcheck/{param}` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/rclone/third/baidupan/authurl` | `read-only` | `cburl`, `lkbaseurl` | — | `json` | `frontend-call` |
 | `GET` | `/api/rclone/third/baidupan/authuserlist` | `read-only` | — | — | `json` | `frontend-call` |
-| `UNKNOWN` | `/api/rclone/third/baidupan/user` | `unknown` | — | — | `unknown` | `route-literal-only` |
+| `DELETE` | `/api/rclone/third/baidupan/user` | `dangerous` | — | — | `json` | `runtime-verified` |
 
 ## `reboot_program`
 
@@ -588,28 +562,28 @@
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
 | `GET` | `/api/security-groups` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/security-groups` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/security-groups` | `mutating` | — | `Key`, `Name`, `Enable`, `SessionTTLMinutes`, `AllowWebAuthIPBypass`, `Description` | `json` | `frontend-call` |
 | `GET` | `/api/security-groups/grants` | `read-only` | — | — | `json` | `frontend-call` |
 | `POST` | `/api/security-groups/grants/delete` | `dangerous` | — | `grantKeys` | `json` | `frontend-call` |
 | `DELETE` | `/api/security-groups/grants/{param}` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/security-groups/lite` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/security-groups/oauth-users` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/security-groups/oauth-users` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/security-groups/oauth-users` | `mutating` | — | `Key`, `ThirdAuthUserKey`, `Provider`, `SkipTwoFA`, `MatchID`, `MatchEmail`, `MatchName`, `Enable`, `GrantSecurityGroups`, `Description` | `json` | `frontend-call` |
 | `DELETE` | `/api/security-groups/oauth-users/{param}` | `mutating` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/security-groups/oauth-users/{param}` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/security-groups/oauth-users/{param}` | `mutating` | — | `Key`, `ThirdAuthUserKey`, `Provider`, `SkipTwoFA`, `MatchID`, `MatchEmail`, `MatchName`, `Enable`, `GrantSecurityGroups`, `Description` | `json` | `frontend-call` |
 | `GET` | `/api/security-groups/users` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/security-groups/users` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/security-groups/users` | `mutating` | — | `Key`, `Name`, `Username`, `PasswordHash`, `Password`, `TwoFASecret`, `Enable`, `GrantSecurityGroups`, `Description`, `HasPassword` | `json` | `frontend-call` |
 | `DELETE` | `/api/security-groups/users/{param}` | `mutating` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/security-groups/users/{param}` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/security-groups/users/{param}` | `mutating` | — | `Key`, `Name`, `Username`, `PasswordHash`, `Password`, `TwoFASecret`, `Enable`, `GrantSecurityGroups`, `Description`, `HasPassword` | `json` | `frontend-call` |
 | `DELETE` | `/api/security-groups/{param}` | `mutating` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/security-groups/{param}` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/security-groups/{param}` | `mutating` | — | `Key`, `Name`, `Enable`, `SessionTTLMinutes`, `AllowWebAuthIPBypass`, `Description` | `json` | `frontend-call` |
 
 ## `smb`
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
 | `GET` | `/api/smb/configure` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/smb/configure` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/smb/configure` | `mutating` | — | `AutoFirewall`, `DiscoveryIP`, `Enable`, `EnableMDNS`, `EnableNBNS`, `EnableWSDD`, `Encryption`, `GuestEnable`, `ListenIP`, `ListenNetwork`, `ListenPort`, `LiteSMBLogLevel`, `LiteSMBLogToTerminal`, `MaxConnections`, `Multichannel`, `PublicMountList`, `SMBConfVersion`, `ServerName`, `Signing`, `Users`, `Workgroup` | `json` | `frontend-call` |
 | `POST` | `/api/smb/connections/{param}/disconnect` | `dangerous` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/smb/lastlogs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
 | `GET` | `/api/smb/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
@@ -622,18 +596,17 @@
 |---|---|---|---|---|---|---|
 | `DELETE` | `/api/ssl` | `mutating` | `key` | — | `json` | `frontend-call` |
 | `GET` | `/api/ssl` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/ssl` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/ssl` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/ssl` | `mutating` | — | `AcmeErrorMsg`, `AddFrom`, `AddTime`, `AllSyncClient`, `CertBase64`, `Enable`, `ExtParams`, `IssuerCertificate`, `Key`, `KeyBase64`, `MappingChangeScript`, `MappingPath`, `MappingToPath`, `Remark`, `SyncClientList`, `UpdateTime` | `json` | `frontend-call` |
+| `PUT` | `/api/ssl` | `mutating` | — | `AcmeErrorMsg`, `AddFrom`, `AddTime`, `AllSyncClient`, `CertBase64`, `Enable`, `ExtParams`, `IssuerCertificate`, `Key`, `KeyBase64`, `MappingChangeScript`, `MappingPath`, `MappingToPath`, `Remark`, `SyncClientList`, `UpdateTime` | `json` | `frontend-call` |
 | `GET` | `/api/ssl/credential-sources` | `read-only` | — | — | `json` | `frontend-call` |
-| `UNKNOWN` | `/api/ssl/download` | `unknown` | — | — | `unknown` | `route-literal-only` |
+| `GET` | `/api/ssl/download` | `dangerous` | `key` | — | `unknown` | `runtime-verified` |
 | `PUT` | `/api/ssl/flush` | `mutating` | `key` | — | `json` | `frontend-call` |
 | `GET` | `/api/ssl/lastlogs` | `read-only` | `key` | — | `json` | `frontend-call` |
 | `GET` | `/api/ssl/logs` | `read-only` | `key`, `page`, `pageSize` | — | `json` | `frontend-call` |
-| `UNKNOWN` | `/api/ssl/manualsync` | `unknown` | — | — | `unknown` | `route-literal-only` |
 | `GET` | `/api/ssl/manualsync/{param}` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/ssl/setting` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/ssl/setting` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/ssl/sslorderadjustment` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/ssl/setting` | `mutating` | — | `certificateCheckTime`, `defaultACMEEMail`, `globalPrivateKey`, `renewalThresholdDays`, `shortlivedCheckTimesPerDay`, `shortlivedRenewalThresholdHours`, `syncClientList` | `json` | `frontend-call` |
+| `PUT` | `/api/ssl/sslorderadjustment` | `mutating` | — | `array<string>` | `json` | `frontend-call` |
 | `GET` | `/api/ssl/syncclients` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/ssl/{param}` | `read-only` | — | — | `json` | `frontend-call` |
 | `PUT` | `/api/ssl/{param}` | `mutating` | `enable` | — | `json` | `frontend-call` |
@@ -649,24 +622,23 @@
 | `GET` | `/api/status/history/meta` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/status/host-connections` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/status/host-overview` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/status/host-process-kill` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/status/host-process-kill` | `mutating` | — | `pid` | `json` | `frontend-call` |
 | `GET` | `/api/status/host-processes` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/status/module-overview` | `read-only` | — | — | `json` | `frontend-call` |
-| `UNKNOWN` | `/api/status/ws` | `unknown` | — | — | `unknown` | `route-literal-only` |
+| `GET` | `/api/status/ws` | `read-only` | — | — | `websocket` | `runtime-verified` |
 
 ## `storagemanagement`
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
 | `GET` | `/api/storagemanagement/aliyunpan_auth` | `read-only` | `cburl`, `lkurl` | — | `json` | `frontend-call` |
-| `UNKNOWN` | `/api/storagemanagement/aliyunpan_auth_check` | `unknown` | — | — | `unknown` | `route-literal-only` |
 | `GET` | `/api/storagemanagement/aliyunpan_auth_check/{param}` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/storagemanagement/enable` | `mutating` | `enable`, `key` | — | `json` | `frontend-call` |
-| `PUT` | `/api/storagemanagement/itemorderadjustment` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/storagemanagement/itemorderadjustment` | `mutating` | — | `array<string>` | `json` | `frontend-call` |
 | `GET` | `/api/storagemanagement/lastlogs` | `read-only` | — | — | `json` | `frontend-call` |
 | `DELETE` | `/api/storagemanagement/list` | `mutating` | `key` | — | `json` | `frontend-call` |
-| `POST` | `/api/storagemanagement/list` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/storagemanagement/list` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/storagemanagement/list` | `mutating` | — | `Type`, `Enable`, `Key`, `Remark`, `Writable`, `Log`, `Params`, `SystemMount` | `json` | `frontend-call` |
+| `PUT` | `/api/storagemanagement/list` | `mutating` | — | `Type`, `Enable`, `Key`, `Remark`, `Writable`, `Log`, `Params`, `SystemMount` | `json` | `frontend-call` |
 | `GET` | `/api/storagemanagement/litelist` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/storagemanagement/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
 
@@ -674,10 +646,9 @@
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
-| `UNKNOWN` | `/api/stun` | `unknown` | — | — | `unknown` | `route-literal-only` |
 | `GET` | `/api/stun/configure` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/stun/configure` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/stun/ruleorderadjustment` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/stun/configure` | `mutating` | — | `ConfVer`, `EnableModule`, `GlobalStunServerList`, `RetryCount`, `RetryInterval`, `WebHookTimeout`, `WebhookDisableCallbackSuccessContentCheck`, `WebhookEnable`, `WebhookHeaders`, `WebhookInsecureSkipVerify`, `WebhookLocalAddr`, `WebhookMethod`, `WebhookNetworkType`, `WebhookOnlyAddrChange`, `WebhookProxy`, `WebhookProxyAddr`, `WebhookProxyPassword`, `WebhookProxyUser`, `WebhookRequestBody`, `WebhookSuccessContent`, `WebhookURL` | `json` | `frontend-call` |
+| `PUT` | `/api/stun/ruleorderadjustment` | `mutating` | — | `array<string>` | `json` | `frontend-call` |
 | `GET` | `/api/stun/{param}` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/stun/{param}/lastlogs` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/stun/{param}/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
@@ -687,10 +658,10 @@
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
 | `DELETE` | `/api/stunrule` | `mutating` | `key` | — | `json` | `frontend-call` |
-| `POST` | `/api/stunrule` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/stunrule` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/stunrule` | `mutating` | — | `Name`, `Key`, `Enable`, `UseGlobalStunServerList`, `DiaglogShowMode`, `StunHeartbeatInterval`, `StunTimeout`, `StunRetryInterval`, `StunAutoRetry`, `AutoAddPubAddrWhiteList`, `StunType`, `StunListenType`, `SpecifyNetworkInterface`, `NetworkInterfaceReg`, `ListenIP`, `AutoOptionsFirewall`, `ListenPort`, `NatPMP`, `UPnPGawayIP`, `NatPMPGateway`, `UPnP`, `UPnPLocalPort`, `UPnpLocalHost`, `UPnPInternalClientIP`, `UpnPDiyControlAPIUrl`, `DisableStunAvalidCheck`, `DisablePortForward`, `TargetAddressList`, `TargetPort`, `LogLevel`, `LogOutputToConsole`, `AccessLogMaxNum`, `WebListShowLastLogMaxCount`, `Options`, `StunServerList`, `TcpKeepAliveServerList`, `GlobalWebhook`, `WebhookEnable`, `WebhookOnlyAddrChange`, `WebhookURL`, `WebhookMethod`, `WebhookHeaders`, `WebhookRequestBody`, `WebhookDisableCallbackSuccessContentCheck`, `WebhookSuccessContent`, `WebhookProxy`, `WebhookProxyAddr`, `WebhookProxyUser`, `WebhookProxyPassword`, `CallScript`, `CallScriptContent`, `RetryCount`, `RetryInterval`, `LogStreamSettings` | `json` | `frontend-call` |
+| `PUT` | `/api/stunrule` | `mutating` | — | `Name`, `Key`, `Enable`, `UseGlobalStunServerList`, `DiaglogShowMode`, `StunHeartbeatInterval`, `StunTimeout`, `StunRetryInterval`, `StunAutoRetry`, `AutoAddPubAddrWhiteList`, `StunType`, `StunListenType`, `SpecifyNetworkInterface`, `NetworkInterfaceReg`, `ListenIP`, `AutoOptionsFirewall`, `ListenPort`, `NatPMP`, `UPnPGawayIP`, `NatPMPGateway`, `UPnP`, `UPnPLocalPort`, `UPnpLocalHost`, `UPnPInternalClientIP`, `UpnPDiyControlAPIUrl`, `DisableStunAvalidCheck`, `DisablePortForward`, `TargetAddressList`, `TargetPort`, `LogLevel`, `LogOutputToConsole`, `AccessLogMaxNum`, `WebListShowLastLogMaxCount`, `Options`, `StunServerList`, `TcpKeepAliveServerList`, `GlobalWebhook`, `WebhookEnable`, `WebhookOnlyAddrChange`, `WebhookURL`, `WebhookMethod`, `WebhookHeaders`, `WebhookRequestBody`, `WebhookDisableCallbackSuccessContentCheck`, `WebhookSuccessContent`, `WebhookProxy`, `WebhookProxyAddr`, `WebhookProxyUser`, `WebhookProxyPassword`, `CallScript`, `CallScriptContent`, `RetryCount`, `RetryInterval`, `LogStreamSettings` | `json` | `frontend-call` |
 | `GET` | `/api/stunrule/enable` | `mutating` | `enable`, `key` | — | `json` | `frontend-call` |
-| `POST` | `/api/stunrule/webhooktest` | `mutating` | `key` | 有 | `json` | `frontend-call` |
+| `POST` | `/api/stunrule/webhooktest` | `mutating` | `key` | `WebhookURL`, `WebhookMethod`, `WebhookRequestBody`, `WebhookProxy`, `WebhookProxyAddr`, `WebhookProxyUser`, `RetryCount`, `RetryInterval`, `WebhookProxyPassword`, `WebhookHeaders`, `WebhookSuccessContent`, `WebhookDisableCallbackSuccessContentCheck` | `json` | `frontend-call` |
 
 ## `stunrulelist`
 
@@ -708,15 +679,15 @@
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
-| `UNKNOWN` | `/api/temp-access-tickets` | `unknown` | — | — | `unknown` | `route-literal-only` |
+| `POST` | `/api/temp-access-tickets` | `dangerous` | — | — | `json` | `runtime-verified` |
 
 ## `third`
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
-| `UNKNOWN` | `/api/third/filebrowser/backupdb` | `unknown` | — | — | `unknown` | `route-literal-only` |
+| `GET` | `/api/third/filebrowser/backupdb` | `dangerous` | — | — | `unknown` | `runtime-verified` |
 | `GET` | `/api/third/filebrowser/configure` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/third/filebrowser/configure` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/third/filebrowser/configure` | `mutating` | — | `Address`, `AutoFirewall`, `BaseURL`, `CacheDir`, `ConfVersion`, `DBFile`, `DirPerm`, `DisableExec`, `DisablePreviewResize`, `DisableThumbnails`, `DisableTypeDetectionByHeader`, `Enable`, `FilePerm`, `HTTPEnable`, `IMGProcessors`, `ListenNetwork`, `MountList`, `Port`, `RedisCacheUrl`, `TLSEnable`, `TLSListenPort`, `TokenExpirationHour`, `TrustHostList` | `json` | `frontend-call` |
 | `GET` | `/api/third/filebrowser/lastlogs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
 | `GET` | `/api/third/filebrowser/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
 | `GET` | `/api/third/filebrowser/resetadmin` | `read-only` | — | — | `json` | `frontend-call` |
@@ -727,15 +698,15 @@
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
 | `GET` | `/api/thirdPartyAuthManager/config` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/thirdPartyAuthManager/config` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/thirdPartyAuthManager/config` | `mutating` | — | `GithubRedirectURI`, `GithubClientID`, `GoogleRedirectURI`, `GoogleClientID`, `QQRedirectURI`, `QQClientID`, `AuthentikRedirectURI`, `AuthentikClientID`, `AuthentikServer`, `WeiboClientKey`, `WeiboRedirectURI`, `OIDCRedirectURI`, `OIDCClientID`, `OIDCAuthorizationEndpoint` | `json` | `frontend-call` |
 | `GET` | `/api/thirdPartyAuthManager/list` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/thirdPartyAuthManager/list` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/thirdPartyAuthManager/list` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/thirdPartyAuthManager/list` | `mutating` | — | `Key`, `Type`, `Enable`, `Remark`, `ID`, `Name`, `Avatar`, `EMail`, `Phone`, `RefreshToken`, `AccessToken`, `CreateTime`, `UpdateTime`, `TwoFAKey` | `json` | `frontend-call` |
+| `PUT` | `/api/thirdPartyAuthManager/list` | `mutating` | — | `Key`, `Type`, `Enable`, `Remark`, `ID`, `Name`, `Avatar`, `EMail`, `Phone`, `RefreshToken`, `AccessToken`, `CreateTime`, `UpdateTime`, `TwoFAKey` | `json` | `frontend-call` |
 | `DELETE` | `/api/thirdPartyAuthManager/list/{param}` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/thirdPartyAuthManager/list/{param}` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/thirdPartyAuthManager/list/{param}/{param2}` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/thirdPartyAuthManager/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
-| `PUT` | `/api/thirdPartyAuthManager/orderadjustment` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/thirdPartyAuthManager/orderadjustment` | `mutating` | — | `array<string>` | `json` | `frontend-call` |
 
 ## `twofapassword`
 
@@ -748,32 +719,20 @@
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
 | `GET` | `/api/update/cancel` | `dangerous` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/update/comfire` | `dangerous` | — | 有 | `json` | `frontend-call` |
-
-## `upload`
-
-| 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
-|---|---|---|---|---|---|---|
-| `UNKNOWN` | `/api/upload` | `unknown` | — | — | `unknown` | `route-literal-only` |
-
-## `user`
-
-| 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
-|---|---|---|---|---|---|---|
-| `UNKNOWN` | `/api/user` | `unknown` | — | — | `unknown` | `route-literal-only` |
+| `PUT` | `/api/update/comfire` | `dangerous` | — | `Name`, `ARCH`, `OS`, `Version`, `GoVersion`, `Date`, `MD5` | `json` | `frontend-call` |
 
 ## `v2l`
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
-| `POST` | `/api/v2l` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/v2l` | `mutating` | — | `v2l` | `json` | `frontend-call` |
 
 ## `webdav`
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
 | `GET` | `/api/webdav/configure` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/webdav/configure` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/webdav/configure` | `mutating` | — | `AutoFirewall`, `Enable`, `HTTPEnable`, `ListenIP`, `ListenNetwork`, `ListenPort`, `TLSEnable`, `TLSListenPort`, `TrustHostList`, `Users`, `WebDavConfVersion` | `json` | `frontend-call` |
 | `GET` | `/api/webdav/lastlogs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
 | `GET` | `/api/webdav/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
 | `GET` | `/api/webdav/status` | `read-only` | — | — | `json` | `frontend-call` |
@@ -782,56 +741,53 @@
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
-| `UNKNOWN` | `/api/webservice` | `unknown` | — | — | `unknown` | `route-literal-only` |
-| `POST` | `/api/webservice/cgi` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/webservice/cgi` | `mutating` | — | `Key`, `Name`, `Enable`, `CGIType`, `Network`, `Address`, `MaxConns`, `ConnectTimeout`, `ForbiddenPaths`, `DefaultDocRoot`, `DefaultIndexNames`, `FileExtensions` | `json` | `frontend-call` |
 | `GET` | `/api/webservice/cgi/list` | `read-only` | — | — | `json` | `frontend-call` |
 | `DELETE` | `/api/webservice/cgi/{param}` | `mutating` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/webservice/cgi/{param}` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/webservice/cgi/{param}` | `mutating` | — | `Key`, `Name`, `Enable`, `CGIType`, `Network`, `Address`, `MaxConns`, `ConnectTimeout`, `ForbiddenPaths`, `DefaultDocRoot`, `DefaultIndexNames`, `FileExtensions` | `json` | `frontend-call` |
 | `PUT` | `/api/webservice/cgi/{param}/{param2}` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/webservice/discovery/active` | `read-only` | — | — | `json` | `frontend-call` |
 | `POST` | `/api/webservice/discovery/cancel` | `mutating` | — | `jobId` | `json` | `frontend-call` |
 | `GET` | `/api/webservice/discovery/latest` | `read-only` | `ruleKey` | — | `json` | `frontend-call` |
-| `POST` | `/api/webservice/discovery/start` | `dangerous` | — | 有 | `json` | `frontend-call` |
-| `UNKNOWN` | `/api/webservice/discovery/status` | `unknown` | — | — | `unknown` | `route-literal-only` |
+| `POST` | `/api/webservice/discovery/start` | `dangerous` | — | `ruleKey`, `targets`, `ports`, `excludePorts`, `domainSuffix`, `timeoutMs`, `maxScanDurationMs`, `maxHostRetriesPerEndpoint`, `allowedRedirectHosts`, `maxHosts`, `maxPortTargets`, `tcpConcurrency`, `probeConcurrency`, `tcpCompatibilityMode`, `maxRedirects` | `json` | `frontend-call` |
 | `GET` | `/api/webservice/discovery/status/{param}` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/webservice/frontend-state` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/webservice/frontend-state` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/webservice/frontend-state` | `mutating` | — | `listTabLayout`, `viewMode` | `json` | `frontend-call` |
 | `DELETE` | `/api/webservice/groups` | `mutating` | `key` | — | `json` | `frontend-call` |
 | `GET` | `/api/webservice/groups` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/webservice/groups` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/webservice/groups` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/webservice/groups/orderadjustment` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/webservice/groups` | `mutating` | — | `Name` | `json` | `frontend-call` |
+| `PUT` | `/api/webservice/groups` | `mutating` | — | `Key`, `Name` | `json` | `frontend-call` |
+| `PUT` | `/api/webservice/groups/orderadjustment` | `mutating` | — | `array<string>` | `json` | `frontend-call` |
 | `GET` | `/api/webservice/groups/subrulecount` | `read-only` | `groupKey` | — | `json` | `frontend-call` |
 | `GET` | `/api/webservice/lastlogs` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/webservice/lightpanel/configtemplate` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/webservice/lightpanel/configtemplate` | `mutating` | — | `type`, `path`, `rcloneKey`, `rcloneRoot`, `storeKey`, `storeRoot` | `json` | `frontend-call` |
 | `GET` | `/api/webservice/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
-| `UNKNOWN` | `/api/webservice/rule` | `unknown` | — | — | `unknown` | `route-literal-only` |
 | `DELETE` | `/api/webservice/rule/{param}` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/webservice/rule/{param}` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/webservice/rule/{param}` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/webservice/rule/{param}` | `mutating` | — | `AutoOptionsFirewall`, `CorazaWAFInstance`, `DefaultProxy`, `DiaglogShowMode`, `DisableStatistics`, `ECDHPrivateKey`, `ECH`, `ECHConfigList`, `ECHDomain`, `Enable`, `EnableTLS`, `FrontRuleListDisplay`, `GlobalAllowAllThirdAuthUsers`, `GlobalAllowThirdUserSkipTwoFA`, `GlobalBasicAuthUserList`, `GlobalThirdAuthLoginUserList`, `Http3`, `IPFilterRule`, `ListenIP`, `ListenPort`, `MaxContinuous404Count`, `MaxCorazaInterceptionCount`, `MaxHeaderKBytes`, `Network`, `ProxyList`, `ReceRateLimit`, `ReceRateLimitEnabled`, `RuleKey`, `RuleName`, `SendRateLimit`, `SendRateLimitEnabled`, `SingleConnReceRateLimit`, `SingleConnReceRateLimitEnabled`, `SingleConnSendRateLimit`, `SingleConnSendRateLimitEnabled`, `SingleIPConnectionsLimit`, `SingleIPConnectionsLimitEnabled`, `SingleIPReceRateLimit`, `SingleIPReceRateLimitEnabled`, `SingleIPSendRateLimit`, `SingleIPSendRateLimitEnabled`, `TLSMinVersion` | `json` | `frontend-call` |
 | `GET` | `/api/webservice/rule/{param}/{param2}/{param3}` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/webservice/ruleorderadjustment` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/webservice/ruleorderadjustment` | `mutating` | — | `array<string>` | `json` | `frontend-call` |
 | `GET` | `/api/webservice/rules` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/webservice/rules` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/webservice/rules` | `mutating` | — | `AutoOptionsFirewall`, `CorazaWAFInstance`, `DefaultProxy`, `DiaglogShowMode`, `DisableStatistics`, `ECDHPrivateKey`, `ECH`, `ECHConfigList`, `ECHDomain`, `Enable`, `EnableTLS`, `FrontRuleListDisplay`, `GlobalAllowAllThirdAuthUsers`, `GlobalAllowThirdUserSkipTwoFA`, `GlobalBasicAuthUserList`, `GlobalThirdAuthLoginUserList`, `Http3`, `IPFilterRule`, `ListenIP`, `ListenPort`, `MaxContinuous404Count`, `MaxCorazaInterceptionCount`, `MaxHeaderKBytes`, `Network`, `ProxyList`, `ReceRateLimit`, `ReceRateLimitEnabled`, `RuleKey`, `RuleName`, `SendRateLimit`, `SendRateLimitEnabled`, `SingleConnReceRateLimit`, `SingleConnReceRateLimitEnabled`, `SingleConnSendRateLimit`, `SingleConnSendRateLimitEnabled`, `SingleIPConnectionsLimit`, `SingleIPConnectionsLimitEnabled`, `SingleIPReceRateLimit`, `SingleIPReceRateLimitEnabled`, `SingleIPSendRateLimit`, `SingleIPSendRateLimitEnabled`, `TLSMinVersion` | `json` | `frontend-call` |
 | `GET` | `/api/webservice/rules_lite` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/webservice/settings` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/webservice/settings` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/webservice/settings` | `mutating` | — | `LogLevel`, `Statistics`, `WebAuthSessionTTLMinutes` | `json` | `frontend-call` |
 | `GET` | `/api/webservice/statistics/capabilities` | `read-only` | — | — | `json` | `frontend-call` |
 | `POST` | `/api/webservice/statistics/clear` | `dangerous` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/webservice/statistics/daily` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/webservice/statistics/events` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/webservice/statistics/export` | `read-only` | — | — | `blob` | `frontend-call` |
 | `GET` | `/api/webservice/statistics/geo/aggregate` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/webservice/statistics/geo/rebuild` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/webservice/statistics/geo/rebuild` | `mutating` | — | `mode` | `json` | `frontend-call` |
 | `POST` | `/api/webservice/statistics/geo/rebuild/cancel` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/webservice/statistics/geo/rebuild/status` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/webservice/statistics/history` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/webservice/statistics/import` | `dangerous` | `mode` | 有 | `json` | `frontend-call` |
+| `POST` | `/api/webservice/statistics/import` | `dangerous` | `mode` | `file` | `json` | `frontend-call` |
 | `POST` | `/api/webservice/statistics/import/cancel` | `dangerous` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/webservice/statistics/import/start` | `dangerous` | `mode` | 有 | `json` | `frontend-call` |
+| `POST` | `/api/webservice/statistics/import/start` | `dangerous` | `mode` | `file` | `json` | `frontend-call` |
 | `GET` | `/api/webservice/statistics/import/status` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/webservice/statistics/ip-info-refresh` | `mutating` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/webservice/statistics/ip-info-refresh` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/webservice/statistics/ip-info-refresh` | `mutating` | — | `mode` | `json` | `frontend-call` |
 | `POST` | `/api/webservice/statistics/ip-info-refresh/cancel` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/webservice/statistics/ip-profile` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/webservice/statistics/meta` | `read-only` | — | — | `json` | `frontend-call` |
@@ -844,44 +800,43 @@
 | `GET` | `/api/webservice/statistics/waf/summary` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/webservice/webauth/sessions` | `read-only` | — | — | `json` | `frontend-call` |
 | `POST` | `/api/webservice/webauth/sessions/clear-subrule` | `mutating` | — | `ruleKey`, `subRuleKey` | `json` | `frontend-call` |
-| `POST` | `/api/webservice/webauth/sessions/delete` | `dangerous` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/webservice/webauth/sessions/delete` | `dangerous` | — | `sessionIds` | `json` | `frontend-call` |
 | `DELETE` | `/api/webservice/webauth/sessions/{param}` | `mutating` | — | — | `json` | `frontend-call` |
 | `DELETE` | `/api/webservice/{param}/disconnect/{param2}` | `dangerous` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/webservice/{param}/httpserver/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
-| `PUT` | `/api/webservice/{param}/subrulegrouporderupdate` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/webservice/{param}/subrulegrouporderupdate` | `mutating` | — | `subRulesMap`, `orderList`, `defaultProxyGroupKey` | `json` | `frontend-call` |
 | `GET` | `/api/webservice/{param}/{param2}/accessdetail` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
 | `GET` | `/api/webservice/{param}/{param2}/corazalogs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
 | `GET` | `/api/webservice/{param}/{param2}/lastlogs` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/webservice/{param}/{param2}/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
 | `DELETE` | `/api/webservice/{param}/{param2}/updatefolder/cancel/{param3}` | `mutating` | — | — | `json` | `frontend-call` |
 | `POST` | `/api/webservice/{param}/{param2}/updatefolder/confirm` | `mutating` | — | `tempId` | `json` | `frontend-call` |
-| `POST` | `/api/webservice/{param}/{param2}/updatefolder/upload` | `dangerous` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/webservice/{param}/{param2}/updatefolder/upload` | `dangerous` | — | `file`, `mountIndex` | `json` | `frontend-call` |
 
 ## `webterminal`
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
 | `GET` | `/api/webterminal/config` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/webterminal/config` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/webterminal/connectionorderadjustment` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/webterminal/config` | `mutating` | — | `bufferSize`, `heartbeatInterval`, `idleTimeout`, `maxSessions`, `sessionKeepAlive` | `json` | `frontend-call` |
+| `PUT` | `/api/webterminal/connectionorderadjustment` | `mutating` | — | `array<string>` | `json` | `frontend-call` |
 | `GET` | `/api/webterminal/connections` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/webterminal/connections` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/webterminal/connections` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `POST` | `/api/webterminal/connections/test` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/webterminal/connections` | `mutating` | — | `key`, `name`, `type`, `remark`, `localConfig`, `sshConfig`, `telnetConfig`, `shortcuts`, `quickAccessDirs` | `json` | `frontend-call` |
+| `PUT` | `/api/webterminal/connections` | `mutating` | — | `key`, `name`, `type`, `remark`, `localConfig`, `sshConfig`, `telnetConfig`, `shortcuts`, `quickAccessDirs` | `json` | `frontend-call` |
+| `POST` | `/api/webterminal/connections/test` | `mutating` | — | `key`, `name`, `type`, `remark`, `localConfig`, `sshConfig`, `telnetConfig`, `shortcuts`, `quickAccessDirs` | `json` | `frontend-call` |
 | `DELETE` | `/api/webterminal/connections/{param}` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/webterminal/connections/{param}` | `read-only` | — | — | `json` | `frontend-call` |
 | `PUT` | `/api/webterminal/connections/{param}/quickaccess` | `mutating` | — | `quickAccessDirs` | `json` | `frontend-call` |
 | `DELETE` | `/api/webterminal/connections/{param}/ssh-host-key` | `mutating` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/webterminal/connections/{param}/ssh-host-key` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/webterminal/connections/{param}/ssh-host-key` | `mutating` | — | `host`, `port`, `hostname`, `hostKey`, `hostKeyFingerprint`, `hostKeyTrustedAt`, `keyType`, `previousHostKeyFingerprint`, `changed` | `json` | `frontend-call` |
 | `GET` | `/api/webterminal/globalshortcuts` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/webterminal/globalshortcuts` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/webterminal/globalshortcuts` | `mutating` | — | `array<object>` | `json` | `frontend-call` |
 | `GET` | `/api/webterminal/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
 | `GET` | `/api/webterminal/sessions` | `read-only` | — | — | `json` | `frontend-call` |
 | `DELETE` | `/api/webterminal/sessions/{param}` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/webterminal/sessions/{param}` | `read-only` | — | — | `json` | `frontend-call` |
 | `PUT` | `/api/webterminal/sessions/{param}/remark` | `mutating` | — | `remark` | `json` | `frontend-call` |
 | `GET` | `/api/webterminal/sessions/{param}/stats` | `read-only` | — | — | `json` | `frontend-call` |
-| `UNKNOWN` | `/api/webterminal/sftp` | `unknown` | — | — | `unknown` | `route-literal-only` |
 | `POST` | `/api/webterminal/sftp/{param}/chmod` | `dangerous` | — | `path`, `permissions` | `json` | `frontend-call` |
 | `POST` | `/api/webterminal/sftp/{param}/compress` | `dangerous` | — | `output_name`, `output_path`, `paths` | `json` | `frontend-call` |
 | `POST` | `/api/webterminal/sftp/{param}/copy` | `dangerous` | — | `dst_path`, `src_path` | `json` | `frontend-call` |
@@ -893,13 +848,13 @@
 | `DELETE` | `/api/webterminal/sftp/{param}/remove` | `dangerous` | `path` | — | `json` | `frontend-call` |
 | `POST` | `/api/webterminal/sftp/{param}/rename` | `dangerous` | — | `newPath`, `oldPath` | `json` | `frontend-call` |
 | `POST` | `/api/webterminal/sftp/{param}/touch` | `mutating` | — | `path` | `json` | `frontend-call` |
-| `POST` | `/api/webterminal/sftp/{param}/upload` | `dangerous` | — | 有 | `json` | `frontend-call` |
-| `POST` | `/api/webterminal/sftp/{param}/upload-streaming` | `mutating` | `filename`, `path` | 有 | `json` | `frontend-call` |
+| `POST` | `/api/webterminal/sftp/{param}/upload` | `dangerous` | — | `file`, `path`, `filename` | `json` | `frontend-call` |
+| `POST` | `/api/webterminal/sftp/{param}/upload-streaming` | `mutating` | `path`, `filename` | `string` | `json` | `frontend-call` |
 | `POST` | `/api/webterminal/sftp/{param}/write` | `dangerous` | — | `content`, `path` | `json` | `frontend-call` |
 | `GET` | `/api/webterminal/shells` | `read-only` | — | — | `json` | `frontend-call` |
 | `DELETE` | `/api/webterminal/splitlayout` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/webterminal/splitlayout` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/webterminal/splitlayout` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/webterminal/splitlayout` | `mutating` | — | `direction`, `isQuadLayout`, `panes` | `json` | `frontend-call` |
 
 ## `wol`
 
@@ -907,16 +862,16 @@
 |---|---|---|---|---|---|---|
 | `GET` | `/api/wol/client/state` | `read-only` | — | — | `json` | `frontend-call` |
 | `DELETE` | `/api/wol/device` | `mutating` | `key` | — | `json` | `frontend-call` |
-| `POST` | `/api/wol/device` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `PUT` | `/api/wol/device` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/wol/device` | `mutating` | — | `Key`, `DeviceName`, `MacList`, `BroadcastIPs`, `ProbeTargets`, `Port`, `Relay`, `Repeat`, `IOT_DianDeng_Enable`, `IOT_DianDeng_AUTHKEY`, `IOT_DianDeng_InsecureSkipVerify`, `IOT_DianDengBindComponentEnable`, `IOT_DianDengBindComponent`, `IOT_Bemfa_Enable`, `IOT_Bemfa_SecretKey`, `IOT_Bemfa_Topic`, `IOT_Bemfa_InsecureSkipVerify` | `json` | `frontend-call` |
+| `PUT` | `/api/wol/device` | `mutating` | — | `Key`, `DeviceName`, `MacList`, `BroadcastIPs`, `ProbeTargets`, `Port`, `Relay`, `Repeat`, `IOT_DianDeng_Enable`, `IOT_DianDeng_AUTHKEY`, `IOT_DianDeng_InsecureSkipVerify`, `IOT_DianDengBindComponentEnable`, `IOT_DianDengBindComponent`, `IOT_Bemfa_Enable`, `IOT_Bemfa_SecretKey`, `IOT_Bemfa_Topic`, `IOT_Bemfa_InsecureSkipVerify` | `json` | `frontend-call` |
 | `GET` | `/api/wol/device/shutdown` | `dangerous` | `key` | — | `json` | `frontend-call` |
 | `GET` | `/api/wol/device/wakeup` | `mutating` | `key` | — | `json` | `frontend-call` |
-| `PUT` | `/api/wol/deviceorderadjustment` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/wol/deviceorderadjustment` | `mutating` | — | `array<string>` | `json` | `frontend-call` |
 | `GET` | `/api/wol/devices` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/wol/devices_lite` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/wol/lastlogs` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/wol/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
 | `GET` | `/api/wol/service/configure` | `read-only` | — | — | `json` | `frontend-call` |
-| `PUT` | `/api/wol/service/configure` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `PUT` | `/api/wol/service/configure` | `mutating` | — | `Client`, `Server` | `json` | `frontend-call` |
 | `GET` | `/api/wol/service/getipv4interface` | `read-only` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/wol/webhooktest` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/wol/webhooktest` | `mutating` | — | `WebhookURL`, `WebhookMethod`, `WebhookRequestBody`, `WebhookProxy`, `WebhookProxyAddr`, `WebhookProxyUser`, `WebhookProxyPassword`, `WebhookHeaders`, `WebhookSuccessContent`, `WebhookDisableCallbackSuccessContentCheck`, `RetryCount`, `RetryInterval` | `json` | `frontend-call` |
