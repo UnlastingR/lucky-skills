@@ -17793,7 +17793,7 @@
           "lucky_ipfilter-CGTD3trT.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend AutoRecord configuration form submits this explicit object + authorized GET observed the same field names",
+        "x-schema-evidence": "frontend AutoRecord configuration form submits this explicit object; authorized GET cross-checked SafeURL/BasicAccount as strings while BasicPassword is request-only sensitive data",
         "requestBody": {
           "required": true,
           "content": {
@@ -17801,9 +17801,15 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "SafeURL": {},
-                  "BasicAccount": {},
-                  "BasicPassword": {}
+                  "SafeURL": {
+                    "type": "string"
+                  },
+                  "BasicAccount": {
+                    "type": "string"
+                  },
+                  "BasicPassword": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -19456,7 +19462,7 @@
           "lucky_ipfilter-CGTD3trT.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend PortTrap settings form passes its normalized configure object directly + authorized GET observed the same field names",
+        "x-schema-evidence": "frontend PortTrap settings form passes its normalized configure object directly; authorized GET cross-checked primitive types and AllowRuleKeys string-array shape. Empty collection fields remain arrays without invented item types",
         "requestBody": {
           "required": true,
           "content": {
@@ -19464,31 +19470,84 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "AllowRuleKeys": {},
-                  "DefaultAllowIPs": {},
-                  "Enable": {},
-                  "IPv6PrefixLen": {},
-                  "Script": {},
-                  "ScriptEnable": {},
-                  "ScriptTriggerInterval": {},
-                  "TCPPorts": {},
-                  "TargetRuleKey": {},
-                  "UDPPorts": {},
-                  "WebhookBody": {},
-                  "WebhookDisableCallbackSuccessContentCheck": {},
-                  "WebhookEnable": {},
-                  "WebhookHeaders": {},
-                  "WebhookMethod": {},
-                  "WebhookProxy": {},
-                  "WebhookProxyAddr": {},
-                  "WebhookProxyPassword": {},
-                  "WebhookProxyUser": {},
-                  "WebhookRetryCount": {},
-                  "WebhookRetryInterval": {},
-                  "WebhookSuccessContent": {},
-                  "WebhookTimeout": {},
-                  "WebhookTriggerInterval": {},
-                  "WebhookURL": {}
+                  "AllowRuleKeys": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "DefaultAllowIPs": {
+                    "type": "array"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "IPv6PrefixLen": {
+                    "type": "integer"
+                  },
+                  "Script": {
+                    "type": "string"
+                  },
+                  "ScriptEnable": {
+                    "type": "boolean"
+                  },
+                  "ScriptTriggerInterval": {
+                    "type": "integer"
+                  },
+                  "TCPPorts": {
+                    "type": "array"
+                  },
+                  "TargetRuleKey": {
+                    "type": "string"
+                  },
+                  "UDPPorts": {
+                    "type": "array"
+                  },
+                  "WebhookBody": {
+                    "type": "string"
+                  },
+                  "WebhookDisableCallbackSuccessContentCheck": {
+                    "type": "boolean"
+                  },
+                  "WebhookEnable": {
+                    "type": "boolean"
+                  },
+                  "WebhookHeaders": {
+                    "type": "array"
+                  },
+                  "WebhookMethod": {
+                    "type": "string"
+                  },
+                  "WebhookProxy": {
+                    "type": "string"
+                  },
+                  "WebhookProxyAddr": {
+                    "type": "string"
+                  },
+                  "WebhookProxyPassword": {
+                    "type": "string"
+                  },
+                  "WebhookProxyUser": {
+                    "type": "string"
+                  },
+                  "WebhookRetryCount": {
+                    "type": "integer"
+                  },
+                  "WebhookRetryInterval": {
+                    "type": "integer"
+                  },
+                  "WebhookSuccessContent": {
+                    "type": "array"
+                  },
+                  "WebhookTimeout": {
+                    "type": "integer"
+                  },
+                  "WebhookTriggerInterval": {
+                    "type": "integer"
+                  },
+                  "WebhookURL": {
+                    "type": "string"
+                  }
                 }
               }
             }

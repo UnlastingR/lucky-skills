@@ -491,14 +491,14 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 160:
+    if len(untyped_request_routes) > 147:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 160 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 147 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 20:
-        fail(f"response-schema coverage regressed below 20 routes: {response_schema_count}")
+    if response_schema_count < 39:
+        fail(f"response-schema coverage regressed below 39 routes: {response_schema_count}")
 
     ddns_task = merged_by_key[("POST", "/api/ddns")].request_body_schema
     if not isinstance(ddns_task, dict):
@@ -533,6 +533,69 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     )
     if redirect_type != {"type": "string"}:
         fail("WebService DefaultProxy.OtherParams.RedirectType schema regressed")
+
+    autorecord_schema = merged_by_key[("PUT", "/api/ipfliter/autorecordipconf")].request_body_schema
+    if not isinstance(autorecord_schema, dict) or autorecord_schema.get("properties", {}).get(
+        "BasicPassword"
+    ) != {"type": "string"}:
+        fail("IPFilter AutoRecord request schema regressed")
+    porttrap_schema = merged_by_key[("PUT", "/api/ipfliter/porttrapconf")].request_body_schema
+    if not isinstance(porttrap_schema, dict) or porttrap_schema.get("properties", {}).get(
+        "AllowRuleKeys"
+    ) != {"type": "array", "items": {"type": "string"}}:
+        fail("IPFilter PortTrap request schema regressed")
+
+    def schema_property_names(schema: object) -> set[str]:
+        if isinstance(schema, list):
+            names: set[str] = set()
+            for entry in schema:
+                names.update(schema_property_names(entry))
+            return names
+        if not isinstance(schema, dict):
+            return set()
+        names = set(schema.get("properties", {})) if isinstance(schema.get("properties"), dict) else set()
+        for value in schema.values():
+            if isinstance(value, (dict, list)):
+                names.update(schema_property_names(value))
+        return names
+
+    sensitive_response_fields = {
+        ("GET", "/api/ssl"): {
+            "CertBase64",
+            "KeyBase64",
+            "IssuerCertificate",
+            "acmeDNSSecret",
+            "acmeHMAC",
+            "preACMEHMAC",
+            "acmeProxyPassword",
+            "prePrivateKeyBase64",
+        },
+        ("GET", "/api/ssl/setting"): {"globalPrivateKey"},
+        ("GET", "/api/ssl/credential-sources"): {"secretValue", "proxyPassword"},
+        ("GET", "/api/ssl/{param}"): {
+            "CertBase64",
+            "KeyBase64",
+            "IssuerCertificate",
+            "acmeDNSSecret",
+            "acmeHMAC",
+            "preACMEHMAC",
+            "acmeProxyPassword",
+            "prePrivateKeyBase64",
+        },
+        ("GET", "/api/ipfliter/porttrapconf"): {"WebhookProxyPassword"},
+        ("GET", "/api/ipfliter/autorecordipconf"): {"BasicPassword"},
+        ("GET", "/api/stun/configure"): {"WebhookProxyPassword"},
+        ("GET", "/api/ddns/configure"): {"WebhookProxyPassword"},
+        ("GET", "/api/ddns/credential-sources"): {"secretValue", "proxyPassword"},
+        ("GET", "/api/ddns/task/{param}"): {"Secret", "HttpClientProxyPassword", "WebhookProxyPassword"},
+    }
+    for route_key, forbidden in sensitive_response_fields.items():
+        response_schema = merged_by_key[route_key].response_schema
+        if not isinstance(response_schema, dict):
+            fail(f"protected response schema missing for {route_key}")
+        leaked = schema_property_names(response_schema) & forbidden
+        if leaked:
+            fail(f"sensitive response fields leaked into documented schema for {route_key}: {sorted(leaked)}")
 
     docker_create = merged_by_key[("POST", "/api/docker/containers")].request_body_schema
     if not isinstance(docker_create, dict):
