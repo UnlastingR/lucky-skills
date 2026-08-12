@@ -497,8 +497,47 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             f"expected at most 147 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 148:
-        fail(f"response-schema coverage regressed below 148 routes: {response_schema_count}")
+    if response_schema_count < 153:
+        fail(f"response-schema coverage regressed below 153 routes: {response_schema_count}")
+
+    docker_resource_response_routes = {
+        ("GET", "/api/docker/images/{param}"),
+        ("GET", "/api/docker/images/{param}/history"),
+        ("GET", "/api/docker/images/containers"),
+        ("GET", "/api/docker/containers/{param}/stats"),
+        ("GET", "/api/docker/containers/{param}/stats-cached"),
+    }
+    for route_key in docker_resource_response_routes:
+        if not isinstance(merged_by_key[route_key].response_schema, dict):
+            fail(f"Docker resource response schema missing for {route_key}")
+
+    image_schema = merged_by_key[("GET", "/api/docker/images/{param}")].response_schema
+    image_props = image_schema.get("properties", {}).get("image", {}).get("properties", {}) if isinstance(image_schema, dict) else {}
+    if "Config" in image_props:
+        fail("Docker image inspect schema must not document Config/env/volume/port details")
+    if image_props.get("RepoTags") != {"type": "array", "items": {"type": "string"}}:
+        fail("Docker image RepoTags schema regressed")
+
+    history_schema = merged_by_key[("GET", "/api/docker/images/{param}/history")].response_schema
+    history_props = (
+        history_schema.get("properties", {}).get("history", {}).get("items", {}).get("properties", {})
+        if isinstance(history_schema, dict)
+        else {}
+    )
+    if history_props.get("CreatedBy") != {"type": "string"} or history_props.get("Tags") != {
+        "type": "array",
+        "items": {"type": "string"},
+    }:
+        fail("Docker image history schema regressed")
+
+    resource_cached_stats = merged_by_key[("GET", "/api/docker/containers/{param}/stats-cached")].response_schema
+    resource_cached_props = (
+        resource_cached_stats.get("properties", {}).get("data", {}).get("properties", {})
+        if isinstance(resource_cached_stats, dict)
+        else {}
+    )
+    if resource_cached_props.get("port_services") != {"type": "object"}:
+        fail("Docker per-container cached-stat dynamic port map schema regressed")
 
     webservice_stat_response_routes = {
         ("GET", "/api/webservice/statistics/events"),
