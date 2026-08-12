@@ -497,8 +497,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             f"expected at most 147 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 79:
-        fail(f"response-schema coverage regressed below 79 routes: {response_schema_count}")
+    if response_schema_count < 86:
+        fail(f"response-schema coverage regressed below 86 routes: {response_schema_count}")
 
     ddns_task = merged_by_key[("POST", "/api/ddns")].request_body_schema
     if not isinstance(ddns_task, dict):
@@ -558,6 +558,19 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             if isinstance(value, (dict, list)):
                 names.update(schema_property_names(value))
         return names
+
+    ssl_setting_response = merged_by_key[("GET", "/api/ssl/setting")].response_schema
+    if not isinstance(ssl_setting_response, dict):
+        fail("SSL settings response schema is missing")
+    ssl_setting_props = ssl_setting_response.get("properties", {})
+    if ssl_setting_props.get("syncClientList") != {
+        "type": ["array", "null"],
+        "items": {},
+    }:
+        fail("SSL syncClientList response schema regressed")
+    certificate_check_time = ssl_setting_props.get("certificateCheckTime", {})
+    if not isinstance(certificate_check_time, dict) or "syncClientList" in certificate_check_time:
+        fail("SSL syncClientList must remain a top-level settings response field")
 
     sensitive_response_fields = {
         ("GET", "/api/ssl"): {

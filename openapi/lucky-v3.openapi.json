@@ -20746,11 +20746,38 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "hasMore": {
+                      "type": "boolean"
+                    },
+                    "logs": {
+                      "type": "array",
+                      "items": {}
+                    },
+                    "nextBeforeSeq": {
+                      "type": "string"
+                    },
+                    "partial": {
+                      "type": "boolean"
+                    },
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "scannedFiles": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    },
+                    "totalExact": {
+                      "type": "boolean"
+                    }
+                  }
                 }
               }
             }
@@ -20768,7 +20795,8 @@
         },
         "x-evidence-confidence": "runtime-verified",
         "x-evidence-bundles": [],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/logscenter/query observed the top-level envelope and primitive JSON types; current logs array is empty so log item schema remains unspecified"
       }
     },
     "/api/lucky/service": {
@@ -26610,14 +26638,14 @@
                         "Second": {
                           "type": "integer"
                         }
-                      },
-                      "syncClientList": {
-                        "type": [
-                          "array",
-                          "null"
-                        ],
-                        "items": {}
                       }
+                    },
+                    "syncClientList": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
                     }
                   }
                 }
