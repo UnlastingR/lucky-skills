@@ -497,8 +497,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             f"expected at most 147 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 182:
-        fail(f"response-schema coverage regressed below 182 routes: {response_schema_count}")
+    if response_schema_count < 188:
+        fail(f"response-schema coverage regressed below 188 routes: {response_schema_count}")
 
     safe_utility_response_routes = {
         ("GET", "/api/ipfliter/porttrap/blockedips"),
@@ -514,6 +514,12 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         ("GET", "/api/webservice/statistics/recent-ips/visits"),
         ("GET", "/api/ssl/syncclients"),
         ("GET", "/api/thirdPartyAuthManager/list"),
+        ("GET", "/api/webterminal/config"),
+        ("GET", "/api/webterminal/connections"),
+        ("GET", "/api/webterminal/globalshortcuts"),
+        ("GET", "/api/webterminal/sessions"),
+        ("GET", "/api/webterminal/shells"),
+        ("GET", "/api/webterminal/splitlayout"),
     }
     for route_key in safe_utility_response_routes:
         if not isinstance(merged_by_key[route_key].response_schema, dict):
@@ -576,6 +582,49 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         twofa_props.get(field) != {"type": "boolean"} for field in ("enable", "validated", "hasKey")
     ):
         fail("module 2FA status schema must remain boolean-only and secret-free")
+
+    webterminal_config = merged_by_key[("GET", "/api/webterminal/config")].response_schema
+    webterminal_config_props = (
+        webterminal_config.get("properties", {}).get("config", {}).get("properties", {})
+        if isinstance(webterminal_config, dict)
+        else {}
+    )
+    if set(webterminal_config_props) != {
+        "idleTimeout",
+        "bufferSize",
+        "heartbeatInterval",
+        "maxSessions",
+        "sessionKeepAlive",
+    } or any(value != {"type": "integer"} for value in webterminal_config_props.values()):
+        fail("WebTerminal safe numeric config schema regressed")
+
+    for route_key in {
+        ("GET", "/api/webterminal/connections"),
+        ("GET", "/api/webterminal/sessions"),
+    }:
+        response_schema = merged_by_key[route_key].response_schema
+        collection = response_schema.get("properties", {}).get("list") if isinstance(response_schema, dict) else None
+        if collection != {"type": ["array", "null"], "items": {}}:
+            fail(f"WebTerminal session/connection item schema must remain unspecified for {route_key}")
+
+    shortcuts = merged_by_key[("GET", "/api/webterminal/globalshortcuts")].response_schema
+    shortcut_items = shortcuts.get("properties", {}).get("shortcuts") if isinstance(shortcuts, dict) else None
+    if shortcut_items != {"type": ["array", "null"], "items": {}}:
+        fail("WebTerminal shortcut command/key item schema must remain unspecified")
+
+    shells = merged_by_key[("GET", "/api/webterminal/shells")].response_schema
+    shell_props = (
+        shells.get("properties", {}).get("shells", {}).get("items", {}).get("properties", {})
+        if isinstance(shells, dict)
+        else {}
+    )
+    if shell_props != {"name": {"type": "string"}, "platform": {"type": "string"}}:
+        fail("WebTerminal shell schema must remain path-free")
+
+    splitlayout = merged_by_key[("GET", "/api/webterminal/splitlayout")].response_schema
+    splitlayout_props = splitlayout.get("properties", {}) if isinstance(splitlayout, dict) else {}
+    if splitlayout_props.get("layout") != {"type": ["object", "null"]}:
+        fail("WebTerminal split-layout details must remain unspecified")
 
     nullable_list_response_routes = {
         ("GET", "/api/portforwards"): ("list", "Moduledisable"),

@@ -1984,6 +1984,48 @@
       "schema_evidence": "authorized GET /api/thirdPartyAuthManager/list observed list=null on this instance; provider/account/credential item fields remain unspecified"
     },
     {
+      "path": "/api/webterminal/config",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "config": {"type": "object", "properties": {"idleTimeout": {"type": "integer"}, "bufferSize": {"type": "integer"}, "heartbeatInterval": {"type": "integer"}, "maxSessions": {"type": "integer"}, "sessionKeepAlive": {"type": "integer"}}}}},
+      "schema_evidence": "authorized GET /api/webterminal/config observed only numeric terminal session/heartbeat/buffer limits; no credentials, commands or shell paths are documented"
+    },
+    {
+      "path": "/api/webterminal/connections",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET /api/webterminal/connections observed list=null; connection item/endpoint/session fields remain unspecified"
+    },
+    {
+      "path": "/api/webterminal/globalshortcuts",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "shortcuts": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET /api/webterminal/globalshortcuts observed shortcuts=null; shortcut command/key item fields remain unspecified"
+    },
+    {
+      "path": "/api/webterminal/sessions",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET /api/webterminal/sessions observed list=null; terminal session item fields remain unspecified"
+    },
+    {
+      "path": "/api/webterminal/shells",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "platform": {"type": "string"}, "shells": {"type": "array", "items": {"type": "object", "properties": {"name": {"type": "string"}, "platform": {"type": "string"}}}}}},
+      "schema_evidence": "authorized GET /api/webterminal/shells observed shell name/platform types; actual shell names/paths were not retained and the path field is intentionally omitted from the documented schema"
+    },
+    {
+      "path": "/api/webterminal/splitlayout",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "exists": {"type": "boolean"}, "layout": {"type": ["object", "null"]}}},
+      "schema_evidence": "authorized GET /api/webterminal/splitlayout observed exists=false and layout=null; persisted layout detail schema remains unspecified"
+    },
+    {
       "path": "/api/wol/client/state",
       "method": "GET",
       "risk": "read-only",
