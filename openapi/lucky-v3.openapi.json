@@ -2169,11 +2169,20 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "list": {
+                      "type": "array",
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -2193,7 +2202,8 @@
         "x-evidence-bundles": [
           "lucky_panel-599cSpUA.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/cron/groups returned an empty list; envelope is verified while group item schema remains unspecified"
       },
       "post": {
         "summary": "Lucky frontend call: POST /api/cron/groups",
@@ -2376,11 +2386,19 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "states": {
+                      "type": "object"
+                    }
+                  }
                 }
               }
             }
@@ -2400,7 +2418,8 @@
         "x-evidence-bundles": [
           "lucky_panel-599cSpUA.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/cron/groups/collapsed/states returned an empty dynamic state object; value schema is intentionally unspecified"
       }
     },
     "/api/cron/groups/orderadjustment": {
@@ -2670,11 +2689,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "list": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -2694,7 +2725,8 @@
         "x-evidence-bundles": [
           "lucky_panel-599cSpUA.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/cron/list returned null list on this instance; task item schema is intentionally not guessed"
       },
       "post": {
         "summary": "Lucky frontend call: POST /api/cron/list",
@@ -21615,11 +21647,30 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "currentDefaultCacheDir": {
+                      "type": "string"
+                    },
+                    "globalConfig": {
+                      "type": "object",
+                      "properties": {
+                        "DefaultCaCheDir": {
+                          "type": "string"
+                        },
+                        "UploadFileTmpDir": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -21639,7 +21690,8 @@
         "x-evidence-bundles": [
           "lucky_rclone-sFF3mpk8.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/rclone/globalconfig observed only envelope/config field names and primitive types; live filesystem paths were not retained"
       },
       "put": {
         "summary": "Lucky frontend call: PUT /api/rclone/globalconfig",
@@ -21966,11 +22018,26 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "os": {
+                      "type": "string"
+                    },
+                    "list": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -21990,7 +22057,8 @@
         "x-evidence-bundles": [
           "lucky_rclone-sFF3mpk8.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/rclone/remotelist returned null list on this instance; envelope and nullable-list contract are documented while remote item schema remains unspecified"
       },
       "post": {
         "summary": "Lucky frontend call: POST /api/rclone/remotelist",
@@ -22194,11 +22262,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "list": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -22220,6 +22300,7 @@
           "lucky_rclone-sFF3mpk8.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/rclone/remotelistlite?vfs=false returned null list; only envelope and nullable-list shape are claimed",
         "parameters": [
           {
             "name": "vfs",
@@ -22293,11 +22374,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "list": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -22317,7 +22410,8 @@
         "x-evidence-bundles": [
           "lucky_rclone-sFF3mpk8.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/rclone/sync/list returned null list on this instance; sync item schema is intentionally not guessed"
       },
       "post": {
         "summary": "Lucky frontend call: POST /api/rclone/sync/list",
@@ -27189,11 +27283,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "list": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -27214,7 +27320,8 @@
           "lucky_index-DND3_xvE.js",
           "lucky_storagemanagement-CxTMWo8S.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/storagemanagement/litelist returned null list; storage item schema remains unspecified"
       }
     },
     "/api/storagemanagement/logs": {
@@ -28330,11 +28437,94 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "configure": {
+                      "type": "object",
+                      "properties": {
+                        "Enable": {
+                          "type": "boolean"
+                        },
+                        "MountList": {
+                          "type": [
+                            "array",
+                            "null"
+                          ],
+                          "items": {}
+                        },
+                        "BaseURL": {
+                          "type": "string"
+                        },
+                        "Port": {
+                          "type": "string"
+                        },
+                        "Address": {
+                          "type": "string"
+                        },
+                        "DBFile": {
+                          "type": "string"
+                        },
+                        "CacheDir": {
+                          "type": "string"
+                        },
+                        "IMGProcessors": {
+                          "type": "integer"
+                        },
+                        "DisableThumbnails": {
+                          "type": "boolean"
+                        },
+                        "DisablePreviewResize": {
+                          "type": "boolean"
+                        },
+                        "DisableExec": {
+                          "type": "boolean"
+                        },
+                        "DisableTypeDetectionByHeader": {
+                          "type": "boolean"
+                        },
+                        "TokenExpirationHour": {
+                          "type": "integer"
+                        },
+                        "FilePerm": {
+                          "type": "string"
+                        },
+                        "DirPerm": {
+                          "type": "string"
+                        },
+                        "ListenNetwork": {
+                          "type": "string"
+                        },
+                        "TLSEnable": {
+                          "type": "boolean"
+                        },
+                        "TLSListenPort": {
+                          "type": "integer"
+                        },
+                        "HTTPEnable": {
+                          "type": "boolean"
+                        },
+                        "AutoFirewall": {
+                          "type": "boolean"
+                        },
+                        "TrustHostList": {
+                          "type": "string"
+                        },
+                        "ConfVersion": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -28354,7 +28544,8 @@
         "x-evidence-bundles": [
           "lucky_panel-D9SxgvCq.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/third/filebrowser/configure observed field names/types only; RedisCacheUrl is intentionally omitted because it may embed credentials, and live filesystem paths were not retained"
       },
       "put": {
         "summary": "Lucky frontend call: PUT /api/third/filebrowser/configure",
@@ -28602,11 +28793,25 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "boolean"
+                    },
+                    "errMsg": {
+                      "type": "string"
+                    },
+                    "usageStatMap": {
+                      "type": "object"
+                    }
+                  }
                 }
               }
             }
@@ -28626,7 +28831,8 @@
         "x-evidence-bundles": [
           "lucky_panel-D9SxgvCq.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/third/filebrowser/status observed status envelope; current usageStatMap was empty so dynamic value schema remains unspecified"
       }
     },
     "/api/thirdPartyAuthManager/config": {
@@ -36921,11 +37127,30 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "list": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    },
+                    "lastLogs": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -36945,7 +37170,8 @@
         "x-evidence-bundles": [
           "lucky_useWolI18n-D9PD6Ww6.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/wol/devices returned null device/log collections; device and log item schemas remain unspecified"
       }
     },
     "/api/wol/devices_lite": {
@@ -36963,11 +37189,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "list": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -36987,7 +37225,8 @@
         "x-evidence-bundles": [
           "lucky_useWolI18n-D9PD6Ww6.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/wol/devices_lite returned null list; only the response envelope and nullable-list shape are documented"
       }
     },
     "/api/wol/lastlogs": {
@@ -37103,11 +37342,150 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "ClientState": {
+                      "type": "string"
+                    },
+                    "ClientStateMsg": {
+                      "type": "string"
+                    },
+                    "serviceStatus": {
+                      "type": "integer"
+                    },
+                    "configure": {
+                      "type": "object",
+                      "properties": {
+                        "Server": {
+                          "type": "object",
+                          "properties": {
+                            "Enable": {
+                              "type": "boolean"
+                            },
+                            "QuickControl": {
+                              "type": "boolean"
+                            },
+                            "QuickControlBasicAuth": {
+                              "type": "boolean"
+                            },
+                            "QuickControlBasicAuthUser": {
+                              "type": "string"
+                            },
+                            "WebhookEnable": {
+                              "type": "boolean"
+                            },
+                            "WebhookUpLine": {
+                              "type": "boolean"
+                            },
+                            "WebhookDownLine": {
+                              "type": "boolean"
+                            },
+                            "WebhookURL": {
+                              "type": "string"
+                            },
+                            "WebhookMethod": {
+                              "type": "string"
+                            },
+                            "WebhookHeaders": {
+                              "type": [
+                                "array",
+                                "null"
+                              ],
+                              "items": {}
+                            },
+                            "WebhookRequestBody": {
+                              "type": "string"
+                            },
+                            "WebhookDisableCallbackSuccessContentCheck": {
+                              "type": "boolean"
+                            },
+                            "WebhookSuccessContent": {
+                              "type": [
+                                "array",
+                                "null"
+                              ],
+                              "items": {}
+                            },
+                            "WebhookNetworkType": {
+                              "type": "string"
+                            },
+                            "WebhookLocalAddr": {
+                              "type": "string"
+                            },
+                            "WebhookProxy": {
+                              "type": "string"
+                            },
+                            "WebhookProxyAddr": {
+                              "type": "string"
+                            },
+                            "WebhookProxyUser": {
+                              "type": "string"
+                            },
+                            "WebhookInsecureSkipVerify": {
+                              "type": "boolean"
+                            },
+                            "WebHookTimeout": {
+                              "type": "integer"
+                            },
+                            "RetryCount": {
+                              "type": "integer"
+                            },
+                            "RetryInterval": {
+                              "type": "integer"
+                            }
+                          }
+                        },
+                        "Client": {
+                          "type": "object",
+                          "properties": {
+                            "Enable": {
+                              "type": "boolean"
+                            },
+                            "ServerURL": {
+                              "type": "string"
+                            },
+                            "InsecureSkipVerify": {
+                              "type": "boolean"
+                            },
+                            "Relay": {
+                              "type": "boolean"
+                            },
+                            "Key": {
+                              "type": "string"
+                            },
+                            "DeviceName": {
+                              "type": "string"
+                            },
+                            "Mac": {
+                              "type": "string"
+                            },
+                            "BroadcastIP": {
+                              "type": "string"
+                            },
+                            "Port": {
+                              "type": "integer"
+                            },
+                            "Repeat": {
+                              "type": "integer"
+                            },
+                            "PowerOffCMD": {
+                              "type": "string"
+                            },
+                            "UpdateTime": {
+                              "type": "integer"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -37127,7 +37505,8 @@
         "x-evidence-bundles": [
           "lucky_useWolI18n-D9PD6Ww6.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/wol/service/configure observed configuration field names/types only; server/client Token, QuickControlSafeURL, BasicAuth password and webhook proxy password are intentionally omitted from response documentation"
       },
       "put": {
         "summary": "Lucky frontend call: PUT /api/wol/service/configure",
@@ -37200,11 +37579,44 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "list": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "NetInterfaceName": {
+                            "type": "string"
+                          },
+                          "HardwareAddr": {
+                            "type": "string"
+                          },
+                          "AddressList": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "IP": {
+                                  "type": "string"
+                                },
+                                "BroadcastIP": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -37224,7 +37636,8 @@
         "x-evidence-bundles": [
           "lucky_useWolI18n-D9PD6Ww6.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/wol/service/getipv4interface observed interface/address field names and JSON types; no live interface, MAC or IP values were retained"
       }
     },
     "/api/wol/webhooktest": {

@@ -1546,6 +1546,104 @@
       "risk": "read-only",
       "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "ruleList": {"type": "array", "items": {"type": "object", "properties": {"RuleKey": {"type": "string"}, "RuleName": {"type": "string"}, "Network": {"type": "string"}, "ListenIP": {"type": "string"}, "ListenPort": {"type": "integer"}, "EnableTLS": {"type": "boolean"}, "Enable": {"type": "boolean"}, "Http3": {"type": "boolean"}, "ProxyList": {"type": "array", "items": {"type": "object", "properties": {"Key": {"type": "string"}, "Remark": {"type": "string"}, "Domains": {"type": "array", "items": {"type": "string"}}, "Locations": {"type": "array", "items": {"type": "string"}}}}}}}}, "statistics": {"type": "object", "additionalProperties": {"type": "object", "properties": {"Connections": {"type": "integer"}, "TrafficIn": {"type": "integer"}, "TrafficOut": {"type": "integer"}, "InSpeed": {"type": "integer"}, "OutSpeed": {"type": "integer"}, "CorazaProtectionTimes": {"type": "integer"}}}}}},
       "schema_evidence": "authorized GET /api/webservice/rules was reduced to generic rule-list and statistics-map types; dynamic RuleKey/subrule keys are represented with additionalProperties and no live identifiers/domains were persisted"
+    },
+    {
+      "path": "/api/rclone/globalconfig",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "currentDefaultCacheDir": {"type": "string"}, "globalConfig": {"type": "object", "properties": {"DefaultCaCheDir": {"type": "string"}, "UploadFileTmpDir": {"type": "string"}}}}},
+      "schema_evidence": "authorized GET /api/rclone/globalconfig observed only envelope/config field names and primitive types; live filesystem paths were not retained"
+    },
+    {
+      "path": "/api/rclone/remotelist",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "os": {"type": "string"}, "list": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET /api/rclone/remotelist returned null list on this instance; envelope and nullable-list contract are documented while remote item schema remains unspecified"
+    },
+    {
+      "path": "/api/rclone/remotelistlite",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET /api/rclone/remotelistlite?vfs=false returned null list; only envelope and nullable-list shape are claimed"
+    },
+    {
+      "path": "/api/rclone/sync/list",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET /api/rclone/sync/list returned null list on this instance; sync item schema is intentionally not guessed"
+    },
+    {
+      "path": "/api/cron/groups",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": "array", "items": {}}}},
+      "schema_evidence": "authorized GET /api/cron/groups returned an empty list; envelope is verified while group item schema remains unspecified"
+    },
+    {
+      "path": "/api/cron/groups/collapsed/states",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "states": {"type": "object"}}},
+      "schema_evidence": "authorized GET /api/cron/groups/collapsed/states returned an empty dynamic state object; value schema is intentionally unspecified"
+    },
+    {
+      "path": "/api/cron/list",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET /api/cron/list returned null list on this instance; task item schema is intentionally not guessed"
+    },
+    {
+      "path": "/api/wol/devices",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": ["array", "null"], "items": {}}, "lastLogs": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET /api/wol/devices returned null device/log collections; device and log item schemas remain unspecified"
+    },
+    {
+      "path": "/api/wol/devices_lite",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET /api/wol/devices_lite returned null list; only the response envelope and nullable-list shape are documented"
+    },
+    {
+      "path": "/api/wol/service/configure",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "ClientState": {"type": "string"}, "ClientStateMsg": {"type": "string"}, "serviceStatus": {"type": "integer"}, "configure": {"type": "object", "properties": {"Server": {"type": "object", "properties": {"Enable": {"type": "boolean"}, "QuickControl": {"type": "boolean"}, "QuickControlBasicAuth": {"type": "boolean"}, "QuickControlBasicAuthUser": {"type": "string"}, "WebhookEnable": {"type": "boolean"}, "WebhookUpLine": {"type": "boolean"}, "WebhookDownLine": {"type": "boolean"}, "WebhookURL": {"type": "string"}, "WebhookMethod": {"type": "string"}, "WebhookHeaders": {"type": ["array", "null"], "items": {}}, "WebhookRequestBody": {"type": "string"}, "WebhookDisableCallbackSuccessContentCheck": {"type": "boolean"}, "WebhookSuccessContent": {"type": ["array", "null"], "items": {}}, "WebhookNetworkType": {"type": "string"}, "WebhookLocalAddr": {"type": "string"}, "WebhookProxy": {"type": "string"}, "WebhookProxyAddr": {"type": "string"}, "WebhookProxyUser": {"type": "string"}, "WebhookInsecureSkipVerify": {"type": "boolean"}, "WebHookTimeout": {"type": "integer"}, "RetryCount": {"type": "integer"}, "RetryInterval": {"type": "integer"}}}, "Client": {"type": "object", "properties": {"Enable": {"type": "boolean"}, "ServerURL": {"type": "string"}, "InsecureSkipVerify": {"type": "boolean"}, "Relay": {"type": "boolean"}, "Key": {"type": "string"}, "DeviceName": {"type": "string"}, "Mac": {"type": "string"}, "BroadcastIP": {"type": "string"}, "Port": {"type": "integer"}, "Repeat": {"type": "integer"}, "PowerOffCMD": {"type": "string"}, "UpdateTime": {"type": "integer"}}}}}}},
+      "schema_evidence": "authorized GET /api/wol/service/configure observed configuration field names/types only; server/client Token, QuickControlSafeURL, BasicAuth password and webhook proxy password are intentionally omitted from response documentation"
+    },
+    {
+      "path": "/api/wol/service/getipv4interface",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": "array", "items": {"type": "object", "properties": {"NetInterfaceName": {"type": "string"}, "HardwareAddr": {"type": "string"}, "AddressList": {"type": "array", "items": {"type": "object", "properties": {"IP": {"type": "string"}, "BroadcastIP": {"type": "string"}}}}}}}}},
+      "schema_evidence": "authorized GET /api/wol/service/getipv4interface observed interface/address field names and JSON types; no live interface, MAC or IP values were retained"
+    },
+    {
+      "path": "/api/storagemanagement/litelist",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET /api/storagemanagement/litelist returned null list; storage item schema remains unspecified"
+    },
+    {
+      "path": "/api/third/filebrowser/configure",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "status": {"type": "boolean"}, "configure": {"type": "object", "properties": {"Enable": {"type": "boolean"}, "MountList": {"type": ["array", "null"], "items": {}}, "BaseURL": {"type": "string"}, "Port": {"type": "string"}, "Address": {"type": "string"}, "DBFile": {"type": "string"}, "CacheDir": {"type": "string"}, "IMGProcessors": {"type": "integer"}, "DisableThumbnails": {"type": "boolean"}, "DisablePreviewResize": {"type": "boolean"}, "DisableExec": {"type": "boolean"}, "DisableTypeDetectionByHeader": {"type": "boolean"}, "TokenExpirationHour": {"type": "integer"}, "FilePerm": {"type": "string"}, "DirPerm": {"type": "string"}, "ListenNetwork": {"type": "string"}, "TLSEnable": {"type": "boolean"}, "TLSListenPort": {"type": "integer"}, "HTTPEnable": {"type": "boolean"}, "AutoFirewall": {"type": "boolean"}, "TrustHostList": {"type": "string"}, "ConfVersion": {"type": "integer"}}}}},
+      "schema_evidence": "authorized GET /api/third/filebrowser/configure observed field names/types only; RedisCacheUrl is intentionally omitted because it may embed credentials, and live filesystem paths were not retained"
+    },
+    {
+      "path": "/api/third/filebrowser/status",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "status": {"type": "boolean"}, "errMsg": {"type": "string"}, "usageStatMap": {"type": "object"}}},
+      "schema_evidence": "authorized GET /api/third/filebrowser/status observed status envelope; current usageStatMap was empty so dynamic value schema remains unspecified"
     }
   ]
 }
