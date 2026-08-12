@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+import json
 import tempfile
 import unittest
 from pathlib import Path
 
-from tools.extract_lucky_frontend import extract
+from tools.extract_lucky_frontend import extract, write_openapi
 
 
 class ExtractorTests(unittest.TestCase):
@@ -21,6 +22,68 @@ class ExtractorTests(unittest.TestCase):
         self.assertIn(("/api/ddns/task", "UNKNOWN"), routes)
         self.assertIn(("/api/status/ws", "UNKNOWN"), routes)
         self.assertEqual(snapshot["bundle_count"], 1)
+
+    def test_openapi_uses_runtime_request_schema_and_content_type(self) -> None:
+        snapshot = {
+            "target": {"version": "test"},
+            "route_count": 2,
+            "routes": [
+                {
+                    "path": "/api/order",
+                    "method": "PUT",
+                    "module": "order",
+                    "confidence": "runtime-verified",
+                    "evidence": [],
+                    "query_keys": [],
+                    "body_keys": [],
+                    "has_body": True,
+                    "response_type": "json",
+                    "risk": "mutating",
+                    "request_body_schema": {"type": "array", "items": {"type": "string"}},
+                    "response_schema": {
+                        "type": "object",
+                        "properties": {"ret": {"type": "integer"}},
+                    },
+                    "schema_evidence": "frontend order mapping",
+                },
+                {
+                    "path": "/api/import",
+                    "method": "POST",
+                    "module": "import",
+                    "confidence": "runtime-verified",
+                    "evidence": [],
+                    "query_keys": [],
+                    "body_keys": [],
+                    "has_body": True,
+                    "response_type": "json",
+                    "risk": "dangerous",
+                    "request_content_type": "multipart/form-data",
+                    "request_body_schema": {
+                        "type": "object",
+                        "properties": {"file": {"type": "string", "format": "binary"}},
+                    },
+                },
+            ],
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "openapi.json"
+            write_openapi(snapshot, output)
+            document = json.loads(output.read_text(encoding="utf-8"))
+        order = document["paths"]["/api/order"]["put"]
+        self.assertEqual(
+            order["requestBody"]["content"]["application/json"]["schema"],
+            {"type": "array", "items": {"type": "string"}},
+        )
+        self.assertEqual(order["x-schema-evidence"], "frontend order mapping")
+        self.assertEqual(
+            order["responses"]["200"]["content"]["application/json"]["schema"],
+            {"type": "object", "properties": {"ret": {"type": "integer"}}},
+        )
+        upload = document["paths"]["/api/import"]["post"]
+        self.assertEqual(
+            upload["requestBody"]["content"]["multipart/form-data"]["schema"]["properties"]["file"]["format"],
+            "binary",
+        )
 
 
 if __name__ == "__main__":

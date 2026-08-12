@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "verified_at": "2026-08-12T05:11:43Z",
+  "verified_at": "2026-08-12T05:42:45Z",
   "target": {
     "product": "Lucky",
     "version": "3.0.0"
   },
   "static_snapshot_sha256": "befce5dbe8a877651db34359a987c043b7be8bb5311110d4cabc62a00bb53f78",
-  "methodology": "Authorized runtime route verification. HTTP method existence was primarily proven with unauthenticated GET/POST/PUT/DELETE/PATCH requests that stop at Lucky authentication; selected GET routes were additionally verified with the repository OpenToken client. No mutating handler was executed for method discovery.",
+  "methodology": "Authorized runtime route and schema verification. HTTP method existence was primarily proven with unauthenticated GET/POST/PUT/DELETE/PATCH requests that stop at Lucky authentication; selected GET routes were additionally verified with the repository OpenToken client. Request schemas were recovered from frontend pass-through/object literals and, where applicable, cross-checked against field names and types observed from authorized read-only GET responses. No mutating handler was executed for method or schema discovery.",
   "suppress_literals": [
     "/api/cloudflared",
     "/api/ddns/manualSync",
@@ -189,6 +189,1053 @@
       "response_type": "unknown",
       "confidence": "runtime-verified",
       "verification": "Unauthenticated GET reached Lucky authentication; the backup handler was not executed."
+    },
+    {
+      "path": "/api/webservice/rules",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["AutoOptionsFirewall", "CorazaWAFInstance", "DefaultProxy", "DiaglogShowMode", "DisableStatistics", "ECDHPrivateKey", "ECH", "ECHConfigList", "ECHDomain", "Enable", "EnableTLS", "FrontRuleListDisplay", "GlobalAllowAllThirdAuthUsers", "GlobalAllowThirdUserSkipTwoFA", "GlobalBasicAuthUserList", "GlobalThirdAuthLoginUserList", "Http3", "IPFilterRule", "ListenIP", "ListenPort", "MaxContinuous404Count", "MaxCorazaInterceptionCount", "MaxHeaderKBytes", "Network", "ProxyList", "ReceRateLimit", "ReceRateLimitEnabled", "RuleKey", "RuleName", "SendRateLimit", "SendRateLimitEnabled", "SingleConnReceRateLimit", "SingleConnReceRateLimitEnabled", "SingleConnSendRateLimit", "SingleConnSendRateLimitEnabled", "SingleIPConnectionsLimit", "SingleIPConnectionsLimitEnabled", "SingleIPReceRateLimit", "SingleIPReceRateLimitEnabled", "SingleIPSendRateLimit", "SingleIPSendRateLimitEnabled", "TLSMinVersion"],
+      "schema_evidence": "frontend data:l(rule) pass-through + authorized GET /api/webservice/rule/{key} field-name shape"
+    },
+    {
+      "path": "/api/webservice/rule/{param}",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["AutoOptionsFirewall", "CorazaWAFInstance", "DefaultProxy", "DiaglogShowMode", "DisableStatistics", "ECDHPrivateKey", "ECH", "ECHConfigList", "ECHDomain", "Enable", "EnableTLS", "FrontRuleListDisplay", "GlobalAllowAllThirdAuthUsers", "GlobalAllowThirdUserSkipTwoFA", "GlobalBasicAuthUserList", "GlobalThirdAuthLoginUserList", "Http3", "IPFilterRule", "ListenIP", "ListenPort", "MaxContinuous404Count", "MaxCorazaInterceptionCount", "MaxHeaderKBytes", "Network", "ProxyList", "ReceRateLimit", "ReceRateLimitEnabled", "RuleKey", "RuleName", "SendRateLimit", "SendRateLimitEnabled", "SingleConnReceRateLimit", "SingleConnReceRateLimitEnabled", "SingleConnSendRateLimit", "SingleConnSendRateLimitEnabled", "SingleIPConnectionsLimit", "SingleIPConnectionsLimitEnabled", "SingleIPReceRateLimit", "SingleIPReceRateLimitEnabled", "SingleIPSendRateLimit", "SingleIPSendRateLimitEnabled", "TLSMinVersion"],
+      "schema_evidence": "frontend data:l(rule) pass-through + authorized GET /api/webservice/rule/{key} field-name shape"
+    },
+    {
+      "path": "/api/webservice/settings",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["LogLevel", "Statistics", "WebAuthSessionTTLMinutes"],
+      "schema_evidence": "frontend data:settings pass-through + authorized GET /api/webservice/settings field-name shape"
+    },
+    {
+      "path": "/api/webservice/frontend-state",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["listTabLayout", "viewMode"],
+      "schema_evidence": "frontend data:state pass-through + authorized GET /api/webservice/frontend-state field-name shape"
+    },
+    {
+      "path": "/api/webservice/groups",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["Name"],
+      "schema_evidence": "frontend group form submits explicit {Name} object"
+    },
+    {
+      "path": "/api/webservice/groups",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["Key", "Name"],
+      "schema_evidence": "frontend group edit form submits {Key,Name} object"
+    },
+    {
+      "path": "/api/webservice/groups/orderadjustment",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type": "array", "items": {"type": "string"}},
+      "schema_evidence": "frontend maps reordered groups to Group.Key string array"
+    },
+    {
+      "path": "/api/webservice/ruleorderadjustment",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type": "array", "items": {"type": "string"}},
+      "schema_evidence": "frontend maps reordered rules to RuleKey string array"
+    },
+    {
+      "path": "/api/webservice/cgi",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["Key", "Name", "Enable", "CGIType", "Network", "Address", "MaxConns", "ConnectTimeout", "ForbiddenPaths", "DefaultDocRoot", "DefaultIndexNames", "FileExtensions"],
+      "schema_evidence": "frontend CGI editor model is passed directly as request data"
+    },
+    {
+      "path": "/api/webservice/cgi/{param}",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["Key", "Name", "Enable", "CGIType", "Network", "Address", "MaxConns", "ConnectTimeout", "ForbiddenPaths", "DefaultDocRoot", "DefaultIndexNames", "FileExtensions"],
+      "schema_evidence": "frontend CGI editor model is passed directly as request data"
+    },
+    {
+      "path": "/api/webservice/discovery/start",
+      "method": "POST",
+      "risk": "dangerous",
+      "body_keys": ["ruleKey", "targets", "ports", "excludePorts", "domainSuffix", "timeoutMs", "maxScanDurationMs", "maxHostRetriesPerEndpoint", "allowedRedirectHosts", "maxHosts", "maxPortTargets", "tcpConcurrency", "probeConcurrency", "tcpCompatibilityMode", "maxRedirects"],
+      "schema_evidence": "frontend constructs an explicit discovery request object before POST; handler was not executed for schema discovery"
+    },
+    {
+      "path": "/api/webservice/{param}/subrulegrouporderupdate",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["subRulesMap", "orderList", "defaultProxyGroupKey"],
+      "schema_evidence": "frontend constructs explicit {subRulesMap,orderList,defaultProxyGroupKey} object"
+    },
+    {
+      "path": "/api/webservice/statistics/import",
+      "method": "POST",
+      "risk": "dangerous",
+      "request_content_type": "multipart/form-data",
+      "request_body_schema": {"type": "object", "properties": {"file": {"type": "string", "format": "binary"}}},
+      "schema_evidence": "frontend FormData appends file and sends multipart/form-data; mode remains a query parameter"
+    },
+    {
+      "path": "/api/webservice/statistics/import/start",
+      "method": "POST",
+      "risk": "dangerous",
+      "request_content_type": "multipart/form-data",
+      "request_body_schema": {"type": "object", "properties": {"file": {"type": "string", "format": "binary"}}},
+      "schema_evidence": "frontend FormData appends file and sends multipart/form-data; mode remains a query parameter"
+    },
+    {
+      "path": "/api/webservice/{param}/{param2}/updatefolder/upload",
+      "method": "POST",
+      "risk": "dangerous",
+      "request_content_type": "multipart/form-data",
+      "request_body_schema": {"type": "object", "properties": {"file": {"type": "string", "format": "binary"}, "mountIndex": {"type": "string"}}},
+      "schema_evidence": "frontend FormData appends file and mountIndex before multipart upload"
+    },
+    {
+      "path": "/api/ddns",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["DNS", "DUID", "DebugMode", "DiaglogShowMode", "Domains", "Enable", "Expanded", "FirstCheckDelay", "GetIPCommand", "GetType", "GlobalWebhook", "HttpClientTimeout", "IPReg", "IPSectionExpanded", "IngoreWebhookVariablesNotFound", "IngoreWebhookVariablesNotFoundList", "InsecureSkipVerify", "Intervals", "NetInterface", "Records", "RetryCount", "RetryInterval", "TTL", "TaskKey", "TaskName", "TaskType", "URL", "V4GetIPScript", "V4NetInterface", "V4NetInterfaceIPReg", "V4QueryIPEnable", "V4QueryIPType", "V4QueryUrl", "V6DUID", "V6GetIPScript", "V6NetInterface", "V6NetInterfaceIPReg", "V6QueryIPEnable", "V6QueryIPType", "V6QueryUrl", "WebHookTimeout", "WebhookDisableCallbackSuccessContentCheck", "WebhookEnable", "WebhookHeaders", "WebhookInsecureSkipVerify", "WebhookLocalAddr", "WebhookMethod", "WebhookNetworkType", "WebhookProxy", "WebhookProxyAddr", "WebhookProxyPassword", "WebhookProxyUser", "WebhookRequestBody", "WebhookSuccessContent", "WebhookURL"],
+      "schema_evidence": "frontend data:p(task) pass-through + authorized GET /api/ddns/task/{key} field-name shape"
+    },
+    {
+      "path": "/api/ddns",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["DNS", "DUID", "DebugMode", "DiaglogShowMode", "Domains", "Enable", "Expanded", "FirstCheckDelay", "GetIPCommand", "GetType", "GlobalWebhook", "HttpClientTimeout", "IPReg", "IPSectionExpanded", "IngoreWebhookVariablesNotFound", "IngoreWebhookVariablesNotFoundList", "InsecureSkipVerify", "Intervals", "NetInterface", "Records", "RetryCount", "RetryInterval", "TTL", "TaskKey", "TaskName", "TaskType", "URL", "V4GetIPScript", "V4NetInterface", "V4NetInterfaceIPReg", "V4QueryIPEnable", "V4QueryIPType", "V4QueryUrl", "V6DUID", "V6GetIPScript", "V6NetInterface", "V6NetInterfaceIPReg", "V6QueryIPEnable", "V6QueryIPType", "V6QueryUrl", "WebHookTimeout", "WebhookDisableCallbackSuccessContentCheck", "WebhookEnable", "WebhookHeaders", "WebhookInsecureSkipVerify", "WebhookLocalAddr", "WebhookMethod", "WebhookNetworkType", "WebhookProxy", "WebhookProxyAddr", "WebhookProxyPassword", "WebhookProxyUser", "WebhookRequestBody", "WebhookSuccessContent", "WebhookURL"],
+      "schema_evidence": "frontend data:p(task) pass-through + authorized GET /api/ddns/task/{key} field-name shape"
+    },
+    {
+      "path": "/api/ddns/configure",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["CustomDomainSuffix", "CustomFullDomain", "Enable", "FirstCheckDelay", "Intervals", "LogLevel", "RetryCount", "RetryInterval", "WebHookTimeout", "WebhookDisableCallbackSuccessContentCheck", "WebhookEnable", "WebhookHeaders", "WebhookInsecureSkipVerify", "WebhookLocalAddr", "WebhookMethod", "WebhookNetworkType", "WebhookProxy", "WebhookProxyAddr", "WebhookProxyPassword", "WebhookProxyUser", "WebhookRequestBody", "WebhookSuccessContent", "WebhookURL"],
+      "schema_evidence": "frontend data:f(configure) pass-through + authorized GET /api/ddns/configure field-name shape"
+    },
+    {
+      "path": "/api/ddns/taskorderadjustment",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type": "array", "items": {"type": "string"}},
+      "schema_evidence": "frontend maps reordered task list to TaskKey string array"
+    },
+    {
+      "path": "/api/ddns/recordOrderadjustment/{param}",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type": "array", "items": {"type": "string"}},
+      "schema_evidence": "frontend maps reordered records to Record.Key string array"
+    },
+    {
+      "path": "/api/ssl",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["AcmeErrorMsg", "AddFrom", "AddTime", "AllSyncClient", "CertBase64", "Enable", "ExtParams", "IssuerCertificate", "Key", "KeyBase64", "MappingChangeScript", "MappingPath", "MappingToPath", "Remark", "SyncClientList", "UpdateTime"],
+      "schema_evidence": "frontend certificate editor model is passed directly + authorized GET /api/ssl/{key} info field-name shape"
+    },
+    {
+      "path": "/api/ssl",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["AcmeErrorMsg", "AddFrom", "AddTime", "AllSyncClient", "CertBase64", "Enable", "ExtParams", "IssuerCertificate", "Key", "KeyBase64", "MappingChangeScript", "MappingPath", "MappingToPath", "Remark", "SyncClientList", "UpdateTime"],
+      "schema_evidence": "frontend certificate editor model is passed directly + authorized GET /api/ssl/{key} info field-name shape"
+    },
+    {
+      "path": "/api/ssl/setting",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["certificateCheckTime", "defaultACMEEMail", "globalPrivateKey", "renewalThresholdDays", "shortlivedCheckTimesPerDay", "shortlivedRenewalThresholdHours", "syncClientList"],
+      "schema_evidence": "frontend data:settings pass-through + authorized GET /api/ssl/setting field-name shape"
+    },
+    {
+      "path": "/api/ssl/sslorderadjustment",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type": "array", "items": {"type": "string"}},
+      "schema_evidence": "frontend maps reordered certificate list to certificate Key string array"
+    },
+    {
+      "path": "/api/webservice/lightpanel/configtemplate",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["type", "path", "rcloneKey", "rcloneRoot", "storeKey", "storeRoot"],
+      "schema_evidence": "frontend constructs explicit {type,path,rcloneKey,rcloneRoot,storeKey,storeRoot} request object"
+    },
+    {
+      "path": "/api/webservice/statistics/geo/rebuild",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["mode"],
+      "schema_evidence": "frontend statistics dialog starts rebuild with explicit {mode:'all'} request object"
+    },
+    {
+      "path": "/api/webservice/statistics/ip-info-refresh",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["mode"],
+      "schema_evidence": "frontend statistics dialog starts refresh with explicit {mode} request object"
+    },
+    {
+      "path": "/api/webservice/webauth/sessions/delete",
+      "method": "POST",
+      "risk": "dangerous",
+      "body_keys": ["sessionIds"],
+      "schema_evidence": "frontend batch-delete action sends {sessionIds: selected SessionID array}"
+    },
+    {
+      "path": "/api/ddns/webhooktest",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["WebhookURL", "WebhookMethod", "WebhookRequestBody", "WebhookProxy", "WebhookProxyAddr", "WebhookProxyUser", "RetryCount", "RetryInterval", "WebhookProxyPassword", "WebhookHeaders", "WebhookSuccessContent", "WebhookDisableCallbackSuccessContentCheck"],
+      "schema_evidence": "frontend settings dialog constructs explicit webhook-test payload; no authenticated test webhook was sent"
+    },
+    {
+      "path": "/api/cloudflared/list",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["Key", "Remark", "Enable", "Type", "Params"],
+      "schema_evidence": "frontend Cloudflared instance editor submits {Key,Remark,Enable,Type,Params}; current authorized list is empty so field evidence is frontend-only"
+    },
+    {
+      "path": "/api/cloudflared/list",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["Key", "Remark", "Enable", "Type", "Params"],
+      "schema_evidence": "frontend Cloudflared instance editor submits {Key,Remark,Enable,Type,Params}; current authorized list is empty so field evidence is frontend-only"
+    },
+    {
+      "path": "/api/cloudflared/orderadjustment",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type": "array", "items": {"type": "string"}},
+      "schema_evidence": "frontend maps reordered Cloudflared instances to Key string array"
+    },
+    {
+      "path": "/api/cloudflared/{param}/cname/create",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["hostname", "proxied"],
+      "schema_evidence": "frontend CNAME helper sends explicit {hostname,proxied:true} object"
+    },
+    {
+      "path": "/api/cloudflared/{param}/ingress",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["hostname", "path", "service", "originRequest"],
+      "schema_evidence": "frontend ingress editor constructs explicit rule object before POST"
+    },
+    {
+      "path": "/api/cloudflared/{param}/ingress",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["oldHostname", "oldPath", "newRule"],
+      "schema_evidence": "frontend ingress editor sends explicit {oldHostname,oldPath,newRule} object before PUT"
+    },
+    {
+      "path": "/api/portforward",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["Name", "Key", "DiaglogShowMode", "ForwardTypes", "ListenAddress", "ListenPorts", "TargetAddressList", "TargetPorts", "Enable", "LogLevel", "OpenFirewallPorts", "LogOutputToConsole", "AccessLogMaxNum", "WebListShowLastLogMaxCount", "Options", "LogStreamSettings"],
+      "schema_evidence": "frontend PortForward rule editor submits its normalized rule model and optional LogStreamSettings; current authorized rule list is empty"
+    },
+    {
+      "path": "/api/portforward",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["Name", "Key", "DiaglogShowMode", "ForwardTypes", "ListenAddress", "ListenPorts", "TargetAddressList", "TargetPorts", "Enable", "LogLevel", "OpenFirewallPorts", "LogOutputToConsole", "AccessLogMaxNum", "WebListShowLastLogMaxCount", "Options", "LogStreamSettings"],
+      "schema_evidence": "frontend PortForward rule editor submits its normalized rule model and optional LogStreamSettings; current authorized rule list is empty"
+    },
+    {
+      "path": "/api/portforward/configure",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["ConfVer", "ConnectionDownloadRateLimit", "ConnectionDownloadRateLimitEnabled", "ConnectionUploadRateLimit", "ConnectionUploadRateLimitEnabled", "Enable", "IPConnectionsLimit", "IPDownloadRateLimit", "IPDownloadRateLimitEnabled", "IPMaxConnections", "IPUploadRateLimit", "IPUploadRateLimitEnabled", "Nolimit", "PortForwardsLimit", "TCPPortforwardMaxConnections", "UDPReadTargetDataMaxgoroutineCount"],
+      "schema_evidence": "frontend configure model pass-through + authorized GET /api/portforward/configure field-name shape"
+    },
+    {
+      "path": "/api/portforward/ruleorderadjustment",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type": "array", "items": {"type": "string"}},
+      "schema_evidence": "frontend maps reordered PortForward rules to Key string array"
+    },
+    {
+      "path": "/api/stun/configure",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["ConfVer", "EnableModule", "GlobalStunServerList", "RetryCount", "RetryInterval", "WebHookTimeout", "WebhookDisableCallbackSuccessContentCheck", "WebhookEnable", "WebhookHeaders", "WebhookInsecureSkipVerify", "WebhookLocalAddr", "WebhookMethod", "WebhookNetworkType", "WebhookOnlyAddrChange", "WebhookProxy", "WebhookProxyAddr", "WebhookProxyPassword", "WebhookProxyUser", "WebhookRequestBody", "WebhookSuccessContent", "WebhookURL"],
+      "schema_evidence": "frontend configure model pass-through + authorized GET /api/stun/configure field-name shape"
+    },
+    {
+      "path": "/api/stun/ruleorderadjustment",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type": "array", "items": {"type": "string"}},
+      "schema_evidence": "frontend maps reordered STUN rules to Key string array"
+    },
+    {
+      "path": "/api/stunrule",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["Name", "Key", "Enable", "UseGlobalStunServerList", "DiaglogShowMode", "StunHeartbeatInterval", "StunTimeout", "StunRetryInterval", "StunAutoRetry", "AutoAddPubAddrWhiteList", "StunType", "StunListenType", "SpecifyNetworkInterface", "NetworkInterfaceReg", "ListenIP", "AutoOptionsFirewall", "ListenPort", "NatPMP", "UPnPGawayIP", "NatPMPGateway", "UPnP", "UPnPLocalPort", "UPnpLocalHost", "UPnPInternalClientIP", "UpnPDiyControlAPIUrl", "DisableStunAvalidCheck", "DisablePortForward", "TargetAddressList", "TargetPort", "LogLevel", "LogOutputToConsole", "AccessLogMaxNum", "WebListShowLastLogMaxCount", "Options", "StunServerList", "TcpKeepAliveServerList", "GlobalWebhook", "WebhookEnable", "WebhookOnlyAddrChange", "WebhookURL", "WebhookMethod", "WebhookHeaders", "WebhookRequestBody", "WebhookDisableCallbackSuccessContentCheck", "WebhookSuccessContent", "WebhookProxy", "WebhookProxyAddr", "WebhookProxyUser", "WebhookProxyPassword", "CallScript", "CallScriptContent", "RetryCount", "RetryInterval", "LogStreamSettings"],
+      "schema_evidence": "frontend STUN rule editor default/submit model; current authorized STUN rule list is empty"
+    },
+    {
+      "path": "/api/stunrule",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["Name", "Key", "Enable", "UseGlobalStunServerList", "DiaglogShowMode", "StunHeartbeatInterval", "StunTimeout", "StunRetryInterval", "StunAutoRetry", "AutoAddPubAddrWhiteList", "StunType", "StunListenType", "SpecifyNetworkInterface", "NetworkInterfaceReg", "ListenIP", "AutoOptionsFirewall", "ListenPort", "NatPMP", "UPnPGawayIP", "NatPMPGateway", "UPnP", "UPnPLocalPort", "UPnpLocalHost", "UPnPInternalClientIP", "UpnPDiyControlAPIUrl", "DisableStunAvalidCheck", "DisablePortForward", "TargetAddressList", "TargetPort", "LogLevel", "LogOutputToConsole", "AccessLogMaxNum", "WebListShowLastLogMaxCount", "Options", "StunServerList", "TcpKeepAliveServerList", "GlobalWebhook", "WebhookEnable", "WebhookOnlyAddrChange", "WebhookURL", "WebhookMethod", "WebhookHeaders", "WebhookRequestBody", "WebhookDisableCallbackSuccessContentCheck", "WebhookSuccessContent", "WebhookProxy", "WebhookProxyAddr", "WebhookProxyUser", "WebhookProxyPassword", "CallScript", "CallScriptContent", "RetryCount", "RetryInterval", "LogStreamSettings"],
+      "schema_evidence": "frontend STUN rule editor default/submit model; current authorized STUN rule list is empty"
+    },
+    {
+      "path": "/api/stunrule/webhooktest",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["WebhookURL", "WebhookMethod", "WebhookRequestBody", "WebhookProxy", "WebhookProxyAddr", "WebhookProxyUser", "RetryCount", "RetryInterval", "WebhookProxyPassword", "WebhookHeaders", "WebhookSuccessContent", "WebhookDisableCallbackSuccessContentCheck"],
+      "schema_evidence": "frontend STUN rule editor constructs explicit webhook-test payload; no authenticated test webhook was sent"
+    },
+    {
+      "path": "/api/frp/list",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["Key", "Remark", "Enable", "Type", "ConfigMode", "ConfigText", "Params", "Proxies", "Visitors"],
+      "schema_evidence": "frontend FRP instance form submits normalized instance object; current authorized FRP list is empty"
+    },
+    {
+      "path": "/api/frp/list",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["Key", "Remark", "Enable", "Type", "ConfigMode", "ConfigText", "Params", "Proxies", "Visitors"],
+      "schema_evidence": "frontend FRP instance form submits normalized instance object; current authorized FRP list is empty"
+    },
+    {
+      "path": "/api/frp/orderadjustment",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type": "array", "items": {"type": "string"}},
+      "schema_evidence": "frontend maps reordered FRP instances to Key string array"
+    },
+    {
+      "path": "/api/frp/{param}/proxies",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["allowUsers", "annotations", "bandwidthLimit", "bandwidthLimitMode", "customDomains", "disabled", "healthCheckHTTPHeaders", "healthCheckInterval", "healthCheckMaxFailed", "healthCheckPath", "healthCheckTimeout", "healthCheckType", "hostHeaderRewrite", "httpPassword", "httpUser", "loadBalancerGroup", "loadBalancerGroupKey", "localIP", "localPort", "locations", "metadatas", "multiplexer", "name", "natTraversal", "plugin", "pluginCrtPath", "pluginEnableHttp2", "pluginHostHeaderRewrite", "pluginHttpPassword", "pluginHttpUser", "pluginKeyPath", "pluginLocalAddr", "pluginLocalPath", "pluginRequestHeaders", "pluginStripPrefix", "pluginUnixPath", "proxyProtocolVersion", "remotePort", "requestHeaders", "responseHeaders", "routeByHTTPUser", "secretKey", "subdomain", "type", "useCompression", "useEncryption"],
+      "schema_evidence": "frontend ProxyForm field union across supported FRP proxy types; getProxyConfig returns this model directly for create"
+    },
+    {
+      "path": "/api/frp/{param}/proxies",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["oldName", "newProxy"],
+      "schema_evidence": "frontend proxy update explicitly wraps edited proxy as {oldName,newProxy}"
+    },
+    {
+      "path": "/api/frp/{param}/visitors",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["bindAddr", "bindPort", "disabled", "fallbackTimeoutMs", "fallbackTo", "keepTunnelOpen", "maxRetriesAnHour", "minRetryInterval", "name", "natTraversal", "plugin", "protocol", "secretKey", "serverName", "serverUser", "transport", "type"],
+      "schema_evidence": "frontend VisitorForm returns its complete model directly for create"
+    },
+    {
+      "path": "/api/frp/{param}/visitors",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["oldName", "newVisitor"],
+      "schema_evidence": "frontend visitor update explicitly wraps edited visitor as {oldName,newVisitor}"
+    },
+    {
+      "path": "/api/webservice/frontend-state",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"listTabLayout": {"type": "string"}, "ret": {"type": "integer"}, "viewMode": {"type": "string"}}},
+      "schema_evidence": "authorized GET /api/webservice/frontend-state observed field names and primitive types only"
+    },
+    {
+      "path": "/api/webservice/settings",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "settings": {"type": "object", "properties": {"LogLevel": {"type": "string"}, "Statistics": {"type": "object"}, "WebAuthSessionTTLMinutes": {"type": "integer"}}}}},
+      "schema_evidence": "authorized GET /api/webservice/settings observed envelope and top-level settings types only"
+    },
+    {
+      "path": "/api/portforward/configure",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "configure": {"type": "object", "properties": {"ConfVer": {"type": "integer"}, "ConnectionDownloadRateLimit": {"type": "integer"}, "ConnectionDownloadRateLimitEnabled": {"type": "boolean"}, "ConnectionUploadRateLimit": {"type": "integer"}, "ConnectionUploadRateLimitEnabled": {"type": "boolean"}, "Enable": {"type": "boolean"}, "IPConnectionsLimit": {"type": "boolean"}, "IPDownloadRateLimit": {"type": "integer"}, "IPDownloadRateLimitEnabled": {"type": "boolean"}, "IPMaxConnections": {"type": "integer"}, "IPUploadRateLimit": {"type": "integer"}, "IPUploadRateLimitEnabled": {"type": "boolean"}, "Nolimit": {"type": "boolean"}, "PortForwardsLimit": {"type": "integer"}, "TCPPortforwardMaxConnections": {"type": "integer"}, "UDPReadTargetDataMaxgoroutineCount": {"type": "integer"}}}}},
+      "schema_evidence": "authorized GET /api/portforward/configure observed field names and primitive types only"
+    },
+    {
+      "path": "/api/webterminal/config",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["bufferSize", "heartbeatInterval", "idleTimeout", "maxSessions", "sessionKeepAlive"],
+      "schema_evidence": "frontend config pass-through + authorized GET /api/webterminal/config field-name and primitive-type shape"
+    },
+    {
+      "path": "/api/webterminal/connectionorderadjustment",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type": "array", "items": {"type": "string"}},
+      "schema_evidence": "frontend maps displayed WebTerminal connections to connection key string array before PUT"
+    },
+    {
+      "path": "/api/webterminal/connections",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["key", "name", "type", "remark", "localConfig", "sshConfig", "telnetConfig", "shortcuts", "quickAccessDirs"],
+      "schema_evidence": "frontend connection editor submits its connection model directly; nested local/ssh/telnet defaults and secret-redaction helper are visible in the page bundle; authorized connection list is empty"
+    },
+    {
+      "path": "/api/webterminal/connections",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["key", "name", "type", "remark", "localConfig", "sshConfig", "telnetConfig", "shortcuts", "quickAccessDirs"],
+      "schema_evidence": "frontend update calls Cn(connection), which preserves the model while stripping empty/masked credential fields; authorized connection list is empty"
+    },
+    {
+      "path": "/api/webterminal/connections/test",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["key", "name", "type", "remark", "localConfig", "sshConfig", "telnetConfig", "shortcuts", "quickAccessDirs"],
+      "schema_evidence": "frontend connection test passes the same editor model directly; no authenticated connection test was executed for schema discovery"
+    },
+    {
+      "path": "/api/webterminal/connections/{param}/ssh-host-key",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["host", "port", "hostname", "hostKey", "hostKeyFingerprint", "hostKeyTrustedAt", "keyType", "previousHostKeyFingerprint", "changed"],
+      "schema_evidence": "frontend SSH host-key confirmation normalizes the server response to this object before PUT; no host-key write was executed"
+    },
+    {
+      "path": "/api/webterminal/globalshortcuts",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "name": {"type": "string"}, "command": {"type": "string"}, "hotkey": {"type": "string"}, "autoExecute": {"type": "boolean"}, "steps": {"type": "array", "items": {"type": "object", "properties": {"command": {"type": "string"}, "autoExecute": {"type": "boolean"}, "delay": {"type": "integer"}, "description": {"type": "string"}}}}}}},
+      "schema_evidence": "frontend shortcut editor creates {id,name,command,hotkey,autoExecute,steps}; step defaults are {command,autoExecute,delay,description}; array is passed directly to PUT"
+    },
+    {
+      "path": "/api/webterminal/sftp/{param}/upload",
+      "method": "POST",
+      "risk": "dangerous",
+      "request_content_type": "multipart/form-data",
+      "request_body_schema": {"type": "object", "properties": {"file": {"type": "string", "format": "binary"}, "path": {"type": "string"}, "filename": {"type": "string"}}},
+      "schema_evidence": "frontend FormData appends file, path and encoded filename before multipart upload; upload handler was not executed"
+    },
+    {
+      "path": "/api/webterminal/sftp/{param}/upload-streaming",
+      "method": "POST",
+      "risk": "mutating",
+      "query_keys": ["path", "filename"],
+      "request_content_type": "application/octet-stream",
+      "request_body_schema": {"type": "string", "format": "binary"},
+      "schema_evidence": "frontend sends raw file bytes as application/octet-stream and puts path/filename in query parameters; upload handler was not executed"
+    },
+    {
+      "path": "/api/webterminal/splitlayout",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type": "object", "properties": {"direction": {"type": "string"}, "isQuadLayout": {"type": "boolean"}, "panes": {"type": "array", "items": {"type": "object", "properties": {"paneId": {"type": "string"}, "sessionId": {"type": "string"}, "connectionKey": {"type": "string"}}}}}},
+      "schema_evidence": "frontend split terminal serializes explicit {direction,isQuadLayout,panes}; each pane is {paneId,sessionId,connectionKey} before PUT"
+    },
+    {
+      "path": "/api/docker/compose/up",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["project_name", "project_path", "config_file_name", "working_dir", "compose_content", "force_recreate", "build"],
+      "schema_evidence": "wrapper passes request object directly; current UI exercises the async sibling with these observed fields, while the synchronous handler was not executed"
+    },
+    {
+      "path": "/api/docker/compose/up-async",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["project_name", "project_path", "config_file_name", "working_dir", "compose_content", "force_recreate", "build"],
+      "schema_evidence": "frontend Compose create/start/rebuild actions construct these fields before apiComposeUpAsync"
+    },
+    {
+      "path": "/api/docker/compose/down",
+      "method": "POST",
+      "risk": "dangerous",
+      "body_keys": ["project_name", "project_path", "config_file_name", "remove_volumes"],
+      "schema_evidence": "wrapper passes request object directly; async sibling UI calls show project_name/project_path/config_file_name/remove_volumes; synchronous handler was not executed"
+    },
+    {
+      "path": "/api/docker/compose/down-async",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["project_name", "project_path", "config_file_name", "remove_volumes"],
+      "schema_evidence": "frontend Compose delete actions construct project_name/project_path and optionally config_file_name/remove_volumes before apiComposeDownAsync"
+    },
+    {
+      "path": "/api/docker/compose/start",
+      "method": "POST",
+      "risk": "dangerous",
+      "body_keys": ["project_name", "project_path", "config_file_name"],
+      "schema_evidence": "wrapper passes request object directly; current Compose UI uses equivalent project identity fields on async start paths; handler was not executed"
+    },
+    {
+      "path": "/api/docker/compose/stop",
+      "method": "POST",
+      "risk": "dangerous",
+      "body_keys": ["project_name", "project_path", "config_file_name"],
+      "schema_evidence": "wrapper passes request object directly; current UI uses the async sibling with project_name/project_path/config_file_name; handler was not executed"
+    },
+    {
+      "path": "/api/docker/compose/stop-async",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["project_name", "project_path", "config_file_name"],
+      "schema_evidence": "frontend Compose stop actions construct project_name/project_path/config_file_name before apiComposeStopAsync"
+    },
+    {
+      "path": "/api/docker/compose/restart",
+      "method": "POST",
+      "risk": "dangerous",
+      "body_keys": ["project_name", "project_path", "config_file_name"],
+      "schema_evidence": "wrapper passes a Compose project request object directly; no authenticated restart was executed and current page does not call the synchronous wrapper"
+    },
+    {
+      "path": "/api/docker/compose/restore",
+      "method": "POST",
+      "risk": "dangerous",
+      "request_content_type": "multipart/form-data",
+      "request_body_schema": {"type": "object", "properties": {"file": {"type": "string", "format": "binary"}, "target_path": {"type": "string"}, "project_name": {"type": "string"}, "auto_start": {"type": "string"}, "config_file_name": {"type": "string"}}},
+      "schema_evidence": "frontend restore dialog builds FormData with file,target_path,project_name,auto_start and optional config_file_name; restore handler was not executed"
+    },
+    {
+      "path": "/api/docker/compose/{param}/backups/upload",
+      "method": "POST",
+      "risk": "dangerous",
+      "request_content_type": "multipart/form-data",
+      "request_body_schema": {"type": "object", "properties": {"file": {"type": "string", "format": "binary"}}},
+      "schema_evidence": "frontend Compose backup upload FormData contains only file; upload handler was not executed"
+    },
+    {
+      "path": "/api/docker/compose/{param}/logs",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["project_name", "project_path", "services", "tail", "timestamps", "follow"],
+      "schema_evidence": "frontend Compose log dialog constructs this explicit request object before POST"
+    },
+    {
+      "path": "/api/docker/config",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["docker_host", "volume_backup_path", "volume_backup_default_max", "volume_backup_max_per_volume", "volume_backup_stop_containers", "volume_backup_stop_containers_per_volume", "compose_backup_path", "compose_backup_default_max", "compose_backup_max_per_project", "compose_discover_path", "temp_operation_path", "quick_access_host", "container_view_mode", "container_show_stopped", "container_selected_custom_group"],
+      "schema_evidence": "frontend Docker settings submit these fields in full or narrow partial updates + authorized GET /api/docker/config field-name shape"
+    },
+    {
+      "path": "/api/docker/container-groups",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["Name"],
+      "schema_evidence": "frontend add-group action sends explicit {Name}"
+    },
+    {
+      "path": "/api/docker/container-groups",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["Key", "Name"],
+      "schema_evidence": "frontend edit-group action passes {Key,Name} editor model"
+    },
+    {
+      "path": "/api/docker/containers",
+      "method": "POST",
+      "risk": "mutating",
+      "request_body_schema": {"type": "object", "properties": {"name": {"type": "string"}, "config": {"type": "object", "properties": {"Image": {"type": "string"}, "Hostname": {"type": "string"}, "User": {"type": "string"}, "WorkingDir": {"type": "string"}, "Tty": {"type": "boolean"}, "OpenStdin": {"type": "boolean"}, "Env": {"type": "array", "items": {"type": "string"}}, "Cmd": {"type": "array", "items": {"type": "string"}}, "Entrypoint": {"type": "array", "items": {"type": "string"}}}}, "hostConfig": {"type": "object", "properties": {"NetworkMode": {"type": "string"}, "Privileged": {"type": "boolean"}, "AutoRemove": {"type": "boolean"}, "RestartPolicy": {"type": "object"}, "PortBindings": {"type": "object"}, "Mounts": {"type": "array"}, "NanoCpus": {"type": "integer"}, "Memory": {"type": "integer"}, "DNS": {"type": "array", "items": {"type": "string"}}, "DNSSearch": {"type": "array", "items": {"type": "string"}}, "ExtraHosts": {"type": "array", "items": {"type": "string"}}, "CapAdd": {"type": "array", "items": {"type": "string"}}, "CapDrop": {"type": "array", "items": {"type": "string"}}, "Devices": {"type": "array"}, "ShmSize": {"type": "integer"}}}}},
+      "schema_evidence": "frontend create-container dialog explicitly transforms its form into Lucky body {name,config,hostConfig}; no container was created for schema discovery"
+    },
+    {
+      "path": "/api/docker/containers/{param}/commit",
+      "method": "POST",
+      "risk": "dangerous",
+      "body_keys": ["repository", "tag", "comment"],
+      "schema_evidence": "frontend commit dialog sends explicit {repository,tag,comment}; handler was not executed"
+    },
+    {
+      "path": "/api/docker/containers/{param}/edit",
+      "method": "POST",
+      "risk": "dangerous",
+      "body_keys": ["name", "config", "hostConfig", "auto_start", "remove_old"],
+      "schema_evidence": "frontend edit dialog rebuilds Docker config/hostConfig then sends explicit {name,config,hostConfig,auto_start,remove_old}; handler was not executed"
+    },
+    {
+      "path": "/api/docker/containers/{param}/files/upload",
+      "method": "POST",
+      "risk": "dangerous",
+      "request_content_type": "multipart/form-data",
+      "request_body_schema": {"type": "object", "properties": {"file": {"type": "string", "format": "binary"}, "path": {"type": "string"}}},
+      "schema_evidence": "frontend container file uploader FormData appends file and target path; handler was not executed"
+    },
+    {
+      "path": "/api/docker/images/load",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["path", "cleanup"],
+      "schema_evidence": "current frontend uploads image to a temporary path, then POSTs JSON {path,cleanup:true} to images/load; wrapper also accepts FormData for backward compatibility"
+    },
+    {
+      "path": "/api/docker/networks",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["name", "driver", "internal", "enable_ipv6", "attachable", "options", "ipam"],
+      "schema_evidence": "frontend network dialog explicitly builds this object, including optional driver options and IPAM config; no network was created for schema discovery"
+    },
+    {
+      "path": "/api/docker/volumes",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["name", "driver"],
+      "schema_evidence": "frontend volume dialog sends explicit {name,driver}; authorized GET confirmed volume resource shape only"
+    },
+    {
+      "path": "/api/docker/volumes/import",
+      "method": "POST",
+      "risk": "dangerous",
+      "request_content_type": "multipart/form-data",
+      "request_body_schema": {"type": "object", "properties": {"file": {"type": "string", "format": "binary"}, "volume_name": {"type": "string"}, "driver": {"type": "string"}}},
+      "schema_evidence": "frontend volume import FormData appends file, optional volume_name and driver; handler was not executed"
+    },
+    {
+      "path": "/api/docker/volumes/{param}/backups/upload",
+      "method": "POST",
+      "risk": "dangerous",
+      "request_content_type": "multipart/form-data",
+      "request_body_schema": {"type": "object", "properties": {"file": {"type": "string", "format": "binary"}}},
+      "schema_evidence": "frontend volume backup upload FormData contains only file; handler was not executed"
+    },
+    {
+      "path": "/api/rclone/globalconfig",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["DefaultCaCheDir", "UploadFileTmpDir"],
+      "schema_evidence": "frontend passes the global settings object directly + authorized GET /api/rclone/globalconfig observed these field names and primitive types"
+    },
+    {
+      "path": "/api/rclone/itemorderadjustment",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type": "array", "items": {"type": "string"}},
+      "schema_evidence": "frontend remote-list drag handler maps reordered remotes to Key string array"
+    },
+    {
+      "path": "/api/rclone/remotelist",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["Key", "Type", "Enable", "Remark", "Root", "Params", "HttpClienInsecureSkipVerify", "HttpClientProxyType", "HttpClientProxyAddr", "HttpClientProxyUser", "HttpClientProxyPassword", "SystemMount"],
+      "schema_evidence": "frontend Remote editor default model is passed directly to POST; current authorized remote list is empty so resource-field evidence is frontend-only"
+    },
+    {
+      "path": "/api/rclone/remotelist",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["Key", "Type", "Enable", "Remark", "Root", "Params", "HttpClienInsecureSkipVerify", "HttpClientProxyType", "HttpClientProxyAddr", "HttpClientProxyUser", "HttpClientProxyPassword", "SystemMount"],
+      "schema_evidence": "frontend loads GET /api/rclone/remote/{key} into the same Remote editor model and passes that model directly to PUT; current authorized remote list is empty"
+    },
+    {
+      "path": "/api/rclone/sync/list",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["Key", "Enable", "Remark", "SourceType", "SourceRemoteKey", "SourcePath", "DestType", "DestRemoteKey", "DestPath", "SyncMode", "DeleteOnDest", "DryRun", "CreateEmptyDirs", "IgnoreExisting", "IgnoreErrors", "CheckFirst", "Transfers", "Checkers", "BandwidthLimit", "MinAge", "MaxAge", "MinSize", "MaxSize", "IncludePatterns", "ExcludePatterns", "ExtraArgs", "ScheduleEnable", "ScheduleCron", "ScheduleInterval", "BisyncResync", "BisyncCheckAccess", "BisyncForce"],
+      "schema_evidence": "frontend Sync editor initializes this explicit task model and passes it directly to POST; current authorized sync list is empty"
+    },
+    {
+      "path": "/api/rclone/sync/list",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["Key", "Enable", "Remark", "SourceType", "SourceRemoteKey", "SourcePath", "DestType", "DestRemoteKey", "DestPath", "SyncMode", "DeleteOnDest", "DryRun", "CreateEmptyDirs", "IgnoreExisting", "IgnoreErrors", "CheckFirst", "Transfers", "Checkers", "BandwidthLimit", "MinAge", "MaxAge", "MinSize", "MaxSize", "IncludePatterns", "ExcludePatterns", "ExtraArgs", "ScheduleEnable", "ScheduleCron", "ScheduleInterval", "BisyncResync", "BisyncCheckAccess", "BisyncForce"],
+      "schema_evidence": "frontend loads GET /api/rclone/sync/{key} into the same explicit task model and passes it directly to PUT; current authorized sync list is empty"
+    },
+    {
+      "path": "/api/coraza/instanceorderadjustment",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type": "array", "items": {"type": "string"}},
+      "schema_evidence": "frontend Coraza list drag handler maps reordered instances to Key string array"
+    },
+    {
+      "path": "/api/coraza/list",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["Key", "Name", "Enable", "InboundScoreThreshold", "OutboundScoreThreshold", "CorazaWAFConfigList", "RuleExclusions"],
+      "schema_evidence": "frontend Coraza instance form initializes and submits this explicit model; current authorized Coraza list is empty"
+    },
+    {
+      "path": "/api/coraza/list",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["Key", "Name", "Enable", "InboundScoreThreshold", "OutboundScoreThreshold", "CorazaWAFConfigList", "RuleExclusions"],
+      "schema_evidence": "frontend edits the same explicit Coraza instance model and passes it directly to PUT; current authorized Coraza list is empty"
+    },
+    {
+      "path": "/api/security-groups",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["Key", "Name", "Enable", "SessionTTLMinutes", "AllowWebAuthIPBypass", "Description"],
+      "schema_evidence": "frontend SecurityGroupFormDialog initializes and submits this explicit group model; current authorized group list is empty"
+    },
+    {
+      "path": "/api/security-groups/{param}",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["Key", "Name", "Enable", "SessionTTLMinutes", "AllowWebAuthIPBypass", "Description"],
+      "schema_evidence": "frontend edits the same group model and passes a copied object to PUT; toggle actions also update subsets of this model"
+    },
+    {
+      "path": "/api/security-groups/users",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["Key", "Name", "Username", "PasswordHash", "Password", "TwoFASecret", "Enable", "GrantSecurityGroups", "Description", "HasPassword"],
+      "schema_evidence": "frontend local-user form initializes this explicit model; only field names are recorded and no credential values are stored"
+    },
+    {
+      "path": "/api/security-groups/users/{param}",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["Key", "Name", "Username", "PasswordHash", "Password", "TwoFASecret", "Enable", "GrantSecurityGroups", "Description", "HasPassword"],
+      "schema_evidence": "frontend edits the same local-user model and removes Password when left empty before PUT; only field names are recorded"
+    },
+    {
+      "path": "/api/security-groups/oauth-users",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["Key", "ThirdAuthUserKey", "Provider", "SkipTwoFA", "MatchID", "MatchEmail", "MatchName", "Enable", "GrantSecurityGroups", "Description"],
+      "schema_evidence": "frontend OAuth-user form initializes this explicit model and clears MatchID/MatchEmail/MatchName before save"
+    },
+    {
+      "path": "/api/security-groups/oauth-users/{param}",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["Key", "ThirdAuthUserKey", "Provider", "SkipTwoFA", "MatchID", "MatchEmail", "MatchName", "Enable", "GrantSecurityGroups", "Description"],
+      "schema_evidence": "frontend edits the same OAuth-user model, normalizes group membership and clears match helper fields before PUT"
+    },
+    {
+      "path": "/api/ipfliter/autorecordipconf",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["SafeURL", "BasicAccount", "BasicPassword"],
+      "schema_evidence": "frontend AutoRecord configuration form submits this explicit object + authorized GET observed the same field names"
+    },
+    {
+      "path": "/api/ipfliter/list/subrulelist/order/{param}",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type": "array", "items": {"type": "string"}},
+      "schema_evidence": "frontend subrule drag handler maps reordered subrules to Key string array"
+    },
+    {
+      "path": "/api/ipfliter/list/{param}",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["Key", "Remark", "Enable", "Type", "LongTermValid", "ValidTimestamp", "IPTextSets", "IPDBKeyWords", "AutoDeleteOnExpiry", "InvalidIPTextEntryCount", "InvalidIPTextEntriesPreview", "IPInfoKeywordFilter"],
+      "schema_evidence": "frontend SubRule editor initializes and sends this model directly for create; authorized built-in rules currently have no subrules"
+    },
+    {
+      "path": "/api/ipfliter/list/{param}",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["Key", "Name", "Action", "SubRuleList", "AutoRecordTxtLimit", "AutoRecordMemLimit"],
+      "schema_evidence": "frontend Rule editor normalizes and sends this explicit main-rule model directly to PUT"
+    },
+    {
+      "path": "/api/ipfliter/list/{param}/{param2}",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["Key", "Remark", "Enable", "Type", "LongTermValid", "ValidTimestamp", "IPTextSets", "IPDBKeyWords", "AutoDeleteOnExpiry", "InvalidIPTextEntryCount", "InvalidIPTextEntriesPreview", "IPInfoKeywordFilter"],
+      "schema_evidence": "frontend SubRule editor sends the same normalized subrule model directly to PUT; current authorized built-in rules have no subrules"
+    },
+    {
+      "path": "/api/ipfliter/porttrapconf",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["AllowRuleKeys", "DefaultAllowIPs", "Enable", "IPv6PrefixLen", "Script", "ScriptEnable", "ScriptTriggerInterval", "TCPPorts", "TargetRuleKey", "UDPPorts", "WebhookBody", "WebhookDisableCallbackSuccessContentCheck", "WebhookEnable", "WebhookHeaders", "WebhookMethod", "WebhookProxy", "WebhookProxyAddr", "WebhookProxyPassword", "WebhookProxyUser", "WebhookRetryCount", "WebhookRetryInterval", "WebhookSuccessContent", "WebhookTimeout", "WebhookTriggerInterval", "WebhookURL"],
+      "schema_evidence": "frontend PortTrap settings form passes its normalized configure object directly + authorized GET observed the same field names"
+    },
+    {
+      "path": "/api/cron/list",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["Key", "Name", "Enable", "OtherKey", "Type", "TypeParams", "GroupKey", "ExecSecond", "ExecMinute", "ExecHour", "Jobs", "Parallel", "IOT_DianDeng_Enable", "IOT_DianDeng_AUTHKEY", "IOT_DianDeng_InsecureSkipVerify", "IOT_DianDengVoiceAssistantTriggerCondition", "IOT_DianDengBindComponentEnable", "IOT_DianDengBindComponentTriggerCondition", "IOT_DianDengBindComponent", "IOT_DianDengBindComponentState", "IOT_DianDengBindComponentType", "IOT_Bemfa_Enable", "IOT_Bemfa_SecretKey", "IOT_Bemfa_Topic", "IOT_BemfaVoiceAssistantTriggerCondition", "IOT_Bemfa_InsecureSkipVerify"],
+      "schema_evidence": "frontend scheduled-task form initializes this explicit model and passes it directly to POST; current authorized cron list is empty"
+    },
+    {
+      "path": "/api/cron/list",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["Key", "Name", "Enable", "OtherKey", "Type", "TypeParams", "GroupKey", "ExecSecond", "ExecMinute", "ExecHour", "Jobs", "Parallel", "IOT_DianDeng_Enable", "IOT_DianDeng_AUTHKEY", "IOT_DianDeng_InsecureSkipVerify", "IOT_DianDengVoiceAssistantTriggerCondition", "IOT_DianDengBindComponentEnable", "IOT_DianDengBindComponentTriggerCondition", "IOT_DianDengBindComponent", "IOT_DianDengBindComponentState", "IOT_DianDengBindComponentType", "IOT_Bemfa_Enable", "IOT_Bemfa_SecretKey", "IOT_Bemfa_Topic", "IOT_BemfaVoiceAssistantTriggerCondition", "IOT_Bemfa_InsecureSkipVerify"],
+      "schema_evidence": "frontend scheduled-task editor loads and passes the same model directly to PUT; current authorized cron list is empty"
+    },
+    {
+      "path": "/api/cron/taskgrouporderupdate",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["tasksMap", "orderList"],
+      "schema_evidence": "frontend task/group drag handlers explicitly construct {tasksMap,orderList}; tasksMap maps TaskKey to GroupKey and orderList is the TaskKey sequence"
+    },
+    {
+      "path": "/api/cron/groups",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["Name"],
+      "schema_evidence": "frontend group management dialog sends explicit {Name} for create; current authorized group list is empty"
+    },
+    {
+      "path": "/api/cron/groups",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["Key", "Name"],
+      "schema_evidence": "frontend group management dialog passes {Key,Name} for update; current authorized group list is empty"
+    },
+    {
+      "path": "/api/cron/groups/orderadjustment",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type": "array", "items": {"type": "string"}},
+      "schema_evidence": "frontend group reorder dialog maps reordered groups to Key string array"
+    },
+    {
+      "path": "/api/wol/device",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["Key", "DeviceName", "MacList", "BroadcastIPs", "ProbeTargets", "Port", "Relay", "Repeat", "IOT_DianDeng_Enable", "IOT_DianDeng_AUTHKEY", "IOT_DianDeng_InsecureSkipVerify", "IOT_DianDengBindComponentEnable", "IOT_DianDengBindComponent", "IOT_Bemfa_Enable", "IOT_Bemfa_SecretKey", "IOT_Bemfa_Topic", "IOT_Bemfa_InsecureSkipVerify"],
+      "schema_evidence": "frontend WOL device form initializes this explicit model and passes it directly to POST; authorized device list is empty"
+    },
+    {
+      "path": "/api/wol/device",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["Key", "DeviceName", "MacList", "BroadcastIPs", "ProbeTargets", "Port", "Relay", "Repeat", "IOT_DianDeng_Enable", "IOT_DianDeng_AUTHKEY", "IOT_DianDeng_InsecureSkipVerify", "IOT_DianDengBindComponentEnable", "IOT_DianDengBindComponent", "IOT_Bemfa_Enable", "IOT_Bemfa_SecretKey", "IOT_Bemfa_Topic", "IOT_Bemfa_InsecureSkipVerify"],
+      "schema_evidence": "frontend WOL device editor copies these fields from a list item and passes the model directly to PUT; authorized device list is empty"
+    },
+    {
+      "path": "/api/wol/service/configure",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["Client", "Server"],
+      "schema_evidence": "frontend settings page passes the full {Client,Server} configure object directly + authorized GET observed the nested Client/Server field shapes; only field names/types are recorded"
+    },
+    {
+      "path": "/api/wol/webhooktest",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["WebhookURL", "WebhookMethod", "WebhookRequestBody", "WebhookProxy", "WebhookProxyAddr", "WebhookProxyUser", "WebhookProxyPassword", "WebhookHeaders", "WebhookSuccessContent", "WebhookDisableCallbackSuccessContentCheck", "RetryCount", "RetryInterval"],
+      "schema_evidence": "frontend WOL settings constructs this explicit webhook-test payload; no authenticated webhook test was sent"
+    },
+    {
+      "path": "/api/wol/deviceorderadjustment",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type": "array", "items": {"type": "string"}},
+      "schema_evidence": "frontend WOL device drag handler maps reordered devices to Key string array"
+    },
+    {
+      "path": "/api/ipdb/configure",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["CustomIPDBPath"],
+      "schema_evidence": "authorized GET returns customIPDBPath, then the frontend explicitly normalizes it to {CustomIPDBPath} and passes that object to PUT"
+    },
+    {
+      "path": "/api/ipdb/instanceorderadjustment",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type": "array", "items": {"type": "string"}},
+      "schema_evidence": "frontend IPDB drag handler maps reordered items to Key string array"
+    },
+    {
+      "path": "/api/ipdb/item",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["Key", "Remark", "Enable", "Format", "FilePath", "SupportTypes", "BufferType", "DBParam1"],
+      "schema_evidence": "frontend IPDB editor clones the item model and sends it directly; the form explicitly reads/writes these fields before POST"
+    },
+    {
+      "path": "/api/ipdb/item",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["Key", "Remark", "Enable", "Format", "FilePath", "SupportTypes", "BufferType", "DBParam1"],
+      "schema_evidence": "frontend IPDB editor clones the existing item into the same model and sends it directly after normalization"
+    },
+    {
+      "path": "/api/iconlib/sources",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["Alias", "Type", "Path", "RcloneKey", "RcloneRoot", "StoreKey", "StoreRoot", "Enable", "Description"],
+      "schema_evidence": "frontend source editor passes this model to POST + authorized GET /api/iconlib/sources observed the same source field names"
+    },
+    {
+      "path": "/api/iconlib/sources",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["Alias", "Type", "Path", "RcloneKey", "RcloneRoot", "StoreKey", "StoreRoot", "Enable", "Description"],
+      "schema_evidence": "frontend update helper explicitly rebuilds {Alias,Type,Path,RcloneKey,RcloneRoot,StoreKey,StoreRoot,Enable,Description} before PUT"
+    },
+    {
+      "path": "/api/storagemanagement/itemorderadjustment",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type": "array", "items": {"type": "string"}},
+      "schema_evidence": "frontend storage drag handler maps reordered storage items to Key string array"
+    },
+    {
+      "path": "/api/storagemanagement/list",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["Type", "Enable", "Key", "Remark", "Writable", "Log", "Params", "SystemMount"],
+      "schema_evidence": "frontend storage editor initializes {Type,Enable,Key,Remark,Writable,Log,Params,SystemMount} and passes the normalized model directly to POST; current authorized list is empty"
+    },
+    {
+      "path": "/api/storagemanagement/list",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["Type", "Enable", "Key", "Remark", "Writable", "Log", "Params", "SystemMount"],
+      "schema_evidence": "frontend storage editor deep-merges the existing resource into the same normalized model and passes it directly to PUT; current authorized list is empty"
+    },
+    {
+      "path": "/api/thirdPartyAuthManager/config",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["GithubRedirectURI", "GithubClientID", "GoogleRedirectURI", "GoogleClientID", "QQRedirectURI", "QQClientID", "AuthentikRedirectURI", "AuthentikClientID", "AuthentikServer", "WeiboClientKey", "WeiboRedirectURI", "OIDCRedirectURI", "OIDCClientID", "OIDCAuthorizationEndpoint"],
+      "schema_evidence": "frontend provider settings initializes and passes this explicit config object + authorized GET /api/thirdPartyAuthManager/config observed the same field names; no credential values are recorded"
+    },
+    {
+      "path": "/api/thirdPartyAuthManager/list",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["Key", "Type", "Enable", "Remark", "ID", "Name", "Avatar", "EMail", "Phone", "RefreshToken", "AccessToken", "CreateTime", "UpdateTime", "TwoFAKey"],
+      "schema_evidence": "frontend third-party auth user form initializes this explicit model and passes it directly to POST; current authorized list is empty and only field names are recorded"
+    },
+    {
+      "path": "/api/thirdPartyAuthManager/list",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["Key", "Type", "Enable", "Remark", "ID", "Name", "Avatar", "EMail", "Phone", "RefreshToken", "AccessToken", "CreateTime", "UpdateTime", "TwoFAKey"],
+      "schema_evidence": "frontend edits and passes the same third-party auth user model directly to PUT; only field names are recorded"
+    },
+    {
+      "path": "/api/thirdPartyAuthManager/orderadjustment",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type": "array", "items": {"type": "string"}},
+      "schema_evidence": "frontend third-party auth drag handler maps reordered users to Key string array"
+    },
+    {
+      "path": "/api/2fa/setting",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["TwoFAEnable", "TwoFAKey", "TwoFACode"],
+      "schema_evidence": "frontend global 2FA settings explicitly constructs {TwoFAEnable,TwoFAKey,TwoFACode} before PUT; no authenticated 2FA write was executed"
+    },
+    {
+      "path": "/api/about-content",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["version", "display", "cards"],
+      "schema_evidence": "frontend normalizes the remote/backend About content to {version,display,cards} and passes that object directly to PUT; authorized GET observed the same top-level shape"
+    },
+    {
+      "path": "/api/baseconfigure",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["AdminAccount", "AdminPassword", "AdminWebListenHttpsPort", "AdminWebListenIP", "AdminWebListenPort", "AdminWebListenTLS", "AllowAllThirdAuthUsers", "AllowInternetaccess", "AutoOptionsFirewall", "BackendServerListBackup", "BackgroundBlur", "BackgroundColor", "BackgroundImage", "CatchPanic", "ConfVer", "CustomDNSA", "CustomDNSB", "CustomDNSC", "CustomDNSD", "CustomDNSList", "DeviceID", "DisableAllowAllOrigins", "DisableModules", "DisableNTPSync", "DisableNTPSyncLog", "EnableCustomBackgroundColor", "EnableCustomBackgroundImage", "EnableOpenToken", "EnableStatusHistory", "EnableThirdAuthLogin", "FirewallInitDelay", "ForceHTTPS", "FrontendDisableAutoExpandLeftMenu", "FrontendLanguage", "FrontendTheme", "GCPercent", "GOMAXPROCS", "GlobalDisableFirewallOpt", "GlobalNoLimitCIDRs", "HttpClientTimeout", "IgnoreAuthInfoCheck", "IgnoreSafeURLCheck", "InsecureSkipVerify", "Keys", "LogMaxSize", "MaxConsecutiveLoginFailures", "OldPassword", "OpenToken", "OpenTokenConfirmed", "OriginsList", "ProxyProtocolTrustedCIDRs", "RestartAfterPanic", "SafeURL", "SetGCPercent", "StatNetInterfaceList", "StatusHistoryRetentionDays", "StatusHistorySampleIntervalSeconds", "ThirdAuthLoginSkipTwoFA", "ThirdAuthLoginUserList", "TimeZone", "TokenExpirationHour", "TwoFADigits", "TwoFAEnable", "TwoFAKey", "hiddenModules"],
+      "schema_evidence": "frontend saves a copy of the authorized GET /api/baseconfigure object after normalization; OldPassword is conditionally added during password change. Only field names are recorded, never configuration or token values"
+    },
+    {
+      "path": "/api/dlnaservice/configure",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["Enable", "ListenIP", "ListenPort", "NetInterfaceList", "FriendlyName", "DeviceUUID", "MountList"],
+      "schema_evidence": "frontend deliberately rebuilds the GET configure response into these seven fields and passes that normalized object directly to PUT"
+    },
+    {
+      "path": "/api/frontend-preferences",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["theme", "language"],
+      "schema_evidence": "frontend preference sync explicitly constructs {theme: currentTheme, language: currentLocale} before PUT"
+    },
+    {
+      "path": "/api/ftpserver/configure",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["ActiveConnectionsCheck", "ActiveTransferPortNon20", "AdvancedParametersShow", "AutoFireWall", "ConfVersion", "ConnectionTimeout", "DefaultTransferType", "DisableActiveMode", "DisableLISTArgs ", "DisableMFMT", "DisableMLSD", "DisableMLST", "DisableSTAT", "DisableSYST", "DisableSite", "Enable", "EnableCOMB", "EnableHASH", "IdleTimeout", "Network", "PassivePortEnd", "PassivePortStart", "PasvConnectionsCheck", "Port", "TLSRequired", "Users"],
+      "schema_evidence": "frontend loads authorized GET /api/ftpserver/configure into its form and passes the normalized form object directly to PUT; the observed API field named 'DisableLISTArgs ' includes a trailing space"
+    },
+    {
+      "path": "/api/login",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["challengeId", "cipherText"],
+      "schema_evidence": "frontend first GETs /api/login/challenge, AES-GCM encrypts the account/password/timestamp plaintext locally, and POSTs only {challengeId,cipherText}; no login attempt was sent for schema discovery"
+    },
+    {
+      "path": "/api/modules/{param}/2fa/config",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["enable", "key", "secret", "validated", "code", "oldSecret", "oldCode"],
+      "schema_evidence": "frontend module 2FA dialog explicitly constructs this normalized object before PUT; authorized GET config was used only to observe enable/hasKey/validated state and no 2FA write was executed"
+    },
+    {
+      "path": "/api/oauth/login",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["challengeId", "cipherText"],
+      "schema_evidence": "frontend first GETs /api/login/challenge, encrypts the OAuth provider/code/timestamp payload locally, and POSTs only {challengeId,cipherText}; no OAuth login attempt was sent"
+    },
+    {
+      "path": "/api/password/verify",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["oldPassword"],
+      "schema_evidence": "frontend password-change workflow explicitly calls password verification with {oldPassword} before any base-config update; no password verification request was sent for schema discovery"
+    },
+    {
+      "path": "/api/smb/configure",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["AutoFirewall", "DiscoveryIP", "Enable", "EnableMDNS", "EnableNBNS", "EnableWSDD", "Encryption", "GuestEnable", "ListenIP", "ListenNetwork", "ListenPort", "LiteSMBLogLevel", "LiteSMBLogToTerminal", "MaxConnections", "Multichannel", "PublicMountList", "SMBConfVersion", "ServerName", "Signing", "Users", "Workgroup"],
+      "schema_evidence": "frontend loads authorized GET /api/smb/configure, normalizes mount/user lists and passes the full configure model directly to PUT"
+    },
+    {
+      "path": "/api/status/host-process-kill",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["pid"],
+      "schema_evidence": "frontend process dialog explicitly invokes POST with {pid: selectedProcess.pid}; the kill handler was not executed for schema discovery"
+    },
+    {
+      "path": "/api/third/filebrowser/configure",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["Address", "AutoFirewall", "BaseURL", "CacheDir", "ConfVersion", "DBFile", "DirPerm", "DisableExec", "DisablePreviewResize", "DisableThumbnails", "DisableTypeDetectionByHeader", "Enable", "FilePerm", "HTTPEnable", "IMGProcessors", "ListenNetwork", "MountList", "Port", "RedisCacheUrl", "TLSEnable", "TLSListenPort", "TokenExpirationHour", "TrustHostList"],
+      "schema_evidence": "frontend loads authorized GET /api/third/filebrowser/configure, normalizes Port to a string for submit and passes the configure model to PUT"
+    },
+    {
+      "path": "/api/update/comfire",
+      "method": "PUT",
+      "risk": "dangerous",
+      "body_keys": ["Name", "ARCH", "OS", "Version", "GoVersion", "Date", "MD5"],
+      "schema_evidence": "frontend program-upgrade flow stores the uploaded package's info object as {Name,ARCH,OS,Version,GoVersion,Date,MD5} and passes that object to the confirm endpoint; upgrade handler was not executed"
+    },
+    {
+      "path": "/api/v2l",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["v2l"],
+      "schema_evidence": "frontend About page explicitly POSTs {v2l: localStorageValue} after startup; this schema was recovered statically and no request was sent"
+    },
+    {
+      "path": "/api/webdav/configure",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["AutoFirewall", "Enable", "HTTPEnable", "ListenIP", "ListenNetwork", "ListenPort", "TLSEnable", "TLSListenPort", "TrustHostList", "Users", "WebDavConfVersion"],
+      "schema_evidence": "frontend loads authorized GET /api/webdav/configure into its normalized form and passes that full form object directly to PUT"
     }
   ]
 }

@@ -12,7 +12,7 @@ from pathlib import Path, PurePosixPath
 from urllib.parse import urlparse
 
 from extract_lucky_frontend import write_markdown, write_openapi
-from lucky_api import OperationRisk, RouteCatalog
+from lucky_api import OperationRisk, RouteCatalog, load_merged_snapshot
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -404,6 +404,20 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             fail(f"runtime verified route has invalid method: {method}")
         if risk not in {item.value for item in OperationRisk if item is not OperationRisk.UNKNOWN}:
             fail(f"runtime verified route has invalid risk: {risk}")
+        for field in ("query_keys", "body_keys"):
+            value = item.get(field)
+            if value is not None and (
+                not isinstance(value, list) or not all(isinstance(key, str) and key for key in value)
+            ):
+                fail(f"runtime verified route {field} must be an array of non-empty strings")
+        for field in ("request_body_schema", "response_schema"):
+            value = item.get(field)
+            if value is not None and not isinstance(value, dict):
+                fail(f"runtime verified route {field} must be an object")
+        for field in ("request_content_type", "schema_evidence"):
+            value = item.get(field)
+            if value is not None and (not isinstance(value, str) or not value.strip()):
+                fail(f"runtime verified route {field} must be a non-empty string")
         keys.append((path, str(method)))
     if len(keys) != len(set(keys)):
         fail("runtime verified routes contain duplicate path/method entries")
@@ -413,6 +427,30 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     if unknown:
         fail(f"runtime route verification leaves {len(unknown)} unknown route(s)")
 
+    expected_body_schema_gaps = {
+        ("POST", "/api/docker/containers/{param}/upgrade"),
+        ("POST", "/api/docker/images/build"),
+        ("POST", "/api/docker/images/build-from-git"),
+        ("POST", "/api/docker/images/build-from-zip"),
+        ("POST", "/api/docker/images/import"),
+        ("POST", "/api/docker/prune"),
+    }
+    actual_body_schema_gaps = {
+        (route.method, route.path)
+        for route in merged.routes
+        if route.method in {"POST", "PUT", "PATCH"}
+        and route.has_body
+        and not route.body_keys
+        and route.request_body_schema is None
+    }
+    if actual_body_schema_gaps != expected_body_schema_gaps:
+        missing = sorted(expected_body_schema_gaps - actual_body_schema_gaps)
+        added = sorted(actual_body_schema_gaps - expected_body_schema_gaps)
+        fail(
+            "request-body schema gap set changed; "
+            f"resolved={missing or 'none'} new={added or 'none'}"
+        )
+
 
 def check_generated_artifacts() -> None:
     snapshot_path = ROOT / "evidence" / "lucky-v3-endpoints.json"
@@ -420,6 +458,8 @@ def check_generated_artifacts() -> None:
     snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
     openapi = json.loads(openapi_path.read_text(encoding="utf-8"))
     check_runtime_verification(snapshot_path, snapshot)
+    runtime_path = snapshot_path.with_name("lucky-v3-runtime-verification.json")
+    merged_snapshot = load_merged_snapshot(snapshot_path, runtime_verification=runtime_path)
     if snapshot["route_count"] != len(snapshot["routes"]):
         fail("snapshot route_count does not match routes")
     if snapshot["bundle_count"] != len(snapshot["bundle_sha256"]):
@@ -449,7 +489,7 @@ def check_generated_artifacts() -> None:
     }
     inferred = {
         (item["path"], item["method"])
-        for item in snapshot["routes"]
+        for item in merged_snapshot["routes"]
         if item["method"] != "UNKNOWN"
     }
     if documented != inferred:
@@ -465,8 +505,8 @@ def check_generated_artifacts() -> None:
     with tempfile.TemporaryDirectory() as directory:
         generated_markdown = Path(directory) / "api-routes.md"
         generated_openapi = Path(directory) / "lucky-v3.openapi.json"
-        write_markdown(snapshot, generated_markdown)
-        write_openapi(snapshot, generated_openapi)
+        write_markdown(merged_snapshot, generated_markdown)
+        write_openapi(merged_snapshot, generated_openapi)
         committed_markdown = ROOT / "docs" / "generated" / "api-routes.md"
         if generated_markdown.read_bytes() != committed_markdown.read_bytes():
             fail("generated API route Markdown is stale")

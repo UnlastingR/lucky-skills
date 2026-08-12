@@ -172,6 +172,51 @@ class RuntimeVerificationTests(unittest.TestCase):
                 with self.assertRaises(CatalogError):
                     RouteCatalog.from_file(snapshot_path, runtime_verification=runtime_path)
 
+    def test_runtime_schema_metadata_merges_into_static_route(self) -> None:
+        snapshot = {
+            "schema_version": 1,
+            "target": {"product": "Lucky", "version": "3.0.0"},
+            "routes": [
+                {
+                    "path": "/api/order",
+                    "method": "PUT",
+                    "module": "order",
+                    "confidence": "frontend-call",
+                    "query_keys": [],
+                    "body_keys": [],
+                    "has_body": True,
+                    "response_type": "json",
+                }
+            ],
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            snapshot_path = Path(directory) / "snapshot.json"
+            runtime_path = Path(directory) / "runtime.json"
+            snapshot_path.write_text(json.dumps(snapshot), encoding="utf-8")
+            verification = {
+                "schema_version": 1,
+                "target": {"product": "Lucky", "version": "3.0.0"},
+                "static_snapshot_sha256": hashlib.sha256(snapshot_path.read_bytes()).hexdigest(),
+                "suppress_literals": [],
+                "routes": [
+                    {
+                        "path": "/api/order",
+                        "method": "PUT",
+                        "risk": "mutating",
+                        "request_body_schema": {"type": "array", "items": {"type": "string"}},
+                        "request_content_type": "application/json",
+                        "schema_evidence": "frontend array mapping",
+                    }
+                ],
+            }
+            runtime_path.write_text(json.dumps(verification), encoding="utf-8")
+            catalog = RouteCatalog.from_file(snapshot_path, runtime_verification=runtime_path)
+        route = catalog.match("PUT", "/api/order")
+        self.assertIsNotNone(route)
+        self.assertEqual(route.request_body_schema, {"type": "array", "items": {"type": "string"}})  # type: ignore[union-attr]
+        self.assertEqual(route.request_content_type, "application/json")  # type: ignore[union-attr]
+        self.assertEqual(route.schema_evidence, "frontend array mapping")  # type: ignore[union-attr]
+
     def test_runtime_verification_version_must_match_snapshot(self) -> None:
         snapshot = {
             "schema_version": 1,

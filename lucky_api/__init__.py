@@ -1,6 +1,6 @@
 """Dependency-free client primitives for Lucky's unofficial OpenToken API."""
 
-from .catalog import OperationRisk, Route, RouteCatalog
+from .catalog import OperationRisk, Route, RouteCatalog, load_merged_snapshot
 from .client import (
     APIResponse,
     HTTPStatusError,
@@ -24,6 +24,7 @@ __all__ = [
     "ResponseTooLargeError",
     "Route",
     "RouteCatalog",
+    "load_merged_snapshot",
     "TransportError",
     "UnsafeOperationError",
 ]

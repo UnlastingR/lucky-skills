@@ -53,7 +53,7 @@ python3 tools/lucky_api.py catalog --search webservice
 python3 tools/lucky_api.py catalog --search ddns
 ```
 
-Then call cataloged read-only routes with `call`. Prefer narrow responses and the smallest endpoint that answers the question. The default catalog merges the frontend snapshot with `evidence/lucky-v3-runtime-verification.json` only when both the Lucky version and the exact static-snapshot SHA-256 match; treat `runtime-verified` method and risk overrides as stronger operational evidence than generic HTTP-method heuristics. A route absent from the merged catalog remains unknown and must not be called with credentials just to discover its behavior.
+Then call cataloged read-only routes with `call`. Prefer narrow responses and the smallest endpoint that answers the question. The default catalog merges the frontend snapshot with `evidence/lucky-v3-runtime-verification.json` only when both the Lucky version and the exact static-snapshot SHA-256 match; treat `runtime-verified` method and risk overrides as stronger operational evidence than generic HTTP-method heuristics, and use `schema_evidence` to judge whether body fields came from frontend construction, model pass-through, or authorized read-only shape checks. A route absent from the merged catalog remains unknown and must not be called with credentials just to discover its behavior.
 
 ## Apply changes conservatively
 

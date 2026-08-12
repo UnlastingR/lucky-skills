@@ -12,8 +12,8 @@
 
 1. 将目标版本页面引用的 JavaScript bundle 放在仓库外的临时目录。
 2. 运行 `tools/extract_lucky_frontend.py` 更新证据 JSON。
-3. 审核 `evidence/lucky-v3-runtime-verification.json`：只保留脱敏后的方法、查询键、风险覆盖、验证说明和已确认的字面量误报；运行时证据必须同时绑定 Lucky 版本和静态快照 SHA-256，只要静态快照变化就必须重新审核/核验，不得沿用旧绑定。
-4. 运行 `tools/render_lucky_artifacts.py` 从静态证据生成 Markdown 和 OpenAPI。
+3. 审核 `evidence/lucky-v3-runtime-verification.json`：只保留脱敏后的方法、查询键、风险覆盖、schema 元数据、验证说明和已确认的字面量误报；运行时证据必须同时绑定 Lucky 版本和静态快照 SHA-256，只要静态快照变化就必须重新审核/核验，不得沿用旧绑定。写接口的 schema 可以来自前端显式对象或编辑器模型，但不得为了补 schema 去执行写 handler；只读 GET 可用于交叉验证字段名和类型。除非有明确后端校验证据，不要擅自把字段标为 required。
+4. 运行 `tools/render_lucky_artifacts.py` 从静态快照与绑定覆盖层生成 Markdown 和 OpenAPI。
 5. 审核生成 diff，特别注意 URL、token、域名、配置值和风险等级变化。
 6. 运行 `python3 -m unittest discover -s tests -v` 和 `python3 tools/verify_repository.py`；verifier 必须确认默认合并目录不残留 `unknown`。
 7. 在 PR 中写明 Lucky 版本、镜像类型、bundle 数量、运行时验证方法和实际执行过的只读请求范围。
