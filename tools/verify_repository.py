@@ -497,8 +497,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             f"expected at most 147 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 177:
-        fail(f"response-schema coverage regressed below 177 routes: {response_schema_count}")
+    if response_schema_count < 182:
+        fail(f"response-schema coverage regressed below 182 routes: {response_schema_count}")
 
     safe_utility_response_routes = {
         ("GET", "/api/ipfliter/porttrap/blockedips"),
@@ -509,6 +509,11 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         ("GET", "/api/webservice/cgi/list"),
         ("GET", "/api/webservice/groups/subrulecount"),
         ("GET", "/api/webservice/statistics/ip-profile"),
+        ("GET", "/api/login/challenge"),
+        ("GET", "/api/ipregtest"),
+        ("GET", "/api/webservice/statistics/recent-ips/visits"),
+        ("GET", "/api/ssl/syncclients"),
+        ("GET", "/api/thirdPartyAuthManager/list"),
     }
     for route_key in safe_utility_response_routes:
         if not isinstance(merged_by_key[route_key].response_schema, dict):
@@ -526,6 +531,35 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     ip_profile_schema = merged_by_key[("GET", "/api/webservice/statistics/ip-profile")].response_schema
     if ip_profile_schema != {"type": "object", "properties": {"ret": {"type": "integer"}}}:
         fail("WebService empty IP-profile success schema must remain ret-only")
+
+    login_challenge = merged_by_key[("GET", "/api/login/challenge")].response_schema
+    login_challenge_props = login_challenge.get("properties", {}) if isinstance(login_challenge, dict) else {}
+    if login_challenge_props != {
+        "ret": {"type": "integer"},
+        "challengeId": {"type": "string"},
+        "expiresIn": {"type": "integer"},
+        "nonce": {"type": "string"},
+        "publicKey": {"type": "string"},
+    }:
+        fail("login challenge response schema regressed")
+
+    ipregtest_schema = merged_by_key[("GET", "/api/ipregtest")].response_schema
+    if ipregtest_schema != {
+        "type": "object",
+        "properties": {"ret": {"type": "integer"}, "ip": {"type": "string"}},
+    }:
+        fail("IP regex test response schema regressed")
+
+    recent_visits = merged_by_key[("GET", "/api/webservice/statistics/recent-ips/visits")].response_schema
+    recent_visit_props = recent_visits.get("properties", {}) if isinstance(recent_visits, dict) else {}
+    if recent_visit_props.get("visits") != {"type": "array", "items": {}}:
+        fail("WebService recent-IP visit item schema must remain unspecified")
+    recent_item_props = recent_visit_props.get("item", {}).get("properties", {})
+    if recent_item_props != {
+        "clientIP": {"type": "string"},
+        "clientIPGeo": {"type": "object"},
+    }:
+        fail("WebService recent-IP minimal profile schema regressed")
 
     cgi_schema = merged_by_key[("GET", "/api/webservice/cgi/list")].response_schema
     cgi_list = cgi_schema.get("properties", {}).get("list") if isinstance(cgi_schema, dict) else None
@@ -549,6 +583,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         ("GET", "/api/stunrulelist"): ("list", "ModuleEnable"),
         ("GET", "/api/stunrulelist_lite"): ("list", "ModuleEnable"),
         ("GET", "/api/ipdb/avalidDBFiles"): ("list", None),
+        ("GET", "/api/ssl/syncclients"): ("list", None),
+        ("GET", "/api/thirdPartyAuthManager/list"): ("list", None),
     }
     for route_key, (list_field, flag_field) in nullable_list_response_routes.items():
         response_schema = merged_by_key[route_key].response_schema
