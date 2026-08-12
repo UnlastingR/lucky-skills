@@ -518,6 +518,9 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     web_rule = merged_by_key[("POST", "/api/webservice/rules")].request_body_schema
     if not isinstance(web_rule, dict):
         fail("WebService rule request schema is missing")
+    web_rule_update = merged_by_key[("PUT", "/api/webservice/rule/{param}")].request_body_schema
+    if web_rule_update != web_rule:
+        fail("WebService create/update request schemas drifted apart")
     web_props = web_rule.get("properties", {})
     if web_props.get("TLSMinVersion") != {"type": "integer", "minimum": 0, "maximum": 3}:
         fail("WebService TLSMinVersion bounds regressed")

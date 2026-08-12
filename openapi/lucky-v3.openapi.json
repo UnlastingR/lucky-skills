@@ -29764,6 +29764,9 @@
                       "Key": {
                         "type": "string"
                       },
+                      "GroupKey": {
+                        "type": "string"
+                      },
                       "Locations": {
                         "type": "array",
                         "items": {
@@ -29779,16 +29782,46 @@
                       "BasicAuthUserList": {
                         "type": "string"
                       },
+                      "AuthSource": {
+                        "type": "string"
+                      },
                       "SecurityGroupKeys": {
                         "type": "array",
                         "items": {
                           "type": "string"
                         }
                       },
+                      "SecurityGroupAccessMode": {
+                        "type": "string"
+                      },
+                      "SecurityGroupGrantBasicAuth": {
+                        "type": "boolean"
+                      },
+                      "DisplayInFrontendList": {
+                        "type": "boolean"
+                      },
+                      "CacheEnabled": {
+                        "type": "boolean"
+                      },
+                      "CorazaWAFInstance": {
+                        "type": "string"
+                      },
                       "HttpClientTimeout": {
                         "type": "integer",
                         "minimum": 3,
                         "maximum": 300
+                      },
+                      "ProxyType": {
+                        "type": "string"
+                      },
+                      "ProxyAddr": {
+                        "type": "string"
+                      },
+                      "ProxyUser": {
+                        "type": "string"
+                      },
+                      "ProxyPassword": {
+                        "type": "string"
                       },
                       "OtherParams": {
                         "type": "object",
@@ -29803,6 +29836,24 @@
                             "type": "string"
                           },
                           "WebAuth": {
+                            "type": "boolean"
+                          },
+                          "WebAuthAllowNonBrowserReuse": {
+                            "type": "boolean"
+                          },
+                          "WebAuthAllowNonBrowserUserAgents": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "WebAuthPathPrefix": {
+                            "type": "string"
+                          },
+                          "WebAuthSessionScopeMode": {
+                            "type": "string"
+                          },
+                          "WebAuthUseDedicatedPath": {
                             "type": "boolean"
                           }
                         }
@@ -29891,6 +29942,9 @@
                         "Key": {
                           "type": "string"
                         },
+                        "GroupKey": {
+                          "type": "string"
+                        },
                         "Enable": {
                           "type": "boolean"
                         },
@@ -29912,13 +29966,48 @@
                         "WebServiceType": {
                           "type": "string"
                         },
+                        "EnableBasicAuth": {
+                          "type": "boolean"
+                        },
+                        "BasicAuthUserList": {
+                          "type": "string"
+                        },
+                        "AuthSource": {
+                          "type": "string"
+                        },
+                        "SecurityGroupKeys": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "SecurityGroupAccessMode": {
+                          "type": "string"
+                        },
+                        "DisplayInFrontendList": {
+                          "type": "boolean"
+                        },
+                        "CacheEnabled": {
+                          "type": "boolean"
+                        },
+                        "HttpClientTimeout": {
+                          "type": "integer",
+                          "minimum": 3,
+                          "maximum": 300
+                        },
                         "OtherParams": {
                           "type": "object",
                           "properties": {
+                            "ProxyProtocolV2": {
+                              "type": "boolean"
+                            },
                             "RedirectType": {
                               "type": "string"
                             },
-                            "ProxyProtocolV2": {
+                            "OauthType": {
+                              "type": "string"
+                            },
+                            "WebAuth": {
                               "type": "boolean"
                             }
                           }
