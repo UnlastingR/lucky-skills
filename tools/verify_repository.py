@@ -497,8 +497,62 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             f"expected at most 147 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 86:
-        fail(f"response-schema coverage regressed below 86 routes: {response_schema_count}")
+    if response_schema_count < 104:
+        fail(f"response-schema coverage regressed below 104 routes: {response_schema_count}")
+
+    service_response_routes = {
+        ("GET", "/api/dlnaservice/configure"),
+        ("GET", "/api/dlnaservice/status"),
+        ("GET", "/api/dlnaservice/lastlogs"),
+        ("GET", "/api/dlnaservice/logs"),
+        ("GET", "/api/ftpserver/configure"),
+        ("GET", "/api/ftpserver/status"),
+        ("GET", "/api/ftpserver/lastlogs"),
+        ("GET", "/api/ftpserver/logs"),
+        ("GET", "/api/smb/configure"),
+        ("GET", "/api/smb/runtime"),
+        ("GET", "/api/smb/status"),
+        ("GET", "/api/smb/lastlogs"),
+        ("GET", "/api/smb/logs"),
+        ("GET", "/api/webdav/configure"),
+        ("GET", "/api/webdav/status"),
+        ("GET", "/api/webdav/lastlogs"),
+        ("GET", "/api/webdav/logs"),
+        ("GET", "/api/wol/client/state"),
+    }
+    for route_key in service_response_routes:
+        if not isinstance(merged_by_key[route_key].response_schema, dict):
+            fail(f"service response schema missing for {route_key}")
+
+    for route_key in {
+        ("GET", "/api/ftpserver/configure"),
+        ("GET", "/api/smb/configure"),
+        ("GET", "/api/webdav/configure"),
+    }:
+        response_schema = merged_by_key[route_key].response_schema
+        configure_props = response_schema.get("properties", {}).get("configure", {}).get("properties", {})
+        users = configure_props.get("Users")
+        if not isinstance(users, dict) or users.get("items") != {}:
+            fail(f"credential-bearing user item schema must remain unspecified for {route_key}")
+
+    expected_log_item_properties = {
+        "LogContent": {"type": "string"},
+        "LogTime": {"type": "string"},
+        "ShowTime": {"type": "boolean"},
+        "Level": {"type": "string"},
+    }
+    for module in ("dlnaservice", "ftpserver", "smb", "webdav"):
+        for suffix, field in (("lastlogs", "lastLogs"), ("logs", "logs")):
+            route_key = ("GET", f"/api/{module}/{suffix}")
+            response_schema = merged_by_key[route_key].response_schema
+            item_properties = (
+                response_schema.get("properties", {})
+                .get(field, {})
+                .get("items", {})
+                .get("properties", {})
+            )
+            if item_properties != expected_log_item_properties:
+                fail(f"service log item schema regressed for {route_key}")
 
     ddns_task = merged_by_key[("POST", "/api/ddns")].request_body_schema
     if not isinstance(ddns_task, dict):
