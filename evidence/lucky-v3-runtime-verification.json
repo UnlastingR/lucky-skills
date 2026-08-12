@@ -1805,6 +1805,27 @@
       "risk": "read-only",
       "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"clients":{"type":["array","null"],"items":{}}}},
       "schema_evidence": "authorized GET /api/ddns/odhcpdclients returned clients=null on this instance; client item schema remains unspecified"
+    },
+    {
+      "path": "/api/coraza/OWASPCoreRuleset",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"rules":{"type":"array","items":{"type":"string"}}}},
+      "schema_evidence": "authorized GET /api/coraza/OWASPCoreRuleset observed only rule-string collection type; actual rule contents were not retained"
+    },
+    {
+      "path": "/api/coraza/instancelist",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"list":{"type":["array","null"],"items":{}}}},
+      "schema_evidence": "authorized GET /api/coraza/instancelist returned list=null on this instance; item schema remains unspecified"
+    },
+    {
+      "path": "/api/coraza/list",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"list":{"type":["array","null"],"items":{}}}},
+      "schema_evidence": "authorized GET /api/coraza/list returned list=null on this instance; rule item schema remains unspecified"
     }
   ]
 }
