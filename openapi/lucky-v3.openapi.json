@@ -9352,11 +9352,31 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "old_container": {
+                      "type": "string"
+                    },
+                    "new_container": {
+                      "type": "string"
+                    },
+                    "new_image_ref": {
+                      "type": "string"
+                    },
+                    "removed_old_image": {
+                      "type": "boolean"
+                    },
+                    "warnings": {
+                      "type": "array"
+                    }
+                  }
                 }
               }
             }
@@ -9377,6 +9397,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "dangerous",
+        "x-schema-evidence": "authorized isolated BusyBox probe: an empty JSON object successfully upgraded/recreated only the dedicated temporary container; an arbitrary architecture property had no observable effect, so no request properties are claimed. Success response fields were observed directly",
         "parameters": [
           {
             "name": "param",
@@ -9614,11 +9635,19 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "output": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -9639,13 +9668,21 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized isolated BusyBox build: {} and a tag-only body were rejected, dockerfile alone succeeded, and dockerfile is interpreted as Dockerfile text. A supplied tag produced a dangling image and is therefore not claimed as a recognized field",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "properties": {}
+                "properties": {
+                  "dockerfile": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "dockerfile"
+                ]
               }
             }
           }
@@ -9692,13 +9729,21 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized validation probe: {} and tag-only bodies were rejected; git_url alone passed request validation and reached git clone, which then failed because git is absent from the Lucky container. url and repo_url aliases were rejected",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "properties": {}
+                "properties": {
+                  "git_url": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "git_url"
+                ]
               }
             }
           }
@@ -9745,13 +9790,21 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized validation probe: {} and tag-only bodies were rejected; zip_path alone passed request validation and the backend attempted to open that path. path and file aliases were rejected",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "properties": {}
+                "properties": {
+                  "zip_path": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "zip_path"
+                ]
               }
             }
           }
@@ -9848,13 +9901,21 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "dangerous",
+        "x-schema-evidence": "authorized validation probe: {} and repository/tag-only bodies were rejected; source alone passed request validation and the backend attempted to open that path. path and file_path aliases were rejected",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "properties": {}
+                "properties": {
+                  "source": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "source"
+                ]
               }
             }
           }
@@ -11516,11 +11577,48 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "report": {
+                      "type": "object",
+                      "properties": {
+                        "containers_deleted": {
+                          "type": [
+                            "array",
+                            "null"
+                          ]
+                        },
+                        "images_deleted": {
+                          "type": [
+                            "array",
+                            "null"
+                          ]
+                        },
+                        "networks_deleted": {
+                          "type": [
+                            "array",
+                            "null"
+                          ]
+                        },
+                        "volumes_deleted": {
+                          "type": [
+                            "array",
+                            "null"
+                          ]
+                        },
+                        "space_reclaimed": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -11541,13 +11639,21 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "dangerous",
+        "x-schema-evidence": "authorized isolated Lucky instance connected to a non-destructive mock Docker API: {} pruned dangling containers/images/networks; volumes:true additionally invoked volumes/prune; all:true removed the dangling=true filters. containers/images/networks/build_cache aliases did not alter behavior. No prune request reached the real Docker daemon",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "properties": {}
+                "properties": {
+                  "all": {
+                    "type": "boolean"
+                  },
+                  "volumes": {
+                    "type": "boolean"
+                  }
+                }
               }
             }
           }
@@ -18496,7 +18602,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Response schema observed from authorized read-only runtime evidence.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
@@ -26693,7 +26799,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Response schema observed from authorized read-only runtime evidence.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
@@ -27776,7 +27882,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Response schema observed from authorized read-only runtime evidence.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {

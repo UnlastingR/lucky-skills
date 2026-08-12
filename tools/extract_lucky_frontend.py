@@ -366,7 +366,7 @@ def operation_id(method: str, path: str) -> str:
 def response_spec(route: dict) -> dict:
     if isinstance(route.get("response_schema"), dict):
         content = {"application/json": {"schema": route["response_schema"]}}
-        description = "Response schema observed from authorized read-only runtime evidence."
+        description = "Response schema observed from runtime evidence; see x-schema-evidence for provenance."
     elif route["response_type"] in {"blob", "arraybuffer"}:
         content = {
             "application/octet-stream": {

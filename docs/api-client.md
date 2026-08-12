@@ -65,7 +65,7 @@ python3 tools/lucky_api.py catalog --search logs --json
 python3 tools/lucky_api.py catalog --risk unknown --json
 ```
 
-`runtime-verified` 只表示方法/路由或受控 GET 行为已经在授权实例上确认，不代表所有请求体字段、WebSocket 协议或成功响应 schema 都已完整恢复。请求体补全另看 `schema_evidence`：例如前端模型直传、前端显式对象构造，或授权只读 GET 的字段名/类型交叉验证。当前 OpenAPI 已能表达 object、`array<string>`、multipart binary 和 octet-stream body。Lucky 3.0.0 的“有请求体但字段/schema 为空”缺口已从 122 条降到 6 条；这 6 条均为当前前端缺少可靠调用点的 Docker legacy wrapper，因此故意保持未解而不是填入推测 schema。
+`runtime-verified` 只表示方法/路由或受控 GET 行为已经在授权实例上确认，不代表所有请求体字段、WebSocket 协议或成功响应 schema 都已完整恢复。请求体补全另看 `schema_evidence`：例如前端模型直传、前端显式对象构造、授权只读 GET 的字段名/类型交叉验证，或隔离测试资源上的受控写入。当前 OpenAPI 已能表达 object、`array<string>`、multipart binary 和 octet-stream body。Lucky 3.0.0 的“有请求体但字段/schema 为空”缺口已从 122 条降到 0 条；最后 6 条 Docker legacy wrapper 只记录通过隔离 BusyBox probe、请求校验差异或非破坏性 mock Docker API 实际证明的字段，不扩展推测字段。
 
 ## 查询参数与二进制响应
 
