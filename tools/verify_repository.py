@@ -497,8 +497,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             f"expected at most 147 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 39:
-        fail(f"response-schema coverage regressed below 39 routes: {response_schema_count}")
+    if response_schema_count < 53:
+        fail(f"response-schema coverage regressed below 53 routes: {response_schema_count}")
 
     ddns_task = merged_by_key[("POST", "/api/ddns")].request_body_schema
     if not isinstance(ddns_task, dict):
@@ -588,6 +588,13 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         ("GET", "/api/ddns/configure"): {"WebhookProxyPassword"},
         ("GET", "/api/ddns/credential-sources"): {"secretValue", "proxyPassword"},
         ("GET", "/api/ddns/task/{param}"): {"Secret", "HttpClientProxyPassword", "WebhookProxyPassword"},
+        ("GET", "/api/wol/service/configure"): {
+            "Token",
+            "QuickControlSafeURL",
+            "QuickControlBasicAuthPasswd",
+            "WebhookProxyPassword",
+        },
+        ("GET", "/api/third/filebrowser/configure"): {"RedisCacheUrl"},
     }
     for route_key, forbidden in sensitive_response_fields.items():
         response_schema = merged_by_key[route_key].response_schema
