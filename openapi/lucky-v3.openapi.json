@@ -4508,7 +4508,7 @@
         "x-evidence-bundles": [
           "lucky_ddns-rma111lI.js"
         ],
-        "x-lucky-risk": "read-only",
+        "x-lucky-risk": "dangerous",
         "parameters": [
           {
             "name": "command",
@@ -28360,11 +28360,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "lastLogs": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -28385,6 +28397,7 @@
           "lucky_dnsCredentialSources-CyE9Tpw6.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/ssl/lastlogs using one existing certificate key observed lastLogs=null; certificate key/domain and log item/content values were not retained",
         "parameters": [
           {
             "name": "key",
@@ -28410,11 +28423,32 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "logs": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -28435,6 +28469,7 @@
           "lucky_dnsCredentialSources-CyE9Tpw6.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/ssl/logs using one existing certificate key observed the paginated log envelope with logs=null; certificate key/domain and log item/content values were not retained",
         "parameters": [
           {
             "name": "key",

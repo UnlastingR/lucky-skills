@@ -485,6 +485,7 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         ("GET", "/api/ipfliter/porttrap/blockedips/export"): OperationRisk.DANGEROUS,
         ("GET", "/api/third/filebrowser/resetadmin"): OperationRisk.DANGEROUS,
         ("GET", "/api/webservice/statistics/export"): OperationRisk.DANGEROUS,
+        ("GET", "/api/ddns/getipfromcmdtest"): OperationRisk.DANGEROUS,
     }
     for route_key, expected_risk in conservative_get_risks.items():
         route = merged_by_key.get(route_key)
@@ -518,8 +519,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             f"expected at most 147 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 196:
-        fail(f"response-schema coverage regressed below 196 routes: {response_schema_count}")
+    if response_schema_count < 198:
+        fail(f"response-schema coverage regressed below 198 routes: {response_schema_count}")
 
     safe_utility_response_routes = {
         ("GET", "/api/ipfliter/porttrap/blockedips"),
@@ -533,6 +534,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         ("GET", "/api/login/challenge"),
         ("GET", "/api/ipregtest"),
         ("GET", "/api/webservice/statistics/recent-ips/visits"),
+        ("GET", "/api/ssl/lastlogs"),
+        ("GET", "/api/ssl/logs"),
         ("GET", "/api/ssl/syncclients"),
         ("GET", "/api/thirdPartyAuthManager/list"),
         ("GET", "/api/thirdPartyAuthManager/config"),
@@ -1030,6 +1033,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         ("GET", "/api/ipdb/logs"): "logs",
         ("GET", "/api/rclone/lastlogs"): "lastLogs",
         ("GET", "/api/rclone/logs"): "logs",
+        ("GET", "/api/ssl/lastlogs"): "lastLogs",
+        ("GET", "/api/ssl/logs"): "logs",
         ("GET", "/api/storagemanagement/lastlogs"): "lastLogs",
         ("GET", "/api/storagemanagement/logs"): "logs",
         ("GET", "/api/thirdPartyAuthManager/logs"): "logs",

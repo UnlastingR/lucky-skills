@@ -103,7 +103,7 @@
 | `GET` | `/api/ddns/credential-sources` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/ddns/enable` | `mutating` | `enable`, `key` | — | `json` | `frontend-call` |
 | `GET` | `/api/ddns/expanded` | `mutating` | `expanded`, `key` | — | `json` | `frontend-call` |
-| `GET` | `/api/ddns/getipfromcmdtest` | `read-only` | `command`, `iptype` | — | `json` | `frontend-call` |
+| `GET` | `/api/ddns/getipfromcmdtest` | `dangerous` | `command`, `iptype` | — | `json` | `frontend-call` |
 | `GET` | `/api/ddns/ipsectionexpanded` | `mutating` | `expanded`, `key` | — | `json` | `frontend-call` |
 | `GET` | `/api/ddns/lastlogs` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/ddns/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |

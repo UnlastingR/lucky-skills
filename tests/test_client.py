@@ -51,6 +51,7 @@ class ClientTests(unittest.TestCase):
                 route("/api/docker/volumes/export", "GET"),
                 route("/api/ipfliter/oneclickrecord", "GET"),
                 route("/api/third/filebrowser/resetadmin", "GET"),
+                route("/api/ddns/getipfromcmdtest", "GET"),
                 route("/api/cron/enable", "GET"),
                 route("/api/ddns", "PUT"),
                 route("/api/docker/containers/{param}/restart", "POST"),
@@ -125,6 +126,10 @@ class ClientTests(unittest.TestCase):
             self.catalog.classify("GET", "/api/third/filebrowser/resetadmin"),
             OperationRisk.DANGEROUS,
         )
+        self.assertEqual(
+            self.catalog.classify("GET", "/api/ddns/getipfromcmdtest"),
+            OperationRisk.DANGEROUS,
+        )
 
     def test_mutating_unknown_and_side_effect_get_are_blocked(self) -> None:
         client = self.client(lambda request, timeout: FakeResponse(b'{"ret":0}'))
@@ -134,6 +139,7 @@ class ClientTests(unittest.TestCase):
             ("GET", "/api/docker/volumes/export"),
             ("GET", "/api/ipfliter/oneclickrecord"),
             ("GET", "/api/third/filebrowser/resetadmin"),
+            ("GET", "/api/ddns/getipfromcmdtest"),
             ("GET", "/api/not-in-catalog"),
         ):
             with self.subTest(method=method, path=path):
