@@ -5,6 +5,7 @@
     "product": "Lucky",
     "version": "3.0.0"
   },
+  "static_snapshot_sha256": "befce5dbe8a877651db34359a987c043b7be8bb5311110d4cabc62a00bb53f78",
   "methodology": "Authorized runtime route verification. HTTP method existence was primarily proven with unauthenticated GET/POST/PUT/DELETE/PATCH requests that stop at Lucky authentication; selected GET routes were additionally verified with the repository OpenToken client. No mutating handler was executed for method discovery.",
   "suppress_literals": [
     "/api/cloudflared",

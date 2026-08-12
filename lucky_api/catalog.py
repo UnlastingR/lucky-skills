@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -159,6 +160,7 @@ def _apply_runtime_verification(
     source: Path,
     *,
     version: str,
+    snapshot_sha256: str,
 ) -> list[dict]:
     try:
         payload = json.loads(source.read_text(encoding="utf-8"))
@@ -171,6 +173,8 @@ def _apply_runtime_verification(
         raise CatalogError(
             f"runtime route verification targets Lucky {target.get('version')}, catalog is {version}"
         )
+    if payload.get("static_snapshot_sha256") != snapshot_sha256:
+        raise CatalogError("runtime route verification does not match this exact static snapshot")
     suppress = payload.get("suppress_literals", [])
     verified = payload.get("routes", [])
     if not isinstance(suppress, list) or not all(isinstance(item, str) for item in suppress):
@@ -180,14 +184,20 @@ def _apply_runtime_verification(
 
     route_map: dict[tuple[str, str], dict] = {}
     suppress_set = set(suppress)
+    static_keys: set[tuple[str, str]] = set()
     for item in raw_routes:
-        if not isinstance(item, dict):
+        if not isinstance(item, dict) or "path" not in item or "method" not in item:
             raise CatalogError("malformed route catalog entry")
-        path = str(item.get("path", ""))
-        method = str(item.get("method", "UNKNOWN")).upper()
+        path = str(item["path"])
+        method = str(item["method"]).upper()
+        static_keys.add((path, method))
         if method == "UNKNOWN" and path in suppress_set:
             continue
         route_map[(path, method)] = dict(item)
+    unknown_paths = {path for path, method in static_keys if method == "UNKNOWN"}
+    missing_suppressions = suppress_set - unknown_paths
+    if missing_suppressions:
+        raise CatalogError("runtime suppression is not backed by static UNKNOWN evidence")
 
     for item in verified:
         if not isinstance(item, dict):
@@ -199,6 +209,8 @@ def _apply_runtime_verification(
             raise CatalogError("runtime route verification requires path and method") from error
         if not path.startswith("/api/") or method not in {"GET", "POST", "PUT", "DELETE", "PATCH"}:
             raise CatalogError(f"invalid runtime verified route: {method} {path}")
+        if (path, "UNKNOWN") not in static_keys and (path, method) not in static_keys:
+            raise CatalogError("runtime verified route is not backed by the static snapshot")
         route_map.pop((path, "UNKNOWN"), None)
         base = route_map.get((path, method), {})
         merged = dict(base)
@@ -228,8 +240,9 @@ class RouteCatalog:
     ) -> "RouteCatalog":
         source = Path(path).expanduser()
         try:
-            payload = json.loads(source.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError) as error:
+            source_bytes = source.read_bytes()
+            payload = json.loads(source_bytes.decode("utf-8"))
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
             raise CatalogError(f"cannot read route catalog: {source}") from error
         raw_routes = payload.get("routes")
         if payload.get("schema_version") != 1 or not isinstance(raw_routes, list):
@@ -241,10 +254,13 @@ class RouteCatalog:
                 raw_routes,
                 Path(runtime_verification).expanduser(),
                 version=version,
+                snapshot_sha256=hashlib.sha256(source_bytes).hexdigest(),
             )
         routes = []
         for item in raw_routes:
             try:
+                if not isinstance(item, dict):
+                    raise CatalogError("malformed route catalog entry")
                 raw_risk = item.get("risk")
                 risk_override = OperationRisk(str(raw_risk)) if raw_risk is not None else None
                 routes.append(

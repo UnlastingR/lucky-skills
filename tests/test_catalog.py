@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import tempfile
 import unittest
@@ -59,6 +60,7 @@ class RuntimeVerificationTests(unittest.TestCase):
             snapshot_path = Path(directory) / "snapshot.json"
             runtime_path = Path(directory) / "runtime.json"
             snapshot_path.write_text(json.dumps(snapshot), encoding="utf-8")
+            verification["static_snapshot_sha256"] = hashlib.sha256(snapshot_path.read_bytes()).hexdigest()
             runtime_path.write_text(json.dumps(verification), encoding="utf-8")
             catalog = RouteCatalog.from_file(
                 snapshot_path,
@@ -77,6 +79,99 @@ class RuntimeVerificationTests(unittest.TestCase):
         )
         self.assertIsNotNone(catalog.match("GET", "/api/prefix/value"))
 
+    def test_runtime_verification_rejects_different_same_version_snapshot(self) -> None:
+        snapshot = {
+            "schema_version": 1,
+            "target": {"product": "Lucky", "version": "3.0.0"},
+            "routes": [],
+        }
+        verification = {
+            "schema_version": 1,
+            "target": {"product": "Lucky", "version": "3.0.0"},
+            "static_snapshot_sha256": "0" * 64,
+            "suppress_literals": [],
+            "routes": [],
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            snapshot_path = Path(directory) / "snapshot.json"
+            runtime_path = Path(directory) / "runtime.json"
+            snapshot_path.write_text(json.dumps(snapshot), encoding="utf-8")
+            runtime_path.write_text(json.dumps(verification), encoding="utf-8")
+            with self.assertRaises(CatalogError):
+                RouteCatalog.from_file(snapshot_path, runtime_verification=runtime_path)
+
+    def test_runtime_route_must_be_backed_by_static_evidence(self) -> None:
+        snapshot = {
+            "schema_version": 1,
+            "target": {"product": "Lucky", "version": "3.0.0"},
+            "routes": [],
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            snapshot_path = Path(directory) / "snapshot.json"
+            runtime_path = Path(directory) / "runtime.json"
+            snapshot_path.write_text(json.dumps(snapshot), encoding="utf-8")
+            verification = {
+                "schema_version": 1,
+                "target": {"product": "Lucky", "version": "3.0.0"},
+                "static_snapshot_sha256": hashlib.sha256(snapshot_path.read_bytes()).hexdigest(),
+                "suppress_literals": [],
+                "routes": [
+                    {
+                        "path": "/api/not-in-static-snapshot",
+                        "method": "GET",
+                        "risk": "read-only",
+                    }
+                ],
+            }
+            runtime_path.write_text(json.dumps(verification), encoding="utf-8")
+            with self.assertRaises(CatalogError):
+                RouteCatalog.from_file(snapshot_path, runtime_verification=runtime_path)
+
+    def test_suppression_must_target_static_unknown_evidence(self) -> None:
+        snapshot = {
+            "schema_version": 1,
+            "target": {"product": "Lucky", "version": "3.0.0"},
+            "routes": [
+                {"path": "/api/status", "method": "GET", "module": "status"}
+            ],
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            snapshot_path = Path(directory) / "snapshot.json"
+            runtime_path = Path(directory) / "runtime.json"
+            snapshot_path.write_text(json.dumps(snapshot), encoding="utf-8")
+            verification = {
+                "schema_version": 1,
+                "target": {"product": "Lucky", "version": "3.0.0"},
+                "static_snapshot_sha256": hashlib.sha256(snapshot_path.read_bytes()).hexdigest(),
+                "suppress_literals": ["/api/status"],
+                "routes": [],
+            }
+            runtime_path.write_text(json.dumps(verification), encoding="utf-8")
+            with self.assertRaises(CatalogError):
+                RouteCatalog.from_file(snapshot_path, runtime_verification=runtime_path)
+
+    def test_malformed_static_routes_raise_catalog_error(self) -> None:
+        for routes in (["nope"], [{"module": "missing-path-and-method"}]):
+            with self.subTest(routes=routes), tempfile.TemporaryDirectory() as directory:
+                snapshot = {
+                    "schema_version": 1,
+                    "target": {"product": "Lucky", "version": "3.0.0"},
+                    "routes": routes,
+                }
+                snapshot_path = Path(directory) / "snapshot.json"
+                runtime_path = Path(directory) / "runtime.json"
+                snapshot_path.write_text(json.dumps(snapshot), encoding="utf-8")
+                verification = {
+                    "schema_version": 1,
+                    "target": {"product": "Lucky", "version": "3.0.0"},
+                    "static_snapshot_sha256": hashlib.sha256(snapshot_path.read_bytes()).hexdigest(),
+                    "suppress_literals": [],
+                    "routes": [],
+                }
+                runtime_path.write_text(json.dumps(verification), encoding="utf-8")
+                with self.assertRaises(CatalogError):
+                    RouteCatalog.from_file(snapshot_path, runtime_verification=runtime_path)
+
     def test_runtime_verification_version_must_match_snapshot(self) -> None:
         snapshot = {
             "schema_version": 1,
@@ -86,6 +181,7 @@ class RuntimeVerificationTests(unittest.TestCase):
         verification = {
             "schema_version": 1,
             "target": {"product": "Lucky", "version": "3.0.1"},
+            "static_snapshot_sha256": "0" * 64,
             "suppress_literals": [],
             "routes": [],
         }

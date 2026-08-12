@@ -48,7 +48,7 @@
 
 构建文件本身不提交仓库，避免复制上游前端代码和意外带入运行时信息。
 
-[运行时验证 JSON](../evidence/lucky-v3-runtime-verification.json)只保存脱敏后的方法、查询键、风险覆盖、验证说明和需要抑制的字面量误报。`RouteCatalog.load_default()` 会在目标版本一致时把两层证据合并；运行时层不会修改原始静态快照。仓库 verifier 强制检查版本一致性、重复项、风险值，并要求合并后的默认目录不再残留 `unknown`。
+[运行时验证 JSON](../evidence/lucky-v3-runtime-verification.json)只保存脱敏后的方法、查询键、风险覆盖、验证说明和需要抑制的字面量误报。它同时记录静态端点快照的 SHA-256；`RouteCatalog.load_default()` 只有在 Lucky 版本和**精确静态快照哈希**都一致时才合并两层证据，并要求每个 suppression/runtime route 都能在该静态快照中找到对应证据。运行时层不会修改原始静态快照。仓库 verifier 强制检查这些绑定、重复项、风险值，并要求合并后的默认目录不再残留 `unknown`。
 
 运行时方法探针不发送 OpenToken：对已知 GET/POST/PUT/DELETE 做过校准后，确认“路由+方法存在”会先进入 Lucky 鉴权并返回 `login invalid`，而不存在的方法返回 404。校准过程中还通过正常 OpenToken API 比较 Web 规则数量，确认未认证 POST 没有产生配置变化。危险 handler 的方法发现因此停在鉴权层，不执行实际动作。
 
@@ -82,4 +82,4 @@ python3 tools/extract_lucky_frontend.py /path/to/lucky-js-assets \
 python3 tools/verify_repository.py
 ```
 
-更新时必须检查 diff 中是否出现真实安全入口、token、域名或配置值。Lucky 版本变化后，现有运行时验证文件不会自动套用到不同版本；必须重新执行方法核验并更新 `target.version`，版本不一致会直接报错。
+更新时必须检查 diff 中是否出现真实安全入口、token、域名或配置值。只要静态端点快照发生变化（即使 Lucky 仍显示 3.0.0），现有运行时验证文件都不会自动套用；必须重新审核/核验并更新 `static_snapshot_sha256`。Lucky 版本变化时还必须重新执行方法核验并更新 `target.version`。任一绑定不一致都会直接 fail-closed。

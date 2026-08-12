@@ -11,7 +11,7 @@
 - HTTP 错误、Lucky `ret` 业务错误、JSON 解码错误、传输错误和响应过大错误；
 - `RateLimit-Limit`、`RateLimit-Remaining` 和 `RateLimit-Reset` 元数据；
 - 只读请求遇到 429/502/503/504 时的有限重试；
-- 基于当前 v3 前端静态快照 + 同版本运行时验证覆盖层的路径模板匹配与风险分级。
+- 基于当前 v3 前端静态快照 + 与该快照版本和 SHA-256 精确绑定的运行时验证覆盖层做路径模板匹配与风险分级。
 
 客户端不提供“自动猜测配置字段”、网页登录模拟、模块 2FA 绕过或批量试探接口。multipart 表单可作为原始请求体发送，但客户端不会替你构造包含密钥或文件的表单。
 
@@ -57,7 +57,7 @@ python3 tools/lucky_api.py catalog --module ddns --risk mutating
 python3 tools/lucky_api.py catalog --search logs --json
 ```
 
-目录输出包括方法、路径模板、模块、风险、查询字段、请求体字段、响应类型和证据等级。默认加载 `evidence/lucky-v3-endpoints.json` 后，会自动叠加同目录、同版本的 `lucky-v3-runtime-verification.json`；显式 `--catalog-file` 指向该静态快照时也会应用同目录运行时文件。字段为空表示当前证据无法恢复，不代表请求体确实没有字段。
+目录输出包括方法、路径模板、模块、风险、查询字段、请求体字段、响应类型和证据等级。默认加载 `evidence/lucky-v3-endpoints.json` 后，会自动叠加同目录、且 `target.version` 与 `static_snapshot_sha256` 都精确匹配的 `lucky-v3-runtime-verification.json`；显式 `--catalog-file` 指向该静态快照时也会应用同目录运行时文件。任一绑定不匹配都会 fail-closed。字段为空表示当前证据无法恢复，不代表请求体确实没有字段。
 
 当前 Lucky 3.0.0 运行时覆盖已把静态快照中的 41 条 `UNKNOWN` 全部归类或抑制为字面量误报，默认目录应返回 0 条 unknown：
 

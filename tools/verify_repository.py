@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import sys
@@ -358,6 +359,9 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("runtime route verification target is malformed")
     if runtime_target.get("version") != target.get("version"):
         fail("runtime route verification version does not match endpoint snapshot")
+    snapshot_sha256 = hashlib.sha256(snapshot_path.read_bytes()).hexdigest()
+    if runtime.get("static_snapshot_sha256") != snapshot_sha256:
+        fail("runtime route verification is not bound to the exact endpoint snapshot")
 
     suppress = runtime.get("suppress_literals")
     if not isinstance(suppress, list) or not all(
