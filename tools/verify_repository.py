@@ -518,8 +518,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             f"expected at most 147 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 190:
-        fail(f"response-schema coverage regressed below 190 routes: {response_schema_count}")
+    if response_schema_count < 196:
+        fail(f"response-schema coverage regressed below 196 routes: {response_schema_count}")
 
     safe_utility_response_routes = {
         ("GET", "/api/ipfliter/porttrap/blockedips"),
@@ -547,6 +547,57 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     for route_key in safe_utility_response_routes:
         if not isinstance(merged_by_key[route_key].response_schema, dict):
             fail(f"safe utility response schema missing for {route_key}")
+
+    portforward_response_routes = {
+        ("POST", "/api/portforward"),
+        ("PUT", "/api/portforward"),
+        ("DELETE", "/api/portforward"),
+        ("GET", "/api/portforward/{param}"),
+        ("GET", "/api/portforward/{param}/lastlogs"),
+        ("GET", "/api/portforward/{param}/logs"),
+    }
+    for route_key in portforward_response_routes:
+        if not isinstance(merged_by_key[route_key].response_schema, dict):
+            fail(f"PortForward disposable-probe response schema missing for {route_key}")
+
+    portforward_post = merged_by_key[("POST", "/api/portforward")].response_schema
+    if portforward_post != {
+        "type": "object",
+        "properties": {"ret": {"type": "integer"}, "key": {"type": "string"}},
+    }:
+        fail("PortForward create response schema regressed")
+    for route_key in {
+        ("PUT", "/api/portforward"),
+        ("DELETE", "/api/portforward"),
+    }:
+        if merged_by_key[route_key].response_schema != {
+            "type": "object",
+            "properties": {"ret": {"type": "integer"}},
+        }:
+            fail(f"PortForward ret-only write response schema regressed for {route_key}")
+
+    portforward_detail = merged_by_key[("GET", "/api/portforward/{param}")].response_schema
+    portforward_rule_props = (
+        portforward_detail.get("properties", {}).get("rule", {}).get("properties", {})
+        if isinstance(portforward_detail, dict)
+        else {}
+    )
+    if "Options" in portforward_rule_props:
+        fail("PortForward Options must remain omitted from response documentation because it contains encryption-key fields")
+    for field in ("ForwardTypes", "TargetAddressList"):
+        if portforward_rule_props.get(field) != {"type": ["array", "null"], "items": {}}:
+            fail(f"PortForward nullable list item schema must remain unspecified: {field}")
+    if portforward_rule_props.get("Enable") != {"type": "boolean"}:
+        fail("PortForward Enable response schema regressed")
+
+    for route_key, field in {
+        ("GET", "/api/portforward/{param}/lastlogs"): "lastLogs",
+        ("GET", "/api/portforward/{param}/logs"): "logs",
+    }.items():
+        response_schema = merged_by_key[route_key].response_schema
+        collection = response_schema.get("properties", {}).get(field) if isinstance(response_schema, dict) else None
+        if collection != {"type": ["array", "null"], "items": {}}:
+            fail(f"PortForward disposable log item schema must remain unspecified for {route_key}")
 
     for route_key in {
         ("GET", "/api/ipfliter/porttrap/blockedips"),
