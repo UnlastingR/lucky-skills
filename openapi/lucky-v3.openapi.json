@@ -25403,11 +25403,22 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "authurl": {
+                      "type": "string"
+                    },
+                    "tmpkey": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -25428,6 +25439,7 @@
           "lucky_rclone-sFF3mpk8.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET with example.invalid callback/base URLs observed ret/authurl/tmpkey field types only; generated authorization URL and temporary correlation key values were not retained",
         "parameters": [
           {
             "name": "cburl",
@@ -25606,11 +25618,22 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "authurl": {
+                      "type": "string"
+                    },
+                    "tmpkey": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -25631,6 +25654,7 @@
           "lucky_rclone-sFF3mpk8.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET with example.invalid callback/base URLs observed ret/authurl/tmpkey field types only; generated authorization URL and temporary correlation key values were not retained",
         "parameters": [
           {
             "name": "cburl",
@@ -25809,11 +25833,22 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "authurl": {
+                      "type": "string"
+                    },
+                    "tmpkey": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -25834,6 +25869,7 @@
           "lucky_rclone-sFF3mpk8.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET with example.invalid callback/base URLs observed ret/authurl/tmpkey field types only; generated authorization URL and temporary correlation key values were not retained",
         "parameters": [
           {
             "name": "cburl",
@@ -30047,11 +30083,22 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "key": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -30072,6 +30119,7 @@
           "lucky_storagemanagement-CxTMWo8S.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET with example.invalid callback/base URLs observed ret/url/key field types only; generated authorization URL and temporary correlation key values were not retained",
         "parameters": [
           {
             "name": "cburl",

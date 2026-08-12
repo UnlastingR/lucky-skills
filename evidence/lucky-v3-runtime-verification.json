@@ -1993,6 +1993,34 @@
       "schema_evidence": "authorized GET /api/rclone/third/baidupan/authuserlist observed data=null; auth-user item/account/token fields remain unspecified"
     },
     {
+      "path": "/api/rclone/third/115pan/authurl",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "authurl": {"type": "string"}, "tmpkey": {"type": "string"}}},
+      "schema_evidence": "authorized GET with example.invalid callback/base URLs observed ret/authurl/tmpkey field types only; generated authorization URL and temporary correlation key values were not retained"
+    },
+    {
+      "path": "/api/rclone/third/alipan/authurl",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "authurl": {"type": "string"}, "tmpkey": {"type": "string"}}},
+      "schema_evidence": "authorized GET with example.invalid callback/base URLs observed ret/authurl/tmpkey field types only; generated authorization URL and temporary correlation key values were not retained"
+    },
+    {
+      "path": "/api/rclone/third/baidupan/authurl",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "authurl": {"type": "string"}, "tmpkey": {"type": "string"}}},
+      "schema_evidence": "authorized GET with example.invalid callback/base URLs observed ret/authurl/tmpkey field types only; generated authorization URL and temporary correlation key values were not retained"
+    },
+    {
+      "path": "/api/storagemanagement/aliyunpan_auth",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "url": {"type": "string"}, "key": {"type": "string"}}},
+      "schema_evidence": "authorized GET with example.invalid callback/base URLs observed ret/url/key field types only; generated authorization URL and temporary correlation key values were not retained"
+    },
+    {
       "path": "/api/login/challenge",
       "method": "GET",
       "risk": "read-only",
