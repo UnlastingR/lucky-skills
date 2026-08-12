@@ -3021,7 +3021,7 @@
           "lucky_ddns-rma111lI.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend data:p(task) pass-through + authorized GET /api/ddns/task/{key} field-name shape",
+        "x-schema-evidence": "current DDNS TaskEditor constructs and submits this model; authorized GET /api/ddns/task/{key} cross-checked primitive/nested types. Task/query/webhook enums come from current frontend options/default branches; no DDNS write handler was executed",
         "requestBody": {
           "required": true,
           "content": {
@@ -3029,61 +3029,339 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "DNS": {},
-                  "DUID": {},
-                  "DebugMode": {},
-                  "DiaglogShowMode": {},
-                  "Domains": {},
-                  "Enable": {},
-                  "Expanded": {},
-                  "FirstCheckDelay": {},
-                  "GetIPCommand": {},
-                  "GetType": {},
-                  "GlobalWebhook": {},
-                  "HttpClientTimeout": {},
-                  "IPReg": {},
-                  "IPSectionExpanded": {},
-                  "IngoreWebhookVariablesNotFound": {},
-                  "IngoreWebhookVariablesNotFoundList": {},
-                  "InsecureSkipVerify": {},
-                  "Intervals": {},
-                  "NetInterface": {},
-                  "Records": {},
-                  "RetryCount": {},
-                  "RetryInterval": {},
-                  "TTL": {},
-                  "TaskKey": {},
-                  "TaskName": {},
-                  "TaskType": {},
-                  "URL": {},
-                  "V4GetIPScript": {},
-                  "V4NetInterface": {},
-                  "V4NetInterfaceIPReg": {},
-                  "V4QueryIPEnable": {},
-                  "V4QueryIPType": {},
-                  "V4QueryUrl": {},
-                  "V6DUID": {},
-                  "V6GetIPScript": {},
-                  "V6NetInterface": {},
-                  "V6NetInterfaceIPReg": {},
-                  "V6QueryIPEnable": {},
-                  "V6QueryIPType": {},
-                  "V6QueryUrl": {},
-                  "WebHookTimeout": {},
-                  "WebhookDisableCallbackSuccessContentCheck": {},
-                  "WebhookEnable": {},
-                  "WebhookHeaders": {},
-                  "WebhookInsecureSkipVerify": {},
-                  "WebhookLocalAddr": {},
-                  "WebhookMethod": {},
-                  "WebhookNetworkType": {},
-                  "WebhookProxy": {},
-                  "WebhookProxyAddr": {},
-                  "WebhookProxyPassword": {},
-                  "WebhookProxyUser": {},
-                  "WebhookRequestBody": {},
-                  "WebhookSuccessContent": {},
-                  "WebhookURL": {}
+                  "DNS": {
+                    "type": "object",
+                    "properties": {
+                      "Name": {
+                        "type": "string"
+                      },
+                      "ID": {
+                        "type": "string"
+                      },
+                      "Secret": {
+                        "type": "string"
+                      },
+                      "ForceInterval": {
+                        "type": "integer"
+                      },
+                      "ResolverDoaminCheck": {
+                        "type": "boolean"
+                      },
+                      "CallAPINetwork": {
+                        "type": "string"
+                      },
+                      "Callback": {
+                        "type": "object",
+                        "properties": {
+                          "URL": {
+                            "type": "string"
+                          },
+                          "Method": {
+                            "type": "string",
+                            "enum": [
+                              "get",
+                              "post",
+                              "put",
+                              "patch"
+                            ]
+                          },
+                          "Headers": {
+                            "type": [
+                              "array",
+                              "null"
+                            ],
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "RequestBody": {
+                            "type": "string"
+                          },
+                          "Server": {
+                            "type": "string"
+                          },
+                          "DisableCallbackSuccessContentCheck": {
+                            "type": "boolean"
+                          },
+                          "CallbackSuccessContent": {
+                            "type": [
+                              "array",
+                              "null"
+                            ],
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "HttpClientProxyType": {
+                        "type": "string"
+                      },
+                      "HttpClientProxyAddr": {
+                        "type": "string"
+                      },
+                      "HttpClientProxyUser": {
+                        "type": "string"
+                      },
+                      "HttpClientProxyPassword": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "DUID": {
+                    "type": "string"
+                  },
+                  "DebugMode": {
+                    "type": "boolean"
+                  },
+                  "DiaglogShowMode": {
+                    "type": "string"
+                  },
+                  "Domains": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "Expanded": {
+                    "type": "boolean"
+                  },
+                  "FirstCheckDelay": {
+                    "type": "integer"
+                  },
+                  "GetIPCommand": {
+                    "type": "string"
+                  },
+                  "GetType": {
+                    "type": "string"
+                  },
+                  "GlobalWebhook": {
+                    "type": "boolean"
+                  },
+                  "HttpClientTimeout": {
+                    "type": "integer"
+                  },
+                  "IPReg": {
+                    "type": "string"
+                  },
+                  "IPSectionExpanded": {
+                    "type": "boolean"
+                  },
+                  "IngoreWebhookVariablesNotFound": {
+                    "type": "boolean"
+                  },
+                  "IngoreWebhookVariablesNotFoundList": {
+                    "type": "string"
+                  },
+                  "InsecureSkipVerify": {
+                    "type": "boolean"
+                  },
+                  "Intervals": {
+                    "type": "integer"
+                  },
+                  "NetInterface": {
+                    "type": "string"
+                  },
+                  "Records": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "SyncRecordData": {
+                          "type": "object",
+                          "properties": {
+                            "BizName": {
+                              "type": "string"
+                            },
+                            "DomainName": {
+                              "type": "string"
+                            },
+                            "SubDomainName": {
+                              "type": "string"
+                            },
+                            "fullDomainName": {
+                              "type": "string"
+                            },
+                            "ipv4Address": {
+                              "type": "string"
+                            },
+                            "ipv6Address": {
+                              "type": "string"
+                            },
+                            "proxyStatus": {
+                              "type": "boolean"
+                            },
+                            "remark": {
+                              "type": "string"
+                            },
+                            "specifyProxyStatus": {
+                              "type": "boolean"
+                            },
+                            "ttl": {
+                              "type": "integer"
+                            },
+                            "type": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "Key": {
+                          "type": "string"
+                        },
+                        "Disable": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  },
+                  "RetryCount": {
+                    "type": "integer"
+                  },
+                  "RetryInterval": {
+                    "type": "integer"
+                  },
+                  "TTL": {
+                    "type": "string"
+                  },
+                  "TaskKey": {
+                    "type": "string"
+                  },
+                  "TaskName": {
+                    "type": "string"
+                  },
+                  "TaskType": {
+                    "type": "string",
+                    "enum": [
+                      "IPv4",
+                      "IPv6",
+                      "IPv4&IPv6"
+                    ]
+                  },
+                  "URL": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "V4GetIPScript": {
+                    "type": "string"
+                  },
+                  "V4NetInterface": {
+                    "type": "string"
+                  },
+                  "V4NetInterfaceIPReg": {
+                    "type": "string"
+                  },
+                  "V4QueryIPEnable": {
+                    "type": "boolean"
+                  },
+                  "V4QueryIPType": {
+                    "type": "string",
+                    "enum": [
+                      "url",
+                      "command",
+                      "netInterface"
+                    ]
+                  },
+                  "V4QueryUrl": {
+                    "type": "string"
+                  },
+                  "V6DUID": {
+                    "type": "string"
+                  },
+                  "V6GetIPScript": {
+                    "type": "string"
+                  },
+                  "V6NetInterface": {
+                    "type": "string"
+                  },
+                  "V6NetInterfaceIPReg": {
+                    "type": "string"
+                  },
+                  "V6QueryIPEnable": {
+                    "type": "boolean"
+                  },
+                  "V6QueryIPType": {
+                    "type": "string",
+                    "enum": [
+                      "url",
+                      "command",
+                      "netInterface",
+                      "odhcpdfile"
+                    ]
+                  },
+                  "V6QueryUrl": {
+                    "type": "string"
+                  },
+                  "WebHookTimeout": {
+                    "type": "integer"
+                  },
+                  "WebhookDisableCallbackSuccessContentCheck": {
+                    "type": "boolean"
+                  },
+                  "WebhookEnable": {
+                    "type": "boolean"
+                  },
+                  "WebhookHeaders": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "WebhookInsecureSkipVerify": {
+                    "type": "boolean"
+                  },
+                  "WebhookLocalAddr": {
+                    "type": "string"
+                  },
+                  "WebhookMethod": {
+                    "type": "string",
+                    "enum": [
+                      "get",
+                      "post",
+                      "put",
+                      "patch"
+                    ]
+                  },
+                  "WebhookNetworkType": {
+                    "type": "string"
+                  },
+                  "WebhookProxy": {
+                    "type": "string"
+                  },
+                  "WebhookProxyAddr": {
+                    "type": "string"
+                  },
+                  "WebhookProxyPassword": {
+                    "type": "string"
+                  },
+                  "WebhookProxyUser": {
+                    "type": "string"
+                  },
+                  "WebhookRequestBody": {
+                    "type": "string"
+                  },
+                  "WebhookSuccessContent": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "WebhookURL": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -3129,7 +3407,7 @@
           "lucky_ddns-rma111lI.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend data:p(task) pass-through + authorized GET /api/ddns/task/{key} field-name shape",
+        "x-schema-evidence": "current DDNS TaskEditor submits the same normalized model for update; authorized GET /api/ddns/task/{key} cross-checked primitive/nested types. Task/query/webhook enums come from current frontend options/default branches; no DDNS write handler was executed",
         "parameters": [
           {
             "name": "key",
@@ -3145,61 +3423,339 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "DNS": {},
-                  "DUID": {},
-                  "DebugMode": {},
-                  "DiaglogShowMode": {},
-                  "Domains": {},
-                  "Enable": {},
-                  "Expanded": {},
-                  "FirstCheckDelay": {},
-                  "GetIPCommand": {},
-                  "GetType": {},
-                  "GlobalWebhook": {},
-                  "HttpClientTimeout": {},
-                  "IPReg": {},
-                  "IPSectionExpanded": {},
-                  "IngoreWebhookVariablesNotFound": {},
-                  "IngoreWebhookVariablesNotFoundList": {},
-                  "InsecureSkipVerify": {},
-                  "Intervals": {},
-                  "NetInterface": {},
-                  "Records": {},
-                  "RetryCount": {},
-                  "RetryInterval": {},
-                  "TTL": {},
-                  "TaskKey": {},
-                  "TaskName": {},
-                  "TaskType": {},
-                  "URL": {},
-                  "V4GetIPScript": {},
-                  "V4NetInterface": {},
-                  "V4NetInterfaceIPReg": {},
-                  "V4QueryIPEnable": {},
-                  "V4QueryIPType": {},
-                  "V4QueryUrl": {},
-                  "V6DUID": {},
-                  "V6GetIPScript": {},
-                  "V6NetInterface": {},
-                  "V6NetInterfaceIPReg": {},
-                  "V6QueryIPEnable": {},
-                  "V6QueryIPType": {},
-                  "V6QueryUrl": {},
-                  "WebHookTimeout": {},
-                  "WebhookDisableCallbackSuccessContentCheck": {},
-                  "WebhookEnable": {},
-                  "WebhookHeaders": {},
-                  "WebhookInsecureSkipVerify": {},
-                  "WebhookLocalAddr": {},
-                  "WebhookMethod": {},
-                  "WebhookNetworkType": {},
-                  "WebhookProxy": {},
-                  "WebhookProxyAddr": {},
-                  "WebhookProxyPassword": {},
-                  "WebhookProxyUser": {},
-                  "WebhookRequestBody": {},
-                  "WebhookSuccessContent": {},
-                  "WebhookURL": {}
+                  "DNS": {
+                    "type": "object",
+                    "properties": {
+                      "Name": {
+                        "type": "string"
+                      },
+                      "ID": {
+                        "type": "string"
+                      },
+                      "Secret": {
+                        "type": "string"
+                      },
+                      "ForceInterval": {
+                        "type": "integer"
+                      },
+                      "ResolverDoaminCheck": {
+                        "type": "boolean"
+                      },
+                      "CallAPINetwork": {
+                        "type": "string"
+                      },
+                      "Callback": {
+                        "type": "object",
+                        "properties": {
+                          "URL": {
+                            "type": "string"
+                          },
+                          "Method": {
+                            "type": "string",
+                            "enum": [
+                              "get",
+                              "post",
+                              "put",
+                              "patch"
+                            ]
+                          },
+                          "Headers": {
+                            "type": [
+                              "array",
+                              "null"
+                            ],
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "RequestBody": {
+                            "type": "string"
+                          },
+                          "Server": {
+                            "type": "string"
+                          },
+                          "DisableCallbackSuccessContentCheck": {
+                            "type": "boolean"
+                          },
+                          "CallbackSuccessContent": {
+                            "type": [
+                              "array",
+                              "null"
+                            ],
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "HttpClientProxyType": {
+                        "type": "string"
+                      },
+                      "HttpClientProxyAddr": {
+                        "type": "string"
+                      },
+                      "HttpClientProxyUser": {
+                        "type": "string"
+                      },
+                      "HttpClientProxyPassword": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "DUID": {
+                    "type": "string"
+                  },
+                  "DebugMode": {
+                    "type": "boolean"
+                  },
+                  "DiaglogShowMode": {
+                    "type": "string"
+                  },
+                  "Domains": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "Expanded": {
+                    "type": "boolean"
+                  },
+                  "FirstCheckDelay": {
+                    "type": "integer"
+                  },
+                  "GetIPCommand": {
+                    "type": "string"
+                  },
+                  "GetType": {
+                    "type": "string"
+                  },
+                  "GlobalWebhook": {
+                    "type": "boolean"
+                  },
+                  "HttpClientTimeout": {
+                    "type": "integer"
+                  },
+                  "IPReg": {
+                    "type": "string"
+                  },
+                  "IPSectionExpanded": {
+                    "type": "boolean"
+                  },
+                  "IngoreWebhookVariablesNotFound": {
+                    "type": "boolean"
+                  },
+                  "IngoreWebhookVariablesNotFoundList": {
+                    "type": "string"
+                  },
+                  "InsecureSkipVerify": {
+                    "type": "boolean"
+                  },
+                  "Intervals": {
+                    "type": "integer"
+                  },
+                  "NetInterface": {
+                    "type": "string"
+                  },
+                  "Records": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "SyncRecordData": {
+                          "type": "object",
+                          "properties": {
+                            "BizName": {
+                              "type": "string"
+                            },
+                            "DomainName": {
+                              "type": "string"
+                            },
+                            "SubDomainName": {
+                              "type": "string"
+                            },
+                            "fullDomainName": {
+                              "type": "string"
+                            },
+                            "ipv4Address": {
+                              "type": "string"
+                            },
+                            "ipv6Address": {
+                              "type": "string"
+                            },
+                            "proxyStatus": {
+                              "type": "boolean"
+                            },
+                            "remark": {
+                              "type": "string"
+                            },
+                            "specifyProxyStatus": {
+                              "type": "boolean"
+                            },
+                            "ttl": {
+                              "type": "integer"
+                            },
+                            "type": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "Key": {
+                          "type": "string"
+                        },
+                        "Disable": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  },
+                  "RetryCount": {
+                    "type": "integer"
+                  },
+                  "RetryInterval": {
+                    "type": "integer"
+                  },
+                  "TTL": {
+                    "type": "string"
+                  },
+                  "TaskKey": {
+                    "type": "string"
+                  },
+                  "TaskName": {
+                    "type": "string"
+                  },
+                  "TaskType": {
+                    "type": "string",
+                    "enum": [
+                      "IPv4",
+                      "IPv6",
+                      "IPv4&IPv6"
+                    ]
+                  },
+                  "URL": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "V4GetIPScript": {
+                    "type": "string"
+                  },
+                  "V4NetInterface": {
+                    "type": "string"
+                  },
+                  "V4NetInterfaceIPReg": {
+                    "type": "string"
+                  },
+                  "V4QueryIPEnable": {
+                    "type": "boolean"
+                  },
+                  "V4QueryIPType": {
+                    "type": "string",
+                    "enum": [
+                      "url",
+                      "command",
+                      "netInterface"
+                    ]
+                  },
+                  "V4QueryUrl": {
+                    "type": "string"
+                  },
+                  "V6DUID": {
+                    "type": "string"
+                  },
+                  "V6GetIPScript": {
+                    "type": "string"
+                  },
+                  "V6NetInterface": {
+                    "type": "string"
+                  },
+                  "V6NetInterfaceIPReg": {
+                    "type": "string"
+                  },
+                  "V6QueryIPEnable": {
+                    "type": "boolean"
+                  },
+                  "V6QueryIPType": {
+                    "type": "string",
+                    "enum": [
+                      "url",
+                      "command",
+                      "netInterface",
+                      "odhcpdfile"
+                    ]
+                  },
+                  "V6QueryUrl": {
+                    "type": "string"
+                  },
+                  "WebHookTimeout": {
+                    "type": "integer"
+                  },
+                  "WebhookDisableCallbackSuccessContentCheck": {
+                    "type": "boolean"
+                  },
+                  "WebhookEnable": {
+                    "type": "boolean"
+                  },
+                  "WebhookHeaders": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "WebhookInsecureSkipVerify": {
+                    "type": "boolean"
+                  },
+                  "WebhookLocalAddr": {
+                    "type": "string"
+                  },
+                  "WebhookMethod": {
+                    "type": "string",
+                    "enum": [
+                      "get",
+                      "post",
+                      "put",
+                      "patch"
+                    ]
+                  },
+                  "WebhookNetworkType": {
+                    "type": "string"
+                  },
+                  "WebhookProxy": {
+                    "type": "string"
+                  },
+                  "WebhookProxyAddr": {
+                    "type": "string"
+                  },
+                  "WebhookProxyPassword": {
+                    "type": "string"
+                  },
+                  "WebhookProxyUser": {
+                    "type": "string"
+                  },
+                  "WebhookRequestBody": {
+                    "type": "string"
+                  },
+                  "WebhookSuccessContent": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "WebhookURL": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -3222,11 +3778,99 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "ddnsconfigure": {
+                      "type": "object",
+                      "properties": {
+                        "Enable": {
+                          "type": "boolean"
+                        },
+                        "FirstCheckDelay": {
+                          "type": "integer"
+                        },
+                        "Intervals": {
+                          "type": "integer"
+                        },
+                        "LogLevel": {
+                          "type": "string"
+                        },
+                        "WebhookEnable": {
+                          "type": "boolean"
+                        },
+                        "WebhookURL": {
+                          "type": "string"
+                        },
+                        "WebhookMethod": {
+                          "type": "string"
+                        },
+                        "WebhookHeaders": {
+                          "type": [
+                            "array",
+                            "null"
+                          ],
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "WebhookRequestBody": {
+                          "type": "string"
+                        },
+                        "WebhookDisableCallbackSuccessContentCheck": {
+                          "type": "boolean"
+                        },
+                        "WebhookSuccessContent": {
+                          "type": [
+                            "array",
+                            "null"
+                          ],
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "WebhookNetworkType": {
+                          "type": "string"
+                        },
+                        "WebhookLocalAddr": {
+                          "type": "string"
+                        },
+                        "WebhookProxy": {
+                          "type": "string"
+                        },
+                        "WebhookProxyAddr": {
+                          "type": "string"
+                        },
+                        "WebhookProxyUser": {
+                          "type": "string"
+                        },
+                        "WebhookInsecureSkipVerify": {
+                          "type": "boolean"
+                        },
+                        "WebHookTimeout": {
+                          "type": "integer"
+                        },
+                        "RetryCount": {
+                          "type": "integer"
+                        },
+                        "RetryInterval": {
+                          "type": "integer"
+                        },
+                        "CustomDomainSuffix": {
+                          "type": "string"
+                        },
+                        "CustomFullDomain": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -3246,7 +3890,8 @@
         "x-evidence-bundles": [
           "lucky_ddns-rma111lI.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/ddns/configure observed only field names and JSON types; current frontend defaults confirm nullable webhook header/success arrays are string arrays when populated"
       },
       "put": {
         "summary": "Lucky frontend call: PUT /api/ddns/configure",
@@ -3287,7 +3932,7 @@
           "lucky_ddns-rma111lI.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend data:f(configure) pass-through + authorized GET /api/ddns/configure field-name shape",
+        "x-schema-evidence": "current frontend settings model normalizes WebhookHeaders/WebhookSuccessContent to string arrays and exposes webhook methods get/post/put/patch; authorized GET /api/ddns/configure cross-checked all remaining primitive field types",
         "requestBody": {
           "required": true,
           "content": {
@@ -3295,29 +3940,87 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "CustomDomainSuffix": {},
-                  "CustomFullDomain": {},
-                  "Enable": {},
-                  "FirstCheckDelay": {},
-                  "Intervals": {},
-                  "LogLevel": {},
-                  "RetryCount": {},
-                  "RetryInterval": {},
-                  "WebHookTimeout": {},
-                  "WebhookDisableCallbackSuccessContentCheck": {},
-                  "WebhookEnable": {},
-                  "WebhookHeaders": {},
-                  "WebhookInsecureSkipVerify": {},
-                  "WebhookLocalAddr": {},
-                  "WebhookMethod": {},
-                  "WebhookNetworkType": {},
-                  "WebhookProxy": {},
-                  "WebhookProxyAddr": {},
-                  "WebhookProxyPassword": {},
-                  "WebhookProxyUser": {},
-                  "WebhookRequestBody": {},
-                  "WebhookSuccessContent": {},
-                  "WebhookURL": {}
+                  "CustomDomainSuffix": {
+                    "type": "string"
+                  },
+                  "CustomFullDomain": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "FirstCheckDelay": {
+                    "type": "integer"
+                  },
+                  "Intervals": {
+                    "type": "integer"
+                  },
+                  "LogLevel": {
+                    "type": "string"
+                  },
+                  "RetryCount": {
+                    "type": "integer"
+                  },
+                  "RetryInterval": {
+                    "type": "integer"
+                  },
+                  "WebHookTimeout": {
+                    "type": "integer"
+                  },
+                  "WebhookDisableCallbackSuccessContentCheck": {
+                    "type": "boolean"
+                  },
+                  "WebhookEnable": {
+                    "type": "boolean"
+                  },
+                  "WebhookHeaders": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "WebhookInsecureSkipVerify": {
+                    "type": "boolean"
+                  },
+                  "WebhookLocalAddr": {
+                    "type": "string"
+                  },
+                  "WebhookMethod": {
+                    "type": "string",
+                    "enum": [
+                      "get",
+                      "post",
+                      "put",
+                      "patch"
+                    ]
+                  },
+                  "WebhookNetworkType": {
+                    "type": "string"
+                  },
+                  "WebhookProxy": {
+                    "type": "string"
+                  },
+                  "WebhookProxyAddr": {
+                    "type": "string"
+                  },
+                  "WebhookProxyPassword": {
+                    "type": "string"
+                  },
+                  "WebhookProxyUser": {
+                    "type": "string"
+                  },
+                  "WebhookRequestBody": {
+                    "type": "string"
+                  },
+                  "WebhookSuccessContent": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "WebhookURL": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -3340,11 +4043,54 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "kind": {
+                            "type": "string"
+                          },
+                          "sourceKey": {
+                            "type": "string"
+                          },
+                          "provider": {
+                            "type": "string"
+                          },
+                          "label": {
+                            "type": "string"
+                          },
+                          "idValue": {
+                            "type": "string"
+                          },
+                          "callApiNetwork": {
+                            "type": "string"
+                          },
+                          "proxyType": {
+                            "type": "string"
+                          },
+                          "proxyAddr": {
+                            "type": "string"
+                          },
+                          "proxyUser": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -3364,7 +4110,8 @@
         "x-evidence-bundles": [
           "lucky_ddns-rma111lI.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/ddns/credential-sources was reduced to non-secret field names and primitive types only; secretValue/proxyPassword are intentionally omitted from the response schema and no secret-bearing values were persisted or printed"
       }
     },
     "/api/ddns/enable": {
@@ -3864,11 +4611,200 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "task": {
+                      "type": "object",
+                      "properties": {
+                        "TaskName": {
+                          "type": "string"
+                        },
+                        "TaskKey": {
+                          "type": "string"
+                        },
+                        "TaskType": {
+                          "type": "string"
+                        },
+                        "Enable": {
+                          "type": "boolean"
+                        },
+                        "Expanded": {
+                          "type": "boolean"
+                        },
+                        "IPSectionExpanded": {
+                          "type": "boolean"
+                        },
+                        "DiaglogShowMode": {
+                          "type": "string"
+                        },
+                        "V4QueryIPEnable": {
+                          "type": "boolean"
+                        },
+                        "V4QueryIPType": {
+                          "type": "string"
+                        },
+                        "V4QueryUrl": {
+                          "type": "string"
+                        },
+                        "V6QueryIPEnable": {
+                          "type": "boolean"
+                        },
+                        "V6QueryIPType": {
+                          "type": "string"
+                        },
+                        "V6QueryUrl": {
+                          "type": "string"
+                        },
+                        "Records": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "Key": {
+                                "type": "string"
+                              },
+                              "Disable": {
+                                "type": "boolean"
+                              },
+                              "SyncRecordData": {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string"
+                                  },
+                                  "fullDomainName": {
+                                    "type": "string"
+                                  },
+                                  "ttl": {
+                                    "type": "integer"
+                                  },
+                                  "remark": {
+                                    "type": "string"
+                                  },
+                                  "ipv4Address": {
+                                    "type": "string"
+                                  },
+                                  "ipv6Address": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "DNS": {
+                          "type": "object",
+                          "properties": {
+                            "Name": {
+                              "type": "string"
+                            },
+                            "ID": {
+                              "type": "string"
+                            },
+                            "ForceInterval": {
+                              "type": "integer"
+                            },
+                            "ResolverDoaminCheck": {
+                              "type": "boolean"
+                            },
+                            "Callback": {
+                              "type": "object",
+                              "properties": {
+                                "URL": {
+                                  "type": "string"
+                                },
+                                "Method": {
+                                  "type": "string"
+                                },
+                                "Headers": {
+                                  "type": [
+                                    "array",
+                                    "null"
+                                  ],
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "RequestBody": {
+                                  "type": "string"
+                                },
+                                "Server": {
+                                  "type": "string"
+                                },
+                                "DisableCallbackSuccessContentCheck": {
+                                  "type": "boolean"
+                                },
+                                "CallbackSuccessContent": {
+                                  "type": [
+                                    "array",
+                                    "null"
+                                  ],
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            },
+                            "HttpClientProxyType": {
+                              "type": "string"
+                            },
+                            "HttpClientProxyAddr": {
+                              "type": "string"
+                            },
+                            "HttpClientProxyUser": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "WebhookEnable": {
+                          "type": "boolean"
+                        },
+                        "WebhookURL": {
+                          "type": "string"
+                        },
+                        "WebhookMethod": {
+                          "type": "string"
+                        },
+                        "WebhookHeaders": {
+                          "type": [
+                            "array",
+                            "null"
+                          ],
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "WebhookSuccessContent": {
+                          "type": [
+                            "array",
+                            "null"
+                          ],
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "RetryCount": {
+                          "type": "integer"
+                        },
+                        "RetryInterval": {
+                          "type": "integer"
+                        },
+                        "TTL": {
+                          "type": "string"
+                        },
+                        "Intervals": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -3889,6 +4825,7 @@
           "lucky_ddns-rma111lI.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET of one existing DDNS task was reduced to a partial nested type schema; current TaskEditor static defaults cross-check record, DNS callback and webhook array shapes. DNS secret/proxy-password response fields are intentionally omitted and credential values were not retained",
         "parameters": [
           {
             "name": "param",
@@ -3997,7 +4934,7 @@
           "lucky_ddns-rma111lI.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend settings dialog constructs explicit webhook-test payload; no authenticated test webhook was sent",
+        "x-schema-evidence": "current DDNS webhook dialog explicitly constructs this payload; textareas are normalized to string arrays and method options are get/post/put/patch. No authenticated test webhook was sent",
         "parameters": [
           {
             "name": "key",
@@ -4013,18 +4950,54 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "WebhookURL": {},
-                  "WebhookMethod": {},
-                  "WebhookRequestBody": {},
-                  "WebhookProxy": {},
-                  "WebhookProxyAddr": {},
-                  "WebhookProxyUser": {},
-                  "RetryCount": {},
-                  "RetryInterval": {},
-                  "WebhookProxyPassword": {},
-                  "WebhookHeaders": {},
-                  "WebhookSuccessContent": {},
-                  "WebhookDisableCallbackSuccessContentCheck": {}
+                  "WebhookURL": {
+                    "type": "string"
+                  },
+                  "WebhookMethod": {
+                    "type": "string",
+                    "enum": [
+                      "get",
+                      "post",
+                      "put",
+                      "patch"
+                    ]
+                  },
+                  "WebhookRequestBody": {
+                    "type": "string"
+                  },
+                  "WebhookProxy": {
+                    "type": "string"
+                  },
+                  "WebhookProxyAddr": {
+                    "type": "string"
+                  },
+                  "WebhookProxyUser": {
+                    "type": "string"
+                  },
+                  "RetryCount": {
+                    "type": "integer"
+                  },
+                  "RetryInterval": {
+                    "type": "integer"
+                  },
+                  "WebhookProxyPassword": {
+                    "type": "string"
+                  },
+                  "WebhookHeaders": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "WebhookSuccessContent": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "WebhookDisableCallbackSuccessContentCheck": {
+                    "type": "boolean"
+                  }
                 }
               }
             }
@@ -4188,11 +5161,101 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "TaskName": {
+                            "type": "string"
+                          },
+                          "TaskKey": {
+                            "type": "string"
+                          },
+                          "TaskType": {
+                            "type": "string"
+                          },
+                          "Enable": {
+                            "type": "boolean"
+                          },
+                          "Expanded": {
+                            "type": "boolean"
+                          },
+                          "IPSectionExpanded": {
+                            "type": "boolean"
+                          },
+                          "TTL": {
+                            "type": "string"
+                          },
+                          "Ipv4Addr": {
+                            "type": "string"
+                          },
+                          "Ipv6Addr": {
+                            "type": "string"
+                          },
+                          "V4QueryIPEnable": {
+                            "type": "boolean"
+                          },
+                          "V4QueryIPType": {
+                            "type": "string"
+                          },
+                          "V6QueryIPEnable": {
+                            "type": "boolean"
+                          },
+                          "V6QueryIPType": {
+                            "type": "string"
+                          },
+                          "LastSyncTime": {
+                            "type": "string"
+                          },
+                          "NextSyncTime": {
+                            "type": "string"
+                          },
+                          "Records": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "Remark": {
+                                  "type": "string"
+                                },
+                                "DomainName": {
+                                  "type": "string"
+                                },
+                                "SubDomain": {
+                                  "type": "string"
+                                },
+                                "UpdateStatus": {
+                                  "type": "string"
+                                },
+                                "Type": {
+                                  "type": "string"
+                                },
+                                "Key": {
+                                  "type": "string"
+                                },
+                                "RecordValue": {
+                                  "type": "string"
+                                },
+                                "Enable": {
+                                  "type": "boolean"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -4212,7 +5275,8 @@
         "x-evidence-bundles": [
           "lucky_ddns-rma111lI.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/ddnstasklist observed a partial list-item type shape only; live task names, domains and addresses were not retained"
       }
     },
     "/api/dlnaservice/configure": {
@@ -6093,11 +7157,66 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "config": {
+                      "type": "object",
+                      "properties": {
+                        "docker_host": {
+                          "type": "string"
+                        },
+                        "volume_backup_path": {
+                          "type": "string"
+                        },
+                        "volume_backup_default_max": {
+                          "type": "integer"
+                        },
+                        "volume_backup_max_per_volume": {
+                          "type": "object"
+                        },
+                        "volume_backup_stop_containers": {
+                          "type": "boolean"
+                        },
+                        "volume_backup_stop_containers_per_volume": {
+                          "type": "object"
+                        },
+                        "compose_backup_path": {
+                          "type": "string"
+                        },
+                        "compose_backup_default_max": {
+                          "type": "integer"
+                        },
+                        "compose_backup_max_per_project": {
+                          "type": "object"
+                        },
+                        "compose_discover_path": {
+                          "type": "string"
+                        },
+                        "temp_operation_path": {
+                          "type": "string"
+                        },
+                        "quick_access_host": {
+                          "type": "string"
+                        },
+                        "container_view_mode": {
+                          "type": "string"
+                        },
+                        "container_show_stopped": {
+                          "type": "boolean"
+                        },
+                        "container_selected_custom_group": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -6117,7 +7236,8 @@
         "x-evidence-bundles": [
           "lucky_docker-BCN-OILs.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/docker/config observed field names and JSON types only"
       },
       "post": {
         "summary": "Lucky frontend call: POST /api/docker/config",
@@ -6158,7 +7278,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend Docker settings submit these fields in full or narrow partial updates + authorized GET /api/docker/config field-name shape",
+        "x-schema-evidence": "frontend Docker settings submit these fields in full or narrow partial updates; authorized GET /api/docker/config cross-checked primitive types and the three per-resource override maps as objects",
         "requestBody": {
           "required": true,
           "content": {
@@ -6166,21 +7286,51 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "docker_host": {},
-                  "volume_backup_path": {},
-                  "volume_backup_default_max": {},
-                  "volume_backup_max_per_volume": {},
-                  "volume_backup_stop_containers": {},
-                  "volume_backup_stop_containers_per_volume": {},
-                  "compose_backup_path": {},
-                  "compose_backup_default_max": {},
-                  "compose_backup_max_per_project": {},
-                  "compose_discover_path": {},
-                  "temp_operation_path": {},
-                  "quick_access_host": {},
-                  "container_view_mode": {},
-                  "container_show_stopped": {},
-                  "container_selected_custom_group": {}
+                  "docker_host": {
+                    "type": "string"
+                  },
+                  "volume_backup_path": {
+                    "type": "string"
+                  },
+                  "volume_backup_default_max": {
+                    "type": "integer"
+                  },
+                  "volume_backup_max_per_volume": {
+                    "type": "object"
+                  },
+                  "volume_backup_stop_containers": {
+                    "type": "boolean"
+                  },
+                  "volume_backup_stop_containers_per_volume": {
+                    "type": "object"
+                  },
+                  "compose_backup_path": {
+                    "type": "string"
+                  },
+                  "compose_backup_default_max": {
+                    "type": "integer"
+                  },
+                  "compose_backup_max_per_project": {
+                    "type": "object"
+                  },
+                  "compose_discover_path": {
+                    "type": "string"
+                  },
+                  "temp_operation_path": {
+                    "type": "string"
+                  },
+                  "quick_access_host": {
+                    "type": "string"
+                  },
+                  "container_view_mode": {
+                    "type": "string"
+                  },
+                  "container_show_stopped": {
+                    "type": "boolean"
+                  },
+                  "container_selected_custom_group": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -6316,7 +7466,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend add-group action sends explicit {Name}",
+        "x-schema-evidence": "frontend add-group action sends explicit {Name:string}",
         "requestBody": {
           "required": true,
           "content": {
@@ -6324,7 +7474,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Name": {}
+                  "Name": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -6370,7 +7522,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend edit-group action passes {Key,Name} editor model",
+        "x-schema-evidence": "frontend edit-group action passes {Key:string,Name:string} editor model",
         "requestBody": {
           "required": true,
           "content": {
@@ -6378,8 +7530,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Key": {},
-                  "Name": {}
+                  "Key": {
+                    "type": "string"
+                  },
+                  "Name": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -6550,11 +7706,123 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "containers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "Id": {
+                            "type": "string"
+                          },
+                          "Names": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "Image": {
+                            "type": "string"
+                          },
+                          "ImageID": {
+                            "type": "string"
+                          },
+                          "Command": {
+                            "type": "string"
+                          },
+                          "Created": {
+                            "type": "integer"
+                          },
+                          "Ports": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "IP": {
+                                  "type": "string"
+                                },
+                                "PrivatePort": {
+                                  "type": "integer"
+                                },
+                                "PublicPort": {
+                                  "type": "integer"
+                                },
+                                "Type": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          },
+                          "Labels": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            }
+                          },
+                          "State": {
+                            "type": "string"
+                          },
+                          "Status": {
+                            "type": "string"
+                          },
+                          "HostConfig": {
+                            "type": "object",
+                            "properties": {
+                              "NetworkMode": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "Mounts": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "Type": {
+                                  "type": "string"
+                                },
+                                "Source": {
+                                  "type": "string"
+                                },
+                                "Destination": {
+                                  "type": "string"
+                                },
+                                "Mode": {
+                                  "type": "string"
+                                },
+                                "RW": {
+                                  "type": "boolean"
+                                },
+                                "Propagation": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          },
+                          "custom_label": {
+                            "type": "string"
+                          },
+                          "compose_project": {
+                            "type": "string"
+                          },
+                          "compose_service": {
+                            "type": "string"
+                          },
+                          "network_mode": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -6575,6 +7843,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/docker/containers with statistics disabled was reduced to generic item types; dynamic label and network names were generalized and no live container values were persisted",
         "parameters": [
           {
             "name": "all",
@@ -6706,13 +7975,52 @@
                         "type": "boolean"
                       },
                       "RestartPolicy": {
-                        "type": "object"
+                        "type": "object",
+                        "properties": {
+                          "Name": {
+                            "type": "string"
+                          },
+                          "MaximumRetryCount": {
+                            "type": "integer"
+                          }
+                        }
                       },
                       "PortBindings": {
-                        "type": "object"
+                        "type": "object",
+                        "additionalProperties": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "HostIp": {
+                                "type": "string"
+                              },
+                              "HostPort": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
                       },
                       "Mounts": {
-                        "type": "array"
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "Type": {
+                              "type": "string"
+                            },
+                            "Source": {
+                              "type": "string"
+                            },
+                            "Target": {
+                              "type": "string"
+                            },
+                            "ReadOnly": {
+                              "type": "boolean"
+                            }
+                          }
+                        }
                       },
                       "NanoCpus": {
                         "type": "integer"
@@ -6751,7 +8059,21 @@
                         }
                       },
                       "Devices": {
-                        "type": "array"
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "PathOnHost": {
+                              "type": "string"
+                            },
+                            "PathInContainer": {
+                              "type": "string"
+                            },
+                            "CgroupPermissions": {
+                              "type": "string"
+                            }
+                          }
+                        }
                       },
                       "ShmSize": {
                         "type": "integer"
@@ -7206,11 +8528,194 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "custom_label": {
+                          "type": "string"
+                        },
+                        "container": {
+                          "type": "object",
+                          "properties": {
+                            "Id": {
+                              "type": "string"
+                            },
+                            "Name": {
+                              "type": "string"
+                            },
+                            "State": {
+                              "type": "object",
+                              "properties": {
+                                "Status": {
+                                  "type": "string"
+                                },
+                                "Running": {
+                                  "type": "boolean"
+                                },
+                                "Paused": {
+                                  "type": "boolean"
+                                },
+                                "Restarting": {
+                                  "type": "boolean"
+                                },
+                                "OOMKilled": {
+                                  "type": "boolean"
+                                },
+                                "Dead": {
+                                  "type": "boolean"
+                                },
+                                "Pid": {
+                                  "type": "integer"
+                                },
+                                "ExitCode": {
+                                  "type": "integer"
+                                }
+                              }
+                            },
+                            "HostConfig": {
+                              "type": "object",
+                              "properties": {
+                                "NetworkMode": {
+                                  "type": "string"
+                                },
+                                "PortBindings": {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": [
+                                      "array",
+                                      "null"
+                                    ],
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "HostIp": {
+                                          "type": "string"
+                                        },
+                                        "HostPort": {
+                                          "type": "string"
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                "RestartPolicy": {
+                                  "type": "object",
+                                  "properties": {
+                                    "Name": {
+                                      "type": "string"
+                                    },
+                                    "MaximumRetryCount": {
+                                      "type": "integer"
+                                    }
+                                  }
+                                },
+                                "Privileged": {
+                                  "type": "boolean"
+                                },
+                                "NanoCpus": {
+                                  "type": "integer"
+                                },
+                                "Memory": {
+                                  "type": "integer"
+                                },
+                                "ShmSize": {
+                                  "type": "integer"
+                                },
+                                "Binds": {
+                                  "type": [
+                                    "array",
+                                    "null"
+                                  ],
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            },
+                            "Config": {
+                              "type": "object",
+                              "properties": {
+                                "Hostname": {
+                                  "type": "string"
+                                },
+                                "User": {
+                                  "type": "string"
+                                },
+                                "Tty": {
+                                  "type": "boolean"
+                                },
+                                "OpenStdin": {
+                                  "type": "boolean"
+                                },
+                                "Env": {
+                                  "type": [
+                                    "array",
+                                    "null"
+                                  ],
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "Cmd": {
+                                  "type": [
+                                    "array",
+                                    "null"
+                                  ],
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "Image": {
+                                  "type": "string"
+                                },
+                                "WorkingDir": {
+                                  "type": "string"
+                                },
+                                "Labels": {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            },
+                            "Mounts": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "Type": {
+                                    "type": "string"
+                                  },
+                                  "Source": {
+                                    "type": "string"
+                                  },
+                                  "Destination": {
+                                    "type": "string"
+                                  },
+                                  "Mode": {
+                                    "type": "string"
+                                  },
+                                  "RW": {
+                                    "type": "boolean"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -7231,6 +8736,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET of one existing container was reduced to a partial Docker inspect type schema; dynamic port/label keys are represented with additionalProperties and no live names, paths or addresses were persisted",
         "parameters": [
           {
             "name": "param",
@@ -11423,11 +12929,83 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "networks": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "Name": {
+                            "type": "string"
+                          },
+                          "Id": {
+                            "type": "string"
+                          },
+                          "Created": {
+                            "type": "string"
+                          },
+                          "Scope": {
+                            "type": "string"
+                          },
+                          "Driver": {
+                            "type": "string"
+                          },
+                          "EnableIPv4": {
+                            "type": "boolean"
+                          },
+                          "EnableIPv6": {
+                            "type": "boolean"
+                          },
+                          "Internal": {
+                            "type": "boolean"
+                          },
+                          "Attachable": {
+                            "type": "boolean"
+                          },
+                          "Ingress": {
+                            "type": "boolean"
+                          },
+                          "ConfigOnly": {
+                            "type": "boolean"
+                          },
+                          "IPAM": {
+                            "type": "object",
+                            "properties": {
+                              "Driver": {
+                                "type": "string"
+                              },
+                              "Options": {
+                                "type": [
+                                  "object",
+                                  "null"
+                                ]
+                              },
+                              "Config": {
+                                "type": [
+                                  "array",
+                                  "null"
+                                ]
+                              }
+                            }
+                          },
+                          "Options": {
+                            "type": "object"
+                          },
+                          "Labels": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -11447,7 +13025,8 @@
         "x-evidence-bundles": [
           "lucky_docker-BCN-OILs.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/docker/networks observed generic network object types only; dynamic option/label/container keys were not copied"
       },
       "post": {
         "summary": "Lucky frontend call: POST /api/docker/networks",
@@ -11488,7 +13067,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend network dialog explicitly builds this object, including optional driver options and IPAM config; no network was created for schema discovery",
+        "x-schema-evidence": "frontend network dialog explicitly builds name/driver plus boolean internal/enable_ipv6/attachable flags and optional driver-options/IPAM objects; authorized GET /api/docker/networks cross-checked the resource-level types",
         "requestBody": {
           "required": true,
           "content": {
@@ -11496,13 +13075,30 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": {},
-                  "driver": {},
-                  "internal": {},
-                  "enable_ipv6": {},
-                  "attachable": {},
-                  "options": {},
-                  "ipam": {}
+                  "name": {
+                    "type": "string"
+                  },
+                  "driver": {
+                    "type": "string"
+                  },
+                  "internal": {
+                    "type": "boolean"
+                  },
+                  "enable_ipv6": {
+                    "type": "boolean"
+                  },
+                  "attachable": {
+                    "type": "boolean"
+                  },
+                  "options": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "ipam": {
+                    "type": "object"
+                  }
                 }
               }
             }
@@ -11865,11 +13461,75 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "summary": {
+                      "type": "object",
+                      "properties": {
+                        "containers": {
+                          "type": "object",
+                          "properties": {
+                            "total": {
+                              "type": "integer"
+                            },
+                            "running": {
+                              "type": "integer"
+                            },
+                            "created": {
+                              "type": "integer"
+                            }
+                          }
+                        },
+                        "images": {
+                          "type": "object",
+                          "properties": {
+                            "total": {
+                              "type": "integer"
+                            }
+                          }
+                        },
+                        "compose": {
+                          "type": "object",
+                          "properties": {
+                            "total": {
+                              "type": "integer"
+                            }
+                          }
+                        },
+                        "networks": {
+                          "type": "object",
+                          "properties": {
+                            "total": {
+                              "type": "integer"
+                            }
+                          }
+                        },
+                        "volumes": {
+                          "type": "object",
+                          "properties": {
+                            "total": {
+                              "type": "integer"
+                            }
+                          }
+                        },
+                        "tasks": {
+                          "type": "object",
+                          "properties": {
+                            "total": {
+                              "type": "integer"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -11889,7 +13549,8 @@
         "x-evidence-bundles": [
           "lucky_docker-BCN-OILs.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/docker/summary observed aggregate counter names and integer types only"
       }
     },
     "/api/docker/system-info": {
@@ -12175,11 +13836,73 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "version": {
+                      "type": "object",
+                      "properties": {
+                        "Platform": {
+                          "type": "object",
+                          "properties": {
+                            "Name": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "Components": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "Name": {
+                                "type": "string"
+                              },
+                              "Version": {
+                                "type": "string"
+                              },
+                              "Details": {
+                                "type": "object"
+                              }
+                            }
+                          }
+                        },
+                        "Version": {
+                          "type": "string"
+                        },
+                        "ApiVersion": {
+                          "type": "string"
+                        },
+                        "MinAPIVersion": {
+                          "type": "string"
+                        },
+                        "GitCommit": {
+                          "type": "string"
+                        },
+                        "GoVersion": {
+                          "type": "string"
+                        },
+                        "Os": {
+                          "type": "string"
+                        },
+                        "Arch": {
+                          "type": "string"
+                        },
+                        "KernelVersion": {
+                          "type": "string"
+                        },
+                        "BuildTime": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -12199,7 +13922,8 @@
         "x-evidence-bundles": [
           "lucky_docker-BCN-OILs.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/docker/version observed Docker version/component field names and JSON types only"
       }
     },
     "/api/docker/volumes": {
@@ -12217,11 +13941,51 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "volumes": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "CreatedAt": {
+                            "type": "string"
+                          },
+                          "Driver": {
+                            "type": "string"
+                          },
+                          "Labels": {
+                            "type": [
+                              "object",
+                              "null"
+                            ]
+                          },
+                          "Mountpoint": {
+                            "type": "string"
+                          },
+                          "Name": {
+                            "type": "string"
+                          },
+                          "Options": {
+                            "type": [
+                              "object",
+                              "null"
+                            ]
+                          },
+                          "Scope": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -12241,7 +14005,8 @@
         "x-evidence-bundles": [
           "lucky_docker-BCN-OILs.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/docker/volumes observed only volume field names and JSON types; live names and mount paths were not retained"
       },
       "post": {
         "summary": "Lucky frontend call: POST /api/docker/volumes",
@@ -12282,7 +14047,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend volume dialog sends explicit {name,driver}; authorized GET confirmed volume resource shape only",
+        "x-schema-evidence": "frontend volume dialog sends explicit {name:string,driver:string}; authorized GET confirmed volume resource shape",
         "requestBody": {
           "required": true,
           "content": {
@@ -12290,8 +14055,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": {},
-                  "driver": {}
+                  "name": {
+                    "type": "string"
+                  },
+                  "driver": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -12934,11 +14703,22 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "list": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -12958,7 +14738,8 @@
         "x-evidence-bundles": [
           "lucky_panel-BjQOfwVI.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/frp/list returned an empty list on this instance; only the envelope and array type are claimed"
       },
       "post": {
         "summary": "Lucky frontend call: POST /api/frp/list",
@@ -12999,7 +14780,7 @@
           "lucky_panel-BjQOfwVI.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend FRP instance form submits normalized instance object; current authorized FRP list is empty",
+        "x-schema-evidence": "current frontend instance form normalizes Type to client/server, ConfigMode to form/text, Params to an object, and Proxies/Visitors to arrays before submit; authorized FRP list is currently empty",
         "requestBody": {
           "required": true,
           "content": {
@@ -13007,15 +14788,47 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Key": {},
-                  "Remark": {},
-                  "Enable": {},
-                  "Type": {},
-                  "ConfigMode": {},
-                  "ConfigText": {},
-                  "Params": {},
-                  "Proxies": {},
-                  "Visitors": {}
+                  "Key": {
+                    "type": "string"
+                  },
+                  "Remark": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "Type": {
+                    "type": "string",
+                    "enum": [
+                      "client",
+                      "server"
+                    ]
+                  },
+                  "ConfigMode": {
+                    "type": "string",
+                    "enum": [
+                      "form",
+                      "text"
+                    ]
+                  },
+                  "ConfigText": {
+                    "type": "string"
+                  },
+                  "Params": {
+                    "type": "object"
+                  },
+                  "Proxies": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "Visitors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  }
                 }
               }
             }
@@ -13061,7 +14874,7 @@
           "lucky_panel-BjQOfwVI.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend FRP instance form submits normalized instance object; current authorized FRP list is empty",
+        "x-schema-evidence": "current frontend instance form normalizes Type to client/server, ConfigMode to form/text, Params to an object, and Proxies/Visitors to arrays before submit; authorized FRP list is currently empty",
         "requestBody": {
           "required": true,
           "content": {
@@ -13069,15 +14882,47 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Key": {},
-                  "Remark": {},
-                  "Enable": {},
-                  "Type": {},
-                  "ConfigMode": {},
-                  "ConfigText": {},
-                  "Params": {},
-                  "Proxies": {},
-                  "Visitors": {}
+                  "Key": {
+                    "type": "string"
+                  },
+                  "Remark": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "Type": {
+                    "type": "string",
+                    "enum": [
+                      "client",
+                      "server"
+                    ]
+                  },
+                  "ConfigMode": {
+                    "type": "string",
+                    "enum": [
+                      "form",
+                      "text"
+                    ]
+                  },
+                  "ConfigText": {
+                    "type": "string"
+                  },
+                  "Params": {
+                    "type": "object"
+                  },
+                  "Proxies": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "Visitors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  }
                 }
               }
             }
@@ -13565,7 +15410,7 @@
           "lucky_panel-BjQOfwVI.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend ProxyForm field union across supported FRP proxy types; getProxyConfig returns this model directly for create",
+        "x-schema-evidence": "current FRP ProxyForm directly returns this model for create; proxy/plugin/type select options provide the enums, KV editors prove map<string,string> shapes, health-check headers append {name,value}, and local/remote port inputs provide numeric bounds",
         "parameters": [
           {
             "name": "param",
@@ -13583,52 +15428,237 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "allowUsers": {},
-                  "annotations": {},
-                  "bandwidthLimit": {},
-                  "bandwidthLimitMode": {},
-                  "customDomains": {},
-                  "disabled": {},
-                  "healthCheckHTTPHeaders": {},
-                  "healthCheckInterval": {},
-                  "healthCheckMaxFailed": {},
-                  "healthCheckPath": {},
-                  "healthCheckTimeout": {},
-                  "healthCheckType": {},
-                  "hostHeaderRewrite": {},
-                  "httpPassword": {},
-                  "httpUser": {},
-                  "loadBalancerGroup": {},
-                  "loadBalancerGroupKey": {},
-                  "localIP": {},
-                  "localPort": {},
-                  "locations": {},
-                  "metadatas": {},
-                  "multiplexer": {},
-                  "name": {},
-                  "natTraversal": {},
-                  "plugin": {},
-                  "pluginCrtPath": {},
-                  "pluginEnableHttp2": {},
-                  "pluginHostHeaderRewrite": {},
-                  "pluginHttpPassword": {},
-                  "pluginHttpUser": {},
-                  "pluginKeyPath": {},
-                  "pluginLocalAddr": {},
-                  "pluginLocalPath": {},
-                  "pluginRequestHeaders": {},
-                  "pluginStripPrefix": {},
-                  "pluginUnixPath": {},
-                  "proxyProtocolVersion": {},
-                  "remotePort": {},
-                  "requestHeaders": {},
-                  "responseHeaders": {},
-                  "routeByHTTPUser": {},
-                  "secretKey": {},
-                  "subdomain": {},
-                  "type": {},
-                  "useCompression": {},
-                  "useEncryption": {}
+                  "allowUsers": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "annotations": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "bandwidthLimit": {
+                    "type": "string"
+                  },
+                  "bandwidthLimitMode": {
+                    "type": "string",
+                    "enum": [
+                      "client",
+                      "server"
+                    ]
+                  },
+                  "customDomains": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "disabled": {
+                    "type": "boolean"
+                  },
+                  "healthCheckHTTPHeaders": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "healthCheckInterval": {
+                    "type": "integer"
+                  },
+                  "healthCheckMaxFailed": {
+                    "type": "integer"
+                  },
+                  "healthCheckPath": {
+                    "type": "string"
+                  },
+                  "healthCheckTimeout": {
+                    "type": "integer"
+                  },
+                  "healthCheckType": {
+                    "type": "string",
+                    "enum": [
+                      "tcp",
+                      "http"
+                    ]
+                  },
+                  "hostHeaderRewrite": {
+                    "type": "string"
+                  },
+                  "httpPassword": {
+                    "type": "string"
+                  },
+                  "httpUser": {
+                    "type": "string"
+                  },
+                  "loadBalancerGroup": {
+                    "type": "string"
+                  },
+                  "loadBalancerGroupKey": {
+                    "type": "string"
+                  },
+                  "localIP": {
+                    "type": "string"
+                  },
+                  "localPort": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 65535
+                  },
+                  "locations": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "metadatas": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "multiplexer": {
+                    "type": "string",
+                    "enum": [
+                      "",
+                      "httpconnect"
+                    ]
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "natTraversal": {
+                    "type": "object",
+                    "properties": {
+                      "disableAssistedAddrs": {
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  "plugin": {
+                    "type": "string",
+                    "enum": [
+                      "",
+                      "http_proxy",
+                      "socks5",
+                      "static_file",
+                      "unix_domain_socket",
+                      "http2http",
+                      "http2https",
+                      "https2http",
+                      "https2https",
+                      "tls2raw"
+                    ]
+                  },
+                  "pluginCrtPath": {
+                    "type": "string"
+                  },
+                  "pluginEnableHttp2": {
+                    "type": "boolean"
+                  },
+                  "pluginHostHeaderRewrite": {
+                    "type": "string"
+                  },
+                  "pluginHttpPassword": {
+                    "type": "string"
+                  },
+                  "pluginHttpUser": {
+                    "type": "string"
+                  },
+                  "pluginKeyPath": {
+                    "type": "string"
+                  },
+                  "pluginLocalAddr": {
+                    "type": "string"
+                  },
+                  "pluginLocalPath": {
+                    "type": "string"
+                  },
+                  "pluginRequestHeaders": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "pluginStripPrefix": {
+                    "type": "string"
+                  },
+                  "pluginUnixPath": {
+                    "type": "string"
+                  },
+                  "proxyProtocolVersion": {
+                    "type": "string",
+                    "enum": [
+                      "",
+                      "v1",
+                      "v2"
+                    ]
+                  },
+                  "remotePort": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 65535
+                  },
+                  "requestHeaders": {
+                    "type": "object",
+                    "properties": {
+                      "set": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "responseHeaders": {
+                    "type": "object",
+                    "properties": {
+                      "set": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "routeByHTTPUser": {
+                    "type": "string"
+                  },
+                  "secretKey": {
+                    "type": "string"
+                  },
+                  "subdomain": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "tcp",
+                      "udp",
+                      "http",
+                      "https",
+                      "stcp",
+                      "xtcp",
+                      "sudp",
+                      "tcpmux"
+                    ]
+                  },
+                  "useCompression": {
+                    "type": "boolean"
+                  },
+                  "useEncryption": {
+                    "type": "boolean"
+                  }
                 }
               }
             }
@@ -13674,7 +15704,7 @@
           "lucky_panel-BjQOfwVI.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend proxy update explicitly wraps edited proxy as {oldName,newProxy}",
+        "x-schema-evidence": "frontend proxy update explicitly wraps edited ProxyForm object as {oldName:string,newProxy:object}; the create schema documents the nested ProxyForm field union",
         "parameters": [
           {
             "name": "param",
@@ -13692,8 +15722,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "oldName": {},
-                  "newProxy": {}
+                  "oldName": {
+                    "type": "string"
+                  },
+                  "newProxy": {
+                    "type": "object"
+                  }
                 }
               }
             }
@@ -13903,7 +15937,7 @@
           "lucky_panel-BjQOfwVI.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend VisitorForm returns its complete model directly for create",
+        "x-schema-evidence": "current FRP VisitorForm returns this model directly; the default model proves nested transport/natTraversal/plugin shapes and the visitor type/protocol/plugin selectors provide the enums",
         "parameters": [
           {
             "name": "param",
@@ -13921,23 +15955,93 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "bindAddr": {},
-                  "bindPort": {},
-                  "disabled": {},
-                  "fallbackTimeoutMs": {},
-                  "fallbackTo": {},
-                  "keepTunnelOpen": {},
-                  "maxRetriesAnHour": {},
-                  "minRetryInterval": {},
-                  "name": {},
-                  "natTraversal": {},
-                  "plugin": {},
-                  "protocol": {},
-                  "secretKey": {},
-                  "serverName": {},
-                  "serverUser": {},
-                  "transport": {},
-                  "type": {}
+                  "bindAddr": {
+                    "type": "string"
+                  },
+                  "bindPort": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 65535
+                  },
+                  "disabled": {
+                    "type": "boolean"
+                  },
+                  "fallbackTimeoutMs": {
+                    "type": "integer"
+                  },
+                  "fallbackTo": {
+                    "type": "string"
+                  },
+                  "keepTunnelOpen": {
+                    "type": "boolean"
+                  },
+                  "maxRetriesAnHour": {
+                    "type": "integer"
+                  },
+                  "minRetryInterval": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "natTraversal": {
+                    "type": "object",
+                    "properties": {
+                      "disableAssistedAddrs": {
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  "plugin": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "",
+                          "virtual_net"
+                        ]
+                      },
+                      "destinationIP": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "protocol": {
+                    "type": "string",
+                    "enum": [
+                      "quic",
+                      "kcp"
+                    ]
+                  },
+                  "secretKey": {
+                    "type": "string"
+                  },
+                  "serverName": {
+                    "type": "string"
+                  },
+                  "serverUser": {
+                    "type": "string"
+                  },
+                  "transport": {
+                    "type": "object",
+                    "properties": {
+                      "useEncryption": {
+                        "type": "boolean"
+                      },
+                      "useCompression": {
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "stcp",
+                      "xtcp",
+                      "sudp"
+                    ]
+                  }
                 }
               }
             }
@@ -13983,7 +16087,7 @@
           "lucky_panel-BjQOfwVI.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend visitor update explicitly wraps edited visitor as {oldName,newVisitor}",
+        "x-schema-evidence": "frontend visitor update explicitly wraps edited VisitorForm object as {oldName:string,newVisitor:object}; the create schema documents the nested VisitorForm model",
         "parameters": [
           {
             "name": "param",
@@ -14001,8 +16105,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "oldName": {},
-                  "newVisitor": {}
+                  "oldName": {
+                    "type": "string"
+                  },
+                  "newVisitor": {
+                    "type": "object"
+                  }
                 }
               }
             }
@@ -26876,7 +28984,7 @@
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend data:state pass-through + authorized GET /api/webservice/frontend-state field-name shape",
+        "x-schema-evidence": "frontend data:state pass-through + authorized GET /api/webservice/frontend-state cross-checked both fields as strings",
         "requestBody": {
           "required": true,
           "content": {
@@ -26884,8 +28992,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "listTabLayout": {},
-                  "viewMode": {}
+                  "listTabLayout": {
+                    "type": "string"
+                  },
+                  "viewMode": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -27021,7 +29133,7 @@
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend group form submits explicit {Name} object",
+        "x-schema-evidence": "frontend group form submits explicit {Name:string} object",
         "requestBody": {
           "required": true,
           "content": {
@@ -27029,7 +29141,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Name": {}
+                  "Name": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -27075,7 +29189,7 @@
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend group edit form submits {Key,Name} object",
+        "x-schema-evidence": "frontend group edit form submits {Key:string,Name:string} object",
         "requestBody": {
           "required": true,
           "content": {
@@ -27083,8 +29197,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Key": {},
-                  "Name": {}
+                  "Key": {
+                    "type": "string"
+                  },
+                  "Name": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -27422,11 +29540,129 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "rule": {
+                      "type": "object",
+                      "properties": {
+                        "RuleName": {
+                          "type": "string"
+                        },
+                        "RuleKey": {
+                          "type": "string"
+                        },
+                        "Enable": {
+                          "type": "boolean"
+                        },
+                        "ListenIP": {
+                          "type": "string"
+                        },
+                        "ListenPort": {
+                          "type": "integer"
+                        },
+                        "EnableTLS": {
+                          "type": "boolean"
+                        },
+                        "Http3": {
+                          "type": "boolean"
+                        },
+                        "Network": {
+                          "type": "string"
+                        },
+                        "TLSMinVersion": {
+                          "type": "integer"
+                        },
+                        "DefaultProxy": {
+                          "type": "object",
+                          "properties": {
+                            "Key": {
+                              "type": "string"
+                            },
+                            "Locations": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "WebServiceType": {
+                              "type": "string"
+                            },
+                            "EnableBasicAuth": {
+                              "type": "boolean"
+                            },
+                            "BasicAuthUserList": {
+                              "type": "string"
+                            },
+                            "SecurityGroupKeys": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "HttpClientTimeout": {
+                              "type": "integer"
+                            },
+                            "OtherParams": {
+                              "type": "object",
+                              "properties": {
+                                "RedirectType": {
+                                  "type": "string"
+                                },
+                                "ProxyProtocolV2": {
+                                  "type": "boolean"
+                                },
+                                "OauthType": {
+                                  "type": "string"
+                                },
+                                "WebAuth": {
+                                  "type": "boolean"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "ProxyList": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "Key": {
+                                "type": "string"
+                              },
+                              "Enable": {
+                                "type": "boolean"
+                              },
+                              "Remark": {
+                                "type": "string"
+                              },
+                              "Domains": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "Locations": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "WebServiceType": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -27447,6 +29683,7 @@
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET of one WebService rule was reduced to a partial nested type schema; authentication/OAuth/proxy secret values, domains and rule identifiers were never persisted",
         "parameters": [
           {
             "name": "param",
@@ -27497,7 +29734,7 @@
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend data:l(rule) pass-through + authorized GET /api/webservice/rule/{key} field-name shape",
+        "x-schema-evidence": "same normalized rule model as POST /api/webservice/rules; authorized GET rule detail cross-checked the top-level types and selected nested proxy fields, while current frontend normalization provides numeric bounds",
         "parameters": [
           {
             "name": "param",
@@ -27515,48 +29752,336 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "AutoOptionsFirewall": {},
-                  "CorazaWAFInstance": {},
-                  "DefaultProxy": {},
-                  "DiaglogShowMode": {},
-                  "DisableStatistics": {},
-                  "ECDHPrivateKey": {},
-                  "ECH": {},
-                  "ECHConfigList": {},
-                  "ECHDomain": {},
-                  "Enable": {},
-                  "EnableTLS": {},
-                  "FrontRuleListDisplay": {},
-                  "GlobalAllowAllThirdAuthUsers": {},
-                  "GlobalAllowThirdUserSkipTwoFA": {},
-                  "GlobalBasicAuthUserList": {},
-                  "GlobalThirdAuthLoginUserList": {},
-                  "Http3": {},
-                  "IPFilterRule": {},
-                  "ListenIP": {},
-                  "ListenPort": {},
-                  "MaxContinuous404Count": {},
-                  "MaxCorazaInterceptionCount": {},
-                  "MaxHeaderKBytes": {},
-                  "Network": {},
-                  "ProxyList": {},
-                  "ReceRateLimit": {},
-                  "ReceRateLimitEnabled": {},
-                  "RuleKey": {},
-                  "RuleName": {},
-                  "SendRateLimit": {},
-                  "SendRateLimitEnabled": {},
-                  "SingleConnReceRateLimit": {},
-                  "SingleConnReceRateLimitEnabled": {},
-                  "SingleConnSendRateLimit": {},
-                  "SingleConnSendRateLimitEnabled": {},
-                  "SingleIPConnectionsLimit": {},
-                  "SingleIPConnectionsLimitEnabled": {},
-                  "SingleIPReceRateLimit": {},
-                  "SingleIPReceRateLimitEnabled": {},
-                  "SingleIPSendRateLimit": {},
-                  "SingleIPSendRateLimitEnabled": {},
-                  "TLSMinVersion": {}
+                  "AutoOptionsFirewall": {
+                    "type": "boolean"
+                  },
+                  "CorazaWAFInstance": {
+                    "type": "string"
+                  },
+                  "DefaultProxy": {
+                    "type": "object",
+                    "properties": {
+                      "Key": {
+                        "type": "string"
+                      },
+                      "GroupKey": {
+                        "type": "string"
+                      },
+                      "Locations": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "WebServiceType": {
+                        "type": "string"
+                      },
+                      "EnableBasicAuth": {
+                        "type": "boolean"
+                      },
+                      "BasicAuthUserList": {
+                        "type": "string"
+                      },
+                      "AuthSource": {
+                        "type": "string"
+                      },
+                      "SecurityGroupKeys": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "SecurityGroupAccessMode": {
+                        "type": "string"
+                      },
+                      "SecurityGroupGrantBasicAuth": {
+                        "type": "boolean"
+                      },
+                      "DisplayInFrontendList": {
+                        "type": "boolean"
+                      },
+                      "CacheEnabled": {
+                        "type": "boolean"
+                      },
+                      "CorazaWAFInstance": {
+                        "type": "string"
+                      },
+                      "HttpClientTimeout": {
+                        "type": "integer",
+                        "minimum": 3,
+                        "maximum": 300
+                      },
+                      "ProxyType": {
+                        "type": "string"
+                      },
+                      "ProxyAddr": {
+                        "type": "string"
+                      },
+                      "ProxyUser": {
+                        "type": "string"
+                      },
+                      "ProxyPassword": {
+                        "type": "string"
+                      },
+                      "OtherParams": {
+                        "type": "object",
+                        "properties": {
+                          "ProxyProtocolV2": {
+                            "type": "boolean"
+                          },
+                          "RedirectType": {
+                            "type": "string"
+                          },
+                          "OauthType": {
+                            "type": "string"
+                          },
+                          "WebAuth": {
+                            "type": "boolean"
+                          },
+                          "WebAuthAllowNonBrowserReuse": {
+                            "type": "boolean"
+                          },
+                          "WebAuthAllowNonBrowserUserAgents": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "WebAuthPathPrefix": {
+                            "type": "string"
+                          },
+                          "WebAuthSessionScopeMode": {
+                            "type": "string"
+                          },
+                          "WebAuthUseDedicatedPath": {
+                            "type": "boolean"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "DiaglogShowMode": {
+                    "type": "string"
+                  },
+                  "DisableStatistics": {
+                    "type": "boolean"
+                  },
+                  "ECDHPrivateKey": {
+                    "type": "string"
+                  },
+                  "ECH": {
+                    "type": "boolean"
+                  },
+                  "ECHConfigList": {
+                    "type": "string"
+                  },
+                  "ECHDomain": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "EnableTLS": {
+                    "type": "boolean"
+                  },
+                  "FrontRuleListDisplay": {
+                    "type": "string"
+                  },
+                  "GlobalAllowAllThirdAuthUsers": {
+                    "type": "boolean"
+                  },
+                  "GlobalAllowThirdUserSkipTwoFA": {
+                    "type": "boolean"
+                  },
+                  "GlobalBasicAuthUserList": {
+                    "type": "string"
+                  },
+                  "GlobalThirdAuthLoginUserList": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "Http3": {
+                    "type": "boolean"
+                  },
+                  "IPFilterRule": {
+                    "type": "string"
+                  },
+                  "ListenIP": {
+                    "type": "string"
+                  },
+                  "ListenPort": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 65535
+                  },
+                  "MaxContinuous404Count": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 99
+                  },
+                  "MaxCorazaInterceptionCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 99
+                  },
+                  "MaxHeaderKBytes": {
+                    "type": "integer",
+                    "minimum": 32,
+                    "maximum": 10240
+                  },
+                  "Network": {
+                    "type": "string"
+                  },
+                  "ProxyList": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "Key": {
+                          "type": "string"
+                        },
+                        "GroupKey": {
+                          "type": "string"
+                        },
+                        "Enable": {
+                          "type": "boolean"
+                        },
+                        "Remark": {
+                          "type": "string"
+                        },
+                        "Domains": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "Locations": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "WebServiceType": {
+                          "type": "string"
+                        },
+                        "EnableBasicAuth": {
+                          "type": "boolean"
+                        },
+                        "BasicAuthUserList": {
+                          "type": "string"
+                        },
+                        "AuthSource": {
+                          "type": "string"
+                        },
+                        "SecurityGroupKeys": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "SecurityGroupAccessMode": {
+                          "type": "string"
+                        },
+                        "DisplayInFrontendList": {
+                          "type": "boolean"
+                        },
+                        "CacheEnabled": {
+                          "type": "boolean"
+                        },
+                        "HttpClientTimeout": {
+                          "type": "integer",
+                          "minimum": 3,
+                          "maximum": 300
+                        },
+                        "OtherParams": {
+                          "type": "object",
+                          "properties": {
+                            "ProxyProtocolV2": {
+                              "type": "boolean"
+                            },
+                            "RedirectType": {
+                              "type": "string"
+                            },
+                            "OauthType": {
+                              "type": "string"
+                            },
+                            "WebAuth": {
+                              "type": "boolean"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "ReceRateLimit": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000
+                  },
+                  "ReceRateLimitEnabled": {
+                    "type": "boolean"
+                  },
+                  "RuleKey": {
+                    "type": "string"
+                  },
+                  "RuleName": {
+                    "type": "string"
+                  },
+                  "SendRateLimit": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000
+                  },
+                  "SendRateLimitEnabled": {
+                    "type": "boolean"
+                  },
+                  "SingleConnReceRateLimit": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000
+                  },
+                  "SingleConnReceRateLimitEnabled": {
+                    "type": "boolean"
+                  },
+                  "SingleConnSendRateLimit": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000
+                  },
+                  "SingleConnSendRateLimitEnabled": {
+                    "type": "boolean"
+                  },
+                  "SingleIPConnectionsLimit": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1024
+                  },
+                  "SingleIPConnectionsLimitEnabled": {
+                    "type": "boolean"
+                  },
+                  "SingleIPReceRateLimit": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000
+                  },
+                  "SingleIPReceRateLimitEnabled": {
+                    "type": "boolean"
+                  },
+                  "SingleIPSendRateLimit": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000
+                  },
+                  "SingleIPSendRateLimitEnabled": {
+                    "type": "boolean"
+                  },
+                  "TLSMinVersion": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 3
+                  }
                 }
               }
             }
@@ -27703,11 +30228,100 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "ruleList": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "RuleKey": {
+                            "type": "string"
+                          },
+                          "RuleName": {
+                            "type": "string"
+                          },
+                          "Network": {
+                            "type": "string"
+                          },
+                          "ListenIP": {
+                            "type": "string"
+                          },
+                          "ListenPort": {
+                            "type": "integer"
+                          },
+                          "EnableTLS": {
+                            "type": "boolean"
+                          },
+                          "Enable": {
+                            "type": "boolean"
+                          },
+                          "Http3": {
+                            "type": "boolean"
+                          },
+                          "ProxyList": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "Key": {
+                                  "type": "string"
+                                },
+                                "Remark": {
+                                  "type": "string"
+                                },
+                                "Domains": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                },
+                                "Locations": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "statistics": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                          "Connections": {
+                            "type": "integer"
+                          },
+                          "TrafficIn": {
+                            "type": "integer"
+                          },
+                          "TrafficOut": {
+                            "type": "integer"
+                          },
+                          "InSpeed": {
+                            "type": "integer"
+                          },
+                          "OutSpeed": {
+                            "type": "integer"
+                          },
+                          "CorazaProtectionTimes": {
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -27727,7 +30341,8 @@
         "x-evidence-bundles": [
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/webservice/rules was reduced to generic rule-list and statistics-map types; dynamic RuleKey/subrule keys are represented with additionalProperties and no live identifiers/domains were persisted"
       },
       "post": {
         "summary": "Lucky frontend call: POST /api/webservice/rules",
@@ -27768,7 +30383,7 @@
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend data:l(rule) pass-through + authorized GET /api/webservice/rule/{key} field-name shape",
+        "x-schema-evidence": "frontend passes the normalized rule model directly; authorized GET /api/webservice/rule/{key} cross-checked every top-level field and selected DefaultProxy/ProxyList/OtherParams nested types, while current frontend normalization supplies the documented numeric bounds",
         "requestBody": {
           "required": true,
           "content": {
@@ -27776,48 +30391,336 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "AutoOptionsFirewall": {},
-                  "CorazaWAFInstance": {},
-                  "DefaultProxy": {},
-                  "DiaglogShowMode": {},
-                  "DisableStatistics": {},
-                  "ECDHPrivateKey": {},
-                  "ECH": {},
-                  "ECHConfigList": {},
-                  "ECHDomain": {},
-                  "Enable": {},
-                  "EnableTLS": {},
-                  "FrontRuleListDisplay": {},
-                  "GlobalAllowAllThirdAuthUsers": {},
-                  "GlobalAllowThirdUserSkipTwoFA": {},
-                  "GlobalBasicAuthUserList": {},
-                  "GlobalThirdAuthLoginUserList": {},
-                  "Http3": {},
-                  "IPFilterRule": {},
-                  "ListenIP": {},
-                  "ListenPort": {},
-                  "MaxContinuous404Count": {},
-                  "MaxCorazaInterceptionCount": {},
-                  "MaxHeaderKBytes": {},
-                  "Network": {},
-                  "ProxyList": {},
-                  "ReceRateLimit": {},
-                  "ReceRateLimitEnabled": {},
-                  "RuleKey": {},
-                  "RuleName": {},
-                  "SendRateLimit": {},
-                  "SendRateLimitEnabled": {},
-                  "SingleConnReceRateLimit": {},
-                  "SingleConnReceRateLimitEnabled": {},
-                  "SingleConnSendRateLimit": {},
-                  "SingleConnSendRateLimitEnabled": {},
-                  "SingleIPConnectionsLimit": {},
-                  "SingleIPConnectionsLimitEnabled": {},
-                  "SingleIPReceRateLimit": {},
-                  "SingleIPReceRateLimitEnabled": {},
-                  "SingleIPSendRateLimit": {},
-                  "SingleIPSendRateLimitEnabled": {},
-                  "TLSMinVersion": {}
+                  "AutoOptionsFirewall": {
+                    "type": "boolean"
+                  },
+                  "CorazaWAFInstance": {
+                    "type": "string"
+                  },
+                  "DefaultProxy": {
+                    "type": "object",
+                    "properties": {
+                      "Key": {
+                        "type": "string"
+                      },
+                      "GroupKey": {
+                        "type": "string"
+                      },
+                      "Locations": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "WebServiceType": {
+                        "type": "string"
+                      },
+                      "EnableBasicAuth": {
+                        "type": "boolean"
+                      },
+                      "BasicAuthUserList": {
+                        "type": "string"
+                      },
+                      "AuthSource": {
+                        "type": "string"
+                      },
+                      "SecurityGroupKeys": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "SecurityGroupAccessMode": {
+                        "type": "string"
+                      },
+                      "SecurityGroupGrantBasicAuth": {
+                        "type": "boolean"
+                      },
+                      "DisplayInFrontendList": {
+                        "type": "boolean"
+                      },
+                      "CacheEnabled": {
+                        "type": "boolean"
+                      },
+                      "CorazaWAFInstance": {
+                        "type": "string"
+                      },
+                      "HttpClientTimeout": {
+                        "type": "integer",
+                        "minimum": 3,
+                        "maximum": 300
+                      },
+                      "ProxyType": {
+                        "type": "string"
+                      },
+                      "ProxyAddr": {
+                        "type": "string"
+                      },
+                      "ProxyUser": {
+                        "type": "string"
+                      },
+                      "ProxyPassword": {
+                        "type": "string"
+                      },
+                      "OtherParams": {
+                        "type": "object",
+                        "properties": {
+                          "ProxyProtocolV2": {
+                            "type": "boolean"
+                          },
+                          "RedirectType": {
+                            "type": "string"
+                          },
+                          "OauthType": {
+                            "type": "string"
+                          },
+                          "WebAuth": {
+                            "type": "boolean"
+                          },
+                          "WebAuthAllowNonBrowserReuse": {
+                            "type": "boolean"
+                          },
+                          "WebAuthAllowNonBrowserUserAgents": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "WebAuthPathPrefix": {
+                            "type": "string"
+                          },
+                          "WebAuthSessionScopeMode": {
+                            "type": "string"
+                          },
+                          "WebAuthUseDedicatedPath": {
+                            "type": "boolean"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "DiaglogShowMode": {
+                    "type": "string"
+                  },
+                  "DisableStatistics": {
+                    "type": "boolean"
+                  },
+                  "ECDHPrivateKey": {
+                    "type": "string"
+                  },
+                  "ECH": {
+                    "type": "boolean"
+                  },
+                  "ECHConfigList": {
+                    "type": "string"
+                  },
+                  "ECHDomain": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "EnableTLS": {
+                    "type": "boolean"
+                  },
+                  "FrontRuleListDisplay": {
+                    "type": "string"
+                  },
+                  "GlobalAllowAllThirdAuthUsers": {
+                    "type": "boolean"
+                  },
+                  "GlobalAllowThirdUserSkipTwoFA": {
+                    "type": "boolean"
+                  },
+                  "GlobalBasicAuthUserList": {
+                    "type": "string"
+                  },
+                  "GlobalThirdAuthLoginUserList": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "Http3": {
+                    "type": "boolean"
+                  },
+                  "IPFilterRule": {
+                    "type": "string"
+                  },
+                  "ListenIP": {
+                    "type": "string"
+                  },
+                  "ListenPort": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 65535
+                  },
+                  "MaxContinuous404Count": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 99
+                  },
+                  "MaxCorazaInterceptionCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 99
+                  },
+                  "MaxHeaderKBytes": {
+                    "type": "integer",
+                    "minimum": 32,
+                    "maximum": 10240
+                  },
+                  "Network": {
+                    "type": "string"
+                  },
+                  "ProxyList": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "Key": {
+                          "type": "string"
+                        },
+                        "GroupKey": {
+                          "type": "string"
+                        },
+                        "Enable": {
+                          "type": "boolean"
+                        },
+                        "Remark": {
+                          "type": "string"
+                        },
+                        "Domains": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "Locations": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "WebServiceType": {
+                          "type": "string"
+                        },
+                        "EnableBasicAuth": {
+                          "type": "boolean"
+                        },
+                        "BasicAuthUserList": {
+                          "type": "string"
+                        },
+                        "AuthSource": {
+                          "type": "string"
+                        },
+                        "SecurityGroupKeys": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "SecurityGroupAccessMode": {
+                          "type": "string"
+                        },
+                        "DisplayInFrontendList": {
+                          "type": "boolean"
+                        },
+                        "CacheEnabled": {
+                          "type": "boolean"
+                        },
+                        "HttpClientTimeout": {
+                          "type": "integer",
+                          "minimum": 3,
+                          "maximum": 300
+                        },
+                        "OtherParams": {
+                          "type": "object",
+                          "properties": {
+                            "ProxyProtocolV2": {
+                              "type": "boolean"
+                            },
+                            "RedirectType": {
+                              "type": "string"
+                            },
+                            "OauthType": {
+                              "type": "string"
+                            },
+                            "WebAuth": {
+                              "type": "boolean"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "ReceRateLimit": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000
+                  },
+                  "ReceRateLimitEnabled": {
+                    "type": "boolean"
+                  },
+                  "RuleKey": {
+                    "type": "string"
+                  },
+                  "RuleName": {
+                    "type": "string"
+                  },
+                  "SendRateLimit": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000
+                  },
+                  "SendRateLimitEnabled": {
+                    "type": "boolean"
+                  },
+                  "SingleConnReceRateLimit": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000
+                  },
+                  "SingleConnReceRateLimitEnabled": {
+                    "type": "boolean"
+                  },
+                  "SingleConnSendRateLimit": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000
+                  },
+                  "SingleConnSendRateLimitEnabled": {
+                    "type": "boolean"
+                  },
+                  "SingleIPConnectionsLimit": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1024
+                  },
+                  "SingleIPConnectionsLimitEnabled": {
+                    "type": "boolean"
+                  },
+                  "SingleIPReceRateLimit": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000
+                  },
+                  "SingleIPReceRateLimitEnabled": {
+                    "type": "boolean"
+                  },
+                  "SingleIPSendRateLimit": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000
+                  },
+                  "SingleIPSendRateLimitEnabled": {
+                    "type": "boolean"
+                  },
+                  "TLSMinVersion": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 3
+                  }
                 }
               }
             }
@@ -27967,7 +30870,7 @@
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend data:settings pass-through + authorized GET /api/webservice/settings field-name shape",
+        "x-schema-evidence": "frontend data:settings pass-through + authorized GET /api/webservice/settings cross-checked top-level primitive/object types",
         "requestBody": {
           "required": true,
           "content": {
@@ -27975,9 +30878,15 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "LogLevel": {},
-                  "Statistics": {},
-                  "WebAuthSessionTTLMinutes": {}
+                  "LogLevel": {
+                    "type": "string"
+                  },
+                  "Statistics": {
+                    "type": "object"
+                  },
+                  "WebAuthSessionTTLMinutes": {
+                    "type": "integer"
+                  }
                 }
               }
             }

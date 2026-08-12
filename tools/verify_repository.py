@@ -483,6 +483,85 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         if route is None or route.request_body_schema != expected_schema:
             fail(f"legacy Docker schema evidence changed unexpectedly for {key[0]} {key[1]}")
 
+    untyped_request_routes = [
+        route
+        for route in merged.routes
+        if route.method in {"POST", "PUT", "PATCH"}
+        and route.has_body
+        and route.body_keys
+        and route.request_body_schema is None
+    ]
+    if len(untyped_request_routes) > 160:
+        fail(
+            "typed request-schema coverage regressed; "
+            f"expected at most 160 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+        )
+    response_schema_count = sum(route.response_schema is not None for route in merged.routes)
+    if response_schema_count < 20:
+        fail(f"response-schema coverage regressed below 20 routes: {response_schema_count}")
+
+    ddns_task = merged_by_key[("POST", "/api/ddns")].request_body_schema
+    if not isinstance(ddns_task, dict):
+        fail("DDNS task request schema is missing")
+    ddns_props = ddns_task.get("properties", {})
+    callback_props = (
+        ddns_props.get("DNS", {}).get("properties", {}).get("Callback", {}).get("properties", {})
+    )
+    if callback_props.get("Headers") != {
+        "type": ["array", "null"],
+        "items": {"type": "string"},
+    }:
+        fail("DDNS callback header schema regressed")
+    if ddns_props.get("TaskType", {}).get("enum") != ["IPv4", "IPv6", "IPv4&IPv6"]:
+        fail("DDNS TaskType enum evidence regressed")
+
+    web_rule = merged_by_key[("POST", "/api/webservice/rules")].request_body_schema
+    if not isinstance(web_rule, dict):
+        fail("WebService rule request schema is missing")
+    web_rule_update = merged_by_key[("PUT", "/api/webservice/rule/{param}")].request_body_schema
+    if web_rule_update != web_rule:
+        fail("WebService create/update request schemas drifted apart")
+    web_props = web_rule.get("properties", {})
+    if web_props.get("TLSMinVersion") != {"type": "integer", "minimum": 0, "maximum": 3}:
+        fail("WebService TLSMinVersion bounds regressed")
+    redirect_type = (
+        web_props.get("DefaultProxy", {})
+        .get("properties", {})
+        .get("OtherParams", {})
+        .get("properties", {})
+        .get("RedirectType")
+    )
+    if redirect_type != {"type": "string"}:
+        fail("WebService DefaultProxy.OtherParams.RedirectType schema regressed")
+
+    docker_create = merged_by_key[("POST", "/api/docker/containers")].request_body_schema
+    if not isinstance(docker_create, dict):
+        fail("Docker create-container request schema is missing")
+    docker_host_props = docker_create.get("properties", {}).get("hostConfig", {}).get("properties", {})
+    restart_policy = docker_host_props.get("RestartPolicy", {}).get("properties", {})
+    if restart_policy.get("Name") != {"type": "string"} or restart_policy.get(
+        "MaximumRetryCount"
+    ) != {"type": "integer"}:
+        fail("Docker RestartPolicy nested schema regressed")
+    if docker_host_props.get("Mounts", {}).get("items", {}).get("properties", {}).get(
+        "ReadOnly"
+    ) != {"type": "boolean"}:
+        fail("Docker Mounts nested schema regressed")
+
+    frp_proxy = merged_by_key[("POST", "/api/frp/{param}/proxies")].request_body_schema
+    if not isinstance(frp_proxy, dict):
+        fail("FRP proxy request schema is missing")
+    frp_props = frp_proxy.get("properties", {})
+    if frp_props.get("healthCheckType", {}).get("enum") != ["tcp", "http"]:
+        fail("FRP health-check enum evidence regressed")
+    if (
+        frp_props.get("natTraversal", {})
+        .get("properties", {})
+        .get("disableAssistedAddrs")
+        != {"type": "boolean"}
+    ):
+        fail("FRP natTraversal nested schema regressed")
+
 
 def check_generated_artifacts() -> None:
     snapshot_path = ROOT / "evidence" / "lucky-v3-endpoints.json"
