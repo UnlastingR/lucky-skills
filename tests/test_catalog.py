@@ -216,6 +216,8 @@ class RuntimeVerificationTests(unittest.TestCase):
         self.assertEqual(route.request_body_schema, {"type": "array", "items": {"type": "string"}})  # type: ignore[union-attr]
         self.assertEqual(route.request_content_type, "application/json")  # type: ignore[union-attr]
         self.assertEqual(route.schema_evidence, "frontend array mapping")  # type: ignore[union-attr]
+        self.assertIsInstance(hash(route), int)  # type: ignore[arg-type]
+        self.assertEqual({route}, {route})  # type: ignore[arg-type]
 
     def test_runtime_verification_version_must_match_snapshot(self) -> None:
         snapshot = {

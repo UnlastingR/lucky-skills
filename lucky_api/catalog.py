@@ -6,7 +6,7 @@ import hashlib
 import json
 import os
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
 from typing import Iterable
@@ -123,10 +123,10 @@ class Route:
     has_body: bool
     response_type: str
     risk_override: OperationRisk | None = None
-    request_body_schema: dict | None = None
-    request_content_type: str | None = None
-    response_schema: dict | None = None
-    schema_evidence: str | None = None
+    request_body_schema: dict | None = field(default=None, compare=False)
+    request_content_type: str | None = field(default=None, compare=False)
+    response_schema: dict | None = field(default=None, compare=False)
+    schema_evidence: str | None = field(default=None, compare=False)
 
     @property
     def risk(self) -> OperationRisk:
