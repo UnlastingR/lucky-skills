@@ -1987,11 +1987,32 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "logs": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -2012,6 +2033,7 @@
           "lucky_coraza-D1zcK8x_.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/coraza/logs observed the paginated envelope; current logs are null so log item schema remains unspecified",
         "parameters": [
           {
             "name": "page",
@@ -2677,11 +2699,36 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "lastLogs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -2701,7 +2748,8 @@
         "x-evidence-bundles": [
           "lucky_panel-599cSpUA.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/cron/lastlogs observed the log envelope and item field types; log content and timestamps were not retained"
       }
     },
     "/api/cron/list": {
@@ -2980,11 +3028,45 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "logs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -3005,6 +3087,7 @@
           "lucky_panel-599cSpUA.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/cron/logs observed the paginated log envelope and item field types; log content and timestamps were not retained",
         "parameters": [
           {
             "name": "page",
@@ -4498,53 +4581,36 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
-                }
-              }
-            }
-          },
-          "default": {
-            "description": "HTTP error or a Lucky business error (which may also use HTTP 200).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
-                }
-              }
-            }
-          }
-        },
-        "x-evidence-confidence": "frontend-call",
-        "x-evidence-bundles": [
-          "lucky_ddns-rma111lI.js"
-        ],
-        "x-lucky-risk": "read-only"
-      }
-    },
-    "/api/ddns/logs": {
-      "get": {
-        "summary": "Lucky frontend call: GET /api/ddns/logs",
-        "description": "Reverse-documented from frontend and optional runtime evidence; schemas may still be incomplete.",
-        "operationId": "get_api_ddns_logs",
-        "tags": [
-          "ddns"
-        ],
-        "security": [
-          {
-            "OpenToken": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "lastLogs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -4565,6 +4631,84 @@
           "lucky_ddns-rma111lI.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/ddns/lastlogs observed the log envelope and item field types; log content and timestamps were not retained"
+      }
+    },
+    "/api/ddns/logs": {
+      "get": {
+        "summary": "Lucky frontend call: GET /api/ddns/logs",
+        "description": "Reverse-documented from frontend and optional runtime evidence; schemas may still be incomplete.",
+        "operationId": "get_api_ddns_logs",
+        "tags": [
+          "ddns"
+        ],
+        "security": [
+          {
+            "OpenToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "logs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "HTTP error or a Lucky business error (which may also use HTTP 200).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LuckyEnvelope"
+                }
+              }
+            }
+          }
+        },
+        "x-evidence-confidence": "frontend-call",
+        "x-evidence-bundles": [
+          "lucky_ddns-rma111lI.js"
+        ],
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/ddns/logs observed the paginated log envelope and item field types; log content and timestamps were not retained",
         "parameters": [
           {
             "name": "page",
@@ -13216,11 +13360,45 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "logs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -13241,6 +13419,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/docker/logs observed the paginated log envelope and item field types; log content and timestamps were not retained",
         "parameters": [
           {
             "name": "page",
@@ -15629,11 +15808,32 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "logs": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -15654,6 +15854,7 @@
           "lucky_panel-BjQOfwVI.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/frp/logs observed the paginated envelope; current logs are null so log item schema remains unspecified",
         "parameters": [
           {
             "name": "page",
@@ -18516,11 +18717,32 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "logs": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -18541,6 +18763,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/ipdb/logs observed the paginated envelope; current logs are null so log item schema remains unspecified",
         "parameters": [
           {
             "name": "page",
@@ -20036,11 +20259,45 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "logs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -20061,6 +20318,7 @@
           "lucky_ipfilter-CGTD3trT.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/ipfliter/porttrap/logs observed the paginated log envelope and item field types; log content and timestamps were not retained",
         "parameters": [
           {
             "name": "page",
@@ -21018,11 +21276,36 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "logs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "timestamp": {
+                            "type": "string"
+                          },
+                          "log": {
+                            "type": "string"
+                          },
+                          "time": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "logsCount": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -21043,6 +21326,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/logs?pre=1 observed the global log envelope and item field types; log text and timestamps were not retained",
         "parameters": [
           {
             "name": "pre",
@@ -22862,53 +23146,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
-                }
-              }
-            }
-          },
-          "default": {
-            "description": "HTTP error or a Lucky business error (which may also use HTTP 200).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
-                }
-              }
-            }
-          }
-        },
-        "x-evidence-confidence": "frontend-call",
-        "x-evidence-bundles": [
-          "lucky_rclone-sFF3mpk8.js"
-        ],
-        "x-lucky-risk": "read-only"
-      }
-    },
-    "/api/rclone/logs": {
-      "get": {
-        "summary": "Lucky frontend call: GET /api/rclone/logs",
-        "description": "Reverse-documented from frontend and optional runtime evidence; schemas may still be incomplete.",
-        "operationId": "get_api_rclone_logs",
-        "tags": [
-          "rclone"
-        ],
-        "security": [
-          {
-            "OpenToken": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "lastLogs": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -22929,6 +23183,71 @@
           "lucky_rclone-sFF3mpk8.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/rclone/lastlogs observed lastLogs=null; only the envelope and nullable-list shape are claimed"
+      }
+    },
+    "/api/rclone/logs": {
+      "get": {
+        "summary": "Lucky frontend call: GET /api/rclone/logs",
+        "description": "Reverse-documented from frontend and optional runtime evidence; schemas may still be incomplete.",
+        "operationId": "get_api_rclone_logs",
+        "tags": [
+          "rclone"
+        ],
+        "security": [
+          {
+            "OpenToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "logs": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "HTTP error or a Lucky business error (which may also use HTTP 200).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LuckyEnvelope"
+                }
+              }
+            }
+          }
+        },
+        "x-evidence-confidence": "frontend-call",
+        "x-evidence-bundles": [
+          "lucky_rclone-sFF3mpk8.js"
+        ],
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/rclone/logs observed the paginated envelope; current logs are null so log item schema remains unspecified",
         "parameters": [
           {
             "name": "page",
@@ -28688,11 +29007,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "lastLogs": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -28712,7 +29043,8 @@
         "x-evidence-bundles": [
           "lucky_storagemanagement-CxTMWo8S.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/storagemanagement/lastlogs observed lastLogs=null; only the envelope and nullable-list shape are claimed"
       }
     },
     "/api/storagemanagement/list": {
@@ -28958,11 +29290,32 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "logs": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -28983,6 +29336,7 @@
           "lucky_storagemanagement-CxTMWo8S.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/storagemanagement/logs observed the paginated envelope; current logs are null so log item schema remains unspecified",
         "parameters": [
           {
             "name": "page",
@@ -30258,11 +30612,36 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "lastLogs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -30283,6 +30662,7 @@
           "lucky_panel-D9SxgvCq.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/third/filebrowser/lastlogs observed the log envelope and item field types; log content and timestamps were not retained",
         "parameters": [
           {
             "name": "page",
@@ -30314,11 +30694,45 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "logs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -30339,6 +30753,7 @@
           "lucky_panel-D9SxgvCq.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/third/filebrowser/logs observed the paginated log envelope and item field types; log content and timestamps were not retained",
         "parameters": [
           {
             "name": "page",
@@ -30916,11 +31331,32 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "logs": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -30941,6 +31377,7 @@
           "lucky_thirdPartyAuthManager-C0VqZjAx.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/thirdPartyAuthManager/logs observed the paginated envelope; current logs are null so log item schema remains unspecified",
         "parameters": [
           {
             "name": "page",
@@ -32613,11 +33050,36 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "lastLogs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -32637,7 +33099,8 @@
         "x-evidence-bundles": [
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/webservice/lastlogs observed the log envelope and item field types; log content and timestamps were not retained"
       }
     },
     "/api/webservice/lightpanel/configtemplate": {
@@ -32716,11 +33179,54 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "logs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    },
+                    "hasMore": {
+                      "type": "boolean"
+                    },
+                    "loadedCount": {
+                      "type": "integer"
+                    },
+                    "totalExact": {
+                      "type": "boolean"
+                    }
+                  }
                 }
               }
             }
@@ -32741,6 +33247,7 @@
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/webservice/logs observed the paginated log envelope, item field types and pagination-state fields; log content and timestamps were not retained",
         "parameters": [
           {
             "name": "page",
@@ -37201,11 +37708,45 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "logs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -37226,6 +37767,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/webterminal/logs observed the paginated log envelope and item field types; log content and timestamps were not retained",
         "parameters": [
           {
             "name": "page",
@@ -39148,53 +39690,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
-                }
-              }
-            }
-          },
-          "default": {
-            "description": "HTTP error or a Lucky business error (which may also use HTTP 200).",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
-                }
-              }
-            }
-          }
-        },
-        "x-evidence-confidence": "frontend-call",
-        "x-evidence-bundles": [
-          "lucky_useWolI18n-D9PD6Ww6.js"
-        ],
-        "x-lucky-risk": "read-only"
-      }
-    },
-    "/api/wol/logs": {
-      "get": {
-        "summary": "Lucky frontend call: GET /api/wol/logs",
-        "description": "Reverse-documented from frontend and optional runtime evidence; schemas may still be incomplete.",
-        "operationId": "get_api_wol_logs",
-        "tags": [
-          "wol"
-        ],
-        "security": [
-          {
-            "OpenToken": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "lastLogs": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -39215,6 +39727,71 @@
           "lucky_useWolI18n-D9PD6Ww6.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/wol/lastlogs observed lastLogs=null; only the envelope and nullable-list shape are claimed"
+      }
+    },
+    "/api/wol/logs": {
+      "get": {
+        "summary": "Lucky frontend call: GET /api/wol/logs",
+        "description": "Reverse-documented from frontend and optional runtime evidence; schemas may still be incomplete.",
+        "operationId": "get_api_wol_logs",
+        "tags": [
+          "wol"
+        ],
+        "security": [
+          {
+            "OpenToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "logs": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "HTTP error or a Lucky business error (which may also use HTTP 200).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LuckyEnvelope"
+                }
+              }
+            }
+          }
+        },
+        "x-evidence-confidence": "frontend-call",
+        "x-evidence-bundles": [
+          "lucky_useWolI18n-D9PD6Ww6.js"
+        ],
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/wol/logs observed the paginated envelope; current logs are null so log item schema remains unspecified",
         "parameters": [
           {
             "name": "page",

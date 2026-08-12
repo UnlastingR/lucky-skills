@@ -1437,6 +1437,160 @@
       "schema_evidence": "authorized GET /api/webdav/logs observed the paginated log envelope and item field types; log content and timestamps were not retained"
     },
     {
+      "path": "/api/coraza/logs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/coraza/logs observed the paginated envelope; current logs are null so log item schema remains unspecified"
+    },
+    {
+      "path": "/api/cron/lastlogs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "lastLogs": {"type": "array", "items": {"type": "object", "properties": {"LogContent": {"type": "string"}, "LogTime": {"type": "string"}, "ShowTime": {"type": "boolean"}, "Level": {"type": "string"}}}}}},
+      "schema_evidence": "authorized GET /api/cron/lastlogs observed the log envelope and item field types; log content and timestamps were not retained"
+    },
+    {
+      "path": "/api/cron/logs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": "array", "items": {"type": "object", "properties": {"LogContent": {"type": "string"}, "LogTime": {"type": "string"}, "ShowTime": {"type": "boolean"}, "Level": {"type": "string"}}}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/cron/logs observed the paginated log envelope and item field types; log content and timestamps were not retained"
+    },
+    {
+      "path": "/api/ddns/lastlogs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "lastLogs": {"type": "array", "items": {"type": "object", "properties": {"LogContent": {"type": "string"}, "LogTime": {"type": "string"}, "ShowTime": {"type": "boolean"}, "Level": {"type": "string"}}}}}},
+      "schema_evidence": "authorized GET /api/ddns/lastlogs observed the log envelope and item field types; log content and timestamps were not retained"
+    },
+    {
+      "path": "/api/ddns/logs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": "array", "items": {"type": "object", "properties": {"LogContent": {"type": "string"}, "LogTime": {"type": "string"}, "ShowTime": {"type": "boolean"}, "Level": {"type": "string"}}}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/ddns/logs observed the paginated log envelope and item field types; log content and timestamps were not retained"
+    },
+    {
+      "path": "/api/docker/logs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": "array", "items": {"type": "object", "properties": {"LogContent": {"type": "string"}, "LogTime": {"type": "string"}, "ShowTime": {"type": "boolean"}, "Level": {"type": "string"}}}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/docker/logs observed the paginated log envelope and item field types; log content and timestamps were not retained"
+    },
+    {
+      "path": "/api/frp/logs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/frp/logs observed the paginated envelope; current logs are null so log item schema remains unspecified"
+    },
+    {
+      "path": "/api/ipdb/logs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/ipdb/logs observed the paginated envelope; current logs are null so log item schema remains unspecified"
+    },
+    {
+      "path": "/api/ipfliter/porttrap/logs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": "array", "items": {"type": "object", "properties": {"LogContent": {"type": "string"}, "LogTime": {"type": "string"}, "ShowTime": {"type": "boolean"}, "Level": {"type": "string"}}}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/ipfliter/porttrap/logs observed the paginated log envelope and item field types; log content and timestamps were not retained"
+    },
+    {
+      "path": "/api/logs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": "array", "items": {"type": "object", "properties": {"timestamp": {"type": "string"}, "log": {"type": "string"}, "time": {"type": "string"}}}}, "logsCount": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/logs?pre=1 observed the global log envelope and item field types; log text and timestamps were not retained"
+    },
+    {
+      "path": "/api/rclone/lastlogs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "lastLogs": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET /api/rclone/lastlogs observed lastLogs=null; only the envelope and nullable-list shape are claimed"
+    },
+    {
+      "path": "/api/rclone/logs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/rclone/logs observed the paginated envelope; current logs are null so log item schema remains unspecified"
+    },
+    {
+      "path": "/api/storagemanagement/lastlogs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "lastLogs": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET /api/storagemanagement/lastlogs observed lastLogs=null; only the envelope and nullable-list shape are claimed"
+    },
+    {
+      "path": "/api/storagemanagement/logs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/storagemanagement/logs observed the paginated envelope; current logs are null so log item schema remains unspecified"
+    },
+    {
+      "path": "/api/third/filebrowser/lastlogs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "lastLogs": {"type": "array", "items": {"type": "object", "properties": {"LogContent": {"type": "string"}, "LogTime": {"type": "string"}, "ShowTime": {"type": "boolean"}, "Level": {"type": "string"}}}}}},
+      "schema_evidence": "authorized GET /api/third/filebrowser/lastlogs observed the log envelope and item field types; log content and timestamps were not retained"
+    },
+    {
+      "path": "/api/third/filebrowser/logs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": "array", "items": {"type": "object", "properties": {"LogContent": {"type": "string"}, "LogTime": {"type": "string"}, "ShowTime": {"type": "boolean"}, "Level": {"type": "string"}}}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/third/filebrowser/logs observed the paginated log envelope and item field types; log content and timestamps were not retained"
+    },
+    {
+      "path": "/api/thirdPartyAuthManager/logs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/thirdPartyAuthManager/logs observed the paginated envelope; current logs are null so log item schema remains unspecified"
+    },
+    {
+      "path": "/api/webservice/lastlogs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "lastLogs": {"type": "array", "items": {"type": "object", "properties": {"LogContent": {"type": "string"}, "LogTime": {"type": "string"}, "ShowTime": {"type": "boolean"}, "Level": {"type": "string"}}}}}},
+      "schema_evidence": "authorized GET /api/webservice/lastlogs observed the log envelope and item field types; log content and timestamps were not retained"
+    },
+    {
+      "path": "/api/webservice/logs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": "array", "items": {"type": "object", "properties": {"LogContent": {"type": "string"}, "LogTime": {"type": "string"}, "ShowTime": {"type": "boolean"}, "Level": {"type": "string"}}}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}, "hasMore": {"type": "boolean"}, "loadedCount": {"type": "integer"}, "totalExact": {"type": "boolean"}}},
+      "schema_evidence": "authorized GET /api/webservice/logs observed the paginated log envelope, item field types and pagination-state fields; log content and timestamps were not retained"
+    },
+    {
+      "path": "/api/webterminal/logs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": "array", "items": {"type": "object", "properties": {"LogContent": {"type": "string"}, "LogTime": {"type": "string"}, "ShowTime": {"type": "boolean"}, "Level": {"type": "string"}}}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/webterminal/logs observed the paginated log envelope and item field types; log content and timestamps were not retained"
+    },
+    {
+      "path": "/api/wol/lastlogs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "lastLogs": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET /api/wol/lastlogs observed lastLogs=null; only the envelope and nullable-list shape are claimed"
+    },
+    {
+      "path": "/api/wol/logs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/wol/logs observed the paginated envelope; current logs are null so log item schema remains unspecified"
+    },
+    {
       "path": "/api/wol/client/state",
       "method": "GET",
       "risk": "read-only",
