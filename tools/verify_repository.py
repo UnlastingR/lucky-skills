@@ -497,8 +497,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             f"expected at most 147 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 172:
-        fail(f"response-schema coverage regressed below 172 routes: {response_schema_count}")
+    if response_schema_count < 177:
+        fail(f"response-schema coverage regressed below 177 routes: {response_schema_count}")
 
     safe_utility_response_routes = {
         ("GET", "/api/ipfliter/porttrap/blockedips"),
@@ -574,6 +574,11 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         ("GET", "/api/docker/images/containers"),
         ("GET", "/api/docker/containers/{param}/stats"),
         ("GET", "/api/docker/containers/{param}/stats-cached"),
+        ("GET", "/api/docker/container-groups/count"),
+        ("GET", "/api/docker/compose/{param}/backups"),
+        ("GET", "/api/docker/compose/{param}/ps"),
+        ("GET", "/api/docker/labels/{param}/containers"),
+        ("GET", "/api/docker/volumes/{param}/backups"),
     }
     for route_key in docker_resource_response_routes:
         if not isinstance(merged_by_key[route_key].response_schema, dict):
@@ -606,6 +611,33 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     )
     if resource_cached_props.get("port_services") != {"type": "object"}:
         fail("Docker per-container cached-stat dynamic port map schema regressed")
+
+    for route_key in {
+        ("GET", "/api/docker/compose/{param}/backups"),
+        ("GET", "/api/docker/volumes/{param}/backups"),
+    }:
+        response_schema = merged_by_key[route_key].response_schema
+        backups = response_schema.get("properties", {}).get("backups") if isinstance(response_schema, dict) else None
+        if backups != {"type": "array", "items": {}}:
+            fail(f"Docker backup item schema must remain unspecified for {route_key}")
+
+    label_containers = merged_by_key[("GET", "/api/docker/labels/{param}/containers")].response_schema
+    label_container_items = (
+        label_containers.get("properties", {}).get("containers")
+        if isinstance(label_containers, dict)
+        else None
+    )
+    if label_container_items != {"type": ["array", "null"], "items": {}}:
+        fail("Docker label-container item schema must remain unspecified")
+
+    compose_ps = merged_by_key[("GET", "/api/docker/compose/{param}/ps")].response_schema
+    compose_ps_props = (
+        compose_ps.get("properties", {}).get("containers", {}).get("items", {}).get("properties", {})
+        if isinstance(compose_ps, dict)
+        else {}
+    )
+    if set(compose_ps_props) != {"Health", "ID", "Name", "Project", "Service", "State"}:
+        fail("Docker compose ps summary schema regressed")
 
     webservice_stat_response_routes = {
         ("GET", "/api/webservice/statistics/capabilities"),
