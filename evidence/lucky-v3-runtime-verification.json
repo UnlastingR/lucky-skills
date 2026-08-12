@@ -1984,6 +1984,20 @@
       "schema_evidence": "authorized GET /api/thirdPartyAuthManager/list observed list=null on this instance; provider/account/credential item fields remain unspecified"
     },
     {
+      "path": "/api/thirdPartyAuthManager/config",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "config": {"type": "object", "properties": {"GithubRedirectURI": {"type": "string"}, "GithubClientID": {"type": "string"}, "GoogleRedirectURI": {"type": "string"}, "GoogleClientID": {"type": "string"}, "QQRedirectURI": {"type": "string"}, "QQClientID": {"type": "string"}, "WeiboRedirectURI": {"type": "string"}, "WeiboClientKey": {"type": "string"}, "AuthentikRedirectURI": {"type": "string"}, "AuthentikClientID": {"type": "string"}, "AuthentikServer": {"type": "string"}, "OIDCRedirectURI": {"type": "string"}, "OIDCClientID": {"type": "string"}, "OIDCAuthorizationEndpoint": {"type": "string"}}}}},
+      "schema_evidence": "authorized GET /api/thirdPartyAuthManager/config observed only redirect URI, public client/key identifier and authorization-server field names/types; actual endpoints/IDs were not retained and no client-secret/token fields are documented"
+    },
+    {
+      "path": "/api/webservice/webauth/sessions",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": "array", "items": {}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/webservice/webauth/sessions observed an empty paginated session list; session identity/token/client item fields remain unspecified"
+    },
+    {
       "path": "/api/webterminal/config",
       "method": "GET",
       "risk": "read-only",
