@@ -6,7 +6,7 @@
 - 获授权 Lucky v3 实例上的脱敏运行时路由/方法核验与受控只读请求；
 - Lucky 最后公开源码及官方更新日志的交叉核对。
 
-当前快照目标为 **Lucky 3.0.0 wanji / Linux x86_64**。已静态提取 600 余条“HTTP 方法 + 路径”调用记录，并生成 OpenAPI 3.1 文档；默认客户端还会叠加与 Lucky 版本及**静态快照 SHA-256 精确匹配**的脱敏证据覆盖层，用于补充运行时方法验证、风险覆盖和请求/响应 schema。静态快照原有的 41 条 `UNKNOWN` 已完成归类或确认是字面量误报，当前默认合并目录为 **0 条 unknown**；原有 122 条“有请求体但字段/schema 为空”的写接口缺口现已缩减到 **0 条**。进一步的类型化覆盖基于当前 merged catalog 的 **242 条 POST/PUT/PATCH**：其中 **218 条**标记 `has_body=true` 并在 OpenAPI 生成 `requestBody`，这 218 条中仍含未类型化顶层属性的操作已降到 **160 条**；显式 response schema 增至 **20 条**，并优先补深 DDNS、WebService、Docker 与 FRP 的嵌套对象、动态 map、enum 和数值范围。最后 6 条 Docker legacy wrapper 通过隔离 BusyBox 资源、验证失败路径和非破坏性 mock Docker daemon 恢复了最小可靠 schema。真实 OpenToken、安全入口、运行配置和业务数据均未写入仓库。
+当前快照目标为 **Lucky 3.0.0 wanji / Linux x86_64**。已静态提取 600 余条“HTTP 方法 + 路径”调用记录，并生成 OpenAPI 3.1 文档；默认客户端还会叠加与 Lucky 版本及**静态快照 SHA-256 精确匹配**的脱敏证据覆盖层，用于补充运行时方法验证、风险覆盖和请求/响应 schema。静态快照原有的 41 条 `UNKNOWN` 已完成归类或确认是字面量误报，当前默认合并目录为 **0 条 unknown**；原有 122 条“有请求体但字段/schema 为空”的写接口缺口现已缩减到 **0 条**。进一步的类型化覆盖基于当前 merged catalog 的 **242 条 POST/PUT/PATCH**：其中 **218 条**标记 `has_body=true` 并在 OpenAPI 生成 `requestBody`，这 218 条中仍含未类型化顶层属性的操作已降到 **147 条**；显式 response schema 增至 **39 条**。当前已优先补深 DDNS、WebService、Docker、FRP、SSL/ACME、Security Groups、IPFilter/PortTrap、PortForward 与 STUN；秘密/密码/私钥字段会主动从受保护的 response schema 中省略，并由 verifier fail-closed 检查。最后 6 条 Docker legacy wrapper 通过隔离 BusyBox 资源、验证失败路径和非破坏性 mock Docker daemon 恢复了最小可靠 schema。真实 OpenToken、安全入口、运行配置和业务数据均未写入仓库。
 
 ## 从这里开始
 

@@ -1001,7 +1001,8 @@
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["SafeURL", "BasicAccount", "BasicPassword"],
-      "schema_evidence": "frontend AutoRecord configuration form submits this explicit object + authorized GET observed the same field names"
+      "request_body_schema": {"type": "object", "properties": {"SafeURL": {"type": "string"}, "BasicAccount": {"type": "string"}, "BasicPassword": {"type": "string"}}},
+      "schema_evidence": "frontend AutoRecord configuration form submits this explicit object; authorized GET cross-checked SafeURL/BasicAccount as strings while BasicPassword is request-only sensitive data"
     },
     {
       "path": "/api/ipfliter/list/subrulelist/order/{param}",
@@ -1036,7 +1037,8 @@
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["AllowRuleKeys", "DefaultAllowIPs", "Enable", "IPv6PrefixLen", "Script", "ScriptEnable", "ScriptTriggerInterval", "TCPPorts", "TargetRuleKey", "UDPPorts", "WebhookBody", "WebhookDisableCallbackSuccessContentCheck", "WebhookEnable", "WebhookHeaders", "WebhookMethod", "WebhookProxy", "WebhookProxyAddr", "WebhookProxyPassword", "WebhookProxyUser", "WebhookRetryCount", "WebhookRetryInterval", "WebhookSuccessContent", "WebhookTimeout", "WebhookTriggerInterval", "WebhookURL"],
-      "schema_evidence": "frontend PortTrap settings form passes its normalized configure object directly + authorized GET observed the same field names"
+      "request_body_schema": {"type": "object", "properties": {"AllowRuleKeys": {"type": "array", "items": {"type": "string"}}, "DefaultAllowIPs": {"type": "array"}, "Enable": {"type": "boolean"}, "IPv6PrefixLen": {"type": "integer"}, "Script": {"type": "string"}, "ScriptEnable": {"type": "boolean"}, "ScriptTriggerInterval": {"type": "integer"}, "TCPPorts": {"type": "array"}, "TargetRuleKey": {"type": "string"}, "UDPPorts": {"type": "array"}, "WebhookBody": {"type": "string"}, "WebhookDisableCallbackSuccessContentCheck": {"type": "boolean"}, "WebhookEnable": {"type": "boolean"}, "WebhookHeaders": {"type": "array"}, "WebhookMethod": {"type": "string"}, "WebhookProxy": {"type": "string"}, "WebhookProxyAddr": {"type": "string"}, "WebhookProxyPassword": {"type": "string"}, "WebhookProxyUser": {"type": "string"}, "WebhookRetryCount": {"type": "integer"}, "WebhookRetryInterval": {"type": "integer"}, "WebhookSuccessContent": {"type": "array"}, "WebhookTimeout": {"type": "integer"}, "WebhookTriggerInterval": {"type": "integer"}, "WebhookURL": {"type": "string"}}},
+      "schema_evidence": "frontend PortTrap settings form passes its normalized configure object directly; authorized GET cross-checked primitive types and AllowRuleKeys string-array shape. Empty collection fields remain arrays without invented item types"
     },
     {
       "path": "/api/ipfliter/list",
