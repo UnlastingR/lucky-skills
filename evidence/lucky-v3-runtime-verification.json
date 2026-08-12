@@ -1816,6 +1816,62 @@
       "schema_evidence": "authorized GET /api/ipdb/avalidDBFiles observed list=null on this instance; only the envelope and nullable-list shape are claimed"
     },
     {
+      "path": "/api/ipfliter/porttrap/blockedips",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "ips": {"type": ["array", "null"], "items": {}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/ipfliter/porttrap/blockedips with a one-item page observed the pagination envelope and ips=null; blocked-IP item schema and IP values remain unspecified"
+    },
+    {
+      "path": "/api/ipfliter/porttrap/blockedips/search",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "ips": {"type": ["array", "null"], "items": {}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}, "query": {"type": "string"}, "searchType": {"type": "string"}}},
+      "schema_evidence": "authorized GET /api/ipfliter/porttrap/blockedips/search using a documentation-only test query observed the search pagination envelope and ips=null; no blocked IP values were retained"
+    },
+    {
+      "path": "/api/cron/expressioncheck",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/cron/expressioncheck with a valid cron expression returned ret=0 and no additional response fields"
+    },
+    {
+      "path": "/api/cron/groups/taskcount",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "count": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/cron/groups/taskcount observed only ret/count primitive types; no cron group identifiers or task data were retained"
+    },
+    {
+      "path": "/api/modules/{param}/2fa/status",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "data": {"type": "object", "properties": {"enable": {"type": "boolean"}, "validated": {"type": "boolean"}, "hasKey": {"type": "boolean"}}}}},
+      "schema_evidence": "authorized GET of one existing module 2FA status observed only enable/validated/hasKey booleans; module key and any 2FA key/secret/code values were not retained"
+    },
+    {
+      "path": "/api/webservice/cgi/list",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET /api/webservice/cgi/list observed list=null on this instance; CGI item fields, commands and paths remain unspecified"
+    },
+    {
+      "path": "/api/webservice/groups/subrulecount",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "count": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/webservice/groups/subrulecount observed only ret/count primitive types; no group identifiers or rule data were retained"
+    },
+    {
+      "path": "/api/webservice/statistics/ip-profile",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/webservice/statistics/ip-profile returned ret=0 with no profile payload on this instance; no IP/profile fields are inferred"
+    },
+    {
       "path": "/api/wol/client/state",
       "method": "GET",
       "risk": "read-only",

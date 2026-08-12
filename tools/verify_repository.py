@@ -497,8 +497,51 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             f"expected at most 147 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 158:
-        fail(f"response-schema coverage regressed below 158 routes: {response_schema_count}")
+    if response_schema_count < 166:
+        fail(f"response-schema coverage regressed below 166 routes: {response_schema_count}")
+
+    safe_utility_response_routes = {
+        ("GET", "/api/ipfliter/porttrap/blockedips"),
+        ("GET", "/api/ipfliter/porttrap/blockedips/search"),
+        ("GET", "/api/cron/expressioncheck"),
+        ("GET", "/api/cron/groups/taskcount"),
+        ("GET", "/api/modules/{param}/2fa/status"),
+        ("GET", "/api/webservice/cgi/list"),
+        ("GET", "/api/webservice/groups/subrulecount"),
+        ("GET", "/api/webservice/statistics/ip-profile"),
+    }
+    for route_key in safe_utility_response_routes:
+        if not isinstance(merged_by_key[route_key].response_schema, dict):
+            fail(f"safe utility response schema missing for {route_key}")
+
+    for route_key in {
+        ("GET", "/api/ipfliter/porttrap/blockedips"),
+        ("GET", "/api/ipfliter/porttrap/blockedips/search"),
+    }:
+        response_schema = merged_by_key[route_key].response_schema
+        ips = response_schema.get("properties", {}).get("ips") if isinstance(response_schema, dict) else None
+        if ips != {"type": ["array", "null"], "items": {}}:
+            fail(f"blocked-IP item schema must remain unspecified for {route_key}")
+
+    ip_profile_schema = merged_by_key[("GET", "/api/webservice/statistics/ip-profile")].response_schema
+    if ip_profile_schema != {"type": "object", "properties": {"ret": {"type": "integer"}}}:
+        fail("WebService empty IP-profile success schema must remain ret-only")
+
+    cgi_schema = merged_by_key[("GET", "/api/webservice/cgi/list")].response_schema
+    cgi_list = cgi_schema.get("properties", {}).get("list") if isinstance(cgi_schema, dict) else None
+    if cgi_list != {"type": ["array", "null"], "items": {}}:
+        fail("WebService CGI item schema must remain unspecified")
+
+    twofa_status = merged_by_key[("GET", "/api/modules/{param}/2fa/status")].response_schema
+    twofa_props = (
+        twofa_status.get("properties", {}).get("data", {}).get("properties", {})
+        if isinstance(twofa_status, dict)
+        else {}
+    )
+    if set(twofa_props) != {"enable", "validated", "hasKey"} or any(
+        twofa_props.get(field) != {"type": "boolean"} for field in ("enable", "validated", "hasKey")
+    ):
+        fail("module 2FA status schema must remain boolean-only and secret-free")
 
     nullable_list_response_routes = {
         ("GET", "/api/portforwards"): ("list", "Moduledisable"),
