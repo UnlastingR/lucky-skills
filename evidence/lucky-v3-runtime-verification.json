@@ -1644,6 +1644,90 @@
       "risk": "read-only",
       "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "status": {"type": "boolean"}, "errMsg": {"type": "string"}, "usageStatMap": {"type": "object"}}},
       "schema_evidence": "authorized GET /api/third/filebrowser/status observed status envelope; current usageStatMap was empty so dynamic value schema remains unspecified"
+    },
+    {
+      "path": "/api/status",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "data": {"type": "object", "properties": {"HeapInuse": {"type": "string"}, "NumForcedGC": {"type": "integer"}, "NumGC": {"type": "integer"}, "currentProcessUsedCPU": {"type": "string"}, "currentTCPConnections": {"type": "string"}, "currentUDPConnections": {"type": "string"}, "goroutine": {"type": "string"}, "handleCount": {"type": "integer"}, "lastNetInSpeed": {"type": "integer"}, "lastNetOutSpeed": {"type": "integer"}, "maxTCPConnections": {"type": "string"}, "netin": {"type": "integer"}, "netout": {"type": "integer"}, "processUsedMem": {"type": "string"}, "queryTime": {"type": "string"}, "runTime": {"type": "string"}, "systemBootTime": {"type": "string"}, "totleMem": {"type": "integer"}, "unusedMem": {"type": "integer"}, "usedCPU": {"type": "string"}, "usedMem": {"type": "integer"}}}}},
+      "schema_evidence": "authorized GET /api/status observed runtime metric field names and JSON types only; no metric values were retained"
+    },
+    {
+      "path": "/api/status/history/meta",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "meta": {"type": "object", "properties": {"enabled": {"type": "boolean"}, "retentionDays": {"type": "integer"}, "sampleIntervalSeconds": {"type": "integer"}, "recordingStartedAt": {"type": "integer"}, "lastSampleAt": {"type": "integer"}, "lastSampleError": {"type": "string"}, "earliestRecordAt": {"type": "integer"}, "latestRecordAt": {"type": "integer"}, "dbSizeBytes": {"type": "integer"}}}}},
+      "schema_evidence": "authorized GET /api/status/history/meta observed history metadata field names and primitive types only"
+    },
+    {
+      "path": "/api/status/host-overview",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "overview": {"type": "object", "properties": {"totalProcesses": {"type": "integer"}, "runningProcesses": {"type": "integer"}, "listeningProcesses": {"type": "integer"}, "totalConnections": {"type": "integer"}, "externalConnections": {"type": "integer"}, "listeningConnections": {"type": "integer"}, "establishedCount": {"type": "integer"}}}}},
+      "schema_evidence": "authorized GET /api/status/host-overview observed aggregate process/connection counter names and integer types only"
+    },
+    {
+      "path": "/api/status/module-overview",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"modules":{"type":"array","items":{"type":"object","properties":{"key":{"type":"string"},"metrics":{"type":"array","items":{"type":"object","properties":{"copyable":{"type":"boolean"},"details":{"type":["array","null"],"items":{}},"key":{"type":"string"},"labelKey":{"type":"string"},"value":{"type":["string","integer"]},"unitKey":{"type":"string"},"format":{"type":"string"},"subFormat":{"type":"string"},"subValue":{"type":"integer"}}}},"severity":{"type":"string"},"statusKey":{"type":"string"}}}}}},
+      "schema_evidence": "authorized GET /api/status/module-overview observed module/metric field names and runtime JSON types only; metric values were not retained"
+    },
+    {
+      "path": "/api/status/host-processes",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"page":{"type":"integer"},"pageSize":{"type":"integer"},"total":{"type":"integer"},"list":{"type":"array","items":{"type":"object","properties":{"pid":{"type":"integer"},"name":{"type":"string"},"username":{"type":"string"},"status":{"type":"string"},"cpuPercent":{"type":"number"},"memoryBytes":{"type":"integer"},"startedAt":{"type":"integer"},"listeningPorts":{"type":["array","null"],"items":{}},"listeningEndpoints":{"type":["array","null"],"items":{}},"isCurrentProcess":{"type":"boolean"}}}},"summary":{"type":"object","properties":{"total":{"type":"integer"},"listeningCount":{"type":"integer"},"topCPU":{"type":"object"},"topMemory":{"type":"object"}}}}},
+      "schema_evidence": "authorized GET /api/status/host-processes was reduced to pagination, safe process metadata and summary types; command strings are intentionally omitted because process arguments can contain secrets"
+    },
+    {
+      "path": "/api/status/host-connections",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"page":{"type":"integer"},"pageSize":{"type":"integer"},"total":{"type":"integer"},"list":{"type":"array","items":{"type":"object","properties":{"protocol":{"type":"string"},"state":{"type":"string"},"localIP":{"type":"string"},"localPort":{"type":"integer"},"remoteIP":{"type":"string"},"remotePort":{"type":"integer"},"scope":{"type":"string"},"pid":{"type":"integer"},"processName":{"type":"string"},"ipLocation":{"type":"string"}}}},"summary":{"type":"object","properties":{"total":{"type":"integer"},"externalCount":{"type":"integer"},"listeningCount":{"type":"integer"},"establishedCount":{"type":"integer"}}}}},
+      "schema_evidence": "authorized GET /api/status/host-connections observed connection/pagination field names and JSON types only; no live addresses, ports or process names were retained"
+    },
+    {
+      "path": "/api/ipdb/configure",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "customIPDBPath": {"type": "string"}}},
+      "schema_evidence": "authorized GET /api/ipdb/configure observed only customIPDBPath string type; live filesystem path was not retained"
+    },
+    {
+      "path": "/api/ipdb/items",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET /api/ipdb/items returned null list on this instance; item schema remains unspecified"
+    },
+    {
+      "path": "/api/iconlib/sources",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "sources": {"type": "array", "items": {"type": "object", "properties": {"Alias": {"type": "string"}, "Type": {"type": "string"}, "Path": {"type": "string"}, "RcloneKey": {"type": "string"}, "RcloneRoot": {"type": "string"}, "StoreKey": {"type": "string"}, "StoreRoot": {"type": "string"}, "Enable": {"type": "boolean"}, "Description": {"type": "string"}}}}}},
+      "schema_evidence": "authorized GET /api/iconlib/sources observed source field names and JSON types only; live aliases, paths and storage identifiers were not retained"
+    },
+    {
+      "path": "/api/iconlib/search",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "total": {"type": "integer"}, "icons": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET /api/iconlib/search used a deliberate no-match keyword and observed only the empty/null result envelope"
+    },
+    {
+      "path": "/api/modules/list",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"Modules":{"type":"array","items":{"type":"string"}},"detailedModules":{"type":"array","items":{"type":"object","properties":{"hasKey":{"type":"boolean"},"key":{"type":"string"},"name":{"type":"string"},"verified":{"type":"boolean"},"verifyEnabled":{"type":"boolean"},"verifySupported":{"type":"boolean"}}}},"extraModules":{"type":"array","items":{"type":"string"}},"hiddenModules":{"type":["array","null"],"items":{}},"isDefaultAuthInfo":{"type":"boolean"},"modulesVerifyStatus":{"type":"object","additionalProperties":{"type":"boolean"}},"noSetSafeURL":{"type":"boolean"},"u":{"type":"integer"}}},
+      "schema_evidence": "authorized GET /api/modules/list observed module and verification-status field names/types; baseURL is intentionally omitted because it may expose the Lucky safe-entry path"
+    },
+    {
+      "path": "/api/about-content",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"version":{"type":"integer"},"cards":{"type":"array","items":{"type":"object","properties":{"enabled":{"type":"boolean"},"html":{"type":"string"},"id":{"type":"string"},"kind":{"type":"string"},"priority":{"type":"integer"}}}},"display":{"type":"object","properties":{"maxPromotionItems":{"type":"integer"},"promotionSelection":{"type":"string"}}}}},
+      "schema_evidence": "authorized GET /api/about-content observed only public content metadata field names and JSON types; HTML/card values were not retained"
     }
   ]
 }
