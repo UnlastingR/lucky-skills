@@ -1853,6 +1853,13 @@
       "schema_evidence": "authorized isolated disposable disabled PortForward rule returned the paginated logs envelope with logs=null; log item/content schema remains unspecified and baseline was restored after API deletion"
     },
     {
+      "path": "/api/docker/info",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "info": {"type": "object", "properties": {"Containers": {"type": "integer"}, "ContainersRunning": {"type": "integer"}, "ContainersPaused": {"type": "integer"}, "ContainersStopped": {"type": "integer"}, "Images": {"type": "integer"}, "MemoryLimit": {"type": "boolean"}, "SwapLimit": {"type": "boolean"}, "CpuCfsPeriod": {"type": "boolean"}, "CpuCfsQuota": {"type": "boolean"}, "CPUShares": {"type": "boolean"}, "CPUSet": {"type": "boolean"}, "PidsLimit": {"type": "boolean"}, "IPv4Forwarding": {"type": "boolean"}, "OomKillDisable": {"type": "boolean"}, "Debug": {"type": "boolean"}, "LoggingDriver": {"type": "string"}, "CgroupDriver": {"type": "string"}, "CgroupVersion": {"type": "string"}, "KernelVersion": {"type": "string"}, "OperatingSystem": {"type": "string"}, "OSVersion": {"type": "string"}, "OSType": {"type": "string"}, "Architecture": {"type": "string"}, "NCPU": {"type": "integer"}, "MemTotal": {"type": "integer"}, "ExperimentalBuild": {"type": "boolean"}, "ServerVersion": {"type": "string"}, "DefaultRuntime": {"type": "string"}, "LiveRestoreEnabled": {"type": "boolean"}, "Isolation": {"type": "string"}}}}},
+      "schema_evidence": "authorized GET /api/docker/info observed the Docker daemon info shape; documentation is intentionally restricted to aggregate counts, capability flags, and version/platform metadata, while daemon ID/name, filesystem paths, proxy/registry settings, runtime paths, Swarm/node addresses, labels and other host-identifying/network configuration are omitted"
+    },
+    {
       "path": "/api/portforwards",
       "method": "GET",
       "risk": "read-only",

@@ -519,11 +519,12 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             f"expected at most 147 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 199:
-        fail(f"response-schema coverage regressed below 199 routes: {response_schema_count}")
+    if response_schema_count < 200:
+        fail(f"response-schema coverage regressed below 200 routes: {response_schema_count}")
 
     safe_utility_response_routes = {
         ("GET", "/api/baseconfigure"),
+        ("GET", "/api/docker/info"),
         ("GET", "/api/ipfliter/porttrap/blockedips"),
         ("GET", "/api/ipfliter/porttrap/blockedips/search"),
         ("GET", "/api/cron/expressioncheck"),
@@ -574,6 +575,30 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     }
     if set(baseconfigure_props) & forbidden_baseconfigure_fields:
         fail("baseconfigure sensitive/network-identifying fields leaked into response schema")
+
+    docker_info = merged_by_key[("GET", "/api/docker/info")].response_schema
+    docker_info_props = (
+        docker_info.get("properties", {}).get("info", {}).get("properties", {})
+        if isinstance(docker_info, dict)
+        else {}
+    )
+    expected_safe_docker_info_fields = {
+        "Containers", "ContainersRunning", "ContainersPaused", "ContainersStopped", "Images",
+        "MemoryLimit", "SwapLimit", "CpuCfsPeriod", "CpuCfsQuota", "CPUShares", "CPUSet",
+        "PidsLimit", "IPv4Forwarding", "OomKillDisable", "Debug", "LoggingDriver",
+        "CgroupDriver", "CgroupVersion", "KernelVersion", "OperatingSystem", "OSVersion",
+        "OSType", "Architecture", "NCPU", "MemTotal", "ExperimentalBuild", "ServerVersion",
+        "DefaultRuntime", "LiveRestoreEnabled", "Isolation",
+    }
+    if set(docker_info_props) != expected_safe_docker_info_fields:
+        fail("Docker info safe response whitelist regressed")
+    forbidden_docker_info_fields = {
+        "ID", "Name", "DockerRootDir", "HttpProxy", "HttpsProxy", "NoProxy", "RegistryConfig",
+        "IndexServerAddress", "Runtimes", "Swarm", "Containerd", "CDISpecDirs", "Labels",
+        "GenericResources",
+    }
+    if set(docker_info_props) & forbidden_docker_info_fields:
+        fail("Docker info host/network-identifying fields leaked into response schema")
 
     portforward_response_routes = {
         ("POST", "/api/portforward"),
