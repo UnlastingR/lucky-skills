@@ -38329,11 +38329,36 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "config": {
+                      "type": "object",
+                      "properties": {
+                        "idleTimeout": {
+                          "type": "integer"
+                        },
+                        "bufferSize": {
+                          "type": "integer"
+                        },
+                        "heartbeatInterval": {
+                          "type": "integer"
+                        },
+                        "maxSessions": {
+                          "type": "integer"
+                        },
+                        "sessionKeepAlive": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -38353,7 +38378,8 @@
         "x-evidence-bundles": [
           "lucky_index-DND3_xvE.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/webterminal/config observed only numeric terminal session/heartbeat/buffer limits; no credentials, commands or shell paths are documented"
       },
       "put": {
         "summary": "Lucky frontend call: PUT /api/webterminal/config",
@@ -38485,11 +38511,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "list": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -38509,7 +38547,8 @@
         "x-evidence-bundles": [
           "lucky_index-DND3_xvE.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/webterminal/connections observed list=null; connection item/endpoint/session fields remain unspecified"
       },
       "post": {
         "summary": "Lucky frontend call: POST /api/webterminal/connections",
@@ -39006,11 +39045,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "shortcuts": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -39030,7 +39081,8 @@
         "x-evidence-bundles": [
           "lucky_index-DND3_xvE.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/webterminal/globalshortcuts observed shortcuts=null; shortcut command/key item fields remain unspecified"
       },
       "put": {
         "summary": "Lucky frontend call: PUT /api/webterminal/globalshortcuts",
@@ -39230,11 +39282,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "list": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -39254,7 +39318,8 @@
         "x-evidence-bundles": [
           "lucky_index-DND3_xvE.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/webterminal/sessions observed list=null; terminal session item fields remain unspecified"
       }
     },
     "/api/webterminal/sessions/{param}": {
@@ -40401,11 +40466,33 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "platform": {
+                      "type": "string"
+                    },
+                    "shells": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "platform": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -40425,7 +40512,8 @@
         "x-evidence-bundles": [
           "lucky_index-DND3_xvE.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/webterminal/shells observed shell name/platform types; actual shell names/paths were not retained and the path field is intentionally omitted from the documented schema"
       }
     },
     "/api/webterminal/splitlayout": {
@@ -40483,11 +40571,25 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "exists": {
+                      "type": "boolean"
+                    },
+                    "layout": {
+                      "type": [
+                        "object",
+                        "null"
+                      ]
+                    }
+                  }
                 }
               }
             }
@@ -40507,7 +40609,8 @@
         "x-evidence-bundles": [
           "lucky_index-DND3_xvE.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/webterminal/splitlayout observed exists=false and layout=null; persisted layout detail schema remains unspecified"
       },
       "put": {
         "summary": "Lucky frontend call: PUT /api/webterminal/splitlayout",
