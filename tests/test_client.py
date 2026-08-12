@@ -48,6 +48,9 @@ class ClientTests(unittest.TestCase):
             [
                 route("/api/status", "GET"),
                 route("/api/docker/compose/backup/status", "GET"),
+                route("/api/docker/volumes/export", "GET"),
+                route("/api/ipfliter/oneclickrecord", "GET"),
+                route("/api/third/filebrowser/resetadmin", "GET"),
                 route("/api/cron/enable", "GET"),
                 route("/api/ddns", "PUT"),
                 route("/api/docker/containers/{param}/restart", "POST"),
@@ -105,11 +108,32 @@ class ClientTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             LuckyClient("https://user:password@example.test/safe", "T" * 32)
 
+    def test_side_effect_get_classification_is_conservative_and_status_safe(self) -> None:
+        self.assertEqual(
+            self.catalog.classify("GET", "/api/docker/compose/backup/status"),
+            OperationRisk.READ_ONLY,
+        )
+        self.assertEqual(
+            self.catalog.classify("GET", "/api/docker/volumes/export"),
+            OperationRisk.DANGEROUS,
+        )
+        self.assertEqual(
+            self.catalog.classify("GET", "/api/ipfliter/oneclickrecord"),
+            OperationRisk.MUTATING,
+        )
+        self.assertEqual(
+            self.catalog.classify("GET", "/api/third/filebrowser/resetadmin"),
+            OperationRisk.DANGEROUS,
+        )
+
     def test_mutating_unknown_and_side_effect_get_are_blocked(self) -> None:
         client = self.client(lambda request, timeout: FakeResponse(b'{"ret":0}'))
         for method, path in (
             ("PUT", "/api/ddns"),
             ("GET", "/api/cron/enable"),
+            ("GET", "/api/docker/volumes/export"),
+            ("GET", "/api/ipfliter/oneclickrecord"),
+            ("GET", "/api/third/filebrowser/resetadmin"),
             ("GET", "/api/not-in-catalog"),
         ):
             with self.subTest(method=method, path=path):

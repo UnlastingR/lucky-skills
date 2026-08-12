@@ -275,7 +275,7 @@
 | `GET` | `/api/docker/volumes` | `read-only` | — | — | `json` | `frontend-call` |
 | `POST` | `/api/docker/volumes` | `mutating` | — | `name`, `driver` | `json` | `frontend-call` |
 | `GET` | `/api/docker/volumes/backup/status` | `read-only` | — | — | `json` | `frontend-call` |
-| `GET` | `/api/docker/volumes/export` | `read-only` | `name` | — | `blob` | `frontend-call` |
+| `GET` | `/api/docker/volumes/export` | `dangerous` | `name` | — | `blob` | `frontend-call` |
 | `POST` | `/api/docker/volumes/import` | `dangerous` | — | `file`, `volume_name`, `driver` | `json` | `frontend-call` |
 | `DELETE` | `/api/docker/volumes/{param}` | `mutating` | — | — | `json` | `frontend-call` |
 | `POST` | `/api/docker/volumes/{param}/backup` | `dangerous` | — | — | `json` | `frontend-call` |
@@ -382,11 +382,11 @@
 | `POST` | `/api/ipfliter/list/{param}/{param2}/match` | `mutating` | — | `ip` | `json` | `frontend-call` |
 | `GET` | `/api/ipfliter/list/{param}/{param2}/{param3}` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/ipfliter/listlite` | `read-only` | — | — | `json` | `frontend-call` |
-| `GET` | `/api/ipfliter/oneclickrecord` | `read-only` | `ip` | — | `json` | `frontend-call` |
+| `GET` | `/api/ipfliter/oneclickrecord` | `mutating` | `ip` | — | `json` | `frontend-call` |
 | `GET` | `/api/ipfliter/porttrap/blockedips` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
 | `POST` | `/api/ipfliter/porttrap/blockedips/batch-delete` | `mutating` | — | `ips` | `json` | `frontend-call` |
 | `POST` | `/api/ipfliter/porttrap/blockedips/clear` | `dangerous` | — | — | `json` | `frontend-call` |
-| `GET` | `/api/ipfliter/porttrap/blockedips/export` | `read-only` | — | — | `json` | `frontend-call` |
+| `GET` | `/api/ipfliter/porttrap/blockedips/export` | `dangerous` | — | — | `json` | `frontend-call` |
 | `POST` | `/api/ipfliter/porttrap/blockedips/refresh-ipinfo` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/ipfliter/porttrap/blockedips/search` | `read-only` | `page`, `pageSize`, `q`, `type` | — | `json` | `frontend-call` |
 | `DELETE` | `/api/ipfliter/porttrap/blockedips/{param}` | `mutating` | — | — | `json` | `frontend-call` |
@@ -690,7 +690,7 @@
 | `PUT` | `/api/third/filebrowser/configure` | `mutating` | — | `Address`, `AutoFirewall`, `BaseURL`, `CacheDir`, `ConfVersion`, `DBFile`, `DirPerm`, `DisableExec`, `DisablePreviewResize`, `DisableThumbnails`, `DisableTypeDetectionByHeader`, `Enable`, `FilePerm`, `HTTPEnable`, `IMGProcessors`, `ListenNetwork`, `MountList`, `Port`, `RedisCacheUrl`, `TLSEnable`, `TLSListenPort`, `TokenExpirationHour`, `TrustHostList` | `json` | `frontend-call` |
 | `GET` | `/api/third/filebrowser/lastlogs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
 | `GET` | `/api/third/filebrowser/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
-| `GET` | `/api/third/filebrowser/resetadmin` | `read-only` | — | — | `json` | `frontend-call` |
+| `GET` | `/api/third/filebrowser/resetadmin` | `dangerous` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/third/filebrowser/status` | `read-only` | — | — | `json` | `frontend-call` |
 
 ## `thirdPartyAuthManager`
@@ -776,7 +776,7 @@
 | `POST` | `/api/webservice/statistics/clear` | `dangerous` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/webservice/statistics/daily` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/webservice/statistics/events` | `read-only` | — | — | `json` | `frontend-call` |
-| `GET` | `/api/webservice/statistics/export` | `read-only` | — | — | `blob` | `frontend-call` |
+| `GET` | `/api/webservice/statistics/export` | `dangerous` | — | — | `blob` | `frontend-call` |
 | `GET` | `/api/webservice/statistics/geo/aggregate` | `read-only` | — | — | `json` | `frontend-call` |
 | `POST` | `/api/webservice/statistics/geo/rebuild` | `mutating` | — | `mode` | `json` | `frontend-call` |
 | `POST` | `/api/webservice/statistics/geo/rebuild/cancel` | `mutating` | — | — | `json` | `frontend-call` |

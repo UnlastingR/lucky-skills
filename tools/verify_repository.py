@@ -478,6 +478,27 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         },
     }
     merged_by_key = {(route.method, route.path): route for route in merged.routes}
+
+    conservative_get_risks = {
+        ("GET", "/api/docker/volumes/export"): OperationRisk.DANGEROUS,
+        ("GET", "/api/ipfliter/oneclickrecord"): OperationRisk.MUTATING,
+        ("GET", "/api/ipfliter/porttrap/blockedips/export"): OperationRisk.DANGEROUS,
+        ("GET", "/api/third/filebrowser/resetadmin"): OperationRisk.DANGEROUS,
+        ("GET", "/api/webservice/statistics/export"): OperationRisk.DANGEROUS,
+    }
+    for route_key, expected_risk in conservative_get_risks.items():
+        route = merged_by_key.get(route_key)
+        if route is None or route.risk is not expected_risk:
+            fail(f"conservative GET risk classification regressed for {route_key}: {getattr(route, 'risk', None)}")
+    for route_key in {
+        ("GET", "/api/docker/compose/backup/status"),
+        ("GET", "/api/docker/volumes/backup/status"),
+        ("GET", "/api/webservice/statistics/import/status"),
+    }:
+        route = merged_by_key.get(route_key)
+        if route is None or route.risk is not OperationRisk.READ_ONLY:
+            fail(f"read-only status GET was over-classified by action-name hardening: {route_key}")
+
     for key, expected_schema in legacy_docker_schemas.items():
         route = merged_by_key.get(key)
         if route is None or route.request_body_schema != expected_schema:
