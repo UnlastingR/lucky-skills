@@ -497,8 +497,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             f"expected at most 147 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 76:
-        fail(f"response-schema coverage regressed below 76 routes: {response_schema_count}")
+    if response_schema_count < 79:
+        fail(f"response-schema coverage regressed below 79 routes: {response_schema_count}")
 
     ddns_task = merged_by_key[("POST", "/api/ddns")].request_body_schema
     if not isinstance(ddns_task, dict):
