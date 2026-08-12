@@ -211,6 +211,10 @@ def extract(assets_dir: Path, version: str) -> dict:
     for path, evidence in sorted(route_only.items()):
         if path in known_paths:
             continue
+        # Keep literal-only evidence conservative. A parent literal and a
+        # method-bearing descendant can legitimately coexist in one bundle;
+        # only the version-bound runtime verification layer may suppress a
+        # literal after the target instance has been checked.
         routes[(path, "UNKNOWN")] = {
             "path": path,
             "method": "UNKNOWN",

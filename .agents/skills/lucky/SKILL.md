@@ -53,12 +53,12 @@ python3 tools/lucky_api.py catalog --search webservice
 python3 tools/lucky_api.py catalog --search ddns
 ```
 
-Then call cataloged read-only routes with `call`. Prefer narrow responses and the smallest endpoint that answers the question.
+Then call cataloged read-only routes with `call`. Prefer narrow responses and the smallest endpoint that answers the question. The default catalog merges the frontend snapshot with `evidence/lucky-v3-runtime-verification.json` only when both the Lucky version and the exact static-snapshot SHA-256 match; treat `runtime-verified` method and risk overrides as stronger operational evidence than generic HTTP-method heuristics. A route absent from the merged catalog remains unknown and must not be called with credentials just to discover its behavior.
 
 ## Apply changes conservatively
 
 - Only mutate Lucky when the user explicitly asks for the configuration change.
-- Trust the repository's route risk classification, not HTTP method alone. Lucky has historically exposed some side-effecting operations through `GET`.
+- Trust the repository's merged route risk classification, not HTTP method alone. Runtime verification has confirmed dangerous GET endpoints such as configuration backup/download actions, so never reinterpret a `dangerous` or `mutating` runtime override as read-only merely because the method is GET.
 - Read the current object first and preserve the identifiers/fields required for rollback.
 - Make the smallest targeted change. Do not replace unrelated rules or settings.
 - The client rejects writes by default. For a confirmed write, use both `--allow-write` and the exact confirmation string required by `--confirm`, for example:
@@ -71,6 +71,7 @@ python3 tools/lucky_api.py call /api/example \
 
 - Verify the resulting object/state immediately after the write. If the change is reversible and verification fails, restore the captured baseline when safe to do so.
 - Never perform dangerous actions such as deleting data, clearing sessions/statistics, terminal/file operations, container destruction, or broad rule replacement unless that exact destructive outcome was requested.
+- When improving UNKNOWN coverage, first distinguish literal-prefix extraction artifacts from real handlers. If method discovery is necessary and the target Lucky version has already been calibrated to authenticate before protected handlers, prefer unauthenticated method probes that stop at the login check. A non-404 result proves route/method existence only; it does not prove request-body schema or safe business behavior. Do not establish WebSocket/SFTP sessions or authenticate mutating probes merely to improve coverage.
 
 ## Web Service / reverse proxy work
 

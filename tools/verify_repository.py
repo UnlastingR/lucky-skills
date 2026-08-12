@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import sys
@@ -11,6 +12,7 @@ from pathlib import Path, PurePosixPath
 from urllib.parse import urlparse
 
 from extract_lucky_frontend import write_markdown, write_openapi
+from lucky_api import OperationRisk, RouteCatalog
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -344,11 +346,80 @@ def check_skill_packaging() -> None:
         validate_asset_path(raw_path, f"interface.screenshots[{index}]")
 
 
+def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object]) -> None:
+    runtime_path = snapshot_path.with_name("lucky-v3-runtime-verification.json")
+    if not runtime_path.is_file():
+        fail("runtime route verification file is missing")
+    runtime = json.loads(runtime_path.read_text(encoding="utf-8"))
+    if runtime.get("schema_version") != 1:
+        fail("runtime route verification schema is unsupported")
+    target = snapshot.get("target", {})
+    runtime_target = runtime.get("target", {})
+    if not isinstance(target, dict) or not isinstance(runtime_target, dict):
+        fail("runtime route verification target is malformed")
+    if runtime_target.get("version") != target.get("version"):
+        fail("runtime route verification version does not match endpoint snapshot")
+    snapshot_sha256 = hashlib.sha256(snapshot_path.read_bytes()).hexdigest()
+    if runtime.get("static_snapshot_sha256") != snapshot_sha256:
+        fail("runtime route verification is not bound to the exact endpoint snapshot")
+
+    suppress = runtime.get("suppress_literals")
+    if not isinstance(suppress, list) or not all(
+        isinstance(path, str) and path.startswith("/api/") for path in suppress
+    ):
+        fail("runtime suppress_literals must contain /api/... paths")
+    if len(suppress) != len(set(suppress)):
+        fail("runtime suppress_literals contains duplicates")
+    suppression_evidence = runtime.get("suppression_evidence")
+    if not isinstance(suppression_evidence, dict):
+        fail("runtime suppression_evidence must be an object")
+    prefix_evidence = suppression_evidence.get("same_bundle_prefix_artifacts")
+    no_route_evidence = suppression_evidence.get("no_route_literals")
+    if not isinstance(prefix_evidence, dict) or not isinstance(no_route_evidence, dict):
+        fail("runtime suppression_evidence categories are missing")
+    no_route_paths = no_route_evidence.get("paths")
+    if not isinstance(no_route_paths, list) or not all(
+        isinstance(path, str) and path in suppress for path in no_route_paths
+    ):
+        fail("runtime no-route suppression paths must be suppressed API paths")
+    if no_route_evidence.get("count") != len(no_route_paths):
+        fail("runtime no-route suppression count is stale")
+    prefix_count = prefix_evidence.get("count")
+    if not isinstance(prefix_count, int) or prefix_count + len(no_route_paths) != len(suppress):
+        fail("runtime suppression evidence counts do not cover suppress_literals")
+
+    verified = runtime.get("routes")
+    if not isinstance(verified, list):
+        fail("runtime verified routes must be an array")
+    keys: list[tuple[str, str]] = []
+    for item in verified:
+        if not isinstance(item, dict):
+            fail("runtime verified route must be an object")
+        path = item.get("path")
+        method = item.get("method")
+        risk = item.get("risk")
+        if not isinstance(path, str) or not path.startswith("/api/"):
+            fail("runtime verified route has invalid path")
+        if method not in {"GET", "POST", "PUT", "DELETE", "PATCH"}:
+            fail(f"runtime verified route has invalid method: {method}")
+        if risk not in {item.value for item in OperationRisk if item is not OperationRisk.UNKNOWN}:
+            fail(f"runtime verified route has invalid risk: {risk}")
+        keys.append((path, str(method)))
+    if len(keys) != len(set(keys)):
+        fail("runtime verified routes contain duplicate path/method entries")
+
+    merged = RouteCatalog.from_file(snapshot_path, runtime_verification=runtime_path)
+    unknown = merged.search(risk=OperationRisk.UNKNOWN)
+    if unknown:
+        fail(f"runtime route verification leaves {len(unknown)} unknown route(s)")
+
+
 def check_generated_artifacts() -> None:
     snapshot_path = ROOT / "evidence" / "lucky-v3-endpoints.json"
     openapi_path = ROOT / "openapi" / "lucky-v3.openapi.json"
     snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
     openapi = json.loads(openapi_path.read_text(encoding="utf-8"))
+    check_runtime_verification(snapshot_path, snapshot)
     if snapshot["route_count"] != len(snapshot["routes"]):
         fail("snapshot route_count does not match routes")
     if snapshot["bundle_count"] != len(snapshot["bundle_sha256"]):
