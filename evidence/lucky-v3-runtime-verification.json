@@ -500,14 +500,23 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["Name", "Key", "DiaglogShowMode", "ForwardTypes", "ListenAddress", "ListenPorts", "TargetAddressList", "TargetPorts", "Enable", "LogLevel", "OpenFirewallPorts", "LogOutputToConsole", "AccessLogMaxNum", "WebListShowLastLogMaxCount", "Options", "LogStreamSettings"],
-      "schema_evidence": "frontend PortForward rule editor submits its normalized rule model and optional LogStreamSettings; current authorized rule list is empty"
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "key": {"type": "string"}}},
+      "schema_evidence": "frontend PortForward rule editor submits its normalized rule model; an authorized disposable API probe observed POST response ret/key types, and the created empty-endpoint rule was deleted with baseline restored"
     },
     {
       "path": "/api/portforward",
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["Name", "Key", "DiaglogShowMode", "ForwardTypes", "ListenAddress", "ListenPorts", "TargetAddressList", "TargetPorts", "Enable", "LogLevel", "OpenFirewallPorts", "LogOutputToConsole", "AccessLogMaxNum", "WebListShowLastLogMaxCount", "Options", "LogStreamSettings"],
-      "schema_evidence": "frontend PortForward rule editor submits its normalized rule model and optional LogStreamSettings; current authorized rule list is empty"
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}}},
+      "schema_evidence": "frontend PortForward rule editor submits its normalized rule model; an authorized disposable API probe used PUT to disable the empty-endpoint rule and observed a ret-only success response before cleanup"
+    },
+    {
+      "path": "/api/portforward",
+      "method": "DELETE",
+      "risk": "mutating",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}}},
+      "schema_evidence": "authorized disposable PortForward probe deleted the temporary rule through DELETE /api/portforward?key=... and observed a ret-only success response; baseline rule count returned to zero"
     },
     {
       "path": "/api/portforward/configure",
@@ -1814,6 +1823,27 @@
       "risk": "read-only",
       "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "backups": {"type": "array", "items": {}}}},
       "schema_evidence": "authorized GET for one existing volume returned an empty backups array; volume name and backup item fields remain unspecified"
+    },
+    {
+      "path": "/api/portforward/{param}",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "rule": {"type": "object", "properties": {"Name": {"type": "string"}, "Key": {"type": "string"}, "Enable": {"type": "boolean"}, "DiaglogShowMode": {"type": "string"}, "ForwardTypes": {"type": ["array", "null"], "items": {}}, "ListenAddress": {"type": "string"}, "ListenPorts": {"type": "string"}, "TargetAddressList": {"type": ["array", "null"], "items": {}}, "TargetPorts": {"type": "string"}, "OpenFirewallPorts": {"type": "boolean"}, "LogLevel": {"type": "integer"}, "LogOutputToConsole": {"type": "boolean"}, "AccessLogMaxNum": {"type": "integer"}, "WebListShowLastLogMaxCount": {"type": "integer"}}}}},
+      "schema_evidence": "authorized isolated disposable PortForward rule GET observed safe top-level detail field names/types; actual rule key/name/values were not retained, nullable list item types remain unspecified, and the entire Options object is intentionally omitted because it contains encryption-key fields"
+    },
+    {
+      "path": "/api/portforward/{param}/lastlogs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "lastLogs": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized isolated disposable disabled PortForward rule returned lastLogs=null; log item/content schema remains unspecified and the rule was deleted immediately afterward"
+    },
+    {
+      "path": "/api/portforward/{param}/logs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized isolated disposable disabled PortForward rule returned the paginated logs envelope with logs=null; log item/content schema remains unspecified and baseline was restored after API deletion"
     },
     {
       "path": "/api/portforwards",
