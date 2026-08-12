@@ -1,0 +1,193 @@
+{
+  "schema_version": 1,
+  "verified_at": "2026-08-12T05:11:43Z",
+  "target": {
+    "product": "Lucky",
+    "version": "3.0.0"
+  },
+  "methodology": "Authorized runtime route verification. HTTP method existence was primarily proven with unauthenticated GET/POST/PUT/DELETE/PATCH requests that stop at Lucky authentication; selected GET routes were additionally verified with the repository OpenToken client. No mutating handler was executed for method discovery.",
+  "suppress_literals": [
+    "/api/cloudflared",
+    "/api/ddns/manualSync",
+    "/api/ddns/recordOrderadjustment",
+    "/api/ddns/task",
+    "/api/describeviewtree",
+    "/api/frp",
+    "/api/get-lines",
+    "/api/ipfliter/list/subrulelist",
+    "/api/ipfliter/list/subrulelist/order",
+    "/api/logscenter",
+    "/api/rclone/remote",
+    "/api/rclone/sync",
+    "/api/rclone/sync/run",
+    "/api/rclone/sync/stop",
+    "/api/rclone/third/115pan/authcheck",
+    "/api/rclone/third/alipan/authcheck",
+    "/api/rclone/third/baidupan/authcheck",
+    "/api/ssl/manualsync",
+    "/api/storagemanagement/aliyunpan_auth_check",
+    "/api/stun",
+    "/api/upload",
+    "/api/user",
+    "/api/webservice",
+    "/api/webservice/discovery/status",
+    "/api/webservice/rule",
+    "/api/webterminal/sftp"
+  ],
+  "suppression_evidence": {
+    "same_bundle_prefix_artifacts": {
+      "count": 21,
+      "description": "Literal-only paths that are strict prefixes of method-bearing routes from the same frontend bundle. Runtime probing confirmed no additional standalone method beyond already cataloged generic/template matches; PATCH probes were also 404. Suppression is version-bound and is not performed by the generic extractor."
+    },
+    "no_route_literals": {
+      "count": 5,
+      "paths": [
+        "/api/describeviewtree",
+        "/api/get-lines",
+        "/api/logscenter",
+        "/api/upload",
+        "/api/user"
+      ],
+      "description": "Unauthenticated GET/POST/PUT/DELETE/PATCH all returned route-not-found semantics on Lucky 3.0.0."
+    }
+  },
+  "routes": [
+    {
+      "path": "/api/configure",
+      "method": "GET",
+      "risk": "dangerous",
+      "response_type": "blob",
+      "confidence": "runtime-verified",
+      "verification": "Authenticated GET returned application/octet-stream with a Lucky 3.0.0 ZIP attachment; contents were not inspected."
+    },
+    {
+      "path": "/api/configure",
+      "method": "POST",
+      "risk": "dangerous",
+      "response_type": "unknown",
+      "confidence": "runtime-verified",
+      "verification": "Unauthenticated POST reached Lucky authentication; handler was not executed."
+    },
+    {
+      "path": "/api/docker/images/save.withoutcompression",
+      "method": "GET",
+      "risk": "dangerous",
+      "query_keys": [
+        "imageid"
+      ],
+      "response_type": "unknown",
+      "confidence": "runtime-verified",
+      "verification": "Authenticated GET with no imageid returned Missing imageid parameter; no real image export was requested."
+    },
+    {
+      "path": "/api/docker/images/upgrade-check-ws",
+      "method": "GET",
+      "risk": "mutating",
+      "response_type": "websocket",
+      "confidence": "runtime-verified",
+      "verification": "Plain GET reached the dedicated handler and returned login invalid rather than the generic image lookup response; no WebSocket upgrade was attempted."
+    },
+    {
+      "path": "/api/iconlib/icon",
+      "method": "GET",
+      "risk": "read-only",
+      "query_keys": [
+        "path"
+      ],
+      "response_type": "unknown",
+      "confidence": "runtime-verified",
+      "verification": "GET without path returned PathRequired; a harmless invalid path changed the error to InvalidIconPath."
+    },
+    {
+      "path": "/api/ipdb/download",
+      "method": "GET",
+      "risk": "dangerous",
+      "response_type": "unknown",
+      "confidence": "runtime-verified",
+      "verification": "Unauthenticated GET reached Lucky authentication; handler was not executed. Conservatively classified dangerous because it is a database download/update action."
+    },
+    {
+      "path": "/api/logscenter/query",
+      "method": "GET",
+      "risk": "read-only",
+      "response_type": "json",
+      "confidence": "runtime-verified",
+      "verification": "Authenticated GET returned HTTP 200, ret=0 and the logs query envelope; log contents were not printed."
+    },
+    {
+      "path": "/api/natdetect/ws",
+      "method": "GET",
+      "risk": "mutating",
+      "response_type": "websocket",
+      "confidence": "runtime-verified",
+      "verification": "Plain GET reached the route and returned login invalid; no WebSocket upgrade or NAT probe was started."
+    },
+    {
+      "path": "/api/oauth/tmpcode",
+      "method": "GET",
+      "risk": "dangerous",
+      "response_type": "json",
+      "confidence": "runtime-verified",
+      "verification": "Unauthenticated GET reached the handler and returned ret=2 suspicious-request semantics; no temporary code was requested with valid auth context."
+    },
+    {
+      "path": "/api/rclone/third/115pan/user",
+      "method": "DELETE",
+      "risk": "dangerous",
+      "response_type": "json",
+      "confidence": "runtime-verified",
+      "verification": "Unauthenticated DELETE reached Lucky authentication; no user/token was deleted."
+    },
+    {
+      "path": "/api/rclone/third/alipan/user",
+      "method": "DELETE",
+      "risk": "dangerous",
+      "response_type": "json",
+      "confidence": "runtime-verified",
+      "verification": "Unauthenticated DELETE reached Lucky authentication; no user/token was deleted."
+    },
+    {
+      "path": "/api/rclone/third/baidupan/user",
+      "method": "DELETE",
+      "risk": "dangerous",
+      "response_type": "json",
+      "confidence": "runtime-verified",
+      "verification": "Unauthenticated DELETE reached Lucky authentication; no user/token was deleted."
+    },
+    {
+      "path": "/api/ssl/download",
+      "method": "GET",
+      "risk": "dangerous",
+      "query_keys": [
+        "key"
+      ],
+      "response_type": "unknown",
+      "confidence": "runtime-verified",
+      "verification": "Authenticated GET using a deliberately nonexistent key reached the dedicated download handler and returned no found:<key>; no certificate material was returned."
+    },
+    {
+      "path": "/api/status/ws",
+      "method": "GET",
+      "risk": "read-only",
+      "response_type": "websocket",
+      "confidence": "runtime-verified",
+      "verification": "Plain GET reached the WebSocket route and returned login invalid; no Upgrade header was sent."
+    },
+    {
+      "path": "/api/temp-access-tickets",
+      "method": "POST",
+      "risk": "dangerous",
+      "response_type": "json",
+      "confidence": "runtime-verified",
+      "verification": "Unauthenticated POST reached Lucky authentication; no temporary access ticket was created."
+    },
+    {
+      "path": "/api/third/filebrowser/backupdb",
+      "method": "GET",
+      "risk": "dangerous",
+      "response_type": "unknown",
+      "confidence": "runtime-verified",
+      "verification": "Unauthenticated GET reached Lucky authentication; the backup handler was not executed."
+    }
+  ]
+}

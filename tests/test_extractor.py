@@ -18,6 +18,7 @@ class ExtractorTests(unittest.TestCase):
         self.assertEqual(containers["query_keys"], ["all", "includeStats"])
         update = routes[("/api/ddns/task/{key}", "PUT")]
         self.assertTrue(update["has_body"])
+        self.assertIn(("/api/ddns/task", "UNKNOWN"), routes)
         self.assertIn(("/api/status/ws", "UNKNOWN"), routes)
         self.assertEqual(snapshot["bundle_count"], 1)
 

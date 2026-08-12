@@ -11,13 +11,13 @@
 - HTTP 错误、Lucky `ret` 业务错误、JSON 解码错误、传输错误和响应过大错误；
 - `RateLimit-Limit`、`RateLimit-Remaining` 和 `RateLimit-Reset` 元数据；
 - 只读请求遇到 429/502/503/504 时的有限重试；
-- 基于当前 v3 路由快照的路径模板匹配与风险分级。
+- 基于当前 v3 前端静态快照 + 同版本运行时验证覆盖层的路径模板匹配与风险分级。
 
 客户端不提供“自动猜测配置字段”、网页登录模拟、模块 2FA 绕过或批量试探接口。multipart 表单可作为原始请求体发送，但客户端不会替你构造包含密钥或文件的表单。
 
 ## 风险模型
 
-每个实际的 `METHOD + path` 会先与当前证据快照匹配，再分为：
+每个实际的 `METHOD + path` 会先与合并后的证据目录匹配，再分为：
 
 | 等级 | 含义 | 默认行为 |
 |---|---|---|
@@ -26,7 +26,7 @@
 | `dangerous` | 删除、重启、文件写入、恢复、Docker 操作等 | 拒绝 |
 | `unknown` | 当前快照没有对应方法和路径 | 拒绝 |
 
-这是保守策略，不是权限系统。`read-only` 仍可能返回日志、路径、IP、容器信息等敏感数据；Lucky 升级后也可能改变端点行为。
+这是保守策略，不是权限系统。运行时覆盖可以显式改写反常 GET 的风险，例如 `GET /api/configure`（配置 ZIP 备份）、`GET /api/ssl/download`、`GET /api/ipdb/download` 都不会因为使用 GET 就自动放行。`read-only` 仍可能返回日志、路径、IP、容器信息等敏感数据；Lucky 升级后也可能改变端点行为。
 
 ## CLI 快速使用
 
@@ -57,7 +57,15 @@ python3 tools/lucky_api.py catalog --module ddns --risk mutating
 python3 tools/lucky_api.py catalog --search logs --json
 ```
 
-目录输出包括方法、路径模板、模块、风险、查询字段、请求体字段、响应类型和证据等级。字段为空表示前端静态分析无法恢复，不代表请求体确实没有字段。
+目录输出包括方法、路径模板、模块、风险、查询字段、请求体字段、响应类型和证据等级。默认加载 `evidence/lucky-v3-endpoints.json` 后，会自动叠加同目录、同版本的 `lucky-v3-runtime-verification.json`；显式 `--catalog-file` 指向该静态快照时也会应用同目录运行时文件。字段为空表示当前证据无法恢复，不代表请求体确实没有字段。
+
+当前 Lucky 3.0.0 运行时覆盖已把静态快照中的 41 条 `UNKNOWN` 全部归类或抑制为字面量误报，默认目录应返回 0 条 unknown：
+
+```bash
+python3 tools/lucky_api.py catalog --risk unknown --json
+```
+
+`runtime-verified` 只表示方法/路由或受控 GET 行为已经在授权实例上确认，不代表所有请求体字段、WebSocket 协议或成功响应 schema 都已完整恢复。
 
 ## 查询参数与二进制响应
 

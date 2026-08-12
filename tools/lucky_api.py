@@ -190,7 +190,14 @@ def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
     try:
-        catalog = RouteCatalog.from_file(args.catalog_file) if args.catalog_file else RouteCatalog.load_default()
+        if args.catalog_file:
+            runtime_path = args.catalog_file.with_name("lucky-v3-runtime-verification.json")
+            catalog = RouteCatalog.from_file(
+                args.catalog_file,
+                runtime_verification=runtime_path if runtime_path.is_file() else None,
+            )
+        else:
+            catalog = RouteCatalog.load_default()
         if args.command == "catalog":
             return command_catalog(args, catalog)
         if hasattr(args, "shortcut_path"):

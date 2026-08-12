@@ -121,9 +121,12 @@ class Route:
     body_keys: tuple[str, ...]
     has_body: bool
     response_type: str
+    risk_override: OperationRisk | None = None
 
     @property
     def risk(self) -> OperationRisk:
+        if self.risk_override is not None:
+            return self.risk_override
         if self.method == "UNKNOWN":
             return OperationRisk.UNKNOWN
         return classify_known_operation(self.method, self.path)
@@ -146,13 +149,83 @@ def classify_known_operation(method: str, path: str) -> OperationRisk:
     return OperationRisk.DANGEROUS if segments & DANGEROUS_SEGMENTS else OperationRisk.MUTATING
 
 
+def _route_module(path: str) -> str:
+    parts = path.split("/")
+    return parts[2] if len(parts) > 2 else "unknown"
+
+
+def _apply_runtime_verification(
+    raw_routes: list[dict],
+    source: Path,
+    *,
+    version: str,
+) -> list[dict]:
+    try:
+        payload = json.loads(source.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise CatalogError(f"cannot read runtime route verification: {source}") from error
+    if payload.get("schema_version") != 1:
+        raise CatalogError("unsupported runtime route verification schema")
+    target = payload.get("target", {})
+    if str(target.get("version", "unknown")) != version:
+        raise CatalogError(
+            f"runtime route verification targets Lucky {target.get('version')}, catalog is {version}"
+        )
+    suppress = payload.get("suppress_literals", [])
+    verified = payload.get("routes", [])
+    if not isinstance(suppress, list) or not all(isinstance(item, str) for item in suppress):
+        raise CatalogError("runtime suppress_literals must be an array of paths")
+    if not isinstance(verified, list):
+        raise CatalogError("runtime routes must be an array")
+
+    route_map: dict[tuple[str, str], dict] = {}
+    suppress_set = set(suppress)
+    for item in raw_routes:
+        if not isinstance(item, dict):
+            raise CatalogError("malformed route catalog entry")
+        path = str(item.get("path", ""))
+        method = str(item.get("method", "UNKNOWN")).upper()
+        if method == "UNKNOWN" and path in suppress_set:
+            continue
+        route_map[(path, method)] = dict(item)
+
+    for item in verified:
+        if not isinstance(item, dict):
+            raise CatalogError("malformed runtime route verification entry")
+        try:
+            path = str(item["path"])
+            method = str(item["method"]).upper()
+        except KeyError as error:
+            raise CatalogError("runtime route verification requires path and method") from error
+        if not path.startswith("/api/") or method not in {"GET", "POST", "PUT", "DELETE", "PATCH"}:
+            raise CatalogError(f"invalid runtime verified route: {method} {path}")
+        route_map.pop((path, "UNKNOWN"), None)
+        base = route_map.get((path, method), {})
+        merged = dict(base)
+        merged.update(item)
+        merged.setdefault("module", _route_module(path))
+        merged.setdefault("confidence", "runtime-verified")
+        merged.setdefault("query_keys", [])
+        merged.setdefault("body_keys", [])
+        merged.setdefault("has_body", False)
+        merged.setdefault("response_type", "unknown")
+        route_map[(path, method)] = merged
+
+    return sorted(route_map.values(), key=lambda item: (str(item.get("module", "")), item["path"], item["method"]))
+
+
 class RouteCatalog:
     def __init__(self, routes: Iterable[Route], *, version: str = "unknown") -> None:
         self.routes = tuple(routes)
         self.version = version
 
     @classmethod
-    def from_file(cls, path: str | Path) -> "RouteCatalog":
+    def from_file(
+        cls,
+        path: str | Path,
+        *,
+        runtime_verification: str | Path | None = None,
+    ) -> "RouteCatalog":
         source = Path(path).expanduser()
         try:
             payload = json.loads(source.read_text(encoding="utf-8"))
@@ -161,9 +234,19 @@ class RouteCatalog:
         raw_routes = payload.get("routes")
         if payload.get("schema_version") != 1 or not isinstance(raw_routes, list):
             raise CatalogError("unsupported route catalog schema")
+        target = payload.get("target", {})
+        version = str(target.get("version", "unknown"))
+        if runtime_verification is not None:
+            raw_routes = _apply_runtime_verification(
+                raw_routes,
+                Path(runtime_verification).expanduser(),
+                version=version,
+            )
         routes = []
         for item in raw_routes:
             try:
+                raw_risk = item.get("risk")
+                risk_override = OperationRisk(str(raw_risk)) if raw_risk is not None else None
                 routes.append(
                     Route(
                         path=str(item["path"]),
@@ -174,12 +257,12 @@ class RouteCatalog:
                         body_keys=tuple(str(value) for value in item.get("body_keys", [])),
                         has_body=bool(item.get("has_body", False)),
                         response_type=str(item.get("response_type", "unknown")),
+                        risk_override=risk_override,
                     )
                 )
-            except (KeyError, TypeError) as error:
+            except (KeyError, TypeError, ValueError) as error:
                 raise CatalogError("malformed route catalog entry") from error
-        target = payload.get("target", {})
-        return cls(routes, version=str(target.get("version", "unknown")))
+        return cls(routes, version=version)
 
     @classmethod
     def load_default(cls) -> "RouteCatalog":
@@ -193,9 +276,15 @@ class RouteCatalog:
                 Path(__file__).resolve().parents[1] / "evidence" / "lucky-v3-endpoints.json",
             ]
         )
+        runtime_override = os.environ.get("LUCKY_API_RUNTIME_VERIFICATION")
         for candidate in candidates:
             if candidate.is_file():
-                return cls.from_file(candidate)
+                if runtime_override:
+                    runtime_path: Path | None = Path(runtime_override).expanduser()
+                else:
+                    sibling = candidate.with_name("lucky-v3-runtime-verification.json")
+                    runtime_path = sibling if sibling.is_file() else None
+                return cls.from_file(candidate, runtime_verification=runtime_path)
         raise CatalogError("route catalog not found; set LUCKY_API_CATALOG")
 
     def match(self, method: str, path: str) -> Route | None:
