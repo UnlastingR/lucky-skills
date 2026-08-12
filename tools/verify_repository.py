@@ -497,8 +497,50 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             f"expected at most 147 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 126:
-        fail(f"response-schema coverage regressed below 126 routes: {response_schema_count}")
+    if response_schema_count < 138:
+        fail(f"response-schema coverage regressed below 138 routes: {response_schema_count}")
+
+    docker_status_response_routes = {
+        ("GET", "/api/netinterfaces"),
+        ("GET", "/api/docker/compose/backup/status"),
+        ("GET", "/api/docker/compose/containers-for-cron"),
+        ("GET", "/api/docker/compose/projects"),
+        ("GET", "/api/docker/container-groups"),
+        ("GET", "/api/docker/container-groups/collapsed/states"),
+        ("GET", "/api/docker/containers/sort-config"),
+        ("GET", "/api/docker/containers/stats-cached"),
+        ("GET", "/api/docker/disk-usage"),
+        ("GET", "/api/docker/images/upgrade-status"),
+        ("GET", "/api/docker/registry/mirrors"),
+        ("GET", "/api/docker/volumes/backup/status"),
+    }
+    for route_key in docker_status_response_routes:
+        if not isinstance(merged_by_key[route_key].response_schema, dict):
+            fail(f"Docker/status response schema missing for {route_key}")
+
+    cached_stats = merged_by_key[("GET", "/api/docker/containers/stats-cached")].response_schema
+    cached_stat_item = (
+        cached_stats.get("properties", {})
+        .get("data", {})
+        .get("additionalProperties", {})
+        .get("properties", {})
+        if isinstance(cached_stats, dict)
+        else {}
+    )
+    if cached_stat_item.get("cpu_percent") != {"type": "string"} or cached_stat_item.get(
+        "port_services"
+    ) != {"type": "object"}:
+        fail("Docker cached-stat dynamic map schema regressed")
+
+    disk_usage = merged_by_key[("GET", "/api/docker/disk-usage")].response_schema
+    disk_usage_props = (
+        disk_usage.get("properties", {}).get("disk_usage", {}).get("properties", {})
+        if isinstance(disk_usage, dict)
+        else {}
+    )
+    for field in ("Images", "Containers", "Volumes", "BuildCache"):
+        if disk_usage_props.get(field) != {"type": "array", "items": {}}:
+            fail(f"Docker disk-usage resource detail schema must remain unspecified: {field}")
 
     service_response_routes = {
         ("GET", "/api/dlnaservice/configure"),

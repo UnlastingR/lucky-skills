@@ -1591,6 +1591,90 @@
       "schema_evidence": "authorized GET /api/wol/logs observed the paginated envelope; current logs are null so log item schema remains unspecified"
     },
     {
+      "path": "/api/netinterfaces",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "data": {"type": "object", "properties": {"IPv4NewInterfaces": {"type": "array", "items": {"type": "object", "properties": {"NetInterfaceName": {"type": "string"}, "HardwareAddr": {"type": "string"}, "AddressList": {"type": "array", "items": {"type": "string"}}}}}, "IPv6NewInterfaces": {"type": "array", "items": {"type": "object", "properties": {"NetInterfaceName": {"type": "string"}, "HardwareAddr": {"type": "string"}, "AddressList": {"type": "array", "items": {"type": "string"}}}}}}}}},
+      "schema_evidence": "authorized GET /api/netinterfaces observed interface/address field names and JSON types only; interface names, hardware addresses and IP values were not retained"
+    },
+    {
+      "path": "/api/docker/compose/backup/status",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "in_progress": {"type": "array", "items": {}}, "queue": {"type": "array", "items": {}}}},
+      "schema_evidence": "authorized GET /api/docker/compose/backup/status returned empty in_progress/queue arrays; only the envelope and array shapes are claimed"
+    },
+    {
+      "path": "/api/docker/compose/containers-for-cron",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "items": {"type": "array", "items": {"type": "object", "properties": {"type": {"type": "string"}, "name": {"type": "string"}, "path": {"type": "string"}, "children": {"type": "array", "items": {"type": "string"}}}}}}},
+      "schema_evidence": "authorized GET /api/docker/compose/containers-for-cron observed item field names/types; compose/container names and filesystem paths were not retained"
+    },
+    {
+      "path": "/api/docker/compose/projects",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "projects": {"type": "array", "items": {"type": "object", "properties": {"name": {"type": "string"}, "path": {"type": "string"}, "configFileName": {"type": "string"}, "status": {"type": "string"}, "containers": {"type": "integer"}, "runningContainers": {"type": "integer"}, "stoppedContainers": {"type": "integer"}, "containerNames": {"type": "array", "items": {"type": "string"}}, "containerDetails": {"type": "array", "items": {}}}}}}},
+      "schema_evidence": "authorized GET /api/docker/compose/projects observed project summary types only; project names, paths, config filenames and container identifiers were not retained"
+    },
+    {
+      "path": "/api/docker/container-groups",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": "array", "items": {}}}},
+      "schema_evidence": "authorized GET /api/docker/container-groups returned an empty list; group item schema remains unspecified"
+    },
+    {
+      "path": "/api/docker/container-groups/collapsed/states",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "states": {"type": "object"}}},
+      "schema_evidence": "authorized GET /api/docker/container-groups/collapsed/states returned an empty dynamic state object; value schema remains unspecified"
+    },
+    {
+      "path": "/api/docker/containers/sort-config",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "mapping": {"type": "object"}, "sort": {"type": "object", "properties": {"flat_order": {"type": "array", "items": {}}, "compose_group_order": {"type": "array", "items": {}}, "compose_container_orders": {"type": "object"}, "custom_group_order": {"type": "array", "items": {}}, "custom_container_orders": {"type": "object"}}}}},
+      "schema_evidence": "authorized GET /api/docker/containers/sort-config observed the sort-config envelope; current ordering collections/maps were empty so dynamic key/item types remain unspecified"
+    },
+    {
+      "path": "/api/docker/containers/stats-cached",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "data": {"type": "object", "additionalProperties": {"type": "object", "properties": {"block_io_available": {"type": "boolean"}, "block_read": {"type": "string"}, "block_write": {"type": "string"}, "compatibility_mode": {"type": "boolean"}, "cpu_available": {"type": "boolean"}, "cpu_percent": {"type": "string"}, "disk_read_speed": {"type": "integer"}, "disk_write_speed": {"type": "integer"}, "last_update": {"type": "string"}, "memory_available": {"type": "boolean"}, "memory_limit": {"type": "string"}, "memory_percent": {"type": "string"}, "memory_usage": {"type": "string"}, "network_available": {"type": "boolean"}, "network_rx": {"type": "string"}, "network_rx_speed": {"type": "integer"}, "network_tx": {"type": "string"}, "network_tx_speed": {"type": "integer"}, "port_services": {"type": "object"}, "stats_available": {"type": "boolean"}}}}, "status": {"type": "object", "properties": {"cached_containers": {"type": "integer"}, "docker_connected": {"type": "boolean"}, "interval": {"type": "integer"}, "last_update": {"type": "string"}, "max_concurrent": {"type": "integer"}, "port_detector": {"type": "object", "properties": {"http": {"type": "integer"}, "https": {"type": "integer"}, "other": {"type": "integer"}, "total": {"type": "integer"}, "unknown": {"type": "integer"}}}, "reconnect_interval": {"type": "integer"}, "running": {"type": "boolean"}, "supported": {"type": "boolean"}}}}},
+      "schema_evidence": "authorized GET /api/docker/containers/stats-cached observed generic cached-stat/status types; dynamic container IDs and port keys were generalized and no identifiers or runtime values were retained"
+    },
+    {
+      "path": "/api/docker/disk-usage",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "disk_usage": {"type": "object", "properties": {"LayersSize": {"type": "integer"}, "Images": {"type": "array", "items": {}}, "Containers": {"type": "array", "items": {}}, "Volumes": {"type": "array", "items": {}}, "BuildCache": {"type": "array", "items": {}}}}}},
+      "schema_evidence": "authorized GET /api/docker/disk-usage observed aggregate/collection types only; image/container/volume identifiers, commands, paths, labels and runtime values were intentionally not documented"
+    },
+    {
+      "path": "/api/docker/images/upgrade-status",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "data": {"type": "object"}}},
+      "schema_evidence": "authorized GET /api/docker/images/upgrade-status returned an empty dynamic data object; per-image value schema remains unspecified"
+    },
+    {
+      "path": "/api/docker/registry/mirrors",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "mirrors": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET /api/docker/registry/mirrors returned mirrors=null; mirror item type/URLs are intentionally unspecified"
+    },
+    {
+      "path": "/api/docker/volumes/backup/status",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "in_progress": {"type": "array", "items": {}}, "queue": {"type": "array", "items": {}}}},
+      "schema_evidence": "authorized GET /api/docker/volumes/backup/status returned empty in_progress/queue arrays; only the envelope and array shapes are claimed"
+    },
+    {
       "path": "/api/wol/client/state",
       "method": "GET",
       "risk": "read-only",
