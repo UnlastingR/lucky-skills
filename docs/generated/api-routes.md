@@ -329,7 +329,7 @@
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
-| `GET` | `/api/iconlib/icon` | `read-only` | `path` | — | `unknown` | `runtime-verified` |
+| `GET` | `/api/iconlib/icon` | `read-only` | `path` | — | `blob` | `runtime-verified` |
 | `GET` | `/api/iconlib/icons` | `read-only` | `source` | — | `json` | `frontend-call` |
 | `GET` | `/api/iconlib/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
 | `GET` | `/api/iconlib/search` | `read-only` | `keyword`, `source` | — | `json` | `frontend-call` |

@@ -95,9 +95,9 @@
       "query_keys": [
         "path"
       ],
-      "response_type": "unknown",
+      "response_type": "blob",
       "confidence": "runtime-verified",
-      "verification": "GET without path returned PathRequired; a harmless invalid path changed the error to InvalidIconPath."
+      "verification": "GET without path returned PathRequired; a harmless invalid path changed the error to InvalidIconPath. An authorized GET using one RelativePath returned HTTP 200 image/png; the image bytes and path were not persisted."
     },
     {
       "path": "/api/ipdb/download",
@@ -1234,14 +1234,16 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["Alias", "Type", "Path", "RcloneKey", "RcloneRoot", "StoreKey", "StoreRoot", "Enable", "Description"],
-      "schema_evidence": "frontend source editor passes this model to POST + authorized GET /api/iconlib/sources observed the same source field names"
+      "request_body_schema": {"type": "object", "properties": {"Alias": {"type": "string"}, "Type": {"type": "string"}, "Path": {"type": "string"}, "RcloneKey": {"type": "string"}, "RcloneRoot": {"type": "string"}, "StoreKey": {"type": "string"}, "StoreRoot": {"type": "string"}, "Enable": {"type": "boolean"}, "Description": {"type": "string"}}},
+      "schema_evidence": "frontend source editor passes this model to POST + authorized GET /api/iconlib/sources observed the same source field names and JSON types"
     },
     {
       "path": "/api/iconlib/sources",
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["Alias", "Type", "Path", "RcloneKey", "RcloneRoot", "StoreKey", "StoreRoot", "Enable", "Description"],
-      "schema_evidence": "frontend update helper explicitly rebuilds {Alias,Type,Path,RcloneKey,RcloneRoot,StoreKey,StoreRoot,Enable,Description} before PUT"
+      "request_body_schema": {"type": "object", "properties": {"Alias": {"type": "string"}, "Type": {"type": "string"}, "Path": {"type": "string"}, "RcloneKey": {"type": "string"}, "RcloneRoot": {"type": "string"}, "StoreKey": {"type": "string"}, "StoreRoot": {"type": "string"}, "Enable": {"type": "boolean"}, "Description": {"type": "string"}}},
+      "schema_evidence": "frontend update helper explicitly rebuilds {Alias,Type,Path,RcloneKey,RcloneRoot,StoreKey,StoreRoot,Enable,Description} before PUT + authorized GET /api/iconlib/sources cross-checked the JSON types"
     },
     {
       "path": "/api/storagemanagement/itemorderadjustment",
@@ -1709,11 +1711,46 @@
       "schema_evidence": "authorized GET /api/iconlib/sources observed source field names and JSON types only; live aliases, paths and storage identifiers were not retained"
     },
     {
+      "path": "/api/iconlib/icons",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "total": {"type": "integer"}, "icons": {"type": "array", "items": {"type": "object", "properties": {"Name": {"type": "string"}, "RelativePath": {"type": "string"}, "SourceAlias": {"type": "string"}, "Folder": {"type": "string"}, "Extension": {"type": "string"}, "Size": {"type": "integer"}}}}}},
+      "schema_evidence": "authorized GET /api/iconlib/icons observed the response envelope and icon field names/JSON types only; icon names and paths were not persisted"
+    },
+    {
+      "path": "/api/iconlib/logs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}, "logs": {"type": "array", "items": {"type": "object", "properties": {"LogContent": {"type": "string"}, "LogTime": {"type": "string"}, "ShowTime": {"type": "boolean"}, "Level": {"type": "string"}}}}}},
+      "schema_evidence": "authorized GET /api/iconlib/logs?page=1&pageSize=1 observed pagination and log-entry field names/JSON types only; log content and timestamps were not retained"
+    },
+    {
       "path": "/api/iconlib/search",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "total": {"type": "integer"}, "icons": {"type": ["array", "null"], "items": {}}}},
-      "schema_evidence": "authorized GET /api/iconlib/search used a deliberate no-match keyword and observed only the empty/null result envelope"
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "total": {"type": "integer"}, "icons": {"type": ["array", "null"], "items": {"type": "object", "properties": {"Name": {"type": "string"}, "RelativePath": {"type": "string"}, "SourceAlias": {"type": "string"}, "Folder": {"type": "string"}, "Extension": {"type": "string"}, "Size": {"type": "integer"}}}}}},
+      "schema_evidence": "authorized GET /api/iconlib/search verified the result envelope; icon item fields/types were cross-checked against the same IconLib model returned by /api/iconlib/icons"
+    },
+    {
+      "path": "/api/info",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "u": {"type": "integer"}, "extraModules": {"type": "array", "items": {"type": "string"}}, "moduleList": {"type": "array", "items": {"type": "string"}}, "info": {"type": "object", "properties": {"AppName": {"type": "string"}, "Version": {"type": "string"}, "VersionName": {"type": "string"}, "OS": {"type": "string"}, "ARCH": {"type": "string"}, "Date": {"type": "string"}, "GoVersion": {"type": "string"}, "MD5": {"type": "string"}}}}},
+      "schema_evidence": "authorized GET /api/info observed application/build metadata field names and JSON types only; runtime values were not retained"
+    },
+    {
+      "path": "/api/local-path-browser/roots",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "rootPath": {"type": "string"}, "roots": {"type": "array", "items": {"type": "object", "properties": {"name": {"type": "string"}, "path": {"type": "string"}}}}}},
+      "schema_evidence": "authorized GET /api/local-path-browser/roots observed only root entry field names and JSON types; filesystem paths and names were not retained"
+    },
+    {
+      "path": "/api/local-path-browser/list",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "data": {"type": "object", "properties": {"path": {"type": "string"}, "parent": {"type": "string"}, "rootPath": {"type": "string"}, "entries": {"type": "array", "items": {"type": "object", "properties": {"name": {"type": "string"}, "path": {"type": "string"}, "isDir": {"type": "boolean"}, "size": {"type": "integer"}, "modTime": {"type": "string"}, "readable": {"type": "boolean"}}}}}}}},
+      "schema_evidence": "authorized GET /api/local-path-browser/list used one discovered root and showFiles=false, retaining only response field names/types; filesystem paths and entry names were not retained"
     },
     {
       "path": "/api/modules/list",
@@ -1728,6 +1765,13 @@
       "risk": "read-only",
       "response_schema": {"type":"object","properties":{"version":{"type":"integer"},"cards":{"type":"array","items":{"type":"object","properties":{"enabled":{"type":"boolean"},"html":{"type":"string"},"id":{"type":"string"},"kind":{"type":"string"},"priority":{"type":"integer"}}}},"display":{"type":"object","properties":{"maxPromotionItems":{"type":"integer"},"promotionSelection":{"type":"string"}}}}},
       "schema_evidence": "authorized GET /api/about-content observed only public content metadata field names and JSON types; HTML/card values were not retained"
+    },
+    {
+      "path": "/api/docker/images",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "images": {"type": "array", "items": {"type": "object", "properties": {"Containers": {"type": "integer"}, "Created": {"type": "integer"}, "Id": {"type": "string"}, "Labels": {"type": "object"}, "ParentId": {"type": "string"}, "Descriptor": {"type": "object"}, "RepoDigests": {"type": "array", "items": {"type": "string"}}, "RepoTags": {"type": "array", "items": {"type": "string"}}, "SharedSize": {"type": "integer"}, "Size": {"type": "integer"}, "Architecture": {"type": "string"}, "OriginalRepoTags": {"type": "array", "items": {"type": "string"}}, "SavedDigest": {"type": "string"}}}}}},
+      "schema_evidence": "authorized GET /api/docker/images?all=true observed image metadata field names and JSON types only; image IDs, tags, digests, labels, architecture and runtime values were not retained, and no image contents were exported"
     },
     {
       "path": "/api/docker/system-info",
