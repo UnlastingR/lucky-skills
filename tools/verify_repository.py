@@ -518,8 +518,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             f"expected at most 147 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 188:
-        fail(f"response-schema coverage regressed below 188 routes: {response_schema_count}")
+    if response_schema_count < 190:
+        fail(f"response-schema coverage regressed below 190 routes: {response_schema_count}")
 
     safe_utility_response_routes = {
         ("GET", "/api/ipfliter/porttrap/blockedips"),
@@ -535,6 +535,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         ("GET", "/api/webservice/statistics/recent-ips/visits"),
         ("GET", "/api/ssl/syncclients"),
         ("GET", "/api/thirdPartyAuthManager/list"),
+        ("GET", "/api/thirdPartyAuthManager/config"),
+        ("GET", "/api/webservice/webauth/sessions"),
         ("GET", "/api/webterminal/config"),
         ("GET", "/api/webterminal/connections"),
         ("GET", "/api/webterminal/globalshortcuts"),
@@ -603,6 +605,43 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         twofa_props.get(field) != {"type": "boolean"} for field in ("enable", "validated", "hasKey")
     ):
         fail("module 2FA status schema must remain boolean-only and secret-free")
+
+    auth_manager_config = merged_by_key[("GET", "/api/thirdPartyAuthManager/config")].response_schema
+    auth_manager_props = (
+        auth_manager_config.get("properties", {}).get("config", {}).get("properties", {})
+        if isinstance(auth_manager_config, dict)
+        else {}
+    )
+    expected_auth_manager_fields = {
+        "GithubRedirectURI",
+        "GithubClientID",
+        "GoogleRedirectURI",
+        "GoogleClientID",
+        "QQRedirectURI",
+        "QQClientID",
+        "WeiboRedirectURI",
+        "WeiboClientKey",
+        "AuthentikRedirectURI",
+        "AuthentikClientID",
+        "AuthentikServer",
+        "OIDCRedirectURI",
+        "OIDCClientID",
+        "OIDCAuthorizationEndpoint",
+    }
+    if set(auth_manager_props) != expected_auth_manager_fields or any(
+        value != {"type": "string"} for value in auth_manager_props.values()
+    ):
+        fail("third-party auth public metadata schema regressed or gained secret-bearing fields")
+    if any("secret" in field.lower() or "token" in field.lower() or "password" in field.lower() for field in auth_manager_props):
+        fail("third-party auth config schema must remain secret/token/password-free")
+
+    webauth_sessions = merged_by_key[("GET", "/api/webservice/webauth/sessions")].response_schema
+    webauth_props = webauth_sessions.get("properties", {}) if isinstance(webauth_sessions, dict) else {}
+    if webauth_props.get("list") != {"type": "array", "items": {}}:
+        fail("WebAuth session item schema must remain unspecified")
+    for field in ("page", "pageSize", "total"):
+        if webauth_props.get(field) != {"type": "integer"}:
+            fail(f"WebAuth session pagination field regressed: {field}")
 
     webterminal_config = merged_by_key[("GET", "/api/webterminal/config")].response_schema
     webterminal_config_props = (

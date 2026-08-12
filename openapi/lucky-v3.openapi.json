@@ -31875,11 +31875,63 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "config": {
+                      "type": "object",
+                      "properties": {
+                        "GithubRedirectURI": {
+                          "type": "string"
+                        },
+                        "GithubClientID": {
+                          "type": "string"
+                        },
+                        "GoogleRedirectURI": {
+                          "type": "string"
+                        },
+                        "GoogleClientID": {
+                          "type": "string"
+                        },
+                        "QQRedirectURI": {
+                          "type": "string"
+                        },
+                        "QQClientID": {
+                          "type": "string"
+                        },
+                        "WeiboRedirectURI": {
+                          "type": "string"
+                        },
+                        "WeiboClientKey": {
+                          "type": "string"
+                        },
+                        "AuthentikRedirectURI": {
+                          "type": "string"
+                        },
+                        "AuthentikClientID": {
+                          "type": "string"
+                        },
+                        "AuthentikServer": {
+                          "type": "string"
+                        },
+                        "OIDCRedirectURI": {
+                          "type": "string"
+                        },
+                        "OIDCClientID": {
+                          "type": "string"
+                        },
+                        "OIDCAuthorizationEndpoint": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -31899,7 +31951,8 @@
         "x-evidence-bundles": [
           "lucky_thirdPartyAuthManager-C0VqZjAx.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/thirdPartyAuthManager/config observed only redirect URI, public client/key identifier and authorization-server field names/types; actual endpoints/IDs were not retained and no client-secret/token fields are documented"
       },
       "put": {
         "summary": "Lucky frontend call: PUT /api/thirdPartyAuthManager/config",
@@ -37434,11 +37487,29 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "list": {
+                      "type": "array",
+                      "items": {}
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -37458,7 +37529,8 @@
         "x-evidence-bundles": [
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/webservice/webauth/sessions observed an empty paginated session list; session identity/token/client item fields remain unspecified"
       }
     },
     "/api/webservice/webauth/sessions/clear-subrule": {
