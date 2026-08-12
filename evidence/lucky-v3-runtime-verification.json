@@ -112,8 +112,10 @@
       "method": "GET",
       "risk": "read-only",
       "response_type": "json",
+      "response_schema": {"type": "object", "properties": {"hasMore": {"type": "boolean"}, "logs": {"type": "array", "items": {}}, "nextBeforeSeq": {"type": "string"}, "partial": {"type": "boolean"}, "ret": {"type": "integer"}, "scannedFiles": {"type": "integer"}, "total": {"type": "integer"}, "totalExact": {"type": "boolean"}}},
+      "schema_evidence": "authorized GET /api/logscenter/query observed the top-level envelope and primitive JSON types; current logs array is empty so log item schema remains unspecified",
       "confidence": "runtime-verified",
-      "verification": "Authenticated GET returned HTTP 200, ret=0 and the logs query envelope; log contents were not printed."
+      "verification": "Authenticated GET returned HTTP 200 and the logs query envelope; log contents were not printed or retained."
     },
     {
       "path": "/api/natdetect/ws",
@@ -384,7 +386,7 @@
       "path": "/api/ssl/setting",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "defaultACMEEMail": {"type": "string"}, "renewalThresholdDays": {"type": "integer"}, "shortlivedCheckTimesPerDay": {"type": "integer"}, "shortlivedRenewalThresholdHours": {"type": "integer"}, "certificateCheckTime": {"type": "object", "properties": {"Hour": {"type": "integer"}, "Minute": {"type": "integer"}, "Second": {"type": "integer"}}, "syncClientList": {"type": ["array", "null"], "items": {}}}}},
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "defaultACMEEMail": {"type": "string"}, "renewalThresholdDays": {"type": "integer"}, "shortlivedCheckTimesPerDay": {"type": "integer"}, "shortlivedRenewalThresholdHours": {"type": "integer"}, "certificateCheckTime": {"type": "object", "properties": {"Hour": {"type": "integer"}, "Minute": {"type": "integer"}, "Second": {"type": "integer"}}}, "syncClientList": {"type": ["array", "null"], "items": {}}}},
       "schema_evidence": "authorized GET /api/ssl/setting observed field types; globalPrivateKey is intentionally omitted from response documentation"
     },
     {
