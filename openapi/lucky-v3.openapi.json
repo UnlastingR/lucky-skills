@@ -15549,7 +15549,7 @@
         "x-evidence-bundles": [
           "lucky_docker-BCN-OILs.js"
         ],
-        "x-lucky-risk": "read-only",
+        "x-lucky-risk": "dangerous",
         "parameters": [
           {
             "name": "name",
@@ -20597,7 +20597,7 @@
         "x-evidence-bundles": [
           "lucky_ipfilter-CGTD3trT.js"
         ],
-        "x-lucky-risk": "read-only",
+        "x-lucky-risk": "mutating",
         "parameters": [
           {
             "name": "ip",
@@ -20822,7 +20822,7 @@
         "x-evidence-bundles": [
           "lucky_ipfilter-CGTD3trT.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "dangerous"
       }
     },
     "/api/ipfliter/porttrap/blockedips/refresh-ipinfo": {
@@ -31800,7 +31800,7 @@
         "x-evidence-bundles": [
           "lucky_panel-D9SxgvCq.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "dangerous"
       }
     },
     "/api/third/filebrowser/status": {
@@ -36140,7 +36140,7 @@
         "x-evidence-bundles": [
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "dangerous"
       }
     },
     "/api/webservice/statistics/geo/aggregate": {
