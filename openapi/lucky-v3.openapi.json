@@ -18742,11 +18742,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "list": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -18767,6 +18779,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/ipdb/avalidDBFiles observed list=null on this instance; only the envelope and nullable-list shape are claimed",
         "parameters": [
           {
             "name": "key",
@@ -23559,11 +23572,29 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "Moduledisable": {
+                      "type": "boolean"
+                    },
+                    "list": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    },
+                    "statistics": {
+                      "type": "object"
+                    }
+                  }
                 }
               }
             }
@@ -23583,7 +23614,8 @@
         "x-evidence-bundles": [
           "lucky_portforward-13uBauEz.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/portforwards observed module/list/statistics envelope types; current list is null and statistics is an empty dynamic object, so rule/statistic item schemas remain unspecified"
       }
     },
     "/api/portforwards_lite": {
@@ -23601,11 +23633,26 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "Moduledisable": {
+                      "type": "boolean"
+                    },
+                    "list": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -23625,7 +23672,8 @@
         "x-evidence-bundles": [
           "lucky_portforward-13uBauEz.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/portforwards_lite observed the compact module/list envelope; current list is null so rule item schema remains unspecified"
       }
     },
     "/api/rclone/globalconfig": {
@@ -30916,11 +30964,29 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "ModuleEnable": {
+                      "type": "boolean"
+                    },
+                    "list": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    },
+                    "statistics": {
+                      "type": "object"
+                    }
+                  }
                 }
               }
             }
@@ -30940,7 +31006,8 @@
         "x-evidence-bundles": [
           "lucky_stun-DdoTf-uI.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/stunrulelist observed module/list/statistics envelope types; current list is null and statistics is an empty dynamic object, so rule/statistic item schemas remain unspecified"
       }
     },
     "/api/stunrulelist_lite": {
@@ -30958,11 +31025,26 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "ModuleEnable": {
+                      "type": "boolean"
+                    },
+                    "list": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -30982,7 +31064,8 @@
         "x-evidence-bundles": [
           "lucky_stun-DdoTf-uI.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/stunrulelist_lite observed the compact module/list envelope; current list is null so rule item schema remains unspecified"
       }
     },
     "/api/temp-access-tickets": {
