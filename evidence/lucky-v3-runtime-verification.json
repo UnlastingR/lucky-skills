@@ -1321,6 +1321,13 @@
     },
     {
       "path": "/api/baseconfigure",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "TwoFAKeySet": {"type": "boolean"}, "serviceStatus": {"type": "integer"}, "baseconfigure": {"type": "object", "properties": {"AdminWebListenPort": {"type": "integer"}, "AdminWebListenTLS": {"type": "boolean"}, "AdminWebListenHttpsPort": {"type": "integer"}, "ForceHTTPS": {"type": "boolean"}, "TokenExpirationHour": {"type": "integer"}, "MaxConsecutiveLoginFailures": {"type": "integer"}, "TimeZone": {"type": "string"}, "FrontendTheme": {"type": "string"}, "FrontendLanguage": {"type": "string"}, "EnableStatusHistory": {"type": "boolean"}, "StatusHistoryRetentionDays": {"type": "integer"}, "StatusHistorySampleIntervalSeconds": {"type": "integer"}}}}},
+      "schema_evidence": "authorized GET /api/baseconfigure observed the top-level/base configuration field names and types; this deliberately minimal whitelist keeps only listen/TLS, token-expiry, locale/theme and status-history metadata while omitting credentials, tokens, 2FA keys, SafeURL, device/network identifiers, security-policy toggles, backend/DNS/origin lists and interface data"
+    },
+    {
+      "path": "/api/baseconfigure",
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["AdminAccount", "AdminPassword", "AdminWebListenHttpsPort", "AdminWebListenIP", "AdminWebListenPort", "AdminWebListenTLS", "AllowAllThirdAuthUsers", "AllowInternetaccess", "AutoOptionsFirewall", "BackendServerListBackup", "BackgroundBlur", "BackgroundColor", "BackgroundImage", "CatchPanic", "ConfVer", "CustomDNSA", "CustomDNSB", "CustomDNSC", "CustomDNSD", "CustomDNSList", "DeviceID", "DisableAllowAllOrigins", "DisableModules", "DisableNTPSync", "DisableNTPSyncLog", "EnableCustomBackgroundColor", "EnableCustomBackgroundImage", "EnableOpenToken", "EnableStatusHistory", "EnableThirdAuthLogin", "FirewallInitDelay", "ForceHTTPS", "FrontendDisableAutoExpandLeftMenu", "FrontendLanguage", "FrontendTheme", "GCPercent", "GOMAXPROCS", "GlobalDisableFirewallOpt", "GlobalNoLimitCIDRs", "HttpClientTimeout", "IgnoreAuthInfoCheck", "IgnoreSafeURLCheck", "InsecureSkipVerify", "Keys", "LogMaxSize", "MaxConsecutiveLoginFailures", "OldPassword", "OpenToken", "OpenTokenConfirmed", "OriginsList", "ProxyProtocolTrustedCIDRs", "RestartAfterPanic", "SafeURL", "SetGCPercent", "StatNetInterfaceList", "StatusHistoryRetentionDays", "StatusHistorySampleIntervalSeconds", "ThirdAuthLoginSkipTwoFA", "ThirdAuthLoginUserList", "TimeZone", "TokenExpirationHour", "TwoFADigits", "TwoFAEnable", "TwoFAKey", "hiddenModules"],
