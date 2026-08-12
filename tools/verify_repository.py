@@ -497,8 +497,23 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             f"expected at most 147 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 153:
-        fail(f"response-schema coverage regressed below 153 routes: {response_schema_count}")
+    if response_schema_count < 158:
+        fail(f"response-schema coverage regressed below 158 routes: {response_schema_count}")
+
+    nullable_list_response_routes = {
+        ("GET", "/api/portforwards"): ("list", "Moduledisable"),
+        ("GET", "/api/portforwards_lite"): ("list", "Moduledisable"),
+        ("GET", "/api/stunrulelist"): ("list", "ModuleEnable"),
+        ("GET", "/api/stunrulelist_lite"): ("list", "ModuleEnable"),
+        ("GET", "/api/ipdb/avalidDBFiles"): ("list", None),
+    }
+    for route_key, (list_field, flag_field) in nullable_list_response_routes.items():
+        response_schema = merged_by_key[route_key].response_schema
+        props = response_schema.get("properties", {}) if isinstance(response_schema, dict) else {}
+        if props.get(list_field) != {"type": ["array", "null"], "items": {}}:
+            fail(f"nullable list schema regressed for {route_key}")
+        if flag_field is not None and props.get(flag_field) != {"type": "boolean"}:
+            fail(f"module enable/disable flag schema regressed for {route_key}")
 
     docker_resource_response_routes = {
         ("GET", "/api/docker/images/{param}"),

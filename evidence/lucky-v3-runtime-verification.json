@@ -1781,6 +1781,41 @@
       "schema_evidence": "authorized GET of one existing container cached stats observed aggregate statistic types; dynamic port-service keys were generalized and no container IDs, port numbers or metric values were retained"
     },
     {
+      "path": "/api/portforwards",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "Moduledisable": {"type": "boolean"}, "list": {"type": ["array", "null"], "items": {}}, "statistics": {"type": "object"}}},
+      "schema_evidence": "authorized GET /api/portforwards observed module/list/statistics envelope types; current list is null and statistics is an empty dynamic object, so rule/statistic item schemas remain unspecified"
+    },
+    {
+      "path": "/api/portforwards_lite",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "Moduledisable": {"type": "boolean"}, "list": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET /api/portforwards_lite observed the compact module/list envelope; current list is null so rule item schema remains unspecified"
+    },
+    {
+      "path": "/api/stunrulelist",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "ModuleEnable": {"type": "boolean"}, "list": {"type": ["array", "null"], "items": {}}, "statistics": {"type": "object"}}},
+      "schema_evidence": "authorized GET /api/stunrulelist observed module/list/statistics envelope types; current list is null and statistics is an empty dynamic object, so rule/statistic item schemas remain unspecified"
+    },
+    {
+      "path": "/api/stunrulelist_lite",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "ModuleEnable": {"type": "boolean"}, "list": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET /api/stunrulelist_lite observed the compact module/list envelope; current list is null so rule item schema remains unspecified"
+    },
+    {
+      "path": "/api/ipdb/avalidDBFiles",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET /api/ipdb/avalidDBFiles observed list=null on this instance; only the envelope and nullable-list shape are claimed"
+    },
+    {
       "path": "/api/wol/client/state",
       "method": "GET",
       "risk": "read-only",
