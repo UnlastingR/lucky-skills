@@ -218,16 +218,16 @@
 | `GET` | `/api/docker/containers/{param}/stats-cached` | `read-only` | — | — | `json` | `frontend-call` |
 | `POST` | `/api/docker/containers/{param}/stop` | `dangerous` | — | `timeout` | `json` | `frontend-call` |
 | `POST` | `/api/docker/containers/{param}/unpause` | `dangerous` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/docker/containers/{param}/upgrade` | `dangerous` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/docker/containers/{param}/upgrade` | `dangerous` | — | `object` | `json` | `frontend-call` |
 | `GET` | `/api/docker/containers/{param}/upgrade-check` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/docker/disk-usage` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/docker/images` | `read-only` | `all` | — | `json` | `frontend-call` |
 | `POST` | `/api/docker/images/backup-tag` | `mutating` | — | `image_ref` | `json` | `frontend-call` |
-| `POST` | `/api/docker/images/build` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `POST` | `/api/docker/images/build-from-git` | `mutating` | — | 有 | `json` | `frontend-call` |
-| `POST` | `/api/docker/images/build-from-zip` | `mutating` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/docker/images/build` | `mutating` | — | `dockerfile` | `json` | `frontend-call` |
+| `POST` | `/api/docker/images/build-from-git` | `mutating` | — | `git_url` | `json` | `frontend-call` |
+| `POST` | `/api/docker/images/build-from-zip` | `mutating` | — | `zip_path` | `json` | `frontend-call` |
 | `GET` | `/api/docker/images/containers` | `read-only` | `image_ref` | — | `json` | `frontend-call` |
-| `POST` | `/api/docker/images/import` | `dangerous` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/docker/images/import` | `dangerous` | — | `source` | `json` | `frontend-call` |
 | `POST` | `/api/docker/images/load` | `mutating` | — | `path`, `cleanup` | `json` | `frontend-call` |
 | `POST` | `/api/docker/images/pull` | `mutating` | — | `image`, `tag` | `json` | `frontend-call` |
 | `POST` | `/api/docker/images/pull-async` | `mutating` | — | `architecture`, `image`, `tag` | `json` | `frontend-call` |
@@ -259,7 +259,7 @@
 | `GET` | `/api/docker/networks` | `read-only` | — | — | `json` | `frontend-call` |
 | `POST` | `/api/docker/networks` | `mutating` | — | `name`, `driver`, `internal`, `enable_ipv6`, `attachable`, `options`, `ipam` | `json` | `frontend-call` |
 | `DELETE` | `/api/docker/networks/{param}` | `mutating` | — | — | `json` | `frontend-call` |
-| `POST` | `/api/docker/prune` | `dangerous` | — | 有 | `json` | `frontend-call` |
+| `POST` | `/api/docker/prune` | `dangerous` | — | `all`, `volumes` | `json` | `frontend-call` |
 | `DELETE` | `/api/docker/registry/mirrors` | `mutating` | — | `mirror` | `json` | `frontend-call` |
 | `GET` | `/api/docker/registry/mirrors` | `read-only` | — | — | `json` | `frontend-call` |
 | `POST` | `/api/docker/registry/mirrors` | `mutating` | — | `mirror` | `json` | `frontend-call` |

@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "verified_at": "2026-08-12T05:42:45Z",
+  "verified_at": "2026-08-12T07:38:33Z",
   "target": {
     "product": "Lucky",
     "version": "3.0.0"
   },
   "static_snapshot_sha256": "befce5dbe8a877651db34359a987c043b7be8bb5311110d4cabc62a00bb53f78",
-  "methodology": "Authorized runtime route and schema verification. HTTP method existence was primarily proven with unauthenticated GET/POST/PUT/DELETE/PATCH requests that stop at Lucky authentication; selected GET routes were additionally verified with the repository OpenToken client. Request schemas were recovered from frontend pass-through/object literals and, where applicable, cross-checked against field names and types observed from authorized read-only GET responses. No mutating handler was executed for method or schema discovery.",
+  "methodology": "Authorized runtime route and schema verification. HTTP method existence was primarily proven with unauthenticated GET/POST/PUT/DELETE/PATCH requests that stop at Lucky authentication; method discovery does not execute protected mutating handlers. Selected GET routes were additionally verified with the repository OpenToken client. Request schemas were recovered from frontend pass-through/object literals and, where applicable, cross-checked against authorized read-only GET shapes. For the final six Docker legacy wrappers that lacked current UI call sites, the user explicitly authorized isolated schema probes: upgrade/build used dedicated disposable BusyBox resources, Git/ZIP/import used validation-failure paths, and prune was exercised only by a temporary Lucky instance connected to a non-destructive mock Docker API. No real Docker prune handler reached the production Docker daemon.",
   "suppress_literals": [
     "/api/cloudflared",
     "/api/ddns/manualSync",
@@ -1236,6 +1236,51 @@
       "risk": "mutating",
       "body_keys": ["AutoFirewall", "Enable", "HTTPEnable", "ListenIP", "ListenNetwork", "ListenPort", "TLSEnable", "TLSListenPort", "TrustHostList", "Users", "WebDavConfVersion"],
       "schema_evidence": "frontend loads authorized GET /api/webdav/configure into its normalized form and passes that full form object directly to PUT"
+    },
+    {
+      "path": "/api/docker/containers/{param}/upgrade",
+      "method": "POST",
+      "risk": "dangerous",
+      "request_body_schema": {"type": "object", "properties": {}},
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "old_container": {"type": "string"}, "new_container": {"type": "string"}, "new_image_ref": {"type": "string"}, "removed_old_image": {"type": "boolean"}, "warnings": {"type": "array"}}},
+      "schema_evidence": "authorized isolated BusyBox probe: an empty JSON object successfully upgraded/recreated only the dedicated temporary container; an arbitrary architecture property had no observable effect, so no request properties are claimed. Success response fields were observed directly"
+    },
+    {
+      "path": "/api/docker/images/build",
+      "method": "POST",
+      "risk": "mutating",
+      "request_body_schema": {"type": "object", "properties": {"dockerfile": {"type": "string"}}, "required": ["dockerfile"]},
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "output": {"type": "string"}}},
+      "schema_evidence": "authorized isolated BusyBox build: {} and a tag-only body were rejected, dockerfile alone succeeded, and dockerfile is interpreted as Dockerfile text. A supplied tag produced a dangling image and is therefore not claimed as a recognized field"
+    },
+    {
+      "path": "/api/docker/images/build-from-git",
+      "method": "POST",
+      "risk": "mutating",
+      "request_body_schema": {"type": "object", "properties": {"git_url": {"type": "string"}}, "required": ["git_url"]},
+      "schema_evidence": "authorized validation probe: {} and tag-only bodies were rejected; git_url alone passed request validation and reached git clone, which then failed because git is absent from the Lucky container. url and repo_url aliases were rejected"
+    },
+    {
+      "path": "/api/docker/images/build-from-zip",
+      "method": "POST",
+      "risk": "mutating",
+      "request_body_schema": {"type": "object", "properties": {"zip_path": {"type": "string"}}, "required": ["zip_path"]},
+      "schema_evidence": "authorized validation probe: {} and tag-only bodies were rejected; zip_path alone passed request validation and the backend attempted to open that path. path and file aliases were rejected"
+    },
+    {
+      "path": "/api/docker/images/import",
+      "method": "POST",
+      "risk": "dangerous",
+      "request_body_schema": {"type": "object", "properties": {"source": {"type": "string"}}, "required": ["source"]},
+      "schema_evidence": "authorized validation probe: {} and repository/tag-only bodies were rejected; source alone passed request validation and the backend attempted to open that path. path and file_path aliases were rejected"
+    },
+    {
+      "path": "/api/docker/prune",
+      "method": "POST",
+      "risk": "dangerous",
+      "request_body_schema": {"type": "object", "properties": {"all": {"type": "boolean"}, "volumes": {"type": "boolean"}}},
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "report": {"type": "object", "properties": {"containers_deleted": {"type": ["array", "null"]}, "images_deleted": {"type": ["array", "null"]}, "networks_deleted": {"type": ["array", "null"]}, "volumes_deleted": {"type": ["array", "null"]}, "space_reclaimed": {"type": "integer"}}}}},
+      "schema_evidence": "authorized isolated Lucky instance connected to a non-destructive mock Docker API: {} pruned dangling containers/images/networks; volumes:true additionally invoked volumes/prune; all:true removed the dangling=true filters. containers/images/networks/build_cache aliases did not alter behavior. No prune request reached the real Docker daemon"
     }
   ]
 }

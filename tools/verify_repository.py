@@ -427,14 +427,7 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     if unknown:
         fail(f"runtime route verification leaves {len(unknown)} unknown route(s)")
 
-    expected_body_schema_gaps = {
-        ("POST", "/api/docker/containers/{param}/upgrade"),
-        ("POST", "/api/docker/images/build"),
-        ("POST", "/api/docker/images/build-from-git"),
-        ("POST", "/api/docker/images/build-from-zip"),
-        ("POST", "/api/docker/images/import"),
-        ("POST", "/api/docker/prune"),
-    }
+    expected_body_schema_gaps: set[tuple[str, str]] = set()
     actual_body_schema_gaps = {
         (route.method, route.path)
         for route in merged.routes
@@ -450,6 +443,45 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             "request-body schema gap set changed; "
             f"resolved={missing or 'none'} new={added or 'none'}"
         )
+
+    legacy_docker_schemas = {
+        ("POST", "/api/docker/containers/{param}/upgrade"): {
+            "type": "object",
+            "properties": {},
+        },
+        ("POST", "/api/docker/images/build"): {
+            "type": "object",
+            "properties": {"dockerfile": {"type": "string"}},
+            "required": ["dockerfile"],
+        },
+        ("POST", "/api/docker/images/build-from-git"): {
+            "type": "object",
+            "properties": {"git_url": {"type": "string"}},
+            "required": ["git_url"],
+        },
+        ("POST", "/api/docker/images/build-from-zip"): {
+            "type": "object",
+            "properties": {"zip_path": {"type": "string"}},
+            "required": ["zip_path"],
+        },
+        ("POST", "/api/docker/images/import"): {
+            "type": "object",
+            "properties": {"source": {"type": "string"}},
+            "required": ["source"],
+        },
+        ("POST", "/api/docker/prune"): {
+            "type": "object",
+            "properties": {
+                "all": {"type": "boolean"},
+                "volumes": {"type": "boolean"},
+            },
+        },
+    }
+    merged_by_key = {(route.method, route.path): route for route in merged.routes}
+    for key, expected_schema in legacy_docker_schemas.items():
+        route = merged_by_key.get(key)
+        if route is None or route.request_body_schema != expected_schema:
+            fail(f"legacy Docker schema evidence changed unexpectedly for {key[0]} {key[1]}")
 
 
 def check_generated_artifacts() -> None:
