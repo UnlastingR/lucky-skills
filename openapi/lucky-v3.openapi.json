@@ -25089,11 +25089,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "data": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -25113,7 +25125,8 @@
         "x-evidence-bundles": [
           "lucky_rclone-sFF3mpk8.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/rclone/third/115pan/authuserlist observed data=null; auth-user item/account/token fields remain unspecified"
       }
     },
     "/api/rclone/third/115pan/user": {
@@ -25279,11 +25292,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "data": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -25303,7 +25328,8 @@
         "x-evidence-bundles": [
           "lucky_rclone-sFF3mpk8.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/rclone/third/alipan/authuserlist observed data=null; auth-user item/account/token fields remain unspecified"
       }
     },
     "/api/rclone/third/alipan/user": {
@@ -25469,11 +25495,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "data": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -25493,7 +25531,8 @@
         "x-evidence-bundles": [
           "lucky_rclone-sFF3mpk8.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/rclone/third/baidupan/authuserlist observed data=null; auth-user item/account/token fields remain unspecified"
       }
     },
     "/api/rclone/third/baidupan/user": {
@@ -35600,11 +35639,109 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "capabilities": {
+                      "type": "object",
+                      "properties": {
+                        "contractVersion": {
+                          "type": "string"
+                        },
+                        "timeRangeSemantics": {
+                          "type": "string"
+                        },
+                        "bucketBoundary": {
+                          "type": "string"
+                        },
+                        "granularities": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "retention": {
+                          "type": "object",
+                          "properties": {
+                            "minuteHours": {
+                              "type": "integer"
+                            },
+                            "hourDays": {
+                              "type": "integer"
+                            },
+                            "dayDays": {
+                              "type": "integer"
+                            }
+                          }
+                        },
+                        "metrics": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "key": {
+                                "type": "string"
+                              },
+                              "label": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "filters": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "key": {
+                                "type": "string"
+                              },
+                              "availability": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "rankingDimensions": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "key": {
+                                "type": "string"
+                              },
+                              "availability": {
+                                "type": "string"
+                              },
+                              "candidateLimit": {
+                                "type": "integer"
+                              }
+                            }
+                          }
+                        },
+                        "geoDimensions": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "key": {
+                                "type": "string"
+                              },
+                              "availability": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -35624,7 +35761,8 @@
         "x-evidence-bundles": [
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/webservice/statistics/capabilities observed only the statistics contract/dimension types documented here; meta/settings, storage paths and visitor hash secret fields are intentionally omitted"
       }
     },
     "/api/webservice/statistics/clear": {
@@ -35684,11 +35822,79 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "aggregateGranularity": {
+                      "type": "string"
+                    },
+                    "approximate": {
+                      "type": "boolean"
+                    },
+                    "days": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "date": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "end": {
+                      "type": "integer"
+                    },
+                    "quality": {
+                      "type": "object",
+                      "properties": {
+                        "complete": {
+                          "type": "boolean"
+                        },
+                        "estimated": {
+                          "type": "boolean"
+                        },
+                        "missingFrom": {
+                          "type": "integer"
+                        },
+                        "requestedStart": {
+                          "type": "integer"
+                        },
+                        "requestedEnd": {
+                          "type": "integer"
+                        },
+                        "actualStart": {
+                          "type": "integer"
+                        },
+                        "actualEnd": {
+                          "type": "integer"
+                        },
+                        "boundaryTruncated": {
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    "stale": {
+                      "type": "boolean"
+                    },
+                    "start": {
+                      "type": "integer"
+                    },
+                    "summary": {
+                      "type": "object",
+                      "properties": {
+                        "date": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -35708,7 +35914,8 @@
         "x-evidence-bundles": [
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/webservice/statistics/daily observed only aggregate/time-range/quality/date summary types; meta/settings, storage paths and visitor secret fields are intentionally omitted"
       }
     },
     "/api/webservice/statistics/events": {
@@ -36709,11 +36916,37 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "connections": {
+                      "type": "integer"
+                    },
+                    "lastMinute": {
+                      "type": "array",
+                      "items": {}
+                    },
+                    "point": {
+                      "type": "object",
+                      "properties": {
+                        "timestamp": {
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "traffic": {
+                      "type": "object"
+                    },
+                    "waf": {
+                      "type": "object"
+                    }
+                  }
                 }
               }
             }
@@ -36733,7 +36966,8 @@
         "x-evidence-bundles": [
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/webservice/statistics/realtime observed connection/time-point and aggregate container types only; current lastMinute items are empty and meta/settings are intentionally omitted"
       }
     },
     "/api/webservice/statistics/recent-ips": {
