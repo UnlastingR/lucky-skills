@@ -11357,11 +11357,63 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "block_io_available": {
+                          "type": "boolean"
+                        },
+                        "block_read": {
+                          "type": "string"
+                        },
+                        "block_write": {
+                          "type": "string"
+                        },
+                        "compatibility_mode": {
+                          "type": "boolean"
+                        },
+                        "cpu_available": {
+                          "type": "boolean"
+                        },
+                        "cpu_percent": {
+                          "type": "string"
+                        },
+                        "memory_available": {
+                          "type": "boolean"
+                        },
+                        "memory_limit": {
+                          "type": "string"
+                        },
+                        "memory_percent": {
+                          "type": "string"
+                        },
+                        "memory_usage": {
+                          "type": "string"
+                        },
+                        "network_available": {
+                          "type": "boolean"
+                        },
+                        "network_rx": {
+                          "type": "string"
+                        },
+                        "network_tx": {
+                          "type": "string"
+                        },
+                        "stats_available": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -11382,6 +11434,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET of one existing container stats observed only aggregate statistic field names and primitive JSON types; container identifiers and metric values were not retained",
         "parameters": [
           {
             "name": "param",
@@ -11409,11 +11462,81 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "block_io_available": {
+                          "type": "boolean"
+                        },
+                        "block_read": {
+                          "type": "string"
+                        },
+                        "block_write": {
+                          "type": "string"
+                        },
+                        "compatibility_mode": {
+                          "type": "boolean"
+                        },
+                        "cpu_available": {
+                          "type": "boolean"
+                        },
+                        "cpu_percent": {
+                          "type": "string"
+                        },
+                        "disk_read_speed": {
+                          "type": "integer"
+                        },
+                        "disk_write_speed": {
+                          "type": "integer"
+                        },
+                        "last_update": {
+                          "type": "string"
+                        },
+                        "memory_available": {
+                          "type": "boolean"
+                        },
+                        "memory_limit": {
+                          "type": "string"
+                        },
+                        "memory_percent": {
+                          "type": "string"
+                        },
+                        "memory_usage": {
+                          "type": "string"
+                        },
+                        "network_available": {
+                          "type": "boolean"
+                        },
+                        "network_rx": {
+                          "type": "string"
+                        },
+                        "network_rx_speed": {
+                          "type": "integer"
+                        },
+                        "network_tx": {
+                          "type": "string"
+                        },
+                        "network_tx_speed": {
+                          "type": "integer"
+                        },
+                        "port_services": {
+                          "type": "object"
+                        },
+                        "stats_available": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -11434,6 +11557,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET of one existing container cached stats observed aggregate statistic types; dynamic port-service keys were generalized and no container IDs, port numbers or metric values were retained",
         "parameters": [
           {
             "name": "param",
@@ -12144,11 +12268,48 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "containers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "state": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "image_id": {
+                            "type": "string"
+                          },
+                          "is_compose": {
+                            "type": "boolean"
+                          }
+                        }
+                      }
+                    },
+                    "count": {
+                      "type": "integer"
+                    },
+                    "image_id": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -12169,6 +12330,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/docker/images/containers for one existing image observed association item types only; image/container IDs and names were not retained",
         "parameters": [
           {
             "name": "image_ref",
@@ -13236,11 +13398,104 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "image": {
+                      "type": "object",
+                      "properties": {
+                        "Id": {
+                          "type": "string"
+                        },
+                        "RepoTags": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "RepoDigests": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "Parent": {
+                          "type": "string"
+                        },
+                        "Comment": {
+                          "type": "string"
+                        },
+                        "Created": {
+                          "type": "string"
+                        },
+                        "DockerVersion": {
+                          "type": "string"
+                        },
+                        "Author": {
+                          "type": "string"
+                        },
+                        "Architecture": {
+                          "type": "string"
+                        },
+                        "Os": {
+                          "type": "string"
+                        },
+                        "Size": {
+                          "type": "integer"
+                        },
+                        "GraphDriver": {
+                          "type": "object",
+                          "properties": {
+                            "Name": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "RootFS": {
+                          "type": "object",
+                          "properties": {
+                            "Type": {
+                              "type": "string"
+                            },
+                            "Layers": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "Metadata": {
+                          "type": "object",
+                          "properties": {
+                            "LastTagTime": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "Descriptor": {
+                          "type": "object",
+                          "properties": {
+                            "mediaType": {
+                              "type": "string"
+                            },
+                            "digest": {
+                              "type": "string"
+                            },
+                            "size": {
+                              "type": "integer"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -13261,6 +13516,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET of one existing image observed inspect metadata types only; image IDs, tags, digests and runtime values were not retained, and Config/env/volume/port details are intentionally omitted",
         "parameters": [
           {
             "name": "param",
@@ -13346,11 +13602,45 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "history": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "Comment": {
+                            "type": "string"
+                          },
+                          "Created": {
+                            "type": "integer"
+                          },
+                          "CreatedBy": {
+                            "type": "string"
+                          },
+                          "Id": {
+                            "type": "string"
+                          },
+                          "Size": {
+                            "type": "integer"
+                          },
+                          "Tags": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -13371,6 +13661,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET of one existing image history observed item field names and JSON types only; layer IDs, build commands/comments and tag values were not retained",
         "parameters": [
           {
             "name": "param",

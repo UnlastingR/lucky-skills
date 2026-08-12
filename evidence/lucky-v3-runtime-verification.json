@@ -1745,6 +1745,42 @@
       "schema_evidence": "authorized GET /api/webservice/discovery/active observed only discovery/runtime capability field names and primitive JSON types"
     },
     {
+      "path": "/api/docker/images/{param}",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "image": {"type": "object", "properties": {"Id": {"type": "string"}, "RepoTags": {"type": "array", "items": {"type": "string"}}, "RepoDigests": {"type": "array", "items": {"type": "string"}}, "Parent": {"type": "string"}, "Comment": {"type": "string"}, "Created": {"type": "string"}, "DockerVersion": {"type": "string"}, "Author": {"type": "string"}, "Architecture": {"type": "string"}, "Os": {"type": "string"}, "Size": {"type": "integer"}, "GraphDriver": {"type": "object", "properties": {"Name": {"type": "string"}}}, "RootFS": {"type": "object", "properties": {"Type": {"type": "string"}, "Layers": {"type": "array", "items": {"type": "string"}}}}, "Metadata": {"type": "object", "properties": {"LastTagTime": {"type": "string"}}}, "Descriptor": {"type": "object", "properties": {"mediaType": {"type": "string"}, "digest": {"type": "string"}, "size": {"type": "integer"}}}}}}},
+      "schema_evidence": "authorized GET of one existing image observed inspect metadata types only; image IDs, tags, digests and runtime values were not retained, and Config/env/volume/port details are intentionally omitted"
+    },
+    {
+      "path": "/api/docker/images/{param}/history",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "history": {"type": "array", "items": {"type": "object", "properties": {"Comment": {"type": "string"}, "Created": {"type": "integer"}, "CreatedBy": {"type": "string"}, "Id": {"type": "string"}, "Size": {"type": "integer"}, "Tags": {"type": "array", "items": {"type": "string"}}}}}}},
+      "schema_evidence": "authorized GET of one existing image history observed item field names and JSON types only; layer IDs, build commands/comments and tag values were not retained"
+    },
+    {
+      "path": "/api/docker/images/containers",
+      "method": "GET",
+      "risk": "read-only",
+      "query_keys": ["image_ref"],
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "containers": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "name": {"type": "string"}, "state": {"type": "string"}, "status": {"type": "string"}, "image_id": {"type": "string"}, "is_compose": {"type": "boolean"}}}}, "count": {"type": "integer"}, "image_id": {"type": "string"}}},
+      "schema_evidence": "authorized GET /api/docker/images/containers for one existing image observed association item types only; image/container IDs and names were not retained"
+    },
+    {
+      "path": "/api/docker/containers/{param}/stats",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "data": {"type": "object", "properties": {"block_io_available": {"type": "boolean"}, "block_read": {"type": "string"}, "block_write": {"type": "string"}, "compatibility_mode": {"type": "boolean"}, "cpu_available": {"type": "boolean"}, "cpu_percent": {"type": "string"}, "memory_available": {"type": "boolean"}, "memory_limit": {"type": "string"}, "memory_percent": {"type": "string"}, "memory_usage": {"type": "string"}, "network_available": {"type": "boolean"}, "network_rx": {"type": "string"}, "network_tx": {"type": "string"}, "stats_available": {"type": "boolean"}}}}},
+      "schema_evidence": "authorized GET of one existing container stats observed only aggregate statistic field names and primitive JSON types; container identifiers and metric values were not retained"
+    },
+    {
+      "path": "/api/docker/containers/{param}/stats-cached",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "data": {"type": "object", "properties": {"block_io_available": {"type": "boolean"}, "block_read": {"type": "string"}, "block_write": {"type": "string"}, "compatibility_mode": {"type": "boolean"}, "cpu_available": {"type": "boolean"}, "cpu_percent": {"type": "string"}, "disk_read_speed": {"type": "integer"}, "disk_write_speed": {"type": "integer"}, "last_update": {"type": "string"}, "memory_available": {"type": "boolean"}, "memory_limit": {"type": "string"}, "memory_percent": {"type": "string"}, "memory_usage": {"type": "string"}, "network_available": {"type": "boolean"}, "network_rx": {"type": "string"}, "network_rx_speed": {"type": "integer"}, "network_tx": {"type": "string"}, "network_tx_speed": {"type": "integer"}, "port_services": {"type": "object"}, "stats_available": {"type": "boolean"}}}}},
+      "schema_evidence": "authorized GET of one existing container cached stats observed aggregate statistic types; dynamic port-service keys were generalized and no container IDs, port numbers or metric values were retained"
+    },
+    {
       "path": "/api/wol/client/state",
       "method": "GET",
       "risk": "read-only",
