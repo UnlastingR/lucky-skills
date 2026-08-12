@@ -2171,11 +2171,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -2196,6 +2201,7 @@
           "lucky_panel-599cSpUA.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/cron/expressioncheck with a valid cron expression returned ret=0 and no additional response fields",
         "parameters": [
           {
             "name": "expression",
@@ -2593,11 +2599,19 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "count": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -2618,6 +2632,7 @@
           "lucky_panel-599cSpUA.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/cron/groups/taskcount observed only ret/count primitive types; no cron group identifiers or task data were retained",
         "parameters": [
           {
             "name": "groupKey",
@@ -20534,11 +20549,32 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "ips": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -20559,6 +20595,7 @@
           "lucky_ipfilter-CGTD3trT.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/ipfliter/porttrap/blockedips with a one-item page observed the pagination envelope and ips=null; blocked-IP item schema and IP values remain unspecified",
         "parameters": [
           {
             "name": "page",
@@ -20771,11 +20808,38 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "ips": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    },
+                    "query": {
+                      "type": "string"
+                    },
+                    "searchType": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -20796,6 +20860,7 @@
           "lucky_ipfilter-CGTD3trT.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/ipfliter/porttrap/blockedips/search using a documentation-only test query observed the search pagination envelope and ips=null; no blocked IP values were retained",
         "parameters": [
           {
             "name": "page",
@@ -22387,11 +22452,30 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "enable": {
+                          "type": "boolean"
+                        },
+                        "validated": {
+                          "type": "boolean"
+                        },
+                        "hasKey": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -22412,6 +22496,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET of one existing module 2FA status observed only enable/validated/hasKey booleans; module key and any 2FA key/secret/code values were not retained",
         "parameters": [
           {
             "name": "param",
@@ -32868,11 +32953,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "list": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -32892,7 +32989,8 @@
         "x-evidence-bundles": [
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/webservice/cgi/list observed list=null on this instance; CGI item fields, commands and paths remain unspecified"
       }
     },
     "/api/webservice/cgi/{param}": {
@@ -33768,11 +33866,19 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "count": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -33793,6 +33899,7 @@
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/webservice/groups/subrulecount observed only ret/count primitive types; no group identifiers or rule data were retained",
         "parameters": [
           {
             "name": "groupKey",
@@ -36368,11 +36475,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -36392,7 +36504,8 @@
         "x-evidence-bundles": [
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/webservice/statistics/ip-profile returned ret=0 with no profile payload on this instance; no IP/profile fields are inferred"
       }
     },
     "/api/webservice/statistics/meta": {
