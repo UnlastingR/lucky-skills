@@ -1781,6 +1781,41 @@
       "schema_evidence": "authorized GET of one existing container cached stats observed aggregate statistic types; dynamic port-service keys were generalized and no container IDs, port numbers or metric values were retained"
     },
     {
+      "path": "/api/docker/container-groups/count",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "count": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/docker/container-groups/count observed only ret/count primitive types; no group identifiers were retained"
+    },
+    {
+      "path": "/api/docker/compose/{param}/backups",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "backups": {"type": "array", "items": {}}}},
+      "schema_evidence": "authorized GET for one existing compose project returned an empty backups array; project identifiers and backup item fields remain unspecified"
+    },
+    {
+      "path": "/api/docker/compose/{param}/ps",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "containers": {"type": "array", "items": {"type": "object", "properties": {"Health": {"type": "string"}, "ID": {"type": "string"}, "Name": {"type": "string"}, "Project": {"type": "string"}, "Service": {"type": "string"}, "State": {"type": "string"}}}}}},
+      "schema_evidence": "authorized GET compose ps for one existing project observed container summary field names/types only; project/container identifiers and names were not retained"
+    },
+    {
+      "path": "/api/docker/labels/{param}/containers",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "containers": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET using one internally discovered existing label key observed containers=null; label key and container item fields remain unspecified"
+    },
+    {
+      "path": "/api/docker/volumes/{param}/backups",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "backups": {"type": "array", "items": {}}}},
+      "schema_evidence": "authorized GET for one existing volume returned an empty backups array; volume name and backup item fields remain unspecified"
+    },
+    {
       "path": "/api/portforwards",
       "method": "GET",
       "risk": "read-only",

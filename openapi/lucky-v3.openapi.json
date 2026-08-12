@@ -7286,11 +7286,20 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "backups": {
+                      "type": "array",
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -7311,6 +7320,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET for one existing compose project returned an empty backups array; project identifiers and backup item fields remain unspecified",
         "parameters": [
           {
             "name": "param",
@@ -7654,11 +7664,42 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "containers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "Health": {
+                            "type": "string"
+                          },
+                          "ID": {
+                            "type": "string"
+                          },
+                          "Name": {
+                            "type": "string"
+                          },
+                          "Project": {
+                            "type": "string"
+                          },
+                          "Service": {
+                            "type": "string"
+                          },
+                          "State": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -7679,6 +7720,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET compose ps for one existing project observed container summary field names/types only; project/container identifiers and names were not retained",
         "parameters": [
           {
             "name": "param",
@@ -8236,11 +8278,19 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "count": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -8261,6 +8311,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/docker/container-groups/count observed only ret/count primitive types; no group identifiers were retained",
         "parameters": [
           {
             "name": "groupKey",
@@ -13915,11 +13966,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "containers": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -13940,6 +14003,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET using one internally discovered existing label key observed containers=null; label key and container item fields remain unspecified",
         "parameters": [
           {
             "name": "param",
@@ -15795,11 +15859,20 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "backups": {
+                      "type": "array",
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -15820,6 +15893,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET for one existing volume returned an empty backups array; volume name and backup item fields remain unspecified",
         "parameters": [
           {
             "name": "param",
