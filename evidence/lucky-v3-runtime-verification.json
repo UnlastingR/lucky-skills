@@ -1728,6 +1728,83 @@
       "risk": "read-only",
       "response_schema": {"type":"object","properties":{"version":{"type":"integer"},"cards":{"type":"array","items":{"type":"object","properties":{"enabled":{"type":"boolean"},"html":{"type":"string"},"id":{"type":"string"},"kind":{"type":"string"},"priority":{"type":"integer"}}}},"display":{"type":"object","properties":{"maxPromotionItems":{"type":"integer"},"promotionSelection":{"type":"string"}}}}},
       "schema_evidence": "authorized GET /api/about-content observed only public content metadata field names and JSON types; HTML/card values were not retained"
+    },
+    {
+      "path": "/api/docker/system-info",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"system_info":{"type":"object","properties":{"api_version":{"type":"string"},"arch":{"type":"string"},"containers":{"type":"integer"},"containers_running":{"type":"integer"},"cpu_cores":{"type":"integer"},"images":{"type":"integer"},"kernel_version":{"type":"string"},"operating_system":{"type":"string"},"os_type":{"type":"string"},"server_version":{"type":"string"},"total_memory":{"type":"integer"},"version":{"type":"string"}}}}},
+      "schema_evidence": "authorized GET /api/docker/system-info observed aggregate Docker/system field names and JSON types only; no runtime values were retained"
+    },
+    {
+      "path": "/api/docker/labels",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"labels":{"type":"object"}}},
+      "schema_evidence": "authorized GET /api/docker/labels observed only the response envelope; label keys/values are dynamic and intentionally not documented"
+    },
+    {
+      "path": "/api/docker/monitor/status",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"status":{"type":"object","properties":{"architecture":{"type":"string"},"cached_containers":{"type":"integer"},"docker_connected":{"type":"boolean"},"interval":{"type":"integer"},"last_update":{"type":"string"},"max_concurrent":{"type":"integer"},"port_detector":{"type":"object","properties":{"http":{"type":"integer"},"https":{"type":"integer"},"other":{"type":"integer"},"total":{"type":"integer"},"unknown":{"type":"integer"}}},"reconnect_interval":{"type":"integer"},"running":{"type":"boolean"},"supported":{"type":"boolean"}}}}},
+      "schema_evidence": "authorized GET /api/docker/monitor/status observed monitor status field names and JSON types only"
+    },
+    {
+      "path": "/api/docker/tasks",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"tasks":{"type":"array","items":{}},"total":{"type":"integer"}}},
+      "schema_evidence": "authorized GET /api/docker/tasks observed task-list envelope; current list was empty so task item schema remains unspecified"
+    },
+    {
+      "path": "/api/docker/tasks/image-pull/active",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"task":{}}},
+      "schema_evidence": "authorized GET /api/docker/tasks/image-pull/active returned task=null on an idle instance; task field is retained without inventing an active-task shape"
+    },
+    {
+      "path": "/api/docker/self-container",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"running_in_container":{"type":"boolean"},"self_container_id":{"type":"string"}}},
+      "schema_evidence": "authorized GET /api/docker/self-container observed container-detection field names and primitive JSON types only; live container ID was not retained"
+    },
+    {
+      "path": "/api/webservice/groups",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"list":{"type":["array","null"],"items":{}}}},
+      "schema_evidence": "authorized GET /api/webservice/groups returned list=null on this instance; only envelope and nullable-list shape are claimed"
+    },
+    {
+      "path": "/api/webservice/rules_lite",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"list":{"type":"array","items":{"type":"object","properties":{"Key":{"type":"string"},"Name":{"type":"string"},"SubRuleList":{"type":["array","null"],"items":{}}}}}}},
+      "schema_evidence": "authorized GET /api/webservice/rules_lite observed lightweight rule field names/types only; live keys/names were not retained and subrule item shape remains unspecified"
+    },
+    {
+      "path": "/api/webservice/statistics/meta",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"meta":{"type":"object","properties":{"enabled":{"type":"boolean"},"persistStorage":{"type":"boolean"},"storageMode":{"type":"string"},"backendStoragePath":{"type":"string"},"memoryMaxStorageBytes":{"type":"integer"},"maxStorageBytes":{"type":"integer"},"backendEarlyFlushBytes":{"type":"integer"},"recordAccessEvents":{"type":"boolean"},"recordWAFEvents":{"type":"boolean"},"retentionDays":{"type":"integer"},"sampleIntervalSeconds":{"type":"integer"},"sessionTimeoutMinutes":{"type":"integer"},"maskClientIPInUI":{"type":"boolean"},"abnormalClient4xxThreshold":{"type":"integer"},"abnormalClient5xxThreshold":{"type":"integer"},"browserVisitorCookieEnabled":{"type":"boolean"},"visitorCookieMaxAgeDays":{"type":"integer"},"uvMode":{"type":"string"},"wafAvailable":{"type":"boolean"},"droppedEvents":{"type":"integer"},"recordingStartedAt":{"type":"integer"},"lastSampleAt":{"type":"integer"},"lastWriteAt":{"type":"integer"},"lastError":{"type":"string"},"earliestRecordAt":{"type":"integer"},"latestRecordAt":{"type":"integer"},"dbSizeBytes":{"type":"integer"}}}}},
+      "schema_evidence": "authorized GET /api/webservice/statistics/meta observed statistics metadata field names/types only; live storage paths and metric values were not retained"
+    },
+    {
+      "path": "/api/webservice/statistics/summary",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"summary":{"type":"object","properties":{"timestamp":{"type":"integer"}}},"waf":{"type":"object"}}},
+      "schema_evidence": "authorized GET /api/webservice/statistics/summary observed summary envelope; dynamic WAF summary keys are intentionally unspecified"
+    },
+    {
+      "path": "/api/ddns/odhcpdclients",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"clients":{"type":["array","null"],"items":{}}}},
+      "schema_evidence": "authorized GET /api/ddns/odhcpdclients returned clients=null on this instance; client item schema remains unspecified"
     }
   ]
 }
