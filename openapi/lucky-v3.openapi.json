@@ -353,11 +353,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "list": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -377,7 +389,8 @@
         "x-evidence-bundles": [
           "lucky_cloudflared-CZXQeEtG.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/cloudflared/list returned list=null on this instance; envelope is verified while instance item schema remains frontend-only"
       },
       "post": {
         "summary": "Lucky frontend call: POST /api/cloudflared/list",
@@ -673,11 +686,32 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "logs": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -698,6 +732,7 @@
           "lucky_cloudflared-CZXQeEtG.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/cloudflared/logs observed paginated envelope; current logs are null so log item schema remains unspecified",
         "parameters": [
           {
             "name": "page",
@@ -17676,11 +17711,27 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "configure": {
+                      "type": "object",
+                      "properties": {
+                        "SafeURL": {
+                          "type": "string"
+                        },
+                        "BasicAccount": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -17700,7 +17751,8 @@
         "x-evidence-bundles": [
           "lucky_ipfilter-CGTD3trT.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/ipfliter/autorecordipconf observed config envelope; BasicPassword is intentionally omitted from response documentation"
       },
       "put": {
         "summary": "Lucky frontend call: PUT /api/ipfliter/autorecordipconf",
@@ -17774,11 +17826,33 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "list": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "Action": {
+                            "type": "integer"
+                          },
+                          "Key": {
+                            "type": "string"
+                          },
+                          "Name": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -17798,7 +17872,8 @@
         "x-evidence-bundles": [
           "lucky_ipfilter-CGTD3trT.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/ipfliter/list observed list envelope and built-in main-rule summary field types"
       }
     },
     "/api/ipfliter/list/subrulelist/order/{param}": {
@@ -17882,11 +17957,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "subRuleList": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -17907,6 +17994,7 @@
           "lucky_ipfilter-CGTD3trT.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/ipfliter/list/subrulelist/{key} observed response envelope; current built-in rules have null subRuleList so item schema is intentionally unspecified",
         "parameters": [
           {
             "name": "param",
@@ -17984,11 +18072,43 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "rule": {
+                      "type": "object",
+                      "properties": {
+                        "Action": {
+                          "type": "integer"
+                        },
+                        "AutoRecordMemLimit": {
+                          "type": "integer"
+                        },
+                        "AutoRecordTxtLimit": {
+                          "type": "integer"
+                        },
+                        "Key": {
+                          "type": "string"
+                        },
+                        "Name": {
+                          "type": "string"
+                        },
+                        "SubRuleList": {
+                          "type": [
+                            "array",
+                            "null"
+                          ],
+                          "items": {}
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -18009,6 +18129,7 @@
           "lucky_ipfilter-CGTD3trT.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/ipfliter/list/{key} observed built-in main-rule detail field types",
         "parameters": [
           {
             "name": "param",
@@ -18522,11 +18643,37 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "list": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "Key": {
+                            "type": "string"
+                          },
+                          "Name": {
+                            "type": "string"
+                          },
+                          "SubRuleList": {
+                            "type": [
+                              "array",
+                              "null"
+                            ],
+                            "items": {}
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -18546,7 +18693,8 @@
         "x-evidence-bundles": [
           "lucky_ipfilter-CGTD3trT.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/ipfliter/listlite observed compact rule envelope; current built-in SubRuleList values are null so item shape remains unspecified"
       }
     },
     "/api/ipfliter/oneclickrecord": {
@@ -19027,11 +19175,36 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "stats": {
+                      "type": "object",
+                      "properties": {
+                        "running": {
+                          "type": "boolean"
+                        },
+                        "tcpListenerCount": {
+                          "type": "integer"
+                        },
+                        "udpListenerCount": {
+                          "type": "integer"
+                        },
+                        "totalCaptureCount": {
+                          "type": "integer"
+                        },
+                        "uniqueIPCount": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -19051,7 +19224,8 @@
         "x-evidence-bundles": [
           "lucky_ipfilter-CGTD3trT.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/ipfliter/porttrap/stats observed stats envelope and primitive types"
       }
     },
     "/api/ipfliter/porttrap/stats/reset": {
@@ -19111,11 +19285,116 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "configure": {
+                      "type": "object",
+                      "properties": {
+                        "AllowRuleKeys": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "DefaultAllowIPs": {
+                          "type": "array",
+                          "items": {}
+                        },
+                        "Enable": {
+                          "type": "boolean"
+                        },
+                        "IPv6PrefixLen": {
+                          "type": "integer"
+                        },
+                        "Script": {
+                          "type": "string"
+                        },
+                        "ScriptEnable": {
+                          "type": "boolean"
+                        },
+                        "ScriptTriggerInterval": {
+                          "type": "integer"
+                        },
+                        "TCPPorts": {
+                          "type": "array",
+                          "items": {}
+                        },
+                        "TargetRuleKey": {
+                          "type": "string"
+                        },
+                        "UDPPorts": {
+                          "type": "array",
+                          "items": {}
+                        },
+                        "WebhookBody": {
+                          "type": "string"
+                        },
+                        "WebhookDisableCallbackSuccessContentCheck": {
+                          "type": "boolean"
+                        },
+                        "WebhookEnable": {
+                          "type": "boolean"
+                        },
+                        "WebhookHeaders": {
+                          "type": "array",
+                          "items": {}
+                        },
+                        "WebhookMethod": {
+                          "type": "string"
+                        },
+                        "WebhookProxy": {
+                          "type": "string"
+                        },
+                        "WebhookProxyAddr": {
+                          "type": "string"
+                        },
+                        "WebhookProxyUser": {
+                          "type": "string"
+                        },
+                        "WebhookRetryCount": {
+                          "type": "integer"
+                        },
+                        "WebhookRetryInterval": {
+                          "type": "integer"
+                        },
+                        "WebhookSuccessContent": {
+                          "type": "array",
+                          "items": {}
+                        },
+                        "WebhookTimeout": {
+                          "type": "integer"
+                        },
+                        "WebhookTriggerInterval": {
+                          "type": "integer"
+                        },
+                        "WebhookURL": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "defaultAllowIPsValidation": {
+                      "type": "object",
+                      "properties": {
+                        "hasInvalidEntries": {
+                          "type": "boolean"
+                        },
+                        "invalidEntries": {
+                          "type": "array",
+                          "items": {}
+                        },
+                        "invalidEntryCount": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -19135,7 +19414,8 @@
         "x-evidence-bundles": [
           "lucky_ipfilter-CGTD3trT.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/ipfliter/porttrapconf observed config/validation envelopes; WebhookProxyPassword is intentionally omitted from response documentation and empty-array element types remain unspecified"
       },
       "put": {
         "summary": "Lucky frontend call: PUT /api/ipfliter/porttrapconf",
@@ -20834,7 +21114,7 @@
           "lucky_portforward-13uBauEz.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend configure model pass-through + authorized GET /api/portforward/configure field-name shape",
+        "x-schema-evidence": "frontend configure model pass-through + authorized GET /api/portforward/configure cross-checked all primitive types",
         "requestBody": {
           "required": true,
           "content": {
@@ -20842,22 +21122,54 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "ConfVer": {},
-                  "ConnectionDownloadRateLimit": {},
-                  "ConnectionDownloadRateLimitEnabled": {},
-                  "ConnectionUploadRateLimit": {},
-                  "ConnectionUploadRateLimitEnabled": {},
-                  "Enable": {},
-                  "IPConnectionsLimit": {},
-                  "IPDownloadRateLimit": {},
-                  "IPDownloadRateLimitEnabled": {},
-                  "IPMaxConnections": {},
-                  "IPUploadRateLimit": {},
-                  "IPUploadRateLimitEnabled": {},
-                  "Nolimit": {},
-                  "PortForwardsLimit": {},
-                  "TCPPortforwardMaxConnections": {},
-                  "UDPReadTargetDataMaxgoroutineCount": {}
+                  "ConfVer": {
+                    "type": "integer"
+                  },
+                  "ConnectionDownloadRateLimit": {
+                    "type": "integer"
+                  },
+                  "ConnectionDownloadRateLimitEnabled": {
+                    "type": "boolean"
+                  },
+                  "ConnectionUploadRateLimit": {
+                    "type": "integer"
+                  },
+                  "ConnectionUploadRateLimitEnabled": {
+                    "type": "boolean"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "IPConnectionsLimit": {
+                    "type": "boolean"
+                  },
+                  "IPDownloadRateLimit": {
+                    "type": "integer"
+                  },
+                  "IPDownloadRateLimitEnabled": {
+                    "type": "boolean"
+                  },
+                  "IPMaxConnections": {
+                    "type": "integer"
+                  },
+                  "IPUploadRateLimit": {
+                    "type": "integer"
+                  },
+                  "IPUploadRateLimitEnabled": {
+                    "type": "boolean"
+                  },
+                  "Nolimit": {
+                    "type": "boolean"
+                  },
+                  "PortForwardsLimit": {
+                    "type": "integer"
+                  },
+                  "TCPPortforwardMaxConnections": {
+                    "type": "integer"
+                  },
+                  "UDPReadTargetDataMaxgoroutineCount": {
+                    "type": "integer"
+                  }
                 }
               }
             }
@@ -23014,11 +23326,20 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "list": {
+                      "type": "array",
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -23038,7 +23359,8 @@
         "x-evidence-bundles": [
           "lucky_securitygroups-BUSWhzzM.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/security-groups returned an empty list; envelope is verified while group item schema remains unspecified"
       },
       "post": {
         "summary": "Lucky frontend call: POST /api/security-groups",
@@ -23079,7 +23401,7 @@
           "lucky_securitygroups-BUSWhzzM.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend SecurityGroupFormDialog initializes and submits this explicit group model; current authorized group list is empty",
+        "x-schema-evidence": "frontend SecurityGroupFormDialog initializes and submits this explicit typed group model; current authorized group list is empty",
         "requestBody": {
           "required": true,
           "content": {
@@ -23087,12 +23409,24 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Key": {},
-                  "Name": {},
-                  "Enable": {},
-                  "SessionTTLMinutes": {},
-                  "AllowWebAuthIPBypass": {},
-                  "Description": {}
+                  "Key": {
+                    "type": "string"
+                  },
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "SessionTTLMinutes": {
+                    "type": "integer"
+                  },
+                  "AllowWebAuthIPBypass": {
+                    "type": "boolean"
+                  },
+                  "Description": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -23115,11 +23449,20 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "list": {
+                      "type": "array",
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -23139,7 +23482,8 @@
         "x-evidence-bundles": [
           "lucky_securitygroups-BUSWhzzM.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/security-groups/grants returned an empty list; envelope is verified and grant item schema remains unspecified"
       }
     },
     "/api/security-groups/grants/delete": {
@@ -23264,11 +23608,20 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "list": {
+                      "type": "array",
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -23288,7 +23641,8 @@
         "x-evidence-bundles": [
           "lucky_securitygroups-BUSWhzzM.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/security-groups/lite returned an empty list; envelope is verified while item schema remains unspecified"
       }
     },
     "/api/security-groups/oauth-users": {
@@ -23306,11 +23660,20 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "list": {
+                      "type": "array",
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -23330,7 +23693,8 @@
         "x-evidence-bundles": [
           "lucky_securitygroups-BUSWhzzM.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/security-groups/oauth-users returned an empty list; envelope is verified and OAuth-user item schema is intentionally not guessed"
       },
       "post": {
         "summary": "Lucky frontend call: POST /api/security-groups/oauth-users",
@@ -23371,7 +23735,7 @@
           "lucky_securitygroups-BUSWhzzM.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend OAuth-user form initializes this explicit model and clears MatchID/MatchEmail/MatchName before save",
+        "x-schema-evidence": "frontend OAuth-user form initializes this explicit typed model and clears MatchID/MatchEmail/MatchName before save",
         "requestBody": {
           "required": true,
           "content": {
@@ -23379,16 +23743,39 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Key": {},
-                  "ThirdAuthUserKey": {},
-                  "Provider": {},
-                  "SkipTwoFA": {},
-                  "MatchID": {},
-                  "MatchEmail": {},
-                  "MatchName": {},
-                  "Enable": {},
-                  "GrantSecurityGroups": {},
-                  "Description": {}
+                  "Key": {
+                    "type": "string"
+                  },
+                  "ThirdAuthUserKey": {
+                    "type": "string"
+                  },
+                  "Provider": {
+                    "type": "string"
+                  },
+                  "SkipTwoFA": {
+                    "type": "boolean"
+                  },
+                  "MatchID": {
+                    "type": "string"
+                  },
+                  "MatchEmail": {
+                    "type": "string"
+                  },
+                  "MatchName": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "GrantSecurityGroups": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "Description": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -23486,7 +23873,7 @@
           "lucky_securitygroups-BUSWhzzM.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend edits the same OAuth-user model, normalizes group membership and clears match helper fields before PUT",
+        "x-schema-evidence": "frontend edits the same typed OAuth-user model, normalizes group membership and clears match helper fields before PUT",
         "parameters": [
           {
             "name": "param",
@@ -23504,16 +23891,39 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Key": {},
-                  "ThirdAuthUserKey": {},
-                  "Provider": {},
-                  "SkipTwoFA": {},
-                  "MatchID": {},
-                  "MatchEmail": {},
-                  "MatchName": {},
-                  "Enable": {},
-                  "GrantSecurityGroups": {},
-                  "Description": {}
+                  "Key": {
+                    "type": "string"
+                  },
+                  "ThirdAuthUserKey": {
+                    "type": "string"
+                  },
+                  "Provider": {
+                    "type": "string"
+                  },
+                  "SkipTwoFA": {
+                    "type": "boolean"
+                  },
+                  "MatchID": {
+                    "type": "string"
+                  },
+                  "MatchEmail": {
+                    "type": "string"
+                  },
+                  "MatchName": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "GrantSecurityGroups": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "Description": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -23536,11 +23946,20 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "list": {
+                      "type": "array",
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -23560,7 +23979,8 @@
         "x-evidence-bundles": [
           "lucky_securitygroups-BUSWhzzM.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/security-groups/users returned an empty list; envelope is verified and user item schema is intentionally not guessed"
       },
       "post": {
         "summary": "Lucky frontend call: POST /api/security-groups/users",
@@ -23601,7 +24021,7 @@
           "lucky_securitygroups-BUSWhzzM.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend local-user form initializes this explicit model; only field names are recorded and no credential values are stored",
+        "x-schema-evidence": "frontend local-user form initializes this explicit typed model; credential field types are documented but no credential values are stored",
         "requestBody": {
           "required": true,
           "content": {
@@ -23609,16 +24029,39 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Key": {},
-                  "Name": {},
-                  "Username": {},
-                  "PasswordHash": {},
-                  "Password": {},
-                  "TwoFASecret": {},
-                  "Enable": {},
-                  "GrantSecurityGroups": {},
-                  "Description": {},
-                  "HasPassword": {}
+                  "Key": {
+                    "type": "string"
+                  },
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Username": {
+                    "type": "string"
+                  },
+                  "PasswordHash": {
+                    "type": "string"
+                  },
+                  "Password": {
+                    "type": "string"
+                  },
+                  "TwoFASecret": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "GrantSecurityGroups": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "Description": {
+                    "type": "string"
+                  },
+                  "HasPassword": {
+                    "type": "boolean"
+                  }
                 }
               }
             }
@@ -23716,7 +24159,7 @@
           "lucky_securitygroups-BUSWhzzM.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend edits the same local-user model and removes Password when left empty before PUT; only field names are recorded",
+        "x-schema-evidence": "frontend edits the same typed local-user model and removes Password when left empty before PUT; credential values are not stored in evidence",
         "parameters": [
           {
             "name": "param",
@@ -23734,16 +24177,39 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Key": {},
-                  "Name": {},
-                  "Username": {},
-                  "PasswordHash": {},
-                  "Password": {},
-                  "TwoFASecret": {},
-                  "Enable": {},
-                  "GrantSecurityGroups": {},
-                  "Description": {},
-                  "HasPassword": {}
+                  "Key": {
+                    "type": "string"
+                  },
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Username": {
+                    "type": "string"
+                  },
+                  "PasswordHash": {
+                    "type": "string"
+                  },
+                  "Password": {
+                    "type": "string"
+                  },
+                  "TwoFASecret": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "GrantSecurityGroups": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "Description": {
+                    "type": "string"
+                  },
+                  "HasPassword": {
+                    "type": "boolean"
+                  }
                 }
               }
             }
@@ -23841,7 +24307,7 @@
           "lucky_securitygroups-BUSWhzzM.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend edits the same group model and passes a copied object to PUT; toggle actions also update subsets of this model",
+        "x-schema-evidence": "frontend edits the same typed group model and passes a copied object to PUT; toggle actions also update subsets of this model",
         "parameters": [
           {
             "name": "param",
@@ -23859,12 +24325,24 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Key": {},
-                  "Name": {},
-                  "Enable": {},
-                  "SessionTTLMinutes": {},
-                  "AllowWebAuthIPBypass": {},
-                  "Description": {}
+                  "Key": {
+                    "type": "string"
+                  },
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "SessionTTLMinutes": {
+                    "type": "integer"
+                  },
+                  "AllowWebAuthIPBypass": {
+                    "type": "boolean"
+                  },
+                  "Description": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -24299,11 +24777,145 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "list": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "Key": {
+                            "type": "string"
+                          },
+                          "Remark": {
+                            "type": "string"
+                          },
+                          "Enable": {
+                            "type": "boolean"
+                          },
+                          "AddFrom": {
+                            "type": "string"
+                          },
+                          "AddTime": {
+                            "type": "string"
+                          },
+                          "UpdateTime": {
+                            "type": "string"
+                          },
+                          "MappingPath": {
+                            "type": "string"
+                          },
+                          "MappingToPath": {
+                            "type": "boolean"
+                          },
+                          "MappingChangeScript": {
+                            "type": "string"
+                          },
+                          "ACMEing": {
+                            "type": "boolean"
+                          },
+                          "ACMECancelingProcess": {
+                            "type": "boolean"
+                          },
+                          "ACMEErrMsg": {
+                            "type": "string"
+                          },
+                          "CertsInfo": {
+                            "type": "object",
+                            "properties": {
+                              "Domains": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "SAN": {
+                                "type": "string"
+                              },
+                              "SANs": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "MD5": {
+                                "type": "string"
+                              },
+                              "SHA1": {
+                                "type": "string"
+                              },
+                              "SHA256": {
+                                "type": "string"
+                              },
+                              "SerialNumber": {
+                                "type": "string"
+                              },
+                              "NotBeforeTime": {
+                                "type": "string"
+                              },
+                              "NotAfterTime": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "ExtParams": {
+                            "type": "object",
+                            "properties": {
+                              "acmeCADirURL": {
+                                "type": "string"
+                              },
+                              "acmeCNAMESupport": {
+                                "type": "boolean"
+                              },
+                              "acmeCallAPINetwork": {
+                                "type": "string"
+                              },
+                              "acmeDNSForceIPv4": {
+                                "type": "boolean"
+                              },
+                              "acmeDNSOnlyTCP": {
+                                "type": "boolean"
+                              },
+                              "acmeDNSServer": {
+                                "type": "string"
+                              },
+                              "acmeEmail": {
+                                "type": "string"
+                              },
+                              "acmeKeyType": {
+                                "type": "string"
+                              },
+                              "acmeOnlyUseIPv4": {
+                                "type": "boolean"
+                              },
+                              "acmeProfile": {
+                                "type": "string"
+                              },
+                              "acmePropagationTimeout": {
+                                "type": "integer"
+                              },
+                              "acmeProxy": {
+                                "type": "string"
+                              },
+                              "acmeProxyAddr": {
+                                "type": "string"
+                              },
+                              "acmeRecursiveNameservers": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -24323,7 +24935,8 @@
         "x-evidence-bundles": [
           "lucky_dnsCredentialSources-CyE9Tpw6.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/ssl observed metadata/nested primitive types; response schema intentionally omits certificate/private-key material, DNS credentials, proxy credentials, and ACME account secrets"
       },
       "post": {
         "summary": "Lucky frontend call: POST /api/ssl",
@@ -24364,7 +24977,7 @@
           "lucky_dnsCredentialSources-CyE9Tpw6.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend certificate editor model is passed directly + authorized GET /api/ssl/{key} info field-name shape",
+        "x-schema-evidence": "frontend certificate editor model is passed directly + authorized GET /api/ssl/{key} cross-checked top-level and ExtParams primitive types; request-only secret fields remain documented only on the write schema",
         "requestBody": {
           "required": true,
           "content": {
@@ -24372,22 +24985,171 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "AcmeErrorMsg": {},
-                  "AddFrom": {},
-                  "AddTime": {},
-                  "AllSyncClient": {},
-                  "CertBase64": {},
-                  "Enable": {},
-                  "ExtParams": {},
-                  "IssuerCertificate": {},
-                  "Key": {},
-                  "KeyBase64": {},
-                  "MappingChangeScript": {},
-                  "MappingPath": {},
-                  "MappingToPath": {},
-                  "Remark": {},
-                  "SyncClientList": {},
-                  "UpdateTime": {}
+                  "AcmeErrorMsg": {
+                    "type": "string"
+                  },
+                  "AddFrom": {
+                    "type": "string"
+                  },
+                  "AddTime": {
+                    "type": "string"
+                  },
+                  "AllSyncClient": {
+                    "type": "boolean"
+                  },
+                  "CertBase64": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "ExtParams": {
+                    "type": "object",
+                    "properties": {
+                      "acmeCADirURL": {
+                        "type": "string"
+                      },
+                      "acmeCNAMESupport": {
+                        "type": "boolean"
+                      },
+                      "acmeCallAPINetwork": {
+                        "type": "string"
+                      },
+                      "acmeDNSForceIPv4": {
+                        "type": "boolean"
+                      },
+                      "acmeDNSID": {
+                        "type": "string"
+                      },
+                      "acmeDNSOnlyTCP": {
+                        "type": "boolean"
+                      },
+                      "acmeDNSSecret": {
+                        "type": "string"
+                      },
+                      "acmeDNSServer": {
+                        "type": "string"
+                      },
+                      "acmeDisableAuthoritativeNssPropagationRequirement": {
+                        "type": "boolean"
+                      },
+                      "acmeDisableCompletePropagationRequirement": {
+                        "type": "boolean"
+                      },
+                      "acmeDomains": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "acmeEmail": {
+                        "type": "string"
+                      },
+                      "acmeFindZoneUseDNS": {
+                        "type": "boolean"
+                      },
+                      "acmeHMAC": {
+                        "type": "string"
+                      },
+                      "acmeIgnorePropagationChecErrors": {
+                        "type": "boolean"
+                      },
+                      "acmeKeyType": {
+                        "type": "string"
+                      },
+                      "acmeKid": {
+                        "type": "string"
+                      },
+                      "acmeOnlyUseIPv4": {
+                        "type": "boolean"
+                      },
+                      "acmeProfile": {
+                        "type": "string"
+                      },
+                      "acmePropagationTimeout": {
+                        "type": "integer"
+                      },
+                      "acmeProxy": {
+                        "type": "string"
+                      },
+                      "acmeProxyAddr": {
+                        "type": "string"
+                      },
+                      "acmeProxyPassword": {
+                        "type": "string"
+                      },
+                      "acmeProxyUser": {
+                        "type": "string"
+                      },
+                      "acmeRecursiveNameservers": {
+                        "type": "string"
+                      },
+                      "acmeRotatePrivateKeyPerRequest": {
+                        "type": "boolean"
+                      },
+                      "acmeSequentialSolver": {
+                        "type": "boolean"
+                      },
+                      "acmeUseGlobalPrivateKey": {
+                        "type": "boolean"
+                      },
+                      "acmeWaitforcertificateTimeout": {
+                        "type": "integer"
+                      },
+                      "certPath": {
+                        "type": "string"
+                      },
+                      "keyPath": {
+                        "type": "string"
+                      },
+                      "preACMECADirURL": {
+                        "type": "string"
+                      },
+                      "preACMEEmail": {
+                        "type": "string"
+                      },
+                      "preACMEHMAC": {
+                        "type": "string"
+                      },
+                      "preACMEKid": {
+                        "type": "string"
+                      },
+                      "preACMERegistrationInfo": {
+                        "type": "string"
+                      },
+                      "prePrivateKeyBase64": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "IssuerCertificate": {
+                    "type": "string"
+                  },
+                  "Key": {
+                    "type": "string"
+                  },
+                  "KeyBase64": {
+                    "type": "string"
+                  },
+                  "MappingChangeScript": {
+                    "type": "string"
+                  },
+                  "MappingPath": {
+                    "type": "string"
+                  },
+                  "MappingToPath": {
+                    "type": "boolean"
+                  },
+                  "Remark": {
+                    "type": "string"
+                  },
+                  "SyncClientList": {
+                    "type": "array",
+                    "items": {}
+                  },
+                  "UpdateTime": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -24433,7 +25195,7 @@
           "lucky_dnsCredentialSources-CyE9Tpw6.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend certificate editor model is passed directly + authorized GET /api/ssl/{key} info field-name shape",
+        "x-schema-evidence": "frontend certificate editor model is passed directly + authorized GET /api/ssl/{key} cross-checked top-level and ExtParams primitive types; request-only secret fields remain documented only on the write schema",
         "requestBody": {
           "required": true,
           "content": {
@@ -24441,22 +25203,171 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "AcmeErrorMsg": {},
-                  "AddFrom": {},
-                  "AddTime": {},
-                  "AllSyncClient": {},
-                  "CertBase64": {},
-                  "Enable": {},
-                  "ExtParams": {},
-                  "IssuerCertificate": {},
-                  "Key": {},
-                  "KeyBase64": {},
-                  "MappingChangeScript": {},
-                  "MappingPath": {},
-                  "MappingToPath": {},
-                  "Remark": {},
-                  "SyncClientList": {},
-                  "UpdateTime": {}
+                  "AcmeErrorMsg": {
+                    "type": "string"
+                  },
+                  "AddFrom": {
+                    "type": "string"
+                  },
+                  "AddTime": {
+                    "type": "string"
+                  },
+                  "AllSyncClient": {
+                    "type": "boolean"
+                  },
+                  "CertBase64": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "ExtParams": {
+                    "type": "object",
+                    "properties": {
+                      "acmeCADirURL": {
+                        "type": "string"
+                      },
+                      "acmeCNAMESupport": {
+                        "type": "boolean"
+                      },
+                      "acmeCallAPINetwork": {
+                        "type": "string"
+                      },
+                      "acmeDNSForceIPv4": {
+                        "type": "boolean"
+                      },
+                      "acmeDNSID": {
+                        "type": "string"
+                      },
+                      "acmeDNSOnlyTCP": {
+                        "type": "boolean"
+                      },
+                      "acmeDNSSecret": {
+                        "type": "string"
+                      },
+                      "acmeDNSServer": {
+                        "type": "string"
+                      },
+                      "acmeDisableAuthoritativeNssPropagationRequirement": {
+                        "type": "boolean"
+                      },
+                      "acmeDisableCompletePropagationRequirement": {
+                        "type": "boolean"
+                      },
+                      "acmeDomains": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "acmeEmail": {
+                        "type": "string"
+                      },
+                      "acmeFindZoneUseDNS": {
+                        "type": "boolean"
+                      },
+                      "acmeHMAC": {
+                        "type": "string"
+                      },
+                      "acmeIgnorePropagationChecErrors": {
+                        "type": "boolean"
+                      },
+                      "acmeKeyType": {
+                        "type": "string"
+                      },
+                      "acmeKid": {
+                        "type": "string"
+                      },
+                      "acmeOnlyUseIPv4": {
+                        "type": "boolean"
+                      },
+                      "acmeProfile": {
+                        "type": "string"
+                      },
+                      "acmePropagationTimeout": {
+                        "type": "integer"
+                      },
+                      "acmeProxy": {
+                        "type": "string"
+                      },
+                      "acmeProxyAddr": {
+                        "type": "string"
+                      },
+                      "acmeProxyPassword": {
+                        "type": "string"
+                      },
+                      "acmeProxyUser": {
+                        "type": "string"
+                      },
+                      "acmeRecursiveNameservers": {
+                        "type": "string"
+                      },
+                      "acmeRotatePrivateKeyPerRequest": {
+                        "type": "boolean"
+                      },
+                      "acmeSequentialSolver": {
+                        "type": "boolean"
+                      },
+                      "acmeUseGlobalPrivateKey": {
+                        "type": "boolean"
+                      },
+                      "acmeWaitforcertificateTimeout": {
+                        "type": "integer"
+                      },
+                      "certPath": {
+                        "type": "string"
+                      },
+                      "keyPath": {
+                        "type": "string"
+                      },
+                      "preACMECADirURL": {
+                        "type": "string"
+                      },
+                      "preACMEEmail": {
+                        "type": "string"
+                      },
+                      "preACMEHMAC": {
+                        "type": "string"
+                      },
+                      "preACMEKid": {
+                        "type": "string"
+                      },
+                      "preACMERegistrationInfo": {
+                        "type": "string"
+                      },
+                      "prePrivateKeyBase64": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "IssuerCertificate": {
+                    "type": "string"
+                  },
+                  "Key": {
+                    "type": "string"
+                  },
+                  "KeyBase64": {
+                    "type": "string"
+                  },
+                  "MappingChangeScript": {
+                    "type": "string"
+                  },
+                  "MappingPath": {
+                    "type": "string"
+                  },
+                  "MappingToPath": {
+                    "type": "boolean"
+                  },
+                  "Remark": {
+                    "type": "string"
+                  },
+                  "SyncClientList": {
+                    "type": "array",
+                    "items": {}
+                  },
+                  "UpdateTime": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -24479,11 +25390,48 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "kind": {
+                            "type": "string"
+                          },
+                          "label": {
+                            "type": "string"
+                          },
+                          "provider": {
+                            "type": "string"
+                          },
+                          "sourceKey": {
+                            "type": "string"
+                          },
+                          "proxyType": {
+                            "type": "string"
+                          },
+                          "proxyAddr": {
+                            "type": "string"
+                          },
+                          "callApiNetwork": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -24503,7 +25451,8 @@
         "x-evidence-bundles": [
           "lucky_dnsCredentialSources-CyE9Tpw6.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/ssl/credential-sources observed envelope and metadata fields; idValue, secretValue, proxyUser, and proxyPassword are intentionally omitted from response documentation"
       }
     },
     "/api/ssl/download": {
@@ -24783,11 +25732,49 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "defaultACMEEMail": {
+                      "type": "string"
+                    },
+                    "renewalThresholdDays": {
+                      "type": "integer"
+                    },
+                    "shortlivedCheckTimesPerDay": {
+                      "type": "integer"
+                    },
+                    "shortlivedRenewalThresholdHours": {
+                      "type": "integer"
+                    },
+                    "certificateCheckTime": {
+                      "type": "object",
+                      "properties": {
+                        "Hour": {
+                          "type": "integer"
+                        },
+                        "Minute": {
+                          "type": "integer"
+                        },
+                        "Second": {
+                          "type": "integer"
+                        }
+                      },
+                      "syncClientList": {
+                        "type": [
+                          "array",
+                          "null"
+                        ],
+                        "items": {}
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -24807,7 +25794,8 @@
         "x-evidence-bundles": [
           "lucky_dnsCredentialSources-CyE9Tpw6.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/ssl/setting observed field types; globalPrivateKey is intentionally omitted from response documentation"
       },
       "put": {
         "summary": "Lucky frontend call: PUT /api/ssl/setting",
@@ -24848,7 +25836,7 @@
           "lucky_dnsCredentialSources-CyE9Tpw6.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend data:settings pass-through + authorized GET /api/ssl/setting field-name shape",
+        "x-schema-evidence": "frontend data:settings pass-through + authorized GET /api/ssl/setting cross-checked primitive types and certificateCheckTime structure",
         "requestBody": {
           "required": true,
           "content": {
@@ -24856,13 +25844,48 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "certificateCheckTime": {},
-                  "defaultACMEEMail": {},
-                  "globalPrivateKey": {},
-                  "renewalThresholdDays": {},
-                  "shortlivedCheckTimesPerDay": {},
-                  "shortlivedRenewalThresholdHours": {},
-                  "syncClientList": {}
+                  "certificateCheckTime": {
+                    "type": "object",
+                    "properties": {
+                      "Hour": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 23
+                      },
+                      "Minute": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 59
+                      },
+                      "Second": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 59
+                      }
+                    }
+                  },
+                  "defaultACMEEMail": {
+                    "type": "string"
+                  },
+                  "globalPrivateKey": {
+                    "type": "string"
+                  },
+                  "renewalThresholdDays": {
+                    "type": "integer"
+                  },
+                  "shortlivedCheckTimesPerDay": {
+                    "type": "integer"
+                  },
+                  "shortlivedRenewalThresholdHours": {
+                    "type": "integer"
+                  },
+                  "syncClientList": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {}
+                  }
                 }
               }
             }
@@ -24983,11 +26006,108 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "key": {
+                      "type": "string"
+                    },
+                    "info": {
+                      "type": "object",
+                      "properties": {
+                        "Key": {
+                          "type": "string"
+                        },
+                        "Remark": {
+                          "type": "string"
+                        },
+                        "Enable": {
+                          "type": "boolean"
+                        },
+                        "AddFrom": {
+                          "type": "string"
+                        },
+                        "AddTime": {
+                          "type": "string"
+                        },
+                        "UpdateTime": {
+                          "type": "string"
+                        },
+                        "AllSyncClient": {
+                          "type": "boolean"
+                        },
+                        "MappingPath": {
+                          "type": "string"
+                        },
+                        "MappingToPath": {
+                          "type": "boolean"
+                        },
+                        "MappingChangeScript": {
+                          "type": "string"
+                        },
+                        "AcmeErrorMsg": {
+                          "type": "string"
+                        },
+                        "SyncClientList": {
+                          "type": "array",
+                          "items": {}
+                        },
+                        "ExtParams": {
+                          "type": "object",
+                          "properties": {
+                            "acmeCADirURL": {
+                              "type": "string"
+                            },
+                            "acmeCNAMESupport": {
+                              "type": "boolean"
+                            },
+                            "acmeCallAPINetwork": {
+                              "type": "string"
+                            },
+                            "acmeDNSForceIPv4": {
+                              "type": "boolean"
+                            },
+                            "acmeDNSOnlyTCP": {
+                              "type": "boolean"
+                            },
+                            "acmeDNSServer": {
+                              "type": "string"
+                            },
+                            "acmeEmail": {
+                              "type": "string"
+                            },
+                            "acmeKeyType": {
+                              "type": "string"
+                            },
+                            "acmeOnlyUseIPv4": {
+                              "type": "boolean"
+                            },
+                            "acmeProfile": {
+                              "type": "string"
+                            },
+                            "acmePropagationTimeout": {
+                              "type": "integer"
+                            },
+                            "acmeProxy": {
+                              "type": "string"
+                            },
+                            "acmeProxyAddr": {
+                              "type": "string"
+                            },
+                            "acmeRecursiveNameservers": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -25008,6 +26128,7 @@
           "lucky_dnsCredentialSources-CyE9Tpw6.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/ssl/{key} observed response envelope and field types; response schema intentionally excludes CertBase64, KeyBase64, issuer certificate, DNS credentials, proxy credentials, and private-key/account material",
         "parameters": [
           {
             "name": "param",
@@ -26108,11 +27229,96 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "configure": {
+                      "type": "object",
+                      "properties": {
+                        "ConfVer": {
+                          "type": "integer"
+                        },
+                        "EnableModule": {
+                          "type": "boolean"
+                        },
+                        "GlobalStunServerList": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "RetryCount": {
+                          "type": "integer"
+                        },
+                        "RetryInterval": {
+                          "type": "integer"
+                        },
+                        "WebHookTimeout": {
+                          "type": "integer"
+                        },
+                        "WebhookDisableCallbackSuccessContentCheck": {
+                          "type": "boolean"
+                        },
+                        "WebhookEnable": {
+                          "type": "boolean"
+                        },
+                        "WebhookHeaders": {
+                          "type": [
+                            "array",
+                            "null"
+                          ],
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "WebhookInsecureSkipVerify": {
+                          "type": "boolean"
+                        },
+                        "WebhookLocalAddr": {
+                          "type": "string"
+                        },
+                        "WebhookMethod": {
+                          "type": "string"
+                        },
+                        "WebhookNetworkType": {
+                          "type": "string"
+                        },
+                        "WebhookOnlyAddrChange": {
+                          "type": "boolean"
+                        },
+                        "WebhookProxy": {
+                          "type": "string"
+                        },
+                        "WebhookProxyAddr": {
+                          "type": "string"
+                        },
+                        "WebhookProxyUser": {
+                          "type": "string"
+                        },
+                        "WebhookRequestBody": {
+                          "type": "string"
+                        },
+                        "WebhookSuccessContent": {
+                          "type": [
+                            "array",
+                            "null"
+                          ],
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "WebhookURL": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -26132,7 +27338,8 @@
         "x-evidence-bundles": [
           "lucky_stun-DdoTf-uI.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET /api/stun/configure observed config envelope and types; WebhookProxyPassword is intentionally omitted from response documentation"
       },
       "put": {
         "summary": "Lucky frontend call: PUT /api/stun/configure",
@@ -26173,7 +27380,7 @@
           "lucky_stun-DdoTf-uI.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend configure model pass-through + authorized GET /api/stun/configure field-name shape",
+        "x-schema-evidence": "frontend configure model pass-through + authorized GET /api/stun/configure cross-checked primitive/list types; request-only proxy password remains documented only on the write schema",
         "requestBody": {
           "required": true,
           "content": {
@@ -26181,27 +27388,84 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "ConfVer": {},
-                  "EnableModule": {},
-                  "GlobalStunServerList": {},
-                  "RetryCount": {},
-                  "RetryInterval": {},
-                  "WebHookTimeout": {},
-                  "WebhookDisableCallbackSuccessContentCheck": {},
-                  "WebhookEnable": {},
-                  "WebhookHeaders": {},
-                  "WebhookInsecureSkipVerify": {},
-                  "WebhookLocalAddr": {},
-                  "WebhookMethod": {},
-                  "WebhookNetworkType": {},
-                  "WebhookOnlyAddrChange": {},
-                  "WebhookProxy": {},
-                  "WebhookProxyAddr": {},
-                  "WebhookProxyPassword": {},
-                  "WebhookProxyUser": {},
-                  "WebhookRequestBody": {},
-                  "WebhookSuccessContent": {},
-                  "WebhookURL": {}
+                  "ConfVer": {
+                    "type": "integer"
+                  },
+                  "EnableModule": {
+                    "type": "boolean"
+                  },
+                  "GlobalStunServerList": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "RetryCount": {
+                    "type": "integer"
+                  },
+                  "RetryInterval": {
+                    "type": "integer"
+                  },
+                  "WebHookTimeout": {
+                    "type": "integer"
+                  },
+                  "WebhookDisableCallbackSuccessContentCheck": {
+                    "type": "boolean"
+                  },
+                  "WebhookEnable": {
+                    "type": "boolean"
+                  },
+                  "WebhookHeaders": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "WebhookInsecureSkipVerify": {
+                    "type": "boolean"
+                  },
+                  "WebhookLocalAddr": {
+                    "type": "string"
+                  },
+                  "WebhookMethod": {
+                    "type": "string"
+                  },
+                  "WebhookNetworkType": {
+                    "type": "string"
+                  },
+                  "WebhookOnlyAddrChange": {
+                    "type": "boolean"
+                  },
+                  "WebhookProxy": {
+                    "type": "string"
+                  },
+                  "WebhookProxyAddr": {
+                    "type": "string"
+                  },
+                  "WebhookProxyPassword": {
+                    "type": "string"
+                  },
+                  "WebhookProxyUser": {
+                    "type": "string"
+                  },
+                  "WebhookRequestBody": {
+                    "type": "string"
+                  },
+                  "WebhookSuccessContent": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "WebhookURL": {
+                    "type": "string"
+                  }
                 }
               }
             }

@@ -347,21 +347,52 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["AcmeErrorMsg", "AddFrom", "AddTime", "AllSyncClient", "CertBase64", "Enable", "ExtParams", "IssuerCertificate", "Key", "KeyBase64", "MappingChangeScript", "MappingPath", "MappingToPath", "Remark", "SyncClientList", "UpdateTime"],
-      "schema_evidence": "frontend certificate editor model is passed directly + authorized GET /api/ssl/{key} info field-name shape"
+      "request_body_schema": {"type": "object", "properties": {"AcmeErrorMsg": {"type": "string"}, "AddFrom": {"type": "string"}, "AddTime": {"type": "string"}, "AllSyncClient": {"type": "boolean"}, "CertBase64": {"type": "string"}, "Enable": {"type": "boolean"}, "ExtParams": {"type": "object", "properties": {"acmeCADirURL": {"type": "string"}, "acmeCNAMESupport": {"type": "boolean"}, "acmeCallAPINetwork": {"type": "string"}, "acmeDNSForceIPv4": {"type": "boolean"}, "acmeDNSID": {"type": "string"}, "acmeDNSOnlyTCP": {"type": "boolean"}, "acmeDNSSecret": {"type": "string"}, "acmeDNSServer": {"type": "string"}, "acmeDisableAuthoritativeNssPropagationRequirement": {"type": "boolean"}, "acmeDisableCompletePropagationRequirement": {"type": "boolean"}, "acmeDomains": {"type": "array", "items": {"type": "string"}}, "acmeEmail": {"type": "string"}, "acmeFindZoneUseDNS": {"type": "boolean"}, "acmeHMAC": {"type": "string"}, "acmeIgnorePropagationChecErrors": {"type": "boolean"}, "acmeKeyType": {"type": "string"}, "acmeKid": {"type": "string"}, "acmeOnlyUseIPv4": {"type": "boolean"}, "acmeProfile": {"type": "string"}, "acmePropagationTimeout": {"type": "integer"}, "acmeProxy": {"type": "string"}, "acmeProxyAddr": {"type": "string"}, "acmeProxyPassword": {"type": "string"}, "acmeProxyUser": {"type": "string"}, "acmeRecursiveNameservers": {"type": "string"}, "acmeRotatePrivateKeyPerRequest": {"type": "boolean"}, "acmeSequentialSolver": {"type": "boolean"}, "acmeUseGlobalPrivateKey": {"type": "boolean"}, "acmeWaitforcertificateTimeout": {"type": "integer"}, "certPath": {"type": "string"}, "keyPath": {"type": "string"}, "preACMECADirURL": {"type": "string"}, "preACMEEmail": {"type": "string"}, "preACMEHMAC": {"type": "string"}, "preACMEKid": {"type": "string"}, "preACMERegistrationInfo": {"type": "string"}, "prePrivateKeyBase64": {"type": "string"}}}, "IssuerCertificate": {"type": "string"}, "Key": {"type": "string"}, "KeyBase64": {"type": "string"}, "MappingChangeScript": {"type": "string"}, "MappingPath": {"type": "string"}, "MappingToPath": {"type": "boolean"}, "Remark": {"type": "string"}, "SyncClientList": {"type": "array", "items": {}}, "UpdateTime": {"type": "string"}}},
+      "schema_evidence": "frontend certificate editor model is passed directly + authorized GET /api/ssl/{key} cross-checked top-level and ExtParams primitive types; request-only secret fields remain documented only on the write schema"
     },
     {
       "path": "/api/ssl",
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["AcmeErrorMsg", "AddFrom", "AddTime", "AllSyncClient", "CertBase64", "Enable", "ExtParams", "IssuerCertificate", "Key", "KeyBase64", "MappingChangeScript", "MappingPath", "MappingToPath", "Remark", "SyncClientList", "UpdateTime"],
-      "schema_evidence": "frontend certificate editor model is passed directly + authorized GET /api/ssl/{key} info field-name shape"
+      "request_body_schema": {"type": "object", "properties": {"AcmeErrorMsg": {"type": "string"}, "AddFrom": {"type": "string"}, "AddTime": {"type": "string"}, "AllSyncClient": {"type": "boolean"}, "CertBase64": {"type": "string"}, "Enable": {"type": "boolean"}, "ExtParams": {"type": "object", "properties": {"acmeCADirURL": {"type": "string"}, "acmeCNAMESupport": {"type": "boolean"}, "acmeCallAPINetwork": {"type": "string"}, "acmeDNSForceIPv4": {"type": "boolean"}, "acmeDNSID": {"type": "string"}, "acmeDNSOnlyTCP": {"type": "boolean"}, "acmeDNSSecret": {"type": "string"}, "acmeDNSServer": {"type": "string"}, "acmeDisableAuthoritativeNssPropagationRequirement": {"type": "boolean"}, "acmeDisableCompletePropagationRequirement": {"type": "boolean"}, "acmeDomains": {"type": "array", "items": {"type": "string"}}, "acmeEmail": {"type": "string"}, "acmeFindZoneUseDNS": {"type": "boolean"}, "acmeHMAC": {"type": "string"}, "acmeIgnorePropagationChecErrors": {"type": "boolean"}, "acmeKeyType": {"type": "string"}, "acmeKid": {"type": "string"}, "acmeOnlyUseIPv4": {"type": "boolean"}, "acmeProfile": {"type": "string"}, "acmePropagationTimeout": {"type": "integer"}, "acmeProxy": {"type": "string"}, "acmeProxyAddr": {"type": "string"}, "acmeProxyPassword": {"type": "string"}, "acmeProxyUser": {"type": "string"}, "acmeRecursiveNameservers": {"type": "string"}, "acmeRotatePrivateKeyPerRequest": {"type": "boolean"}, "acmeSequentialSolver": {"type": "boolean"}, "acmeUseGlobalPrivateKey": {"type": "boolean"}, "acmeWaitforcertificateTimeout": {"type": "integer"}, "certPath": {"type": "string"}, "keyPath": {"type": "string"}, "preACMECADirURL": {"type": "string"}, "preACMEEmail": {"type": "string"}, "preACMEHMAC": {"type": "string"}, "preACMEKid": {"type": "string"}, "preACMERegistrationInfo": {"type": "string"}, "prePrivateKeyBase64": {"type": "string"}}}, "IssuerCertificate": {"type": "string"}, "Key": {"type": "string"}, "KeyBase64": {"type": "string"}, "MappingChangeScript": {"type": "string"}, "MappingPath": {"type": "string"}, "MappingToPath": {"type": "boolean"}, "Remark": {"type": "string"}, "SyncClientList": {"type": "array", "items": {}}, "UpdateTime": {"type": "string"}}},
+      "schema_evidence": "frontend certificate editor model is passed directly + authorized GET /api/ssl/{key} cross-checked top-level and ExtParams primitive types; request-only secret fields remain documented only on the write schema"
     },
     {
       "path": "/api/ssl/setting",
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["certificateCheckTime", "defaultACMEEMail", "globalPrivateKey", "renewalThresholdDays", "shortlivedCheckTimesPerDay", "shortlivedRenewalThresholdHours", "syncClientList"],
-      "schema_evidence": "frontend data:settings pass-through + authorized GET /api/ssl/setting field-name shape"
+      "request_body_schema": {"type": "object", "properties": {"certificateCheckTime": {"type": "object", "properties": {"Hour": {"type": "integer", "minimum": 0, "maximum": 23}, "Minute": {"type": "integer", "minimum": 0, "maximum": 59}, "Second": {"type": "integer", "minimum": 0, "maximum": 59}}}, "defaultACMEEMail": {"type": "string"}, "globalPrivateKey": {"type": "string"}, "renewalThresholdDays": {"type": "integer"}, "shortlivedCheckTimesPerDay": {"type": "integer"}, "shortlivedRenewalThresholdHours": {"type": "integer"}, "syncClientList": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "frontend data:settings pass-through + authorized GET /api/ssl/setting cross-checked primitive types and certificateCheckTime structure"
+    },
+    {
+      "path": "/api/ssl",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": "array", "items": {"type": "object", "properties": {"Key": {"type": "string"}, "Remark": {"type": "string"}, "Enable": {"type": "boolean"}, "AddFrom": {"type": "string"}, "AddTime": {"type": "string"}, "UpdateTime": {"type": "string"}, "MappingPath": {"type": "string"}, "MappingToPath": {"type": "boolean"}, "MappingChangeScript": {"type": "string"}, "ACMEing": {"type": "boolean"}, "ACMECancelingProcess": {"type": "boolean"}, "ACMEErrMsg": {"type": "string"}, "CertsInfo": {"type": "object", "properties": {"Domains": {"type": "array", "items": {"type": "string"}}, "SAN": {"type": "string"}, "SANs": {"type": "array", "items": {"type": "string"}}, "MD5": {"type": "string"}, "SHA1": {"type": "string"}, "SHA256": {"type": "string"}, "SerialNumber": {"type": "string"}, "NotBeforeTime": {"type": "string"}, "NotAfterTime": {"type": "string"}}}, "ExtParams": {"type": "object", "properties": {"acmeCADirURL": {"type": "string"}, "acmeCNAMESupport": {"type": "boolean"}, "acmeCallAPINetwork": {"type": "string"}, "acmeDNSForceIPv4": {"type": "boolean"}, "acmeDNSOnlyTCP": {"type": "boolean"}, "acmeDNSServer": {"type": "string"}, "acmeEmail": {"type": "string"}, "acmeKeyType": {"type": "string"}, "acmeOnlyUseIPv4": {"type": "boolean"}, "acmeProfile": {"type": "string"}, "acmePropagationTimeout": {"type": "integer"}, "acmeProxy": {"type": "string"}, "acmeProxyAddr": {"type": "string"}, "acmeRecursiveNameservers": {"type": "string"}}}}}}}},
+      "schema_evidence": "authorized GET /api/ssl observed metadata/nested primitive types; response schema intentionally omits certificate/private-key material, DNS credentials, proxy credentials, and ACME account secrets"
+    },
+    {
+      "path": "/api/ssl/{param}",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "key": {"type": "string"}, "info": {"type": "object", "properties": {"Key": {"type": "string"}, "Remark": {"type": "string"}, "Enable": {"type": "boolean"}, "AddFrom": {"type": "string"}, "AddTime": {"type": "string"}, "UpdateTime": {"type": "string"}, "AllSyncClient": {"type": "boolean"}, "MappingPath": {"type": "string"}, "MappingToPath": {"type": "boolean"}, "MappingChangeScript": {"type": "string"}, "AcmeErrorMsg": {"type": "string"}, "SyncClientList": {"type": "array", "items": {}}, "ExtParams": {"type": "object", "properties": {"acmeCADirURL": {"type": "string"}, "acmeCNAMESupport": {"type": "boolean"}, "acmeCallAPINetwork": {"type": "string"}, "acmeDNSForceIPv4": {"type": "boolean"}, "acmeDNSOnlyTCP": {"type": "boolean"}, "acmeDNSServer": {"type": "string"}, "acmeEmail": {"type": "string"}, "acmeKeyType": {"type": "string"}, "acmeOnlyUseIPv4": {"type": "boolean"}, "acmeProfile": {"type": "string"}, "acmePropagationTimeout": {"type": "integer"}, "acmeProxy": {"type": "string"}, "acmeProxyAddr": {"type": "string"}, "acmeRecursiveNameservers": {"type": "string"}}}}}}},
+      "schema_evidence": "authorized GET /api/ssl/{key} observed response envelope and field types; response schema intentionally excludes CertBase64, KeyBase64, issuer certificate, DNS credentials, proxy credentials, and private-key/account material"
+    },
+    {
+      "path": "/api/ssl/setting",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "defaultACMEEMail": {"type": "string"}, "renewalThresholdDays": {"type": "integer"}, "shortlivedCheckTimesPerDay": {"type": "integer"}, "shortlivedRenewalThresholdHours": {"type": "integer"}, "certificateCheckTime": {"type": "object", "properties": {"Hour": {"type": "integer"}, "Minute": {"type": "integer"}, "Second": {"type": "integer"}}, "syncClientList": {"type": ["array", "null"], "items": {}}}}},
+      "schema_evidence": "authorized GET /api/ssl/setting observed field types; globalPrivateKey is intentionally omitted from response documentation"
+    },
+    {
+      "path": "/api/ssl/credential-sources",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "data": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "kind": {"type": "string"}, "label": {"type": "string"}, "provider": {"type": "string"}, "sourceKey": {"type": "string"}, "proxyType": {"type": "string"}, "proxyAddr": {"type": "string"}, "callApiNetwork": {"type": "string"}}}}}},
+      "schema_evidence": "authorized GET /api/ssl/credential-sources observed envelope and metadata fields; idValue, secretValue, proxyUser, and proxyPassword are intentionally omitted from response documentation"
     },
     {
       "path": "/api/ssl/sslorderadjustment",
@@ -449,6 +480,20 @@
       "schema_evidence": "frontend ingress editor sends explicit {oldHostname,oldPath,newRule} object before PUT"
     },
     {
+      "path": "/api/cloudflared/list",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET /api/cloudflared/list returned list=null on this instance; envelope is verified while instance item schema remains frontend-only"
+    },
+    {
+      "path": "/api/cloudflared/logs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/cloudflared/logs observed paginated envelope; current logs are null so log item schema remains unspecified"
+    },
+    {
       "path": "/api/portforward",
       "method": "POST",
       "risk": "mutating",
@@ -467,7 +512,8 @@
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["ConfVer", "ConnectionDownloadRateLimit", "ConnectionDownloadRateLimitEnabled", "ConnectionUploadRateLimit", "ConnectionUploadRateLimitEnabled", "Enable", "IPConnectionsLimit", "IPDownloadRateLimit", "IPDownloadRateLimitEnabled", "IPMaxConnections", "IPUploadRateLimit", "IPUploadRateLimitEnabled", "Nolimit", "PortForwardsLimit", "TCPPortforwardMaxConnections", "UDPReadTargetDataMaxgoroutineCount"],
-      "schema_evidence": "frontend configure model pass-through + authorized GET /api/portforward/configure field-name shape"
+      "request_body_schema": {"type": "object", "properties": {"ConfVer": {"type": "integer"}, "ConnectionDownloadRateLimit": {"type": "integer"}, "ConnectionDownloadRateLimitEnabled": {"type": "boolean"}, "ConnectionUploadRateLimit": {"type": "integer"}, "ConnectionUploadRateLimitEnabled": {"type": "boolean"}, "Enable": {"type": "boolean"}, "IPConnectionsLimit": {"type": "boolean"}, "IPDownloadRateLimit": {"type": "integer"}, "IPDownloadRateLimitEnabled": {"type": "boolean"}, "IPMaxConnections": {"type": "integer"}, "IPUploadRateLimit": {"type": "integer"}, "IPUploadRateLimitEnabled": {"type": "boolean"}, "Nolimit": {"type": "boolean"}, "PortForwardsLimit": {"type": "integer"}, "TCPPortforwardMaxConnections": {"type": "integer"}, "UDPReadTargetDataMaxgoroutineCount": {"type": "integer"}}},
+      "schema_evidence": "frontend configure model pass-through + authorized GET /api/portforward/configure cross-checked all primitive types"
     },
     {
       "path": "/api/portforward/ruleorderadjustment",
@@ -481,7 +527,15 @@
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["ConfVer", "EnableModule", "GlobalStunServerList", "RetryCount", "RetryInterval", "WebHookTimeout", "WebhookDisableCallbackSuccessContentCheck", "WebhookEnable", "WebhookHeaders", "WebhookInsecureSkipVerify", "WebhookLocalAddr", "WebhookMethod", "WebhookNetworkType", "WebhookOnlyAddrChange", "WebhookProxy", "WebhookProxyAddr", "WebhookProxyPassword", "WebhookProxyUser", "WebhookRequestBody", "WebhookSuccessContent", "WebhookURL"],
-      "schema_evidence": "frontend configure model pass-through + authorized GET /api/stun/configure field-name shape"
+      "request_body_schema": {"type": "object", "properties": {"ConfVer": {"type": "integer"}, "EnableModule": {"type": "boolean"}, "GlobalStunServerList": {"type": "array", "items": {"type": "string"}}, "RetryCount": {"type": "integer"}, "RetryInterval": {"type": "integer"}, "WebHookTimeout": {"type": "integer"}, "WebhookDisableCallbackSuccessContentCheck": {"type": "boolean"}, "WebhookEnable": {"type": "boolean"}, "WebhookHeaders": {"type": ["array", "null"], "items": {"type": "string"}}, "WebhookInsecureSkipVerify": {"type": "boolean"}, "WebhookLocalAddr": {"type": "string"}, "WebhookMethod": {"type": "string"}, "WebhookNetworkType": {"type": "string"}, "WebhookOnlyAddrChange": {"type": "boolean"}, "WebhookProxy": {"type": "string"}, "WebhookProxyAddr": {"type": "string"}, "WebhookProxyPassword": {"type": "string"}, "WebhookProxyUser": {"type": "string"}, "WebhookRequestBody": {"type": "string"}, "WebhookSuccessContent": {"type": ["array", "null"], "items": {"type": "string"}}, "WebhookURL": {"type": "string"}}},
+      "schema_evidence": "frontend configure model pass-through + authorized GET /api/stun/configure cross-checked primitive/list types; request-only proxy password remains documented only on the write schema"
+    },
+    {
+      "path": "/api/stun/configure",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "configure": {"type": "object", "properties": {"ConfVer": {"type": "integer"}, "EnableModule": {"type": "boolean"}, "GlobalStunServerList": {"type": "array", "items": {"type": "string"}}, "RetryCount": {"type": "integer"}, "RetryInterval": {"type": "integer"}, "WebHookTimeout": {"type": "integer"}, "WebhookDisableCallbackSuccessContentCheck": {"type": "boolean"}, "WebhookEnable": {"type": "boolean"}, "WebhookHeaders": {"type": ["array", "null"], "items": {"type": "string"}}, "WebhookInsecureSkipVerify": {"type": "boolean"}, "WebhookLocalAddr": {"type": "string"}, "WebhookMethod": {"type": "string"}, "WebhookNetworkType": {"type": "string"}, "WebhookOnlyAddrChange": {"type": "boolean"}, "WebhookProxy": {"type": "string"}, "WebhookProxyAddr": {"type": "string"}, "WebhookProxyUser": {"type": "string"}, "WebhookRequestBody": {"type": "string"}, "WebhookSuccessContent": {"type": ["array", "null"], "items": {"type": "string"}}, "WebhookURL": {"type": "string"}}}}},
+      "schema_evidence": "authorized GET /api/stun/configure observed config envelope and types; WebhookProxyPassword is intentionally omitted from response documentation"
     },
     {
       "path": "/api/stun/ruleorderadjustment",
@@ -899,42 +953,48 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["Key", "Name", "Enable", "SessionTTLMinutes", "AllowWebAuthIPBypass", "Description"],
-      "schema_evidence": "frontend SecurityGroupFormDialog initializes and submits this explicit group model; current authorized group list is empty"
+      "request_body_schema": {"type": "object", "properties": {"Key": {"type": "string"}, "Name": {"type": "string"}, "Enable": {"type": "boolean"}, "SessionTTLMinutes": {"type": "integer"}, "AllowWebAuthIPBypass": {"type": "boolean"}, "Description": {"type": "string"}}},
+      "schema_evidence": "frontend SecurityGroupFormDialog initializes and submits this explicit typed group model; current authorized group list is empty"
     },
     {
       "path": "/api/security-groups/{param}",
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["Key", "Name", "Enable", "SessionTTLMinutes", "AllowWebAuthIPBypass", "Description"],
-      "schema_evidence": "frontend edits the same group model and passes a copied object to PUT; toggle actions also update subsets of this model"
+      "request_body_schema": {"type": "object", "properties": {"Key": {"type": "string"}, "Name": {"type": "string"}, "Enable": {"type": "boolean"}, "SessionTTLMinutes": {"type": "integer"}, "AllowWebAuthIPBypass": {"type": "boolean"}, "Description": {"type": "string"}}},
+      "schema_evidence": "frontend edits the same typed group model and passes a copied object to PUT; toggle actions also update subsets of this model"
     },
     {
       "path": "/api/security-groups/users",
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["Key", "Name", "Username", "PasswordHash", "Password", "TwoFASecret", "Enable", "GrantSecurityGroups", "Description", "HasPassword"],
-      "schema_evidence": "frontend local-user form initializes this explicit model; only field names are recorded and no credential values are stored"
+      "request_body_schema": {"type": "object", "properties": {"Key": {"type": "string"}, "Name": {"type": "string"}, "Username": {"type": "string"}, "PasswordHash": {"type": "string"}, "Password": {"type": "string"}, "TwoFASecret": {"type": "string"}, "Enable": {"type": "boolean"}, "GrantSecurityGroups": {"type": "array", "items": {"type": "string"}}, "Description": {"type": "string"}, "HasPassword": {"type": "boolean"}}},
+      "schema_evidence": "frontend local-user form initializes this explicit typed model; credential field types are documented but no credential values are stored"
     },
     {
       "path": "/api/security-groups/users/{param}",
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["Key", "Name", "Username", "PasswordHash", "Password", "TwoFASecret", "Enable", "GrantSecurityGroups", "Description", "HasPassword"],
-      "schema_evidence": "frontend edits the same local-user model and removes Password when left empty before PUT; only field names are recorded"
+      "request_body_schema": {"type": "object", "properties": {"Key": {"type": "string"}, "Name": {"type": "string"}, "Username": {"type": "string"}, "PasswordHash": {"type": "string"}, "Password": {"type": "string"}, "TwoFASecret": {"type": "string"}, "Enable": {"type": "boolean"}, "GrantSecurityGroups": {"type": "array", "items": {"type": "string"}}, "Description": {"type": "string"}, "HasPassword": {"type": "boolean"}}},
+      "schema_evidence": "frontend edits the same typed local-user model and removes Password when left empty before PUT; credential values are not stored in evidence"
     },
     {
       "path": "/api/security-groups/oauth-users",
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["Key", "ThirdAuthUserKey", "Provider", "SkipTwoFA", "MatchID", "MatchEmail", "MatchName", "Enable", "GrantSecurityGroups", "Description"],
-      "schema_evidence": "frontend OAuth-user form initializes this explicit model and clears MatchID/MatchEmail/MatchName before save"
+      "request_body_schema": {"type": "object", "properties": {"Key": {"type": "string"}, "ThirdAuthUserKey": {"type": "string"}, "Provider": {"type": "string"}, "SkipTwoFA": {"type": "boolean"}, "MatchID": {"type": "string"}, "MatchEmail": {"type": "string"}, "MatchName": {"type": "string"}, "Enable": {"type": "boolean"}, "GrantSecurityGroups": {"type": "array", "items": {"type": "string"}}, "Description": {"type": "string"}}},
+      "schema_evidence": "frontend OAuth-user form initializes this explicit typed model and clears MatchID/MatchEmail/MatchName before save"
     },
     {
       "path": "/api/security-groups/oauth-users/{param}",
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["Key", "ThirdAuthUserKey", "Provider", "SkipTwoFA", "MatchID", "MatchEmail", "MatchName", "Enable", "GrantSecurityGroups", "Description"],
-      "schema_evidence": "frontend edits the same OAuth-user model, normalizes group membership and clears match helper fields before PUT"
+      "request_body_schema": {"type": "object", "properties": {"Key": {"type": "string"}, "ThirdAuthUserKey": {"type": "string"}, "Provider": {"type": "string"}, "SkipTwoFA": {"type": "boolean"}, "MatchID": {"type": "string"}, "MatchEmail": {"type": "string"}, "MatchName": {"type": "string"}, "Enable": {"type": "boolean"}, "GrantSecurityGroups": {"type": "array", "items": {"type": "string"}}, "Description": {"type": "string"}}},
+      "schema_evidence": "frontend edits the same typed OAuth-user model, normalizes group membership and clears match helper fields before PUT"
     },
     {
       "path": "/api/ipfliter/autorecordipconf",
@@ -977,6 +1037,90 @@
       "risk": "mutating",
       "body_keys": ["AllowRuleKeys", "DefaultAllowIPs", "Enable", "IPv6PrefixLen", "Script", "ScriptEnable", "ScriptTriggerInterval", "TCPPorts", "TargetRuleKey", "UDPPorts", "WebhookBody", "WebhookDisableCallbackSuccessContentCheck", "WebhookEnable", "WebhookHeaders", "WebhookMethod", "WebhookProxy", "WebhookProxyAddr", "WebhookProxyPassword", "WebhookProxyUser", "WebhookRetryCount", "WebhookRetryInterval", "WebhookSuccessContent", "WebhookTimeout", "WebhookTriggerInterval", "WebhookURL"],
       "schema_evidence": "frontend PortTrap settings form passes its normalized configure object directly + authorized GET observed the same field names"
+    },
+    {
+      "path": "/api/ipfliter/list",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": "array", "items": {"type": "object", "properties": {"Action": {"type": "integer"}, "Key": {"type": "string"}, "Name": {"type": "string"}}}}}},
+      "schema_evidence": "authorized GET /api/ipfliter/list observed list envelope and built-in main-rule summary field types"
+    },
+    {
+      "path": "/api/ipfliter/listlite",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": "array", "items": {"type": "object", "properties": {"Key": {"type": "string"}, "Name": {"type": "string"}, "SubRuleList": {"type": ["array", "null"], "items": {}}}}}}},
+      "schema_evidence": "authorized GET /api/ipfliter/listlite observed compact rule envelope; current built-in SubRuleList values are null so item shape remains unspecified"
+    },
+    {
+      "path": "/api/ipfliter/list/{param}",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "rule": {"type": "object", "properties": {"Action": {"type": "integer"}, "AutoRecordMemLimit": {"type": "integer"}, "AutoRecordTxtLimit": {"type": "integer"}, "Key": {"type": "string"}, "Name": {"type": "string"}, "SubRuleList": {"type": ["array", "null"], "items": {}}}}}},
+      "schema_evidence": "authorized GET /api/ipfliter/list/{key} observed built-in main-rule detail field types"
+    },
+    {
+      "path": "/api/ipfliter/list/subrulelist/{param}",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "subRuleList": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET /api/ipfliter/list/subrulelist/{key} observed response envelope; current built-in rules have null subRuleList so item schema is intentionally unspecified"
+    },
+    {
+      "path": "/api/ipfliter/autorecordipconf",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "configure": {"type": "object", "properties": {"SafeURL": {"type": "string"}, "BasicAccount": {"type": "string"}}}}},
+      "schema_evidence": "authorized GET /api/ipfliter/autorecordipconf observed config envelope; BasicPassword is intentionally omitted from response documentation"
+    },
+    {
+      "path": "/api/ipfliter/porttrap/stats",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "stats": {"type": "object", "properties": {"running": {"type": "boolean"}, "tcpListenerCount": {"type": "integer"}, "udpListenerCount": {"type": "integer"}, "totalCaptureCount": {"type": "integer"}, "uniqueIPCount": {"type": "integer"}}}}},
+      "schema_evidence": "authorized GET /api/ipfliter/porttrap/stats observed stats envelope and primitive types"
+    },
+    {
+      "path": "/api/ipfliter/porttrapconf",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "configure": {"type": "object", "properties": {"AllowRuleKeys": {"type": "array", "items": {"type": "string"}}, "DefaultAllowIPs": {"type": "array", "items": {}}, "Enable": {"type": "boolean"}, "IPv6PrefixLen": {"type": "integer"}, "Script": {"type": "string"}, "ScriptEnable": {"type": "boolean"}, "ScriptTriggerInterval": {"type": "integer"}, "TCPPorts": {"type": "array", "items": {}}, "TargetRuleKey": {"type": "string"}, "UDPPorts": {"type": "array", "items": {}}, "WebhookBody": {"type": "string"}, "WebhookDisableCallbackSuccessContentCheck": {"type": "boolean"}, "WebhookEnable": {"type": "boolean"}, "WebhookHeaders": {"type": "array", "items": {}}, "WebhookMethod": {"type": "string"}, "WebhookProxy": {"type": "string"}, "WebhookProxyAddr": {"type": "string"}, "WebhookProxyUser": {"type": "string"}, "WebhookRetryCount": {"type": "integer"}, "WebhookRetryInterval": {"type": "integer"}, "WebhookSuccessContent": {"type": "array", "items": {}}, "WebhookTimeout": {"type": "integer"}, "WebhookTriggerInterval": {"type": "integer"}, "WebhookURL": {"type": "string"}}}, "defaultAllowIPsValidation": {"type": "object", "properties": {"hasInvalidEntries": {"type": "boolean"}, "invalidEntries": {"type": "array", "items": {}}, "invalidEntryCount": {"type": "integer"}}}}},
+      "schema_evidence": "authorized GET /api/ipfliter/porttrapconf observed config/validation envelopes; WebhookProxyPassword is intentionally omitted from response documentation and empty-array element types remain unspecified"
+    },
+    {
+      "path": "/api/security-groups",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": "array", "items": {}}}},
+      "schema_evidence": "authorized GET /api/security-groups returned an empty list; envelope is verified while group item schema remains unspecified"
+    },
+    {
+      "path": "/api/security-groups/lite",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": "array", "items": {}}}},
+      "schema_evidence": "authorized GET /api/security-groups/lite returned an empty list; envelope is verified while item schema remains unspecified"
+    },
+    {
+      "path": "/api/security-groups/users",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": "array", "items": {}}}},
+      "schema_evidence": "authorized GET /api/security-groups/users returned an empty list; envelope is verified and user item schema is intentionally not guessed"
+    },
+    {
+      "path": "/api/security-groups/oauth-users",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": "array", "items": {}}}},
+      "schema_evidence": "authorized GET /api/security-groups/oauth-users returned an empty list; envelope is verified and OAuth-user item schema is intentionally not guessed"
+    },
+    {
+      "path": "/api/security-groups/grants",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": "array", "items": {}}}},
+      "schema_evidence": "authorized GET /api/security-groups/grants returned an empty list; envelope is verified and grant item schema remains unspecified"
     },
     {
       "path": "/api/cron/list",
