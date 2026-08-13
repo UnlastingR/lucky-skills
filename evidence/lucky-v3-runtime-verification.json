@@ -1164,14 +1164,33 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["Name"],
-      "schema_evidence": "frontend group management dialog sends explicit {Name} for create; current authorized group list is empty"
+      "request_body_schema": {"type": "object", "properties": {"Name": {"type": "string"}}},
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "key": {"type": "string"}}},
+      "schema_evidence": "frontend group management dialog sends explicit {Name} for create; an authorized disposable empty-group probe verified Name string input and ret/key response types, then deleted the group and restored the zero-group baseline"
     },
     {
       "path": "/api/cron/groups",
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["Key", "Name"],
-      "schema_evidence": "frontend group management dialog passes {Key,Name} for update; current authorized group list is empty"
+      "request_body_schema": {"type": "object", "properties": {"Key": {"type": "string"}, "Name": {"type": "string"}}},
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}}},
+      "schema_evidence": "frontend group management dialog passes {Key,Name} for update; the authorized disposable empty-group probe verified string Key/Name input and a ret-only success response before cleanup"
+    },
+    {
+      "path": "/api/cron/groups/collapsed",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type": "object", "properties": {"collapsed": {"type": "boolean"}, "key": {"type": "string"}}},
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}}},
+      "schema_evidence": "authorized disposable empty-group probe set collapsed=true for the temporary group and observed a ret-only success response; the temporary group was deleted and baseline restored"
+    },
+    {
+      "path": "/api/cron/groups",
+      "method": "DELETE",
+      "risk": "mutating",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}}},
+      "schema_evidence": "authorized disposable Cron group cleanup used DELETE /api/cron/groups?key=... and observed a ret-only success response; the post-cleanup group count returned to zero"
     },
     {
       "path": "/api/cron/groups/orderadjustment",
@@ -1322,7 +1341,8 @@
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["version", "display", "cards"],
-      "schema_evidence": "frontend normalizes the remote/backend About content to {version,display,cards} and passes that object directly to PUT; authorized GET observed the same top-level shape"
+      "request_body_schema": {"type":"object","properties":{"version":{"type":"integer"},"cards":{"type":"array","items":{"type":"object","properties":{"enabled":{"type":"boolean"},"html":{"type":"string"},"id":{"type":"string"},"kind":{"type":"string"},"priority":{"type":"integer"}}}},"display":{"type":"object","properties":{"maxPromotionItems":{"type":"integer"},"promotionSelection":{"type":"string"}}}}},
+      "schema_evidence": "frontend normalizes the remote/backend About content to {version,display,cards} and passes that object directly to PUT; request types are copied exactly from the authorized GET public-content model without inventing required fields"
     },
     {
       "path": "/api/baseconfigure",
@@ -2406,15 +2426,15 @@
       "path": "/api/cron/groups",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": "array", "items": {}}}},
-      "schema_evidence": "authorized GET /api/cron/groups returned an empty list; envelope is verified while group item schema remains unspecified"
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": "array", "items": {"type": "object", "properties": {"Key": {"type": "string"}, "Name": {"type": "string"}}}}}},
+      "schema_evidence": "authorized disposable empty-group probe observed one GET /api/cron/groups item with Key/Name string fields only; temporary key/name values were not retained and the group was deleted afterward"
     },
     {
       "path": "/api/cron/groups/collapsed/states",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "states": {"type": "object"}}},
-      "schema_evidence": "authorized GET /api/cron/groups/collapsed/states returned an empty dynamic state object; value schema is intentionally unspecified"
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "states": {"type": "object", "additionalProperties": {"type": "boolean"}}}},
+      "schema_evidence": "authorized disposable empty-group probe observed collapsed-state values as booleans keyed dynamically by group key; the group key value itself was not retained and the temporary group was deleted afterward"
     },
     {
       "path": "/api/cron/list",
