@@ -35752,11 +35752,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -35777,7 +35782,7 @@
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend CGI editor model is passed directly as request data",
+        "x-schema-evidence": "frontend CGI editor model is passed directly; an authorized disposable probe created one disabled CGI from the minimal Name/Enable model, GET list exposed the server-filled model and verified all 12 write-field types, POST returned ret-only success, and cleanup later restored the zero-CGI baseline",
         "requestBody": {
           "required": true,
           "content": {
@@ -35785,18 +35790,42 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Key": {},
-                  "Name": {},
-                  "Enable": {},
-                  "CGIType": {},
-                  "Network": {},
-                  "Address": {},
-                  "MaxConns": {},
-                  "ConnectTimeout": {},
-                  "ForbiddenPaths": {},
-                  "DefaultDocRoot": {},
-                  "DefaultIndexNames": {},
-                  "FileExtensions": {}
+                  "Key": {
+                    "type": "string"
+                  },
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "CGIType": {
+                    "type": "string"
+                  },
+                  "Network": {
+                    "type": "string"
+                  },
+                  "Address": {
+                    "type": "string"
+                  },
+                  "MaxConns": {
+                    "type": "integer"
+                  },
+                  "ConnectTimeout": {
+                    "type": "integer"
+                  },
+                  "ForbiddenPaths": {
+                    "type": "string"
+                  },
+                  "DefaultDocRoot": {
+                    "type": "string"
+                  },
+                  "DefaultIndexNames": {
+                    "type": "string"
+                  },
+                  "FileExtensions": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -35833,7 +35862,62 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "Key": {
+                            "type": "string"
+                          },
+                          "Name": {
+                            "type": "string"
+                          },
+                          "Enable": {
+                            "type": "boolean"
+                          },
+                          "Remark": {
+                            "type": "string"
+                          },
+                          "CGIType": {
+                            "type": "string"
+                          },
+                          "Network": {
+                            "type": "string"
+                          },
+                          "Address": {
+                            "type": "string"
+                          },
+                          "MaxConns": {
+                            "type": "integer"
+                          },
+                          "ConnectTimeout": {
+                            "type": "integer"
+                          },
+                          "ReadTimeout": {
+                            "type": "integer"
+                          },
+                          "WriteTimeout": {
+                            "type": "integer"
+                          },
+                          "ForbiddenPaths": {
+                            "type": "string"
+                          },
+                          "DefaultDocRoot": {
+                            "type": "string"
+                          },
+                          "DefaultIndexNames": {
+                            "type": "string"
+                          },
+                          "FileExtensions": {
+                            "type": "string"
+                          },
+                          "ActiveConns": {
+                            "type": "integer"
+                          },
+                          "LastError": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -35856,7 +35940,7 @@
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/webservice/cgi/list observed list=null on this instance; CGI item fields, commands and paths remain unspecified"
+        "x-schema-evidence": "authorized disposable disabled CGI made the list contain exactly one server-filled item; only field names and JSON types were retained, then DELETE restored list=null. Command/path/address values were not retained"
       }
     },
     "/api/webservice/cgi/{param}": {
@@ -35874,11 +35958,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -35899,6 +35988,7 @@
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized DELETE of the disposable disabled CGI returned ret=0 and restored the zero-CGI baseline",
         "parameters": [
           {
             "name": "param",
@@ -35924,11 +36014,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -35949,7 +36044,7 @@
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend CGI editor model is passed directly as request data",
+        "x-schema-evidence": "frontend CGI editor model is passed directly; the disposable disabled CGI's full GET-list object was PUT back successfully with a ret-only response, confirming the same write-field types before deletion restored the zero-CGI baseline",
         "parameters": [
           {
             "name": "param",
@@ -35967,18 +36062,42 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Key": {},
-                  "Name": {},
-                  "Enable": {},
-                  "CGIType": {},
-                  "Network": {},
-                  "Address": {},
-                  "MaxConns": {},
-                  "ConnectTimeout": {},
-                  "ForbiddenPaths": {},
-                  "DefaultDocRoot": {},
-                  "DefaultIndexNames": {},
-                  "FileExtensions": {}
+                  "Key": {
+                    "type": "string"
+                  },
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "CGIType": {
+                    "type": "string"
+                  },
+                  "Network": {
+                    "type": "string"
+                  },
+                  "Address": {
+                    "type": "string"
+                  },
+                  "MaxConns": {
+                    "type": "integer"
+                  },
+                  "ConnectTimeout": {
+                    "type": "integer"
+                  },
+                  "ForbiddenPaths": {
+                    "type": "string"
+                  },
+                  "DefaultDocRoot": {
+                    "type": "string"
+                  },
+                  "DefaultIndexNames": {
+                    "type": "string"
+                  },
+                  "FileExtensions": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -36143,6 +36262,7 @@
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized probe first confirmed discovery active=false; a nonexistent string jobId passed request parsing and reached DiscoveryJobNotRunning, and discovery remained inactive afterward. No running job was cancelled",
         "requestBody": {
           "required": true,
           "content": {
@@ -36150,7 +36270,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "jobId": {}
+                  "jobId": {
+                    "type": "string"
+                  }
                 }
               }
             }
