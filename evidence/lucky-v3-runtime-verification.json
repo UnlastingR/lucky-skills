@@ -276,11 +276,33 @@
       "schema_evidence": "frontend constructs an explicit discovery request object before POST; handler was not executed for schema discovery"
     },
     {
+      "path": "/api/webservice/webauth/sessions/clear-subrule",
+      "method": "POST",
+      "risk": "mutating",
+      "request_body_schema": {"type":"object","properties":{"ruleKey":{"type":"string"},"subRuleKey":{"type":"string"}}},
+      "schema_evidence": "authorized parser-only probes verified ruleKey and subRuleKey as strings; both requests failed during JSON decoding before any WebAuth session clearing handler ran"
+    },
+    {
+      "path": "/api/webservice/{param}/{param2}/updatefolder/confirm",
+      "method": "POST",
+      "risk": "mutating",
+      "request_body_schema": {"type":"object","properties":{"tempId":{"type":"string"}}},
+      "schema_evidence": "authorized parser-only probe verified tempId as string and failed during JSON decoding before update-folder confirmation handler execution"
+    },
+    {
+      "path": "/api/security-groups/grants/delete",
+      "method": "POST",
+      "risk": "dangerous",
+      "request_body_schema": {"type":"object","properties":{"grantKeys":{"type":"array","items":{"type":"string"}}}},
+      "schema_evidence": "authorized parser-only probe supplied an object array element and was rejected before grant-deletion handler execution, verifying grantKeys as []string"
+    },
+    {
       "path": "/api/webservice/{param}/subrulegrouporderupdate",
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["subRulesMap", "orderList", "defaultProxyGroupKey"],
-      "schema_evidence": "frontend constructs explicit {subRulesMap,orderList,defaultProxyGroupKey} object"
+      "request_body_schema": {"type":"object","properties":{"subRulesMap":{"type":"object","additionalProperties":{"type":"string"}},"orderList":{"type":"array","items":{"type":"string"}},"defaultProxyGroupKey":{"type":"string"}}},
+      "schema_evidence": "frontend constructs explicit {subRulesMap,orderList,defaultProxyGroupKey} object; authorized parser-only probes verified subRulesMap as map[string]string, orderList as []string and defaultProxyGroupKey as string before handler execution"
     },
     {
       "path": "/api/webservice/statistics/import",
@@ -432,7 +454,8 @@
       "method": "POST",
       "risk": "dangerous",
       "body_keys": ["sessionIds"],
-      "schema_evidence": "frontend batch-delete action sends {sessionIds: selected SessionID array}"
+      "request_body_schema": {"type":"object","properties":{"sessionIds":{"type":"array","items":{"type":"string"}}}},
+      "schema_evidence": "frontend batch-delete action sends {sessionIds: selected SessionID array}; parser-only probe with an object array element was rejected before deletion handler execution and verified sessionIds as []string"
     },
     {
       "path": "/api/ddns/webhooktest",

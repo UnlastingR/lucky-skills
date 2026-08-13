@@ -27816,6 +27816,7 @@
           "lucky_securitygroups-BUSWhzzM.js"
         ],
         "x-lucky-risk": "dangerous",
+        "x-schema-evidence": "authorized parser-only probe supplied an object array element and was rejected before grant-deletion handler execution, verifying grantKeys as []string",
         "requestBody": {
           "required": true,
           "content": {
@@ -27823,7 +27824,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "grantKeys": {}
+                  "grantKeys": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -39731,6 +39737,7 @@
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized parser-only probes verified ruleKey and subRuleKey as strings; both requests failed during JSON decoding before any WebAuth session clearing handler ran",
         "requestBody": {
           "required": true,
           "content": {
@@ -39738,8 +39745,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "ruleKey": {},
-                  "subRuleKey": {}
+                  "ruleKey": {
+                    "type": "string"
+                  },
+                  "subRuleKey": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -39787,7 +39798,7 @@
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
         "x-lucky-risk": "dangerous",
-        "x-schema-evidence": "frontend batch-delete action sends {sessionIds: selected SessionID array}",
+        "x-schema-evidence": "frontend batch-delete action sends {sessionIds: selected SessionID array}; parser-only probe with an object array element was rejected before deletion handler execution and verified sessionIds as []string",
         "requestBody": {
           "required": true,
           "content": {
@@ -39795,7 +39806,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "sessionIds": {}
+                  "sessionIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -40019,7 +40035,7 @@
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend constructs explicit {subRulesMap,orderList,defaultProxyGroupKey} object",
+        "x-schema-evidence": "frontend constructs explicit {subRulesMap,orderList,defaultProxyGroupKey} object; authorized parser-only probes verified subRulesMap as map[string]string, orderList as []string and defaultProxyGroupKey as string before handler execution",
         "parameters": [
           {
             "name": "param",
@@ -40037,9 +40053,21 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "subRulesMap": {},
-                  "orderList": {},
-                  "defaultProxyGroupKey": {}
+                  "subRulesMap": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "orderList": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "defaultProxyGroupKey": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -40431,6 +40459,7 @@
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized parser-only probe verified tempId as string and failed during JSON decoding before update-folder confirmation handler execution",
         "parameters": [
           {
             "name": "param",
@@ -40456,7 +40485,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "tempId": {}
+                  "tempId": {
+                    "type": "string"
+                  }
                 }
               }
             }

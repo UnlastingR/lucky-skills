@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 51:
+    if len(untyped_request_routes) > 46:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 51 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 46 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     coraza_request = {
@@ -722,6 +722,37 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("Cron trigger request schema must not invent required fields")
     if cron_trigger.response_schema is not None:
         fail("Cron parser-only trigger evidence must not claim a success response")
+
+    parser_only_small_requests = {
+        ("POST", "/api/webservice/webauth/sessions/clear-subrule"): {
+            "type": "object", "properties": {"ruleKey": {"type": "string"}, "subRuleKey": {"type": "string"}}
+        },
+        ("POST", "/api/webservice/webauth/sessions/delete"): {
+            "type": "object", "properties": {"sessionIds": {"type": "array", "items": {"type": "string"}}}
+        },
+        ("PUT", "/api/webservice/{param}/subrulegrouporderupdate"): {
+            "type": "object",
+            "properties": {
+                "subRulesMap": {"type": "object", "additionalProperties": {"type": "string"}},
+                "orderList": {"type": "array", "items": {"type": "string"}},
+                "defaultProxyGroupKey": {"type": "string"},
+            },
+        },
+        ("POST", "/api/webservice/{param}/{param2}/updatefolder/confirm"): {
+            "type": "object", "properties": {"tempId": {"type": "string"}}
+        },
+        ("POST", "/api/security-groups/grants/delete"): {
+            "type": "object", "properties": {"grantKeys": {"type": "array", "items": {"type": "string"}}}
+        },
+    }
+    for route_key, expected in parser_only_small_requests.items():
+        route = merged_by_key[route_key]
+        if route.request_body_schema != expected:
+            fail(f"parser-only small request schema regressed for {route_key}")
+        if isinstance(route.request_body_schema, dict) and "required" in route.request_body_schema:
+            fail(f"parser-only small request schema must not invent required fields for {route_key}")
+        if route.response_schema is not None:
+            fail(f"parser-only small request must not claim a success response for {route_key}")
 
     explicit_small_request_schemas = {
         ("PUT", "/api/frontend-preferences"): {
