@@ -79,6 +79,50 @@ class RuntimeVerificationTests(unittest.TestCase):
         )
         self.assertIsNotNone(catalog.match("GET", "/api/prefix/value"))
 
+    def test_static_catalog_keeps_verified_toggle_gets_mutating_without_runtime_sidecar(self) -> None:
+        snapshot = {
+            "schema_version": 1,
+            "target": {"product": "Lucky", "version": "3.0.0"},
+            "routes": [
+                {
+                    "path": "/api/cloudflared/list/{param}/{param2}",
+                    "method": "GET",
+                    "module": "cloudflared",
+                    "confidence": "frontend-call",
+                },
+                {
+                    "path": "/api/coraza/list/{param}/{param2}",
+                    "method": "GET",
+                    "module": "coraza",
+                    "confidence": "frontend-call",
+                },
+                {
+                    "path": "/api/frp/list/{param}/{param2}",
+                    "method": "GET",
+                    "module": "frp",
+                    "confidence": "frontend-call",
+                },
+                {
+                    "path": "/api/ipfliter/list/{param}/{param2}/{param3}",
+                    "method": "GET",
+                    "module": "ipfliter",
+                    "confidence": "frontend-call",
+                },
+            ],
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            snapshot_path = Path(directory) / "snapshot.json"
+            snapshot_path.write_text(json.dumps(snapshot), encoding="utf-8")
+            catalog = RouteCatalog.from_file(snapshot_path)
+
+        for path in {
+            "/api/cloudflared/list/tunnel-key/false",
+            "/api/coraza/list/waf-key/true",
+            "/api/frp/list/client-key/false",
+            "/api/ipfliter/list/rule-key/subrule-key/true",
+        }:
+            self.assertEqual(catalog.classify("GET", path), OperationRisk.MUTATING)
+
     def test_runtime_verification_rejects_different_same_version_snapshot(self) -> None:
         snapshot = {
             "schema_version": 1,

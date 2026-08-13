@@ -18129,9 +18129,6 @@
                         "ConfigMode": {
                           "type": "string"
                         },
-                        "ConfigText": {
-                          "type": "string"
-                        },
                         "Params": {
                           "type": [
                             "object",
@@ -18164,7 +18161,7 @@
           "lucky_panel-BjQOfwVI.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET of the disposable Enable=false text-mode FRP client observed the detail envelope and public instance field types; Params was null in text mode and no credential-bearing nested form parameters are documented",
+        "x-schema-evidence": "authorized GET of the disposable Enable=false text-mode FRP client observed the detail envelope and public instance field types; ConfigText is intentionally omitted because raw FRP text configuration can contain credentials, while Params was null in text mode and no credential-bearing nested form parameters are documented",
         "parameters": [
           {
             "name": "param",

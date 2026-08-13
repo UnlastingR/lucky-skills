@@ -29,6 +29,15 @@ VERIFIED_READ_ONLY = {
     ("GET", "/api/modules/list"),
 }
 
+# These frontend routes use the final path parameter as the desired enabled state.
+# Keep them mutating even when the optional runtime-verification sidecar is absent.
+VERIFIED_MUTATING_GET_TEMPLATES = {
+    "/api/cloudflared/list/{param}/{param2}",
+    "/api/coraza/list/{param}/{param2}",
+    "/api/frp/list/{param}/{param2}",
+    "/api/ipfliter/list/{param}/{param2}/{param3}",
+}
+
 # Lucky has state-changing GET routes. Match complete path segments or well-known
 # action names instead of assuming all GET requests are safe.
 SIDE_EFFECT_GET_ACTIONS = {
@@ -150,6 +159,8 @@ def classify_known_operation(method: str, path: str) -> OperationRisk:
     method = method.upper()
     if (method, path) in VERIFIED_READ_ONLY:
         return OperationRisk.READ_ONLY
+    if method == "GET" and path in VERIFIED_MUTATING_GET_TEMPLATES:
+        return OperationRisk.MUTATING
     segments = _segments(path)
     if method == "GET":
         if not segments & SIDE_EFFECT_GET_ACTIONS:
