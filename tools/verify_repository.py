@@ -800,8 +800,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             fail(f"Cron task request schema must cover exactly the frontend body fields for {route_key}")
         if isinstance(route.request_body_schema, dict) and "required" in route.request_body_schema:
             fail(f"Cron task request schema must not invent required fields for {route_key}")
-        if route.response_schema is not None:
-            fail(f"Cron parser-only task evidence must not claim a success response for {route_key}")
+        if route.response_schema != {"type": "object", "properties": {"ret": {"type": "integer"}}}:
+            fail(f"Cron disposable-task ret-only response schema regressed for {route_key}")
     cron_trigger = merged_by_key[("POST", "/api/cron/jobs/trigger")]
     if cron_trigger.request_body_schema != {
         "type": "object", "properties": {"cronKey": {"type": "string"}, "jobIndex": {"type": "integer"}}
@@ -2205,9 +2205,13 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         ("PUT", "/api/cron/groups"),
         ("PUT", "/api/cron/groups/collapsed"),
         ("DELETE", "/api/cron/groups"),
+        ("PUT", "/api/cron/groups/orderadjustment"),
+        ("PUT", "/api/cron/taskgrouporderupdate"),
+        ("GET", "/api/cron/enable"),
+        ("DELETE", "/api/cron/list"),
     }:
         if merged_by_key[route_key].response_schema != ret_only_schema:
-            fail(f"Cron disposable-group ret-only response schema regressed for {route_key}")
+            fail(f"Cron disposable/no-op ret-only response schema regressed for {route_key}")
 
     cron_groups = merged_by_key[("GET", "/api/cron/groups")].response_schema
     cron_group_item = (
@@ -2220,6 +2224,35 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         "properties": {"Key": {"type": "string"}, "Name": {"type": "string"}},
     }:
         fail("Cron group list item schema regressed")
+
+    cron_tasks = merged_by_key[("GET", "/api/cron/list")].response_schema
+    cron_task_item = (
+        cron_tasks.get("properties", {}).get("list", {}).get("items")
+        if isinstance(cron_tasks, dict)
+        else None
+    )
+    if cron_task_item != {
+        "type": "object",
+        "properties": {
+            "GroupKey": {"type": "string"},
+            "Name": {"type": "string"},
+            "Key": {"type": "string"},
+            "Enable": {"type": "boolean"},
+            "Type": {"type": "integer"},
+            "ExecSecond": {"type": "integer"},
+            "ExecMinute": {"type": "integer"},
+            "ExecHour": {"type": "integer"},
+            "Parallel": {"type": "boolean"},
+            "IOT_DianDeng_Enable": {"type": "boolean"},
+            "IOT_DianDeng_InsecureSkipVerify": {"type": "boolean"},
+            "IOT_DianDengBindComponentEnable": {"type": "boolean"},
+            "IOT_Bemfa_Enable": {"type": "boolean"},
+            "IOT_Bemfa_InsecureSkipVerify": {"type": "boolean"},
+            "IOTDianDengOnline": {"type": "boolean"},
+            "IOTBemfaOnline": {"type": "boolean"},
+        },
+    }:
+        fail("Cron task list safe item schema regressed")
 
     collapsed_states = merged_by_key[("GET", "/api/cron/groups/collapsed/states")].response_schema
     states_schema = (
@@ -3201,6 +3234,13 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         },
         ("GET", "/api/ipfliter/porttrapconf"): {"WebhookProxyPassword"},
         ("GET", "/api/ipfliter/autorecordipconf"): {"BasicPassword"},
+        ("GET", "/api/cron/list"): {
+            "Jobs",
+            "IOT_DianDeng_AUTHKEY",
+            "IOT_Bemfa_SecretKey",
+            "IOTDianDengClientMsg",
+            "IOTBemfaClientMsg",
+        },
         ("GET", "/api/stun/configure"): {"WebhookProxyPassword"},
         ("GET", "/api/stun/{param}"): {
             "Options",

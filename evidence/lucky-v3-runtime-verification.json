@@ -1924,7 +1924,8 @@
       "risk": "mutating",
       "body_keys": ["Key", "Name", "Enable", "OtherKey", "Type", "TypeParams", "GroupKey", "ExecSecond", "ExecMinute", "ExecHour", "Jobs", "Parallel", "IOT_DianDeng_Enable", "IOT_DianDeng_AUTHKEY", "IOT_DianDeng_InsecureSkipVerify", "IOT_DianDengVoiceAssistantTriggerCondition", "IOT_DianDengBindComponentEnable", "IOT_DianDengBindComponentTriggerCondition", "IOT_DianDengBindComponent", "IOT_DianDengBindComponentState", "IOT_DianDengBindComponentType", "IOT_Bemfa_Enable", "IOT_Bemfa_SecretKey", "IOT_Bemfa_Topic", "IOT_BemfaVoiceAssistantTriggerCondition", "IOT_Bemfa_InsecureSkipVerify"],
       "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"Name":{"type":"string"},"Enable":{"type":"boolean"},"OtherKey":{"type":"string"},"Type":{"type":"integer"},"TypeParams":{"type":"string"},"GroupKey":{"type":"string"},"ExecSecond":{"type":"integer"},"ExecMinute":{"type":"integer"},"ExecHour":{"type":"integer"},"Jobs":{"type":"array","items":{}},"Parallel":{"type":"boolean"},"IOT_DianDeng_Enable":{"type":"boolean"},"IOT_DianDeng_AUTHKEY":{"type":"string"},"IOT_DianDeng_InsecureSkipVerify":{"type":"boolean"},"IOT_DianDengVoiceAssistantTriggerCondition":{"type":"string"},"IOT_DianDengBindComponentEnable":{"type":"boolean"},"IOT_DianDengBindComponentTriggerCondition":{"type":"string"},"IOT_DianDengBindComponent":{"type":"string"},"IOT_DianDengBindComponentState":{"type":"string"},"IOT_DianDengBindComponentType":{"type":"string"},"IOT_Bemfa_Enable":{"type":"boolean"},"IOT_Bemfa_SecretKey":{"type":"string"},"IOT_Bemfa_Topic":{"type":"string"},"IOT_BemfaVoiceAssistantTriggerCondition":{"type":"string"},"IOT_Bemfa_InsecureSkipVerify":{"type":"boolean"}}},
-      "schema_evidence": "frontend scheduled-task form initializes this explicit model and passes it directly to POST; paced parser-only probes were rejected before handler execution and verified CronItem primitive JSON field types while Jobs accepted an empty array and therefore remains array-with-unspecified-items; every probe used an invalid Key sentinel and the cron-task baseline remained zero"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend scheduled-task form initializes this explicit model and passes it directly to POST; parser-only probes established primitive request types, then an authorized disposable task with Enable=false, empty Jobs, all external IoT integrations disabled and ExecSecond=59 returned ret-only success. Cleanup restored the exact zero-task baseline"
     },
     {
       "path": "/api/cron/list",
@@ -1932,7 +1933,22 @@
       "risk": "mutating",
       "body_keys": ["Key", "Name", "Enable", "OtherKey", "Type", "TypeParams", "GroupKey", "ExecSecond", "ExecMinute", "ExecHour", "Jobs", "Parallel", "IOT_DianDeng_Enable", "IOT_DianDeng_AUTHKEY", "IOT_DianDeng_InsecureSkipVerify", "IOT_DianDengVoiceAssistantTriggerCondition", "IOT_DianDengBindComponentEnable", "IOT_DianDengBindComponentTriggerCondition", "IOT_DianDengBindComponent", "IOT_DianDengBindComponentState", "IOT_DianDengBindComponentType", "IOT_Bemfa_Enable", "IOT_Bemfa_SecretKey", "IOT_Bemfa_Topic", "IOT_BemfaVoiceAssistantTriggerCondition", "IOT_Bemfa_InsecureSkipVerify"],
       "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"Name":{"type":"string"},"Enable":{"type":"boolean"},"OtherKey":{"type":"string"},"Type":{"type":"integer"},"TypeParams":{"type":"string"},"GroupKey":{"type":"string"},"ExecSecond":{"type":"integer"},"ExecMinute":{"type":"integer"},"ExecHour":{"type":"integer"},"Jobs":{"type":"array","items":{}},"Parallel":{"type":"boolean"},"IOT_DianDeng_Enable":{"type":"boolean"},"IOT_DianDeng_AUTHKEY":{"type":"string"},"IOT_DianDeng_InsecureSkipVerify":{"type":"boolean"},"IOT_DianDengVoiceAssistantTriggerCondition":{"type":"string"},"IOT_DianDengBindComponentEnable":{"type":"boolean"},"IOT_DianDengBindComponentTriggerCondition":{"type":"string"},"IOT_DianDengBindComponent":{"type":"string"},"IOT_DianDengBindComponentState":{"type":"string"},"IOT_DianDengBindComponentType":{"type":"string"},"IOT_Bemfa_Enable":{"type":"boolean"},"IOT_Bemfa_SecretKey":{"type":"string"},"IOT_Bemfa_Topic":{"type":"string"},"IOT_BemfaVoiceAssistantTriggerCondition":{"type":"string"},"IOT_Bemfa_InsecureSkipVerify":{"type":"boolean"}}},
-      "schema_evidence": "frontend scheduled-task editor loads and passes the same model directly to PUT; request types reuse the parser-verified CronItem struct and no successful task create/update handler was executed for schema discovery"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend scheduled-task editor loads and passes the same model directly to PUT; the authorized disabled disposable task accepted an identical update and returned ret-only success without executing any job before cleanup restored the zero-task baseline"
+    },
+    {
+      "path": "/api/cron/enable",
+      "method": "GET",
+      "risk": "mutating",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "authorized disposable-task probe called enable=false against an already disabled temporary task and observed ret-only success; the task remained disabled"
+    },
+    {
+      "path": "/api/cron/list",
+      "method": "DELETE",
+      "risk": "mutating",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "authorized cleanup deleted only the disabled disposable Cron task by its generated key and observed ret-only success; the exact pre-probe zero-task baseline hash was restored"
     },
     {
       "path": "/api/cron/taskgrouporderupdate",
@@ -1940,7 +1956,8 @@
       "risk": "mutating",
       "body_keys": ["tasksMap", "orderList"],
       "request_body_schema": {"type": "object", "properties": {"tasksMap": {"type": "object", "additionalProperties": {"type": "string"}}, "orderList": {"type": "array", "items": {"type": "string"}}}},
-      "schema_evidence": "frontend task/group drag handlers explicitly construct {tasksMap,orderList}; tasksMap maps TaskKey to GroupKey string values and orderList is the TaskKey string sequence"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend task/group drag handlers explicitly construct {tasksMap,orderList}; with the task/group baseline empty, an authorized no-op {tasksMap:{},orderList:[]} write returned ret-only success and left both baseline hashes unchanged"
     },
     {
       "path": "/api/cron/groups",
@@ -1980,7 +1997,8 @@
       "method": "PUT",
       "risk": "mutating",
       "request_body_schema": {"type": "array", "items": {"type": "string"}},
-      "schema_evidence": "frontend group reorder dialog maps reordered groups to Key string array"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend group reorder dialog maps reordered groups to Key string array; with the group baseline empty, an authorized no-op [] reorder returned ret-only success and left both Cron group/task baseline hashes unchanged"
     },
     {
       "path": "/api/wol/device",
@@ -3332,8 +3350,8 @@
       "path": "/api/cron/list",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": ["array", "null"], "items": {}}}},
-      "schema_evidence": "authorized GET /api/cron/list returned null list on this instance; task item schema is intentionally not guessed"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"list":{"type":["array","null"],"items":{"type":"object","properties":{"GroupKey":{"type":"string"},"Name":{"type":"string"},"Key":{"type":"string"},"Enable":{"type":"boolean"},"Type":{"type":"integer"},"ExecSecond":{"type":"integer"},"ExecMinute":{"type":"integer"},"ExecHour":{"type":"integer"},"Parallel":{"type":"boolean"},"IOT_DianDeng_Enable":{"type":"boolean"},"IOT_DianDeng_InsecureSkipVerify":{"type":"boolean"},"IOT_DianDengBindComponentEnable":{"type":"boolean"},"IOT_Bemfa_Enable":{"type":"boolean"},"IOT_Bemfa_InsecureSkipVerify":{"type":"boolean"},"IOTDianDengOnline":{"type":"boolean"},"IOTBemfaOnline":{"type":"boolean"}}}}}},
+      "schema_evidence": "authorized disabled disposable task populated GET /api/cron/list and verified these safe control/status field types. Jobs, external-IoT authentication secrets, content-bearing trigger/component fields and client messages are intentionally omitted; cleanup restored the exact original null-list baseline"
     },
     {
       "path": "/api/wol/devices",
