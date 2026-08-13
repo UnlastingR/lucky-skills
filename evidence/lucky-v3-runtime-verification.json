@@ -1249,14 +1249,16 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["Key", "Type", "Enable", "Remark", "Root", "Params", "HttpClienInsecureSkipVerify", "HttpClientProxyType", "HttpClientProxyAddr", "HttpClientProxyUser", "HttpClientProxyPassword", "SystemMount"],
-      "schema_evidence": "frontend Remote editor default model is passed directly to POST; current authorized remote list is empty so resource-field evidence is frontend-only"
+      "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"Type":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"Root":{"type":"array","items":{}},"Params":{"type":"object","additionalProperties":{}},"HttpClienInsecureSkipVerify":{"type":"boolean"},"HttpClientProxyType":{"type":"string"},"HttpClientProxyAddr":{"type":"string"},"HttpClientProxyUser":{"type":"string"},"HttpClientProxyPassword":{"type":"string"},"SystemMount":{"type":"object"}}},
+      "schema_evidence": "frontend Remote editor default model is passed directly to POST; authorized parser-only probes were rejected before handler execution and verified Remote Key/Type/Remark/proxy fields as strings, Enable/InsecureSkipVerify as booleans, Root as an array, Params as map[string]interface{} and SystemMount as conf.MountConfig object; every probe used a guaranteed-invalid Key sentinel and the remote baseline remained zero"
     },
     {
       "path": "/api/rclone/remotelist",
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["Key", "Type", "Enable", "Remark", "Root", "Params", "HttpClienInsecureSkipVerify", "HttpClientProxyType", "HttpClientProxyAddr", "HttpClientProxyUser", "HttpClientProxyPassword", "SystemMount"],
-      "schema_evidence": "frontend loads GET /api/rclone/remote/{key} into the same Remote editor model and passes that model directly to PUT; current authorized remote list is empty"
+      "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"Type":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"Root":{"type":"array","items":{}},"Params":{"type":"object","additionalProperties":{}},"HttpClienInsecureSkipVerify":{"type":"boolean"},"HttpClientProxyType":{"type":"string"},"HttpClientProxyAddr":{"type":"string"},"HttpClientProxyUser":{"type":"string"},"HttpClientProxyPassword":{"type":"string"},"SystemMount":{"type":"object"}}},
+      "schema_evidence": "frontend loads GET /api/rclone/remote/{key} into the same Remote editor model and passes that model directly to PUT; request types reuse the parser-verified Remote struct field types and no successful remote create/update handler was executed for schema discovery"
     },
     {
       "path": "/api/rclone/sync/list",

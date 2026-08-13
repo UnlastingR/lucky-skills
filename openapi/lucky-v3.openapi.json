@@ -25870,7 +25870,7 @@
           "lucky_rclone-sFF3mpk8.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend Remote editor default model is passed directly to POST; current authorized remote list is empty so resource-field evidence is frontend-only",
+        "x-schema-evidence": "frontend Remote editor default model is passed directly to POST; authorized parser-only probes were rejected before handler execution and verified Remote Key/Type/Remark/proxy fields as strings, Enable/InsecureSkipVerify as booleans, Root as an array, Params as map[string]interface{} and SystemMount as conf.MountConfig object; every probe used a guaranteed-invalid Key sentinel and the remote baseline remained zero",
         "requestBody": {
           "required": true,
           "content": {
@@ -25878,18 +25878,44 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Key": {},
-                  "Type": {},
-                  "Enable": {},
-                  "Remark": {},
-                  "Root": {},
-                  "Params": {},
-                  "HttpClienInsecureSkipVerify": {},
-                  "HttpClientProxyType": {},
-                  "HttpClientProxyAddr": {},
-                  "HttpClientProxyUser": {},
-                  "HttpClientProxyPassword": {},
-                  "SystemMount": {}
+                  "Key": {
+                    "type": "string"
+                  },
+                  "Type": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "Remark": {
+                    "type": "string"
+                  },
+                  "Root": {
+                    "type": "array",
+                    "items": {}
+                  },
+                  "Params": {
+                    "type": "object",
+                    "additionalProperties": {}
+                  },
+                  "HttpClienInsecureSkipVerify": {
+                    "type": "boolean"
+                  },
+                  "HttpClientProxyType": {
+                    "type": "string"
+                  },
+                  "HttpClientProxyAddr": {
+                    "type": "string"
+                  },
+                  "HttpClientProxyUser": {
+                    "type": "string"
+                  },
+                  "HttpClientProxyPassword": {
+                    "type": "string"
+                  },
+                  "SystemMount": {
+                    "type": "object"
+                  }
                 }
               }
             }
@@ -25935,7 +25961,7 @@
           "lucky_rclone-sFF3mpk8.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend loads GET /api/rclone/remote/{key} into the same Remote editor model and passes that model directly to PUT; current authorized remote list is empty",
+        "x-schema-evidence": "frontend loads GET /api/rclone/remote/{key} into the same Remote editor model and passes that model directly to PUT; request types reuse the parser-verified Remote struct field types and no successful remote create/update handler was executed for schema discovery",
         "requestBody": {
           "required": true,
           "content": {
@@ -25943,18 +25969,44 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Key": {},
-                  "Type": {},
-                  "Enable": {},
-                  "Remark": {},
-                  "Root": {},
-                  "Params": {},
-                  "HttpClienInsecureSkipVerify": {},
-                  "HttpClientProxyType": {},
-                  "HttpClientProxyAddr": {},
-                  "HttpClientProxyUser": {},
-                  "HttpClientProxyPassword": {},
-                  "SystemMount": {}
+                  "Key": {
+                    "type": "string"
+                  },
+                  "Type": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "Remark": {
+                    "type": "string"
+                  },
+                  "Root": {
+                    "type": "array",
+                    "items": {}
+                  },
+                  "Params": {
+                    "type": "object",
+                    "additionalProperties": {}
+                  },
+                  "HttpClienInsecureSkipVerify": {
+                    "type": "boolean"
+                  },
+                  "HttpClientProxyType": {
+                    "type": "string"
+                  },
+                  "HttpClientProxyAddr": {
+                    "type": "string"
+                  },
+                  "HttpClientProxyUser": {
+                    "type": "string"
+                  },
+                  "HttpClientProxyPassword": {
+                    "type": "string"
+                  },
+                  "SystemMount": {
+                    "type": "object"
+                  }
                 }
               }
             }
