@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 54:
+    if len(untyped_request_routes) > 51:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 54 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 51 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     coraza_request = {
@@ -677,6 +677,51 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             fail(f"parser-verified request schema must not invent required fields for {route_key}")
         if route.response_schema is not None:
             fail(f"parser-only evidence must not claim a success response for {route_key}")
+
+    cron_item_request = {
+        "type": "object",
+        "properties": {
+            "Key": {"type": "string"}, "Name": {"type": "string"}, "Enable": {"type": "boolean"},
+            "OtherKey": {"type": "string"}, "Type": {"type": "integer"}, "TypeParams": {"type": "string"},
+            "GroupKey": {"type": "string"}, "ExecSecond": {"type": "integer"},
+            "ExecMinute": {"type": "integer"}, "ExecHour": {"type": "integer"},
+            "Jobs": {"type": "array", "items": {}}, "Parallel": {"type": "boolean"},
+            "IOT_DianDeng_Enable": {"type": "boolean"}, "IOT_DianDeng_AUTHKEY": {"type": "string"},
+            "IOT_DianDeng_InsecureSkipVerify": {"type": "boolean"},
+            "IOT_DianDengVoiceAssistantTriggerCondition": {"type": "string"},
+            "IOT_DianDengBindComponentEnable": {"type": "boolean"},
+            "IOT_DianDengBindComponentTriggerCondition": {"type": "string"},
+            "IOT_DianDengBindComponent": {"type": "string"},
+            "IOT_DianDengBindComponentState": {"type": "string"},
+            "IOT_DianDengBindComponentType": {"type": "string"},
+            "IOT_Bemfa_Enable": {"type": "boolean"}, "IOT_Bemfa_SecretKey": {"type": "string"},
+            "IOT_Bemfa_Topic": {"type": "string"},
+            "IOT_BemfaVoiceAssistantTriggerCondition": {"type": "string"},
+            "IOT_Bemfa_InsecureSkipVerify": {"type": "boolean"},
+        },
+    }
+    for route_key in {
+        ("POST", "/api/cron/list"),
+        ("PUT", "/api/cron/list"),
+    }:
+        route = merged_by_key[route_key]
+        if route.request_body_schema != cron_item_request:
+            fail(f"Cron parser-verified task request schema regressed for {route_key}")
+        if set(route.body_keys) != set(cron_item_request["properties"]):
+            fail(f"Cron task request schema must cover exactly the frontend body fields for {route_key}")
+        if isinstance(route.request_body_schema, dict) and "required" in route.request_body_schema:
+            fail(f"Cron task request schema must not invent required fields for {route_key}")
+        if route.response_schema is not None:
+            fail(f"Cron parser-only task evidence must not claim a success response for {route_key}")
+    cron_trigger = merged_by_key[("POST", "/api/cron/jobs/trigger")]
+    if cron_trigger.request_body_schema != {
+        "type": "object", "properties": {"cronKey": {"type": "string"}, "jobIndex": {"type": "integer"}}
+    }:
+        fail("Cron parser-verified trigger request schema regressed")
+    if isinstance(cron_trigger.request_body_schema, dict) and "required" in cron_trigger.request_body_schema:
+        fail("Cron trigger request schema must not invent required fields")
+    if cron_trigger.response_schema is not None:
+        fail("Cron parser-only trigger evidence must not claim a success response")
 
     explicit_small_request_schemas = {
         ("PUT", "/api/frontend-preferences"): {

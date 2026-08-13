@@ -3024,6 +3024,7 @@
           "lucky_panel-599cSpUA.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized parser-only probes verified CronJobTriggerRequest.cronKey as string and jobIndex as int; both requests failed during JSON decoding before trigger handler execution and the cron-task baseline remained zero",
         "requestBody": {
           "required": true,
           "content": {
@@ -3031,8 +3032,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "cronKey": {},
-                  "jobIndex": {}
+                  "cronKey": {
+                    "type": "string"
+                  },
+                  "jobIndex": {
+                    "type": "integer"
+                  }
                 }
               }
             }
@@ -3249,7 +3254,7 @@
           "lucky_panel-599cSpUA.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend scheduled-task form initializes this explicit model and passes it directly to POST; current authorized cron list is empty",
+        "x-schema-evidence": "frontend scheduled-task form initializes this explicit model and passes it directly to POST; paced parser-only probes were rejected before handler execution and verified CronItem primitive JSON field types while Jobs accepted an empty array and therefore remains array-with-unspecified-items; every probe used an invalid Key sentinel and the cron-task baseline remained zero",
         "requestBody": {
           "required": true,
           "content": {
@@ -3257,32 +3262,85 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Key": {},
-                  "Name": {},
-                  "Enable": {},
-                  "OtherKey": {},
-                  "Type": {},
-                  "TypeParams": {},
-                  "GroupKey": {},
-                  "ExecSecond": {},
-                  "ExecMinute": {},
-                  "ExecHour": {},
-                  "Jobs": {},
-                  "Parallel": {},
-                  "IOT_DianDeng_Enable": {},
-                  "IOT_DianDeng_AUTHKEY": {},
-                  "IOT_DianDeng_InsecureSkipVerify": {},
-                  "IOT_DianDengVoiceAssistantTriggerCondition": {},
-                  "IOT_DianDengBindComponentEnable": {},
-                  "IOT_DianDengBindComponentTriggerCondition": {},
-                  "IOT_DianDengBindComponent": {},
-                  "IOT_DianDengBindComponentState": {},
-                  "IOT_DianDengBindComponentType": {},
-                  "IOT_Bemfa_Enable": {},
-                  "IOT_Bemfa_SecretKey": {},
-                  "IOT_Bemfa_Topic": {},
-                  "IOT_BemfaVoiceAssistantTriggerCondition": {},
-                  "IOT_Bemfa_InsecureSkipVerify": {}
+                  "Key": {
+                    "type": "string"
+                  },
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "OtherKey": {
+                    "type": "string"
+                  },
+                  "Type": {
+                    "type": "integer"
+                  },
+                  "TypeParams": {
+                    "type": "string"
+                  },
+                  "GroupKey": {
+                    "type": "string"
+                  },
+                  "ExecSecond": {
+                    "type": "integer"
+                  },
+                  "ExecMinute": {
+                    "type": "integer"
+                  },
+                  "ExecHour": {
+                    "type": "integer"
+                  },
+                  "Jobs": {
+                    "type": "array",
+                    "items": {}
+                  },
+                  "Parallel": {
+                    "type": "boolean"
+                  },
+                  "IOT_DianDeng_Enable": {
+                    "type": "boolean"
+                  },
+                  "IOT_DianDeng_AUTHKEY": {
+                    "type": "string"
+                  },
+                  "IOT_DianDeng_InsecureSkipVerify": {
+                    "type": "boolean"
+                  },
+                  "IOT_DianDengVoiceAssistantTriggerCondition": {
+                    "type": "string"
+                  },
+                  "IOT_DianDengBindComponentEnable": {
+                    "type": "boolean"
+                  },
+                  "IOT_DianDengBindComponentTriggerCondition": {
+                    "type": "string"
+                  },
+                  "IOT_DianDengBindComponent": {
+                    "type": "string"
+                  },
+                  "IOT_DianDengBindComponentState": {
+                    "type": "string"
+                  },
+                  "IOT_DianDengBindComponentType": {
+                    "type": "string"
+                  },
+                  "IOT_Bemfa_Enable": {
+                    "type": "boolean"
+                  },
+                  "IOT_Bemfa_SecretKey": {
+                    "type": "string"
+                  },
+                  "IOT_Bemfa_Topic": {
+                    "type": "string"
+                  },
+                  "IOT_BemfaVoiceAssistantTriggerCondition": {
+                    "type": "string"
+                  },
+                  "IOT_Bemfa_InsecureSkipVerify": {
+                    "type": "boolean"
+                  }
                 }
               }
             }
@@ -3328,7 +3386,7 @@
           "lucky_panel-599cSpUA.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend scheduled-task editor loads and passes the same model directly to PUT; current authorized cron list is empty",
+        "x-schema-evidence": "frontend scheduled-task editor loads and passes the same model directly to PUT; request types reuse the parser-verified CronItem struct and no successful task create/update handler was executed for schema discovery",
         "requestBody": {
           "required": true,
           "content": {
@@ -3336,32 +3394,85 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Key": {},
-                  "Name": {},
-                  "Enable": {},
-                  "OtherKey": {},
-                  "Type": {},
-                  "TypeParams": {},
-                  "GroupKey": {},
-                  "ExecSecond": {},
-                  "ExecMinute": {},
-                  "ExecHour": {},
-                  "Jobs": {},
-                  "Parallel": {},
-                  "IOT_DianDeng_Enable": {},
-                  "IOT_DianDeng_AUTHKEY": {},
-                  "IOT_DianDeng_InsecureSkipVerify": {},
-                  "IOT_DianDengVoiceAssistantTriggerCondition": {},
-                  "IOT_DianDengBindComponentEnable": {},
-                  "IOT_DianDengBindComponentTriggerCondition": {},
-                  "IOT_DianDengBindComponent": {},
-                  "IOT_DianDengBindComponentState": {},
-                  "IOT_DianDengBindComponentType": {},
-                  "IOT_Bemfa_Enable": {},
-                  "IOT_Bemfa_SecretKey": {},
-                  "IOT_Bemfa_Topic": {},
-                  "IOT_BemfaVoiceAssistantTriggerCondition": {},
-                  "IOT_Bemfa_InsecureSkipVerify": {}
+                  "Key": {
+                    "type": "string"
+                  },
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "OtherKey": {
+                    "type": "string"
+                  },
+                  "Type": {
+                    "type": "integer"
+                  },
+                  "TypeParams": {
+                    "type": "string"
+                  },
+                  "GroupKey": {
+                    "type": "string"
+                  },
+                  "ExecSecond": {
+                    "type": "integer"
+                  },
+                  "ExecMinute": {
+                    "type": "integer"
+                  },
+                  "ExecHour": {
+                    "type": "integer"
+                  },
+                  "Jobs": {
+                    "type": "array",
+                    "items": {}
+                  },
+                  "Parallel": {
+                    "type": "boolean"
+                  },
+                  "IOT_DianDeng_Enable": {
+                    "type": "boolean"
+                  },
+                  "IOT_DianDeng_AUTHKEY": {
+                    "type": "string"
+                  },
+                  "IOT_DianDeng_InsecureSkipVerify": {
+                    "type": "boolean"
+                  },
+                  "IOT_DianDengVoiceAssistantTriggerCondition": {
+                    "type": "string"
+                  },
+                  "IOT_DianDengBindComponentEnable": {
+                    "type": "boolean"
+                  },
+                  "IOT_DianDengBindComponentTriggerCondition": {
+                    "type": "string"
+                  },
+                  "IOT_DianDengBindComponent": {
+                    "type": "string"
+                  },
+                  "IOT_DianDengBindComponentState": {
+                    "type": "string"
+                  },
+                  "IOT_DianDengBindComponentType": {
+                    "type": "string"
+                  },
+                  "IOT_Bemfa_Enable": {
+                    "type": "boolean"
+                  },
+                  "IOT_Bemfa_SecretKey": {
+                    "type": "string"
+                  },
+                  "IOT_Bemfa_Topic": {
+                    "type": "string"
+                  },
+                  "IOT_BemfaVoiceAssistantTriggerCondition": {
+                    "type": "string"
+                  },
+                  "IOT_Bemfa_InsecureSkipVerify": {
+                    "type": "boolean"
+                  }
                 }
               }
             }
