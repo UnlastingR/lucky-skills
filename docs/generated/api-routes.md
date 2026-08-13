@@ -522,13 +522,13 @@
 | `GET` | `/api/rclone/remotelist` | `read-only` | — | — | `json` | `frontend-call` |
 | `POST` | `/api/rclone/remotelist` | `mutating` | — | `Key`, `Type`, `Enable`, `Remark`, `Root`, `Params`, `HttpClienInsecureSkipVerify`, `HttpClientProxyType`, `HttpClientProxyAddr`, `HttpClientProxyUser`, `HttpClientProxyPassword`, `SystemMount` | `json` | `frontend-call` |
 | `PUT` | `/api/rclone/remotelist` | `mutating` | — | `Key`, `Type`, `Enable`, `Remark`, `Root`, `Params`, `HttpClienInsecureSkipVerify`, `HttpClientProxyType`, `HttpClientProxyAddr`, `HttpClientProxyUser`, `HttpClientProxyPassword`, `SystemMount` | `json` | `frontend-call` |
-| `GET` | `/api/rclone/remotelist/option` | `read-only` | `enable`, `key` | — | `json` | `frontend-call` |
+| `GET` | `/api/rclone/remotelist/option` | `mutating` | `enable`, `key` | — | `json` | `frontend-call` |
 | `GET` | `/api/rclone/remotelistlite` | `read-only` | `vfs` | — | `json` | `frontend-call` |
 | `DELETE` | `/api/rclone/sync/list` | `mutating` | `key` | — | `json` | `frontend-call` |
 | `GET` | `/api/rclone/sync/list` | `read-only` | — | — | `json` | `frontend-call` |
 | `POST` | `/api/rclone/sync/list` | `mutating` | — | `Key`, `Enable`, `Remark`, `SourceType`, `SourceRemoteKey`, `SourcePath`, `DestType`, `DestRemoteKey`, `DestPath`, `SyncMode`, `DeleteOnDest`, `DryRun`, `CreateEmptyDirs`, `IgnoreExisting`, `IgnoreErrors`, `CheckFirst`, `Transfers`, `Checkers`, `BandwidthLimit`, `MinAge`, `MaxAge`, `MinSize`, `MaxSize`, `IncludePatterns`, `ExcludePatterns`, `ExtraArgs`, `ScheduleEnable`, `ScheduleCron`, `ScheduleInterval`, `BisyncResync`, `BisyncCheckAccess`, `BisyncForce` | `json` | `frontend-call` |
 | `PUT` | `/api/rclone/sync/list` | `mutating` | — | `Key`, `Enable`, `Remark`, `SourceType`, `SourceRemoteKey`, `SourcePath`, `DestType`, `DestRemoteKey`, `DestPath`, `SyncMode`, `DeleteOnDest`, `DryRun`, `CreateEmptyDirs`, `IgnoreExisting`, `IgnoreErrors`, `CheckFirst`, `Transfers`, `Checkers`, `BandwidthLimit`, `MinAge`, `MaxAge`, `MinSize`, `MaxSize`, `IncludePatterns`, `ExcludePatterns`, `ExtraArgs`, `ScheduleEnable`, `ScheduleCron`, `ScheduleInterval`, `BisyncResync`, `BisyncCheckAccess`, `BisyncForce` | `json` | `frontend-call` |
-| `GET` | `/api/rclone/sync/option` | `read-only` | `enable`, `key` | — | `json` | `frontend-call` |
+| `GET` | `/api/rclone/sync/option` | `mutating` | `enable`, `key` | — | `json` | `frontend-call` |
 | `POST` | `/api/rclone/sync/run/{param}` | `mutating` | `resync` | — | `json` | `frontend-call` |
 | `POST` | `/api/rclone/sync/stop/{param}` | `dangerous` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/rclone/sync/{param}` | `read-only` | — | — | `json` | `frontend-call` |
