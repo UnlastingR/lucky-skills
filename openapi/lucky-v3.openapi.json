@@ -35872,7 +35872,47 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "Key": {
+                            "type": "string"
+                          },
+                          "Enable": {
+                            "type": "boolean"
+                          },
+                          "Remark": {
+                            "type": "string"
+                          },
+                          "CreateTime": {
+                            "type": "integer"
+                          },
+                          "UpdateTime": {
+                            "type": "integer"
+                          },
+                          "HasTwoFA": {
+                            "type": "boolean"
+                          },
+                          "Type": {
+                            "type": "string"
+                          },
+                          "ID": {
+                            "type": "string"
+                          },
+                          "Name": {
+                            "type": "string"
+                          },
+                          "Avatar": {
+                            "type": "string"
+                          },
+                          "EMail": {
+                            "type": "string"
+                          },
+                          "Phone": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -35895,7 +35935,7 @@
           "lucky_thirdPartyAuthManager-C0VqZjAx.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/thirdPartyAuthManager/list observed list=null on this instance; provider/account/credential item fields remain unspecified"
+        "x-schema-evidence": "authorized disabled disposable mapping populated GET /api/thirdPartyAuthManager/list and verified these safe account/profile field types; RefreshToken, AccessToken and TwoFAKey are intentionally excluded, and cleanup restored the original nullable-list baseline"
       },
       "post": {
         "summary": "Lucky frontend call: POST /api/thirdPartyAuthManager/list",
@@ -35911,11 +35951,19 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "key": {
+                      "type": "string"
+                    },
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -35936,7 +35984,7 @@
           "lucky_thirdPartyAuthManager-C0VqZjAx.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend third-party auth user form initializes this explicit model and passes it directly to POST; paced parser-only probes verified AuthUser/AuthUserInfo string fields, Enable bool and CreateTime/UpdateTime int64 before handler execution, with the third-party auth user baseline remaining zero",
+        "x-schema-evidence": "frontend third-party auth user form initializes this explicit model and passes it directly to POST; an authorized disposable github-type mapping with Enable=false and empty RefreshToken/AccessToken/TwoFAKey returned key+ret success, then cleanup restored the exact null-list baseline",
         "requestBody": {
           "required": true,
           "content": {
@@ -36006,11 +36054,19 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "key": {
+                      "type": "string"
+                    },
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -36031,7 +36087,7 @@
           "lucky_thirdPartyAuthManager-C0VqZjAx.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend edits and passes the same third-party auth user model directly to PUT; request types reuse the parser-verified AuthUser struct and no successful third-party account create/update handler was executed",
+        "x-schema-evidence": "frontend edits and passes the same third-party auth user model directly to PUT; the disabled disposable mapping accepted an identical PUT with all credential/2FA fields empty and returned the same generated key plus ret before cleanup",
         "requestBody": {
           "required": true,
           "content": {
@@ -36103,11 +36159,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -36128,6 +36189,7 @@
           "lucky_thirdPartyAuthManager-C0VqZjAx.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized cleanup deleted only the disabled disposable third-party auth mapping by its generated key and returned ret-only success; the full list response hash returned exactly to the original null-list baseline",
         "parameters": [
           {
             "name": "param",
@@ -36153,11 +36215,60 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "authUser": {
+                      "type": "object",
+                      "properties": {
+                        "Key": {
+                          "type": "string"
+                        },
+                        "Enable": {
+                          "type": "boolean"
+                        },
+                        "Remark": {
+                          "type": "string"
+                        },
+                        "CreateTime": {
+                          "type": "integer"
+                        },
+                        "UpdateTime": {
+                          "type": "integer"
+                        },
+                        "HasTwoFA": {
+                          "type": "boolean"
+                        },
+                        "IsNew": {
+                          "type": "boolean"
+                        },
+                        "Type": {
+                          "type": "string"
+                        },
+                        "ID": {
+                          "type": "string"
+                        },
+                        "Name": {
+                          "type": "string"
+                        },
+                        "Avatar": {
+                          "type": "string"
+                        },
+                        "EMail": {
+                          "type": "string"
+                        },
+                        "Phone": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -36178,6 +36289,7 @@
           "lucky_thirdPartyAuthManager-C0VqZjAx.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET of the disabled disposable mapping by generated key observed these safe account/profile field types. TwoFAKey is intentionally omitted from response documentation, and no token fields are documented",
         "parameters": [
           {
             "name": "param",
@@ -36205,11 +36317,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -36230,6 +36347,7 @@
           "lucky_thirdPartyAuthManager-C0VqZjAx.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GETs against the disposable mapping with several inert second-path values returned ret-only success; the semantic meaning of param2 remains intentionally unspecified",
         "parameters": [
           {
             "name": "param",
