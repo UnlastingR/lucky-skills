@@ -2645,11 +2645,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -2670,6 +2675,7 @@
           "lucky_panel-599cSpUA.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized disposable-task probe called enable=false against an already disabled temporary task and observed ret-only success; the task remained disabled",
         "parameters": [
           {
             "name": "enable",
@@ -3121,11 +3127,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -3146,7 +3157,7 @@
           "lucky_panel-599cSpUA.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend group reorder dialog maps reordered groups to Key string array",
+        "x-schema-evidence": "frontend group reorder dialog maps reordered groups to Key string array; with the group baseline empty, an authorized no-op [] reorder returned ret-only success and left both Cron group/task baseline hashes unchanged",
         "requestBody": {
           "required": true,
           "content": {
@@ -3365,11 +3376,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -3390,6 +3406,7 @@
           "lucky_panel-599cSpUA.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized cleanup deleted only the disabled disposable Cron task by its generated key and observed ret-only success; the exact pre-probe zero-task baseline hash was restored",
         "parameters": [
           {
             "name": "key",
@@ -3427,7 +3444,59 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "GroupKey": {
+                            "type": "string"
+                          },
+                          "Name": {
+                            "type": "string"
+                          },
+                          "Key": {
+                            "type": "string"
+                          },
+                          "Enable": {
+                            "type": "boolean"
+                          },
+                          "Type": {
+                            "type": "integer"
+                          },
+                          "ExecSecond": {
+                            "type": "integer"
+                          },
+                          "ExecMinute": {
+                            "type": "integer"
+                          },
+                          "ExecHour": {
+                            "type": "integer"
+                          },
+                          "Parallel": {
+                            "type": "boolean"
+                          },
+                          "IOT_DianDeng_Enable": {
+                            "type": "boolean"
+                          },
+                          "IOT_DianDeng_InsecureSkipVerify": {
+                            "type": "boolean"
+                          },
+                          "IOT_DianDengBindComponentEnable": {
+                            "type": "boolean"
+                          },
+                          "IOT_Bemfa_Enable": {
+                            "type": "boolean"
+                          },
+                          "IOT_Bemfa_InsecureSkipVerify": {
+                            "type": "boolean"
+                          },
+                          "IOTDianDengOnline": {
+                            "type": "boolean"
+                          },
+                          "IOTBemfaOnline": {
+                            "type": "boolean"
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -3450,7 +3519,7 @@
           "lucky_panel-599cSpUA.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/cron/list returned null list on this instance; task item schema is intentionally not guessed"
+        "x-schema-evidence": "authorized disabled disposable task populated GET /api/cron/list and verified these safe control/status field types. Jobs, external-IoT authentication secrets, content-bearing trigger/component fields and client messages are intentionally omitted; cleanup restored the exact original null-list baseline"
       },
       "post": {
         "summary": "Lucky frontend call: POST /api/cron/list",
@@ -3466,11 +3535,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -3491,7 +3565,7 @@
           "lucky_panel-599cSpUA.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend scheduled-task form initializes this explicit model and passes it directly to POST; paced parser-only probes were rejected before handler execution and verified CronItem primitive JSON field types while Jobs accepted an empty array and therefore remains array-with-unspecified-items; every probe used an invalid Key sentinel and the cron-task baseline remained zero",
+        "x-schema-evidence": "frontend scheduled-task form initializes this explicit model and passes it directly to POST; parser-only probes established primitive request types, then an authorized disposable task with Enable=false, empty Jobs, all external IoT integrations disabled and ExecSecond=59 returned ret-only success. Cleanup restored the exact zero-task baseline",
         "requestBody": {
           "required": true,
           "content": {
@@ -3598,11 +3672,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -3623,7 +3702,7 @@
           "lucky_panel-599cSpUA.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend scheduled-task editor loads and passes the same model directly to PUT; request types reuse the parser-verified CronItem struct and no successful task create/update handler was executed for schema discovery",
+        "x-schema-evidence": "frontend scheduled-task editor loads and passes the same model directly to PUT; the authorized disabled disposable task accepted an identical update and returned ret-only success without executing any job before cleanup restored the zero-task baseline",
         "requestBody": {
           "required": true,
           "content": {
@@ -3823,11 +3902,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -3848,7 +3932,7 @@
           "lucky_panel-599cSpUA.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend task/group drag handlers explicitly construct {tasksMap,orderList}; tasksMap maps TaskKey to GroupKey string values and orderList is the TaskKey string sequence",
+        "x-schema-evidence": "frontend task/group drag handlers explicitly construct {tasksMap,orderList}; with the task/group baseline empty, an authorized no-op {tasksMap:{},orderList:[]} write returned ret-only success and left both baseline hashes unchanged",
         "requestBody": {
           "required": true,
           "content": {
