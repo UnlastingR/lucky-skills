@@ -513,11 +513,59 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 66:
+    if len(untyped_request_routes) > 64:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 66 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 64 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
+
+    coraza_request = {
+        "type": "object",
+        "properties": {
+            "Key": {"type": "string"},
+            "Name": {"type": "string"},
+            "Enable": {"type": "boolean"},
+            "InboundScoreThreshold": {"type": "integer"},
+            "OutboundScoreThreshold": {"type": "integer"},
+            "CorazaWAFConfigList": {"type": "array", "items": {}},
+            "RuleExclusions": {"type": "array", "items": {}},
+        },
+    }
+    ret_only = {"type": "object", "properties": {"ret": {"type": "integer"}}}
+    for route_key in {
+        ("POST", "/api/coraza/list"),
+        ("PUT", "/api/coraza/list"),
+    }:
+        route = merged_by_key[route_key]
+        if route.request_body_schema != coraza_request:
+            fail(f"Coraza disposable-instance request schema regressed for {route_key}")
+        if set(route.body_keys) != set(coraza_request["properties"]):
+            fail(f"Coraza request schema must cover exactly the frontend body fields for {route_key}")
+        if isinstance(route.request_body_schema, dict) and "required" in route.request_body_schema:
+            fail(f"Coraza request schema must not invent required fields for {route_key}")
+        if route.response_schema != ret_only:
+            fail(f"Coraza disposable-instance ret-only response schema regressed for {route_key}")
+    if merged_by_key[("DELETE", "/api/coraza/list/{param}")].response_schema != ret_only:
+        fail("Coraza disposable-instance delete response schema regressed")
+
+    coraza_list = merged_by_key[("GET", "/api/coraza/list")].response_schema
+    coraza_item_props = (
+        coraza_list.get("properties", {}).get("list", {}).get("items", {}).get("properties", {})
+        if isinstance(coraza_list, dict)
+        else {}
+    )
+    expected_coraza_item_props = {
+        "Key": {"type": "string"},
+        "Name": {"type": "string"},
+        "Enable": {"type": "boolean"},
+        "InboundScoreThreshold": {"type": "integer"},
+        "OutboundScoreThreshold": {"type": "integer"},
+        "EnabledRulesCount": {"type": "integer"},
+        "TotalRulesCount": {"type": "integer"},
+        "ExclusionsCount": {"type": "integer"},
+    }
+    if coraza_item_props != expected_coraza_item_props:
+        fail("Coraza safe list item schema regressed")
 
     explicit_small_request_schemas = {
         ("PUT", "/api/frontend-preferences"): {
@@ -1136,8 +1184,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("Local Path Browser delete response schema regressed")
 
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 237:
-        fail(f"response-schema coverage regressed below 237 routes: {response_schema_count}")
+    if response_schema_count < 240:
+        fail(f"response-schema coverage regressed below 240 routes: {response_schema_count}")
 
     safe_utility_response_routes = {
         ("GET", "/api/baseconfigure"),

@@ -1881,7 +1881,35 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "Key": {
+                            "type": "string"
+                          },
+                          "Name": {
+                            "type": "string"
+                          },
+                          "Enable": {
+                            "type": "boolean"
+                          },
+                          "InboundScoreThreshold": {
+                            "type": "integer"
+                          },
+                          "OutboundScoreThreshold": {
+                            "type": "integer"
+                          },
+                          "EnabledRulesCount": {
+                            "type": "integer"
+                          },
+                          "TotalRulesCount": {
+                            "type": "integer"
+                          },
+                          "ExclusionsCount": {
+                            "type": "integer"
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -1904,7 +1932,7 @@
           "lucky_coraza-D1zcK8x_.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/coraza/list returned list=null on this instance; rule item schema remains unspecified"
+        "x-schema-evidence": "authorized GET /api/coraza/list observed one disabled disposable instance created solely for schema verification; only summary field names and JSON types were retained, config/exclusion contents were not persisted, and the instance was deleted with the list baseline restored to zero"
       },
       "post": {
         "summary": "Lucky frontend call: POST /api/coraza/list",
@@ -1920,11 +1948,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -1945,7 +1978,7 @@
           "lucky_coraza-D1zcK8x_.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend Coraza instance form initializes and submits this explicit model; current authorized Coraza list is empty",
+        "x-schema-evidence": "frontend Coraza instance form initializes and submits this explicit model; an authorized disposable probe created one disabled unattached instance, verified string Key/Name, boolean Enable, integer score thresholds, array config/exclusion inputs and a ret-only success response, then deleted it with the Coraza instance baseline restored to zero",
         "requestBody": {
           "required": true,
           "content": {
@@ -1953,13 +1986,29 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Key": {},
-                  "Name": {},
-                  "Enable": {},
-                  "InboundScoreThreshold": {},
-                  "OutboundScoreThreshold": {},
-                  "CorazaWAFConfigList": {},
-                  "RuleExclusions": {}
+                  "Key": {
+                    "type": "string"
+                  },
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "InboundScoreThreshold": {
+                    "type": "integer"
+                  },
+                  "OutboundScoreThreshold": {
+                    "type": "integer"
+                  },
+                  "CorazaWAFConfigList": {
+                    "type": "array",
+                    "items": {}
+                  },
+                  "RuleExclusions": {
+                    "type": "array",
+                    "items": {}
+                  }
                 }
               }
             }
@@ -1980,11 +2029,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -2005,7 +2059,7 @@
           "lucky_coraza-D1zcK8x_.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend edits the same explicit Coraza instance model and passes it directly to PUT; current authorized Coraza list is empty",
+        "x-schema-evidence": "frontend edits the same explicit Coraza instance model and passes it directly to PUT; the authorized disabled disposable instance accepted the same typed request body and returned ret-only success before immediate cleanup, with no WebService attachment",
         "requestBody": {
           "required": true,
           "content": {
@@ -2013,13 +2067,29 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Key": {},
-                  "Name": {},
-                  "Enable": {},
-                  "InboundScoreThreshold": {},
-                  "OutboundScoreThreshold": {},
-                  "CorazaWAFConfigList": {},
-                  "RuleExclusions": {}
+                  "Key": {
+                    "type": "string"
+                  },
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "InboundScoreThreshold": {
+                    "type": "integer"
+                  },
+                  "OutboundScoreThreshold": {
+                    "type": "integer"
+                  },
+                  "CorazaWAFConfigList": {
+                    "type": "array",
+                    "items": {}
+                  },
+                  "RuleExclusions": {
+                    "type": "array",
+                    "items": {}
+                  }
                 }
               }
             }
@@ -2042,11 +2112,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -2067,6 +2142,7 @@
           "lucky_coraza-D1zcK8x_.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized disposable Coraza cleanup deleted only the disabled unattached schema-probe instance by its generated Key and observed a ret-only success response; the instance-list baseline returned to zero",
         "parameters": [
           {
             "name": "param",

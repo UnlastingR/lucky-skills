@@ -1284,14 +1284,25 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["Key", "Name", "Enable", "InboundScoreThreshold", "OutboundScoreThreshold", "CorazaWAFConfigList", "RuleExclusions"],
-      "schema_evidence": "frontend Coraza instance form initializes and submits this explicit model; current authorized Coraza list is empty"
+      "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"Name":{"type":"string"},"Enable":{"type":"boolean"},"InboundScoreThreshold":{"type":"integer"},"OutboundScoreThreshold":{"type":"integer"},"CorazaWAFConfigList":{"type":"array","items":{}},"RuleExclusions":{"type":"array","items":{}}}},
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend Coraza instance form initializes and submits this explicit model; an authorized disposable probe created one disabled unattached instance, verified string Key/Name, boolean Enable, integer score thresholds, array config/exclusion inputs and a ret-only success response, then deleted it with the Coraza instance baseline restored to zero"
     },
     {
       "path": "/api/coraza/list",
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["Key", "Name", "Enable", "InboundScoreThreshold", "OutboundScoreThreshold", "CorazaWAFConfigList", "RuleExclusions"],
-      "schema_evidence": "frontend edits the same explicit Coraza instance model and passes it directly to PUT; current authorized Coraza list is empty"
+      "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"Name":{"type":"string"},"Enable":{"type":"boolean"},"InboundScoreThreshold":{"type":"integer"},"OutboundScoreThreshold":{"type":"integer"},"CorazaWAFConfigList":{"type":"array","items":{}},"RuleExclusions":{"type":"array","items":{}}}},
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend edits the same explicit Coraza instance model and passes it directly to PUT; the authorized disabled disposable instance accepted the same typed request body and returned ret-only success before immediate cleanup, with no WebService attachment"
+    },
+    {
+      "path": "/api/coraza/list/{param}",
+      "method": "DELETE",
+      "risk": "mutating",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "authorized disposable Coraza cleanup deleted only the disabled unattached schema-probe instance by its generated Key and observed a ret-only success response; the instance-list baseline returned to zero"
     },
     {
       "path": "/api/security-groups",
@@ -3093,8 +3104,8 @@
       "path": "/api/coraza/list",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"list":{"type":["array","null"],"items":{}}}},
-      "schema_evidence": "authorized GET /api/coraza/list returned list=null on this instance; rule item schema remains unspecified"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"list":{"type":["array","null"],"items":{"type":"object","properties":{"Key":{"type":"string"},"Name":{"type":"string"},"Enable":{"type":"boolean"},"InboundScoreThreshold":{"type":"integer"},"OutboundScoreThreshold":{"type":"integer"},"EnabledRulesCount":{"type":"integer"},"TotalRulesCount":{"type":"integer"},"ExclusionsCount":{"type":"integer"}}}}}},
+      "schema_evidence": "authorized GET /api/coraza/list observed one disabled disposable instance created solely for schema verification; only summary field names and JSON types were retained, config/exclusion contents were not persisted, and the instance was deleted with the list baseline restored to zero"
     }
   ]
 }
