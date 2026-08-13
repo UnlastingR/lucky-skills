@@ -36,6 +36,8 @@ VERIFIED_MUTATING_GET_TEMPLATES = {
     "/api/coraza/list/{param}/{param2}",
     "/api/frp/list/{param}/{param2}",
     "/api/ipfliter/list/{param}/{param2}/{param3}",
+    "/api/rclone/remotelist/option",
+    "/api/rclone/sync/option",
 }
 
 # Lucky has state-changing GET routes. Match complete path segments or well-known

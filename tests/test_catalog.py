@@ -108,6 +108,18 @@ class RuntimeVerificationTests(unittest.TestCase):
                     "module": "ipfliter",
                     "confidence": "frontend-call",
                 },
+                {
+                    "path": "/api/rclone/remotelist/option",
+                    "method": "GET",
+                    "module": "rclone",
+                    "confidence": "frontend-call",
+                },
+                {
+                    "path": "/api/rclone/sync/option",
+                    "method": "GET",
+                    "module": "rclone",
+                    "confidence": "frontend-call",
+                },
             ],
         }
         with tempfile.TemporaryDirectory() as directory:
@@ -120,6 +132,8 @@ class RuntimeVerificationTests(unittest.TestCase):
             "/api/coraza/list/waf-key/true",
             "/api/frp/list/client-key/false",
             "/api/ipfliter/list/rule-key/subrule-key/true",
+            "/api/rclone/remotelist/option",
+            "/api/rclone/sync/option",
         }:
             self.assertEqual(catalog.classify("GET", path), OperationRisk.MUTATING)
 

@@ -627,7 +627,7 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             "Type": {"type": "string"},
             "Enable": {"type": "boolean"},
             "Remark": {"type": "string"},
-            "Root": {"type": "array", "items": {}},
+            "Root": {"type": "string"},
             "Params": {"type": "object", "additionalProperties": {}},
             "HttpClienInsecureSkipVerify": {"type": "boolean"},
             "HttpClientProxyType": {"type": "string"},
@@ -648,8 +648,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             fail(f"Rclone remote request schema must cover exactly the frontend body fields for {route_key}")
         if isinstance(route.request_body_schema, dict) and "required" in route.request_body_schema:
             fail(f"Rclone remote request schema must not invent required fields for {route_key}")
-        if route.response_schema is not None:
-            fail(f"Rclone parser-only remote evidence must not claim a success response for {route_key}")
+        if route.response_schema != {"type": "object", "properties": {"ret": {"type": "integer"}}}:
+            fail(f"Rclone disposable remote ret-only response schema regressed for {route_key}")
 
     rclone_sync_request = {
         "type": "object",
@@ -685,9 +685,72 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             "CreateTime": {"type": "integer"}, "UpdateTime": {"type": "integer"}, "TwoFAKey": {"type": "string"},
         },
     }
+    rclone_ret_only = {"type": "object", "properties": {"ret": {"type": "integer"}}}
+    for route_key in {("POST", "/api/rclone/sync/list"), ("PUT", "/api/rclone/sync/list")}:
+        route = merged_by_key[route_key]
+        if route.request_body_schema != rclone_sync_request:
+            fail(f"Rclone disposable sync request schema regressed for {route_key}")
+        if set(route.body_keys) != set(rclone_sync_request["properties"]):
+            fail(f"Rclone sync request schema must cover exactly the frontend body fields for {route_key}")
+        if isinstance(route.request_body_schema, dict) and "required" in route.request_body_schema:
+            fail(f"Rclone sync request schema must not invent required fields for {route_key}")
+        if route.response_schema != rclone_ret_only:
+            fail(f"Rclone disposable sync ret-only response schema regressed for {route_key}")
+
+    for route_key in {
+        ("DELETE", "/api/rclone/remotelist"),
+        ("DELETE", "/api/rclone/sync/list"),
+    }:
+        if merged_by_key[route_key].response_schema != rclone_ret_only:
+            fail(f"Rclone disposable cleanup response schema regressed for {route_key}")
+
+    for route_key in {
+        ("GET", "/api/rclone/remotelist/option"),
+        ("GET", "/api/rclone/sync/option"),
+    }:
+        route = merged_by_key[route_key]
+        if route.risk is not OperationRisk.MUTATING:
+            fail(f"Rclone enable/disable GET must remain mutating for {route_key}")
+        if route.response_schema != rclone_ret_only:
+            fail(f"Rclone enable/disable GET response schema regressed for {route_key}")
+
+    rclone_remote_detail = merged_by_key[("GET", "/api/rclone/remote/{param}")].response_schema
+    rclone_remote_props = (
+        rclone_remote_detail.get("properties", {}).get("remote", {}).get("properties", {})
+        if isinstance(rclone_remote_detail, dict)
+        else {}
+    )
+    for field, expected in {
+        "Key": {"type": "string"},
+        "Type": {"type": "string"},
+        "Enable": {"type": "boolean"},
+        "Remark": {"type": "string"},
+        "HttpClienInsecureSkipVerify": {"type": "boolean"},
+        "HttpClientProxyType": {"type": "string"},
+    }.items():
+        if rclone_remote_props.get(field) != expected:
+            fail(f"Rclone safe remote detail field regressed: {field}")
+
+    rclone_sync_detail = merged_by_key[("GET", "/api/rclone/sync/{param}")].response_schema
+    rclone_sync_props = (
+        rclone_sync_detail.get("properties", {}).get("task", {}).get("properties", {})
+        if isinstance(rclone_sync_detail, dict)
+        else {}
+    )
+    for field, expected in {
+        "Key": {"type": "string"},
+        "Enable": {"type": "boolean"},
+        "Remark": {"type": "string"},
+        "SourceType": {"type": "string"},
+        "DestType": {"type": "string"},
+        "SyncMode": {"type": "string"},
+        "DryRun": {"type": "boolean"},
+        "ScheduleEnable": {"type": "boolean"},
+    }.items():
+        if rclone_sync_props.get(field) != expected:
+            fail(f"Rclone safe sync detail field regressed: {field}")
+
     parser_models = {
-        ("POST", "/api/rclone/sync/list"): rclone_sync_request,
-        ("PUT", "/api/rclone/sync/list"): rclone_sync_request,
         ("POST", "/api/storagemanagement/list"): storage_item_request,
         ("PUT", "/api/storagemanagement/list"): storage_item_request,
         ("POST", "/api/thirdPartyAuthManager/list"): third_party_user_request,
@@ -2214,8 +2277,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("Local Path Browser delete response schema regressed")
 
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 286:
-        fail(f"response-schema coverage regressed below 286 routes: {response_schema_count}")
+    if response_schema_count < 296:
+        fail(f"response-schema coverage regressed below 296 routes: {response_schema_count}")
 
     safe_utility_response_routes = {
         ("GET", "/api/baseconfigure"),
@@ -3153,6 +3216,28 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         ("GET", "/api/ddns/credential-sources"): {"secretValue", "proxyPassword"},
         ("GET", "/api/ddns/task/{param}"): {"Secret", "HttpClientProxyPassword", "WebhookProxyPassword"},
         ("GET", "/api/frp/list/{param}"): {"ConfigText"},
+        ("GET", "/api/rclone/remote/{param}"): {
+            "Params",
+            "Root",
+            "HttpClientProxyAddr",
+            "HttpClientProxyUser",
+            "HttpClientProxyPassword",
+            "ProxyPasswd",
+            "MountPoint",
+            "DeviceName",
+            "VolumeName",
+            "ExtraOptions",
+            "ExtraFlags",
+        },
+        ("GET", "/api/rclone/sync/{param}"): {
+            "SourceRemoteKey",
+            "SourcePath",
+            "DestRemoteKey",
+            "DestPath",
+            "IncludePatterns",
+            "ExcludePatterns",
+            "ExtraArgs",
+        },
         ("GET", "/api/wol/service/configure"): {
             "Token",
             "QuickControlSafeURL",

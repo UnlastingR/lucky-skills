@@ -1573,16 +1573,39 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["Key", "Type", "Enable", "Remark", "Root", "Params", "HttpClienInsecureSkipVerify", "HttpClientProxyType", "HttpClientProxyAddr", "HttpClientProxyUser", "HttpClientProxyPassword", "SystemMount"],
-      "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"Type":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"Root":{"type":"array","items":{}},"Params":{"type":"object","additionalProperties":{}},"HttpClienInsecureSkipVerify":{"type":"boolean"},"HttpClientProxyType":{"type":"string"},"HttpClientProxyAddr":{"type":"string"},"HttpClientProxyUser":{"type":"string"},"HttpClientProxyPassword":{"type":"string"},"SystemMount":{"type":"object"}}},
-      "schema_evidence": "frontend Remote editor default model is passed directly to POST; authorized parser-only probes were rejected before handler execution and verified Remote Key/Type/Remark/proxy fields as strings, Enable/InsecureSkipVerify as booleans, Root as an array, Params as map[string]interface{} and SystemMount as conf.MountConfig object; every probe used a guaranteed-invalid Key sentinel and the remote baseline remained zero"
+      "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"Type":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"Root":{"type":"string"},"Params":{"type":"object","additionalProperties":{}},"HttpClienInsecureSkipVerify":{"type":"boolean"},"HttpClientProxyType":{"type":"string"},"HttpClientProxyAddr":{"type":"string"},"HttpClientProxyUser":{"type":"string"},"HttpClientProxyPassword":{"type":"string"},"SystemMount":{"type":"object"}}},
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "current frontend Remote add model uses Root as a string and passes the model directly to POST; an authorized Type=local, Enable=false, mount-disabled disposable remote with no proxy credentials returned ret-only success. This runtime success supersedes the older parser-only Root=array inference, and cleanup restored the complete remote-list baseline exactly"
     },
     {
       "path": "/api/rclone/remotelist",
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["Key", "Type", "Enable", "Remark", "Root", "Params", "HttpClienInsecureSkipVerify", "HttpClientProxyType", "HttpClientProxyAddr", "HttpClientProxyUser", "HttpClientProxyPassword", "SystemMount"],
-      "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"Type":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"Root":{"type":"array","items":{}},"Params":{"type":"object","additionalProperties":{}},"HttpClienInsecureSkipVerify":{"type":"boolean"},"HttpClientProxyType":{"type":"string"},"HttpClientProxyAddr":{"type":"string"},"HttpClientProxyUser":{"type":"string"},"HttpClientProxyPassword":{"type":"string"},"SystemMount":{"type":"object"}}},
-      "schema_evidence": "frontend loads GET /api/rclone/remote/{key} into the same Remote editor model and passes that model directly to PUT; request types reuse the parser-verified Remote struct field types and no successful remote create/update handler was executed for schema discovery"
+      "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"Type":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"Root":{"type":"string"},"Params":{"type":"object","additionalProperties":{}},"HttpClienInsecureSkipVerify":{"type":"boolean"},"HttpClientProxyType":{"type":"string"},"HttpClientProxyAddr":{"type":"string"},"HttpClientProxyUser":{"type":"string"},"HttpClientProxyPassword":{"type":"string"},"SystemMount":{"type":"object"}}},
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend loads GET /api/rclone/remote/{key} into the same Remote editor model; the authorized disabled local disposable remote accepted an identical PUT with Root as string and returned ret-only success before cleanup restored the exact baseline"
+    },
+    {
+      "path": "/api/rclone/remotelist",
+      "method": "DELETE",
+      "risk": "mutating",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "authorized cleanup deleted only the disabled disposable local remote by its generated key and returned ret-only success; the full remote-list response hash returned exactly to baseline"
+    },
+    {
+      "path": "/api/rclone/remotelist/option",
+      "method": "GET",
+      "risk": "mutating",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "current Lucky 3.0.0 Rclone panel uses GET /api/rclone/remotelist/option?key=...&enable=... as the remote enable/disable action. An authorized disposable remote was already disabled; enable=false returned ret-only success and detail confirmed it remained disabled"
+    },
+    {
+      "path": "/api/rclone/remote/{param}",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"remote":{"type":"object","properties":{"Key":{"type":"string"},"Type":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"HttpClienInsecureSkipVerify":{"type":"boolean"},"HttpClientProxyType":{"type":"string"},"SystemMount":{"type":"object","properties":{"Enable":{"type":"boolean"},"ReadOnly":{"type":"boolean"},"OnleyCreateVFS":{"type":"boolean"},"MountType":{"type":"string"}}}}},"ret":{"type":"integer"}}},
+      "schema_evidence": "authorized GET of the disabled disposable local remote observed the detail envelope and these safe fields. Root/local paths, type-specific Params, proxy address/user/password, mount point, device/volume names and extra mount flags are intentionally omitted from response documentation"
     },
     {
       "path": "/api/rclone/sync/list",
@@ -1590,7 +1613,8 @@
       "risk": "mutating",
       "body_keys": ["Key", "Enable", "Remark", "SourceType", "SourceRemoteKey", "SourcePath", "DestType", "DestRemoteKey", "DestPath", "SyncMode", "DeleteOnDest", "DryRun", "CreateEmptyDirs", "IgnoreExisting", "IgnoreErrors", "CheckFirst", "Transfers", "Checkers", "BandwidthLimit", "MinAge", "MaxAge", "MinSize", "MaxSize", "IncludePatterns", "ExcludePatterns", "ExtraArgs", "ScheduleEnable", "ScheduleCron", "ScheduleInterval", "BisyncResync", "BisyncCheckAccess", "BisyncForce"],
       "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"SourceType":{"type":"string"},"SourceRemoteKey":{"type":"string"},"SourcePath":{"type":"string"},"DestType":{"type":"string"},"DestRemoteKey":{"type":"string"},"DestPath":{"type":"string"},"SyncMode":{"type":"string"},"DeleteOnDest":{"type":"boolean"},"DryRun":{"type":"boolean"},"CreateEmptyDirs":{"type":"boolean"},"IgnoreExisting":{"type":"boolean"},"IgnoreErrors":{"type":"boolean"},"CheckFirst":{"type":"boolean"},"Transfers":{"type":"integer"},"Checkers":{"type":"integer"},"BandwidthLimit":{"type":"string"},"MinAge":{"type":"string"},"MaxAge":{"type":"string"},"MinSize":{"type":"string"},"MaxSize":{"type":"string"},"IncludePatterns":{"type":"string"},"ExcludePatterns":{"type":"string"},"ExtraArgs":{"type":"string"},"ScheduleEnable":{"type":"boolean"},"ScheduleCron":{"type":"string"},"ScheduleInterval":{"type":"integer"},"BisyncResync":{"type":"boolean"},"BisyncCheckAccess":{"type":"boolean"},"BisyncForce":{"type":"boolean"}}},
-      "schema_evidence": "frontend Sync editor initializes this explicit task model and passes it directly to POST; rate-limited authorized parser-only probes were paced and rejected before handler execution, verifying all SyncTask JSON field types including SyncMode as string, while the sync-task baseline remained zero"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend Sync editor initializes this explicit task model; an authorized disposable task with Enable=false, ScheduleEnable=false, SourceType=DestType=local and DryRun=true returned ret-only create success without running a sync. Cleanup restored the complete sync-list baseline exactly"
     },
     {
       "path": "/api/rclone/sync/list",
@@ -1598,7 +1622,29 @@
       "risk": "mutating",
       "body_keys": ["Key", "Enable", "Remark", "SourceType", "SourceRemoteKey", "SourcePath", "DestType", "DestRemoteKey", "DestPath", "SyncMode", "DeleteOnDest", "DryRun", "CreateEmptyDirs", "IgnoreExisting", "IgnoreErrors", "CheckFirst", "Transfers", "Checkers", "BandwidthLimit", "MinAge", "MaxAge", "MinSize", "MaxSize", "IncludePatterns", "ExcludePatterns", "ExtraArgs", "ScheduleEnable", "ScheduleCron", "ScheduleInterval", "BisyncResync", "BisyncCheckAccess", "BisyncForce"],
       "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"SourceType":{"type":"string"},"SourceRemoteKey":{"type":"string"},"SourcePath":{"type":"string"},"DestType":{"type":"string"},"DestRemoteKey":{"type":"string"},"DestPath":{"type":"string"},"SyncMode":{"type":"string"},"DeleteOnDest":{"type":"boolean"},"DryRun":{"type":"boolean"},"CreateEmptyDirs":{"type":"boolean"},"IgnoreExisting":{"type":"boolean"},"IgnoreErrors":{"type":"boolean"},"CheckFirst":{"type":"boolean"},"Transfers":{"type":"integer"},"Checkers":{"type":"integer"},"BandwidthLimit":{"type":"string"},"MinAge":{"type":"string"},"MaxAge":{"type":"string"},"MinSize":{"type":"string"},"MaxSize":{"type":"string"},"IncludePatterns":{"type":"string"},"ExcludePatterns":{"type":"string"},"ExtraArgs":{"type":"string"},"ScheduleEnable":{"type":"boolean"},"ScheduleCron":{"type":"string"},"ScheduleInterval":{"type":"integer"},"BisyncResync":{"type":"boolean"},"BisyncCheckAccess":{"type":"boolean"},"BisyncForce":{"type":"boolean"}}},
-      "schema_evidence": "frontend loads GET /api/rclone/sync/{key} into the same explicit task model and passes it directly to PUT; request types reuse the parser-verified SyncTask struct and no successful sync create/update handler was executed for schema discovery"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend loads GET /api/rclone/sync/{key} into the same task model; the authorized disabled local-to-local disposable task accepted an identical PUT and returned ret-only success without running a sync"
+    },
+    {
+      "path": "/api/rclone/sync/list",
+      "method": "DELETE",
+      "risk": "mutating",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "authorized cleanup deleted only the disabled disposable sync task by its generated key and returned ret-only success; the full sync-list response hash returned exactly to baseline"
+    },
+    {
+      "path": "/api/rclone/sync/option",
+      "method": "GET",
+      "risk": "mutating",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "current Lucky 3.0.0 Rclone panel uses GET /api/rclone/sync/option?key=...&enable=... as the task enable/disable action. An authorized disposable task was already disabled; enable=false returned ret-only success and detail confirmed it remained disabled"
+    },
+    {
+      "path": "/api/rclone/sync/{param}",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"task":{"type":"object","properties":{"Key":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"Orderby":{"type":"integer"},"SourceType":{"type":"string"},"DestType":{"type":"string"},"SyncMode":{"type":"string"},"DeleteOnDest":{"type":"boolean"},"DryRun":{"type":"boolean"},"CreateEmptyDirs":{"type":"boolean"},"IgnoreExisting":{"type":"boolean"},"IgnoreErrors":{"type":"boolean"},"CheckFirst":{"type":"boolean"},"Transfers":{"type":"integer"},"Checkers":{"type":"integer"},"BandwidthLimit":{"type":"string"},"MinAge":{"type":"string"},"MaxAge":{"type":"string"},"MinSize":{"type":"string"},"MaxSize":{"type":"string"},"ScheduleEnable":{"type":"boolean"},"ScheduleCron":{"type":"string"},"ScheduleInterval":{"type":"integer"},"BisyncResync":{"type":"boolean"},"BisyncCheckAccess":{"type":"boolean"},"BisyncForce":{"type":"boolean"}}}}},
+      "schema_evidence": "authorized GET of the disabled disposable local-to-local sync task observed these safe control fields. Source/destination paths, remote keys, include/exclude patterns and ExtraArgs are intentionally omitted from response documentation"
     },
     {
       "path": "/api/coraza/instanceorderadjustment",
@@ -3251,8 +3297,8 @@
       "path": "/api/rclone/remotelist",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "os": {"type": "string"}, "list": {"type": ["array", "null"], "items": {}}}},
-      "schema_evidence": "authorized GET /api/rclone/remotelist returned null list on this instance; envelope and nullable-list contract are documented while remote item schema remains unspecified"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"os":{"type":"string"},"list":{"type":["array","null"],"items":{"type":"object","properties":{"Key":{"type":"string"},"Type":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"HasVFS":{"type":"boolean"},"State":{"type":"object","properties":{"UploadTotal":{"type":"integer"},"DownloadTotal":{"type":"integer"},"DownloadConnections":{"type":"integer"},"UploadSpeed":{"type":"integer"},"DownloadSpeed":{"type":"integer"},"UploadTaskCount":{"type":"integer"},"SyncSuccessCount":{"type":"integer"},"SyncFailCount":{"type":"integer"}}},"SystemMount":{"type":"boolean"}}}}}},
+      "schema_evidence": "authorized disabled local disposable remote populated the list and verified these safe summary/state fields. Root and mount paths, Info/MountMsg and LastUploadResp are intentionally omitted; cleanup restored the full remote-list response hash exactly to the original null-list baseline"
     },
     {
       "path": "/api/rclone/remotelistlite",
@@ -3265,8 +3311,8 @@
       "path": "/api/rclone/sync/list",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": ["array", "null"], "items": {}}}},
-      "schema_evidence": "authorized GET /api/rclone/sync/list returned null list on this instance; sync item schema is intentionally not guessed"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"list":{"type":["array","null"],"items":{"type":"object","properties":{"Key":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"SourceType":{"type":"string"},"DestType":{"type":"string"},"SyncMode":{"type":"string"},"ScheduleEnable":{"type":"boolean"},"ScheduleCron":{"type":"string"},"State":{"type":"object","properties":{"Status":{"type":"string"},"LastRunTime":{"type":"integer"},"LastSuccessTime":{"type":"integer"},"RunCount":{"type":"integer"},"SuccessCount":{"type":"integer"},"FailCount":{"type":"integer"},"TransferBytes":{"type":"integer"},"TransferFiles":{"type":"integer"},"Progress":{"type":"string"}}}}}}}},
+      "schema_evidence": "authorized disabled local-to-local disposable sync task populated the list and verified these safe task/state fields. Source/destination paths, remote keys/remarks and LastError are intentionally omitted; cleanup restored the full sync-list response hash exactly to the original null-list baseline"
     },
     {
       "path": "/api/cron/groups",
