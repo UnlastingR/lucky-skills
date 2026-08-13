@@ -88,7 +88,7 @@ npm run docs:worker
 npm run worker:deploy
 ```
 
-文档由 Cloudflare Worker + Static Assets 托管，Worker 覆盖 `docs.fyzure.fyi/*`，当前正式文档路径为 `/lucky-skills/`。部署与 CDN 拓扑见[文档站部署](docs/deployment.md)。
+文档由 Cloudflare Worker + Static Assets 托管，Worker 覆盖 `docs.fyzure.fyi/*`，当前正式文档路径为 `/lucky-skills/`。
 
 ## 准确性边界
 

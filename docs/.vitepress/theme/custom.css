@@ -41,6 +41,10 @@
     max-width: 1720px !important;
   }
 
+  .api-routes-page .VPDocAsideOutline {
+    display: none !important;
+  }
+
   .api-routes-page .vp-doc table {
     table-layout: fixed;
     font-size: 12px;

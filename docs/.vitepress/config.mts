@@ -55,7 +55,6 @@ export default defineConfig({
       {
         text: '项目',
         items: [
-          { text: '部署说明', link: '/deployment' },
           { text: 'GitHub 仓库', link: repository },
           { text: '贡献指南', link: `${repository}/blob/main/CONTRIBUTING.md` },
           { text: '安全策略', link: `${repository}/blob/main/SECURITY.md` }
