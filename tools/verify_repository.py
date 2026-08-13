@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 8:
+    if len(untyped_request_routes) > 4:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 8 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 4 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     coraza_request = {
@@ -909,6 +909,48 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("WebService discovery-cancel request schema regressed")
     if discovery_cancel.response_schema is not None:
         fail("WebService nonexistent-job cancel evidence must not claim a success response")
+
+    cloudflared_instance_request = {
+        "type": "object",
+        "properties": {
+            "Key": {"type": "string"}, "Remark": {"type": "string"}, "Enable": {"type": "boolean"},
+            "Type": {"type": "string"}, "Params": {"type": "object"},
+        },
+    }
+    for route_key in {("POST", "/api/cloudflared/list"), ("PUT", "/api/cloudflared/list")}:
+        route = merged_by_key[route_key]
+        if route.request_body_schema != cloudflared_instance_request:
+            fail(f"Cloudflared semantic-sentinel request schema regressed for {route_key}")
+        if set(route.body_keys) != set(cloudflared_instance_request["properties"]):
+            fail(f"Cloudflared instance request schema must cover exactly the frontend body fields for {route_key}")
+        if route.response_schema is not None:
+            fail(f"Cloudflared semantic-invalid instance evidence must not claim a success response for {route_key}")
+
+    cloudflared_ingress_rule = {
+        "type": "object",
+        "properties": {
+            "hostname": {"type": "string"}, "path": {"type": "string"},
+            "service": {"type": "string"}, "originRequest": {"type": "object"},
+        },
+    }
+    cloudflared_ingress_post = merged_by_key[("POST", "/api/cloudflared/{param}/ingress")]
+    if cloudflared_ingress_post.request_body_schema != cloudflared_ingress_rule:
+        fail("Cloudflared ingress POST request schema regressed")
+    if cloudflared_ingress_post.response_schema is not None:
+        fail("Cloudflared missing-instance ingress POST must not claim a success response")
+
+    cloudflared_ingress_put = merged_by_key[("PUT", "/api/cloudflared/{param}/ingress")]
+    expected_cloudflared_ingress_put = {
+        "type": "object",
+        "properties": {
+            "oldHostname": {"type": "string"}, "oldPath": {"type": "string"},
+            "newRule": cloudflared_ingress_rule,
+        },
+    }
+    if cloudflared_ingress_put.request_body_schema != expected_cloudflared_ingress_put:
+        fail("Cloudflared ingress PUT request schema regressed")
+    if cloudflared_ingress_put.response_schema is not None:
+        fail("Cloudflared missing-instance ingress PUT must not claim a success response")
 
     stun_rule_request = {
         "type": "object",

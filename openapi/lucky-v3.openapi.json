@@ -684,7 +684,7 @@
           "lucky_cloudflared-CZXQeEtG.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend Cloudflared instance editor submits {Key,Remark,Enable,Type,Params}; current authorized list is empty so field evidence is frontend-only",
+        "x-schema-evidence": "frontend Cloudflared instance editor submits {Key,Remark,Enable,Type,Params}; an authorized semantic-invalid sentinel with string Key/Remark/Type, boolean Enable and object Params parsed successfully and stopped at InstanceTypeIsNotAvailable, while each field changed to an array failed JSON parsing. The Cloudflared instance baseline remained zero",
         "requestBody": {
           "required": true,
           "content": {
@@ -692,11 +692,21 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Key": {},
-                  "Remark": {},
-                  "Enable": {},
-                  "Type": {},
-                  "Params": {}
+                  "Key": {
+                    "type": "string"
+                  },
+                  "Remark": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "Type": {
+                    "type": "string"
+                  },
+                  "Params": {
+                    "type": "object"
+                  }
                 }
               }
             }
@@ -742,7 +752,7 @@
           "lucky_cloudflared-CZXQeEtG.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend Cloudflared instance editor submits {Key,Remark,Enable,Type,Params}; current authorized list is empty so field evidence is frontend-only",
+        "x-schema-evidence": "frontend Cloudflared instance editor submits the same model for update; request types reuse the semantic-sentinel/parser-verified instance model and no Cloudflared instance update handler was executed",
         "requestBody": {
           "required": true,
           "content": {
@@ -750,11 +760,21 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Key": {},
-                  "Remark": {},
-                  "Enable": {},
-                  "Type": {},
-                  "Params": {}
+                  "Key": {
+                    "type": "string"
+                  },
+                  "Remark": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "Type": {
+                    "type": "string"
+                  },
+                  "Params": {
+                    "type": "object"
+                  }
                 }
               }
             }
@@ -1397,7 +1417,7 @@
           "lucky_cloudflared-CZXQeEtG.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend ingress editor constructs explicit rule object before POST",
+        "x-schema-evidence": "frontend ingress editor constructs explicit rule object; an authorized candidate with string hostname/path/service and object originRequest reached ItemNotFoundForKey for a nonexistent Cloudflared instance, while changing each field to an array failed JSON parsing. No ingress could be created",
         "parameters": [
           {
             "name": "param",
@@ -1415,10 +1435,18 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "hostname": {},
-                  "path": {},
-                  "service": {},
-                  "originRequest": {}
+                  "hostname": {
+                    "type": "string"
+                  },
+                  "path": {
+                    "type": "string"
+                  },
+                  "service": {
+                    "type": "string"
+                  },
+                  "originRequest": {
+                    "type": "object"
+                  }
                 }
               }
             }
@@ -1464,7 +1492,7 @@
           "lucky_cloudflared-CZXQeEtG.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend ingress editor sends explicit {oldHostname,oldPath,newRule} object before PUT",
+        "x-schema-evidence": "frontend ingress editor sends explicit {oldHostname,oldPath,newRule}; an authorized nonexistent-instance candidate verified oldHostname/oldPath strings and newRule object, and nested wrong-type probes verified the same hostname/path/service string plus originRequest object structure. Every parser-valid request stopped at ItemNotFoundForKey and the instance baseline stayed zero",
         "parameters": [
           {
             "name": "param",
@@ -1482,9 +1510,29 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "oldHostname": {},
-                  "oldPath": {},
-                  "newRule": {}
+                  "oldHostname": {
+                    "type": "string"
+                  },
+                  "oldPath": {
+                    "type": "string"
+                  },
+                  "newRule": {
+                    "type": "object",
+                    "properties": {
+                      "hostname": {
+                        "type": "string"
+                      },
+                      "path": {
+                        "type": "string"
+                      },
+                      "service": {
+                        "type": "string"
+                      },
+                      "originRequest": {
+                        "type": "object"
+                      }
+                    }
+                  }
                 }
               }
             }
