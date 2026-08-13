@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 60:
+    if len(untyped_request_routes) > 54:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 60 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 54 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     coraza_request = {
@@ -624,6 +624,59 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             fail(f"Rclone remote request schema must not invent required fields for {route_key}")
         if route.response_schema is not None:
             fail(f"Rclone parser-only remote evidence must not claim a success response for {route_key}")
+
+    rclone_sync_request = {
+        "type": "object",
+        "properties": {
+            "Key": {"type": "string"}, "Enable": {"type": "boolean"}, "Remark": {"type": "string"},
+            "SourceType": {"type": "string"}, "SourceRemoteKey": {"type": "string"}, "SourcePath": {"type": "string"},
+            "DestType": {"type": "string"}, "DestRemoteKey": {"type": "string"}, "DestPath": {"type": "string"},
+            "SyncMode": {"type": "string"}, "DeleteOnDest": {"type": "boolean"}, "DryRun": {"type": "boolean"},
+            "CreateEmptyDirs": {"type": "boolean"}, "IgnoreExisting": {"type": "boolean"}, "IgnoreErrors": {"type": "boolean"},
+            "CheckFirst": {"type": "boolean"}, "Transfers": {"type": "integer"}, "Checkers": {"type": "integer"},
+            "BandwidthLimit": {"type": "string"}, "MinAge": {"type": "string"}, "MaxAge": {"type": "string"},
+            "MinSize": {"type": "string"}, "MaxSize": {"type": "string"}, "IncludePatterns": {"type": "string"},
+            "ExcludePatterns": {"type": "string"}, "ExtraArgs": {"type": "string"}, "ScheduleEnable": {"type": "boolean"},
+            "ScheduleCron": {"type": "string"}, "ScheduleInterval": {"type": "integer"}, "BisyncResync": {"type": "boolean"},
+            "BisyncCheckAccess": {"type": "boolean"}, "BisyncForce": {"type": "boolean"},
+        },
+    }
+    storage_item_request = {
+        "type": "object",
+        "properties": {
+            "Type": {"type": "string"}, "Enable": {"type": "boolean"}, "Key": {"type": "string"},
+            "Remark": {"type": "string"}, "Writable": {"type": "boolean"}, "Log": {"type": "boolean"},
+            "Params": {"type": "object", "additionalProperties": {}}, "SystemMount": {"type": "object"},
+        },
+    }
+    third_party_user_request = {
+        "type": "object",
+        "properties": {
+            "Key": {"type": "string"}, "Type": {"type": "string"}, "Enable": {"type": "boolean"},
+            "Remark": {"type": "string"}, "ID": {"type": "string"}, "Name": {"type": "string"},
+            "Avatar": {"type": "string"}, "EMail": {"type": "string"}, "Phone": {"type": "string"},
+            "RefreshToken": {"type": "string"}, "AccessToken": {"type": "string"},
+            "CreateTime": {"type": "integer"}, "UpdateTime": {"type": "integer"}, "TwoFAKey": {"type": "string"},
+        },
+    }
+    parser_models = {
+        ("POST", "/api/rclone/sync/list"): rclone_sync_request,
+        ("PUT", "/api/rclone/sync/list"): rclone_sync_request,
+        ("POST", "/api/storagemanagement/list"): storage_item_request,
+        ("PUT", "/api/storagemanagement/list"): storage_item_request,
+        ("POST", "/api/thirdPartyAuthManager/list"): third_party_user_request,
+        ("PUT", "/api/thirdPartyAuthManager/list"): third_party_user_request,
+    }
+    for route_key, expected in parser_models.items():
+        route = merged_by_key[route_key]
+        if route.request_body_schema != expected:
+            fail(f"parser-verified resource request schema regressed for {route_key}")
+        if set(route.body_keys) != set(expected["properties"]):
+            fail(f"parser-verified request schema must cover exactly the frontend body fields for {route_key}")
+        if isinstance(route.request_body_schema, dict) and "required" in route.request_body_schema:
+            fail(f"parser-verified request schema must not invent required fields for {route_key}")
+        if route.response_schema is not None:
+            fail(f"parser-only evidence must not claim a success response for {route_key}")
 
     explicit_small_request_schemas = {
         ("PUT", "/api/frontend-preferences"): {

@@ -1265,14 +1265,16 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["Key", "Enable", "Remark", "SourceType", "SourceRemoteKey", "SourcePath", "DestType", "DestRemoteKey", "DestPath", "SyncMode", "DeleteOnDest", "DryRun", "CreateEmptyDirs", "IgnoreExisting", "IgnoreErrors", "CheckFirst", "Transfers", "Checkers", "BandwidthLimit", "MinAge", "MaxAge", "MinSize", "MaxSize", "IncludePatterns", "ExcludePatterns", "ExtraArgs", "ScheduleEnable", "ScheduleCron", "ScheduleInterval", "BisyncResync", "BisyncCheckAccess", "BisyncForce"],
-      "schema_evidence": "frontend Sync editor initializes this explicit task model and passes it directly to POST; current authorized sync list is empty"
+      "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"SourceType":{"type":"string"},"SourceRemoteKey":{"type":"string"},"SourcePath":{"type":"string"},"DestType":{"type":"string"},"DestRemoteKey":{"type":"string"},"DestPath":{"type":"string"},"SyncMode":{"type":"string"},"DeleteOnDest":{"type":"boolean"},"DryRun":{"type":"boolean"},"CreateEmptyDirs":{"type":"boolean"},"IgnoreExisting":{"type":"boolean"},"IgnoreErrors":{"type":"boolean"},"CheckFirst":{"type":"boolean"},"Transfers":{"type":"integer"},"Checkers":{"type":"integer"},"BandwidthLimit":{"type":"string"},"MinAge":{"type":"string"},"MaxAge":{"type":"string"},"MinSize":{"type":"string"},"MaxSize":{"type":"string"},"IncludePatterns":{"type":"string"},"ExcludePatterns":{"type":"string"},"ExtraArgs":{"type":"string"},"ScheduleEnable":{"type":"boolean"},"ScheduleCron":{"type":"string"},"ScheduleInterval":{"type":"integer"},"BisyncResync":{"type":"boolean"},"BisyncCheckAccess":{"type":"boolean"},"BisyncForce":{"type":"boolean"}}},
+      "schema_evidence": "frontend Sync editor initializes this explicit task model and passes it directly to POST; rate-limited authorized parser-only probes were paced and rejected before handler execution, verifying all SyncTask JSON field types including SyncMode as string, while the sync-task baseline remained zero"
     },
     {
       "path": "/api/rclone/sync/list",
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["Key", "Enable", "Remark", "SourceType", "SourceRemoteKey", "SourcePath", "DestType", "DestRemoteKey", "DestPath", "SyncMode", "DeleteOnDest", "DryRun", "CreateEmptyDirs", "IgnoreExisting", "IgnoreErrors", "CheckFirst", "Transfers", "Checkers", "BandwidthLimit", "MinAge", "MaxAge", "MinSize", "MaxSize", "IncludePatterns", "ExcludePatterns", "ExtraArgs", "ScheduleEnable", "ScheduleCron", "ScheduleInterval", "BisyncResync", "BisyncCheckAccess", "BisyncForce"],
-      "schema_evidence": "frontend loads GET /api/rclone/sync/{key} into the same explicit task model and passes it directly to PUT; current authorized sync list is empty"
+      "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"SourceType":{"type":"string"},"SourceRemoteKey":{"type":"string"},"SourcePath":{"type":"string"},"DestType":{"type":"string"},"DestRemoteKey":{"type":"string"},"DestPath":{"type":"string"},"SyncMode":{"type":"string"},"DeleteOnDest":{"type":"boolean"},"DryRun":{"type":"boolean"},"CreateEmptyDirs":{"type":"boolean"},"IgnoreExisting":{"type":"boolean"},"IgnoreErrors":{"type":"boolean"},"CheckFirst":{"type":"boolean"},"Transfers":{"type":"integer"},"Checkers":{"type":"integer"},"BandwidthLimit":{"type":"string"},"MinAge":{"type":"string"},"MaxAge":{"type":"string"},"MinSize":{"type":"string"},"MaxSize":{"type":"string"},"IncludePatterns":{"type":"string"},"ExcludePatterns":{"type":"string"},"ExtraArgs":{"type":"string"},"ScheduleEnable":{"type":"boolean"},"ScheduleCron":{"type":"string"},"ScheduleInterval":{"type":"integer"},"BisyncResync":{"type":"boolean"},"BisyncCheckAccess":{"type":"boolean"},"BisyncForce":{"type":"boolean"}}},
+      "schema_evidence": "frontend loads GET /api/rclone/sync/{key} into the same explicit task model and passes it directly to PUT; request types reuse the parser-verified SyncTask struct and no successful sync create/update handler was executed for schema discovery"
     },
     {
       "path": "/api/coraza/instanceorderadjustment",
@@ -1652,14 +1654,16 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["Type", "Enable", "Key", "Remark", "Writable", "Log", "Params", "SystemMount"],
-      "schema_evidence": "frontend storage editor initializes {Type,Enable,Key,Remark,Writable,Log,Params,SystemMount} and passes the normalized model directly to POST; current authorized list is empty"
+      "request_body_schema": {"type":"object","properties":{"Type":{"type":"string"},"Enable":{"type":"boolean"},"Key":{"type":"string"},"Remark":{"type":"string"},"Writable":{"type":"boolean"},"Log":{"type":"boolean"},"Params":{"type":"object","additionalProperties":{}},"SystemMount":{"type":"object"}}},
+      "schema_evidence": "frontend storage editor initializes {Type,Enable,Key,Remark,Writable,Log,Params,SystemMount} and passes the normalized model directly to POST; paced parser-only probes verified StorageItem string/bool fields, Params as map[string]interface{} and SystemMount as common.SystemMount object before handler execution, with storage baseline remaining zero"
     },
     {
       "path": "/api/storagemanagement/list",
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["Type", "Enable", "Key", "Remark", "Writable", "Log", "Params", "SystemMount"],
-      "schema_evidence": "frontend storage editor deep-merges the existing resource into the same normalized model and passes it directly to PUT; current authorized list is empty"
+      "request_body_schema": {"type":"object","properties":{"Type":{"type":"string"},"Enable":{"type":"boolean"},"Key":{"type":"string"},"Remark":{"type":"string"},"Writable":{"type":"boolean"},"Log":{"type":"boolean"},"Params":{"type":"object","additionalProperties":{}},"SystemMount":{"type":"object"}}},
+      "schema_evidence": "frontend storage editor deep-merges the existing resource into the same normalized model and passes it directly to PUT; request types reuse the parser-verified StorageItem struct and no successful storage create/update handler was executed"
     },
     {
       "path": "/api/thirdPartyAuthManager/config",
@@ -1674,14 +1678,16 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["Key", "Type", "Enable", "Remark", "ID", "Name", "Avatar", "EMail", "Phone", "RefreshToken", "AccessToken", "CreateTime", "UpdateTime", "TwoFAKey"],
-      "schema_evidence": "frontend third-party auth user form initializes this explicit model and passes it directly to POST; current authorized list is empty and only field names are recorded"
+      "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"Type":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"ID":{"type":"string"},"Name":{"type":"string"},"Avatar":{"type":"string"},"EMail":{"type":"string"},"Phone":{"type":"string"},"RefreshToken":{"type":"string"},"AccessToken":{"type":"string"},"CreateTime":{"type":"integer"},"UpdateTime":{"type":"integer"},"TwoFAKey":{"type":"string"}}},
+      "schema_evidence": "frontend third-party auth user form initializes this explicit model and passes it directly to POST; paced parser-only probes verified AuthUser/AuthUserInfo string fields, Enable bool and CreateTime/UpdateTime int64 before handler execution, with the third-party auth user baseline remaining zero"
     },
     {
       "path": "/api/thirdPartyAuthManager/list",
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["Key", "Type", "Enable", "Remark", "ID", "Name", "Avatar", "EMail", "Phone", "RefreshToken", "AccessToken", "CreateTime", "UpdateTime", "TwoFAKey"],
-      "schema_evidence": "frontend edits and passes the same third-party auth user model directly to PUT; only field names are recorded"
+      "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"Type":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"ID":{"type":"string"},"Name":{"type":"string"},"Avatar":{"type":"string"},"EMail":{"type":"string"},"Phone":{"type":"string"},"RefreshToken":{"type":"string"},"AccessToken":{"type":"string"},"CreateTime":{"type":"integer"},"UpdateTime":{"type":"integer"},"TwoFAKey":{"type":"string"}}},
+      "schema_evidence": "frontend edits and passes the same third-party auth user model directly to PUT; request types reuse the parser-verified AuthUser struct and no successful third-party account create/update handler was executed"
     },
     {
       "path": "/api/thirdPartyAuthManager/orderadjustment",
