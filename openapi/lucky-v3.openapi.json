@@ -24251,7 +24251,7 @@
           "lucky_portforward-13uBauEz.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend PortForward rule editor submits its normalized rule model; an authorized disposable API probe observed POST response ret/key types, and the created empty-endpoint rule was deleted with baseline restored",
+        "x-schema-evidence": "frontend PortForward rule editor submits its normalized rule model; authorized disposable disabled-rule probes cross-checked the 14 safe detail fields against GET /api/portforward/{key}, verified POST accepts Options={} and LogStreamSettings={} as objects, observed ret/key response types, and deleted the temporary rule with baseline restored to zero without persisting sensitive option contents",
         "requestBody": {
           "required": true,
           "content": {
@@ -24259,22 +24259,62 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Name": {},
-                  "Key": {},
-                  "DiaglogShowMode": {},
-                  "ForwardTypes": {},
-                  "ListenAddress": {},
-                  "ListenPorts": {},
-                  "TargetAddressList": {},
-                  "TargetPorts": {},
-                  "Enable": {},
-                  "LogLevel": {},
-                  "OpenFirewallPorts": {},
-                  "LogOutputToConsole": {},
-                  "AccessLogMaxNum": {},
-                  "WebListShowLastLogMaxCount": {},
-                  "Options": {},
-                  "LogStreamSettings": {}
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Key": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "DiaglogShowMode": {
+                    "type": "string"
+                  },
+                  "ForwardTypes": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {}
+                  },
+                  "ListenAddress": {
+                    "type": "string"
+                  },
+                  "ListenPorts": {
+                    "type": "string"
+                  },
+                  "TargetAddressList": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {}
+                  },
+                  "TargetPorts": {
+                    "type": "string"
+                  },
+                  "OpenFirewallPorts": {
+                    "type": "boolean"
+                  },
+                  "LogLevel": {
+                    "type": "integer"
+                  },
+                  "LogOutputToConsole": {
+                    "type": "boolean"
+                  },
+                  "AccessLogMaxNum": {
+                    "type": "integer"
+                  },
+                  "WebListShowLastLogMaxCount": {
+                    "type": "integer"
+                  },
+                  "Options": {
+                    "type": "object"
+                  },
+                  "LogStreamSettings": {
+                    "type": "object"
+                  }
                 }
               }
             }
@@ -24325,7 +24365,7 @@
           "lucky_portforward-13uBauEz.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend PortForward rule editor submits its normalized rule model; an authorized disposable API probe used PUT to disable the empty-endpoint rule and observed a ret-only success response before cleanup",
+        "x-schema-evidence": "frontend PortForward rule editor submits its normalized rule model; an authorized disposable disabled-rule PUT reused the verified safe detail types plus Options={} and LogStreamSettings={} object inputs, returned ret-only success, and was deleted immediately with the rule-count baseline restored to zero",
         "requestBody": {
           "required": true,
           "content": {
@@ -24333,22 +24373,62 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Name": {},
-                  "Key": {},
-                  "DiaglogShowMode": {},
-                  "ForwardTypes": {},
-                  "ListenAddress": {},
-                  "ListenPorts": {},
-                  "TargetAddressList": {},
-                  "TargetPorts": {},
-                  "Enable": {},
-                  "LogLevel": {},
-                  "OpenFirewallPorts": {},
-                  "LogOutputToConsole": {},
-                  "AccessLogMaxNum": {},
-                  "WebListShowLastLogMaxCount": {},
-                  "Options": {},
-                  "LogStreamSettings": {}
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Key": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "DiaglogShowMode": {
+                    "type": "string"
+                  },
+                  "ForwardTypes": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {}
+                  },
+                  "ListenAddress": {
+                    "type": "string"
+                  },
+                  "ListenPorts": {
+                    "type": "string"
+                  },
+                  "TargetAddressList": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {}
+                  },
+                  "TargetPorts": {
+                    "type": "string"
+                  },
+                  "OpenFirewallPorts": {
+                    "type": "boolean"
+                  },
+                  "LogLevel": {
+                    "type": "integer"
+                  },
+                  "LogOutputToConsole": {
+                    "type": "boolean"
+                  },
+                  "AccessLogMaxNum": {
+                    "type": "integer"
+                  },
+                  "WebListShowLastLogMaxCount": {
+                    "type": "integer"
+                  },
+                  "Options": {
+                    "type": "object"
+                  },
+                  "LogStreamSettings": {
+                    "type": "object"
+                  }
                 }
               }
             }
