@@ -46450,11 +46450,141 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "configure": {
+                      "type": "object",
+                      "properties": {
+                        "Server": {
+                          "type": "object",
+                          "properties": {
+                            "Enable": {
+                              "type": "boolean"
+                            },
+                            "QuickControl": {
+                              "type": "boolean"
+                            },
+                            "QuickControlBasicAuth": {
+                              "type": "boolean"
+                            },
+                            "QuickControlBasicAuthUser": {
+                              "type": "string"
+                            },
+                            "WebhookEnable": {
+                              "type": "boolean"
+                            },
+                            "WebhookUpLine": {
+                              "type": "boolean"
+                            },
+                            "WebhookDownLine": {
+                              "type": "boolean"
+                            },
+                            "WebhookURL": {
+                              "type": "string"
+                            },
+                            "WebhookMethod": {
+                              "type": "string"
+                            },
+                            "WebhookHeaders": {
+                              "type": [
+                                "array",
+                                "null"
+                              ],
+                              "items": {}
+                            },
+                            "WebhookRequestBody": {
+                              "type": "string"
+                            },
+                            "WebhookDisableCallbackSuccessContentCheck": {
+                              "type": "boolean"
+                            },
+                            "WebhookSuccessContent": {
+                              "type": [
+                                "array",
+                                "null"
+                              ],
+                              "items": {}
+                            },
+                            "WebhookNetworkType": {
+                              "type": "string"
+                            },
+                            "WebhookLocalAddr": {
+                              "type": "string"
+                            },
+                            "WebhookProxy": {
+                              "type": "string"
+                            },
+                            "WebhookProxyAddr": {
+                              "type": "string"
+                            },
+                            "WebhookProxyUser": {
+                              "type": "string"
+                            },
+                            "WebhookInsecureSkipVerify": {
+                              "type": "boolean"
+                            },
+                            "WebHookTimeout": {
+                              "type": "integer"
+                            },
+                            "RetryCount": {
+                              "type": "integer"
+                            },
+                            "RetryInterval": {
+                              "type": "integer"
+                            }
+                          }
+                        },
+                        "Client": {
+                          "type": "object",
+                          "properties": {
+                            "Enable": {
+                              "type": "boolean"
+                            },
+                            "ServerURL": {
+                              "type": "string"
+                            },
+                            "InsecureSkipVerify": {
+                              "type": "boolean"
+                            },
+                            "Relay": {
+                              "type": "boolean"
+                            },
+                            "Key": {
+                              "type": "string"
+                            },
+                            "DeviceName": {
+                              "type": "string"
+                            },
+                            "Mac": {
+                              "type": "string"
+                            },
+                            "BroadcastIP": {
+                              "type": "string"
+                            },
+                            "Port": {
+                              "type": "integer"
+                            },
+                            "Repeat": {
+                              "type": "integer"
+                            },
+                            "PowerOffCMD": {
+                              "type": "string"
+                            },
+                            "UpdateTime": {
+                              "type": "integer"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -46475,7 +46605,7 @@
           "lucky_useWolI18n-D9PD6Ww6.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend settings page passes the full {Client,Server} configure object directly + authorized GET observed the nested Client/Server field shapes; PUT request types reuse that verified safe read-model projection, request-only secret fields remain intentionally undocumented, and no required fields are invented",
+        "x-schema-evidence": "frontend settings page passes the full {Client,Server} configure object directly + authorized GET observed the nested Client/Server field shapes; an authorized same-value PUT while both Client and Server were disabled returned {configure,ret} success. Repeating the same PUT showed only Client.UpdateTime changes; all other documented configuration paths, both Enable flags and serviceStatus remained unchanged. Response documentation reuses only the safe GET projection, with Token/password/safe-URL fields intentionally omitted",
         "requestBody": {
           "required": true,
           "content": {

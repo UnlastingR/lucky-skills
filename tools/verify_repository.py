@@ -2197,6 +2197,17 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     )
     if "WebhookProxyPassword" in wol_server_props:
         fail("WOL safe read-model PUT schema must not document request-only proxy password")
+    wol_put_response = merged_by_key[("PUT", "/api/wol/service/configure")].response_schema
+    expected_wol_put_response = {
+        "type": "object",
+        "properties": {
+            "configure": wol_get.get("properties", {}).get("configure"),
+            "ret": {"type": "integer"},
+        },
+    }
+    if wol_put_response != expected_wol_put_response:
+        fail("WOL same-value PUT safe response schema regressed")
+
 
     about_put = merged_by_key[("PUT", "/api/about-content")].request_body_schema
     about_get = merged_by_key[("GET", "/api/about-content")].response_schema
