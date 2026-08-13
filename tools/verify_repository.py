@@ -567,6 +567,32 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     if coraza_item_props != expected_coraza_item_props:
         fail("Coraza safe list item schema regressed")
 
+    expected_coraza_detail = {
+        "type": "object",
+        "properties": {
+            "instance": {
+                "type": "object",
+                "properties": {
+                    "Key": {"type": "string"},
+                    "Name": {"type": "string"},
+                    "Enable": {"type": "boolean"},
+                    "InboundScoreThreshold": {"type": "integer"},
+                    "OutboundScoreThreshold": {"type": "integer"},
+                    "CorazaWAFConfigList": {"type": "array", "items": {}},
+                    "RuleExclusions": {"type": "array", "items": {}},
+                },
+            },
+            "ret": {"type": "integer"},
+        },
+    }
+    if merged_by_key[("GET", "/api/coraza/list/{param}")].response_schema != expected_coraza_detail:
+        fail("Coraza disposable detail response schema regressed")
+    coraza_toggle = merged_by_key[("GET", "/api/coraza/list/{param}/{param2}")]
+    if coraza_toggle.risk is not OperationRisk.MUTATING:
+        fail("Coraza enable/disable GET must remain classified as mutating")
+    if coraza_toggle.response_schema != ret_only:
+        fail("Coraza enable/disable GET ret-only response schema regressed")
+
     ipdb_item_request = {
         "type": "object",
         "properties": {
@@ -1915,8 +1941,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("Local Path Browser delete response schema regressed")
 
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 265:
-        fail(f"response-schema coverage regressed below 265 routes: {response_schema_count}")
+    if response_schema_count < 267:
+        fail(f"response-schema coverage regressed below 267 routes: {response_schema_count}")
 
     safe_utility_response_routes = {
         ("GET", "/api/baseconfigure"),
