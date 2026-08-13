@@ -415,14 +415,16 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["mode"],
-      "schema_evidence": "frontend statistics dialog starts rebuild with explicit {mode:'all'} request object"
+      "request_body_schema": {"type": "object", "properties": {"mode": {"type": "string"}}},
+      "schema_evidence": "frontend statistics dialog starts rebuild with explicit {mode:'all'} request object, establishing mode as string without executing the rebuild"
     },
     {
       "path": "/api/webservice/statistics/ip-info-refresh",
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["mode"],
-      "schema_evidence": "frontend statistics dialog starts refresh with explicit {mode} request object"
+      "request_body_schema": {"type": "object", "properties": {"mode": {"type": "string"}}},
+      "schema_evidence": "frontend statistics dialog starts refresh with explicit string mode request object; no refresh was executed for schema discovery"
     },
     {
       "path": "/api/webservice/webauth/sessions/delete",
@@ -465,7 +467,8 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["hostname", "proxied"],
-      "schema_evidence": "frontend CNAME helper sends explicit {hostname,proxied:true} object"
+      "request_body_schema": {"type": "object", "properties": {"hostname": {"type": "string"}, "proxied": {"type": "boolean"}}},
+      "schema_evidence": "frontend CNAME helper sends explicit {hostname,proxied:true} object, establishing hostname string and proxied boolean without creating a CNAME"
     },
     {
       "path": "/api/cloudflared/{param}/ingress",
@@ -977,7 +980,8 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["path", "cleanup"],
-      "schema_evidence": "current frontend uploads image to a temporary path, then POSTs JSON {path,cleanup:true} to images/load; wrapper also accepts FormData for backward compatibility"
+      "request_body_schema": {"type": "object", "properties": {"path": {"type": "string"}, "cleanup": {"type": "boolean"}}},
+      "schema_evidence": "current frontend uploads image to a temporary path, then POSTs JSON {path,cleanup:true} to images/load, establishing string path and boolean cleanup; wrapper also accepts FormData for backward compatibility and the load handler was not executed"
     },
     {
       "path": "/api/docker/networks",
@@ -1271,7 +1275,8 @@
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["tasksMap", "orderList"],
-      "schema_evidence": "frontend task/group drag handlers explicitly construct {tasksMap,orderList}; tasksMap maps TaskKey to GroupKey and orderList is the TaskKey sequence"
+      "request_body_schema": {"type": "object", "properties": {"tasksMap": {"type": "object", "additionalProperties": {"type": "string"}}, "orderList": {"type": "array", "items": {"type": "string"}}}},
+      "schema_evidence": "frontend task/group drag handlers explicitly construct {tasksMap,orderList}; tasksMap maps TaskKey to GroupKey string values and orderList is the TaskKey string sequence"
     },
     {
       "path": "/api/cron/groups",
@@ -1354,7 +1359,8 @@
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["CustomIPDBPath"],
-      "schema_evidence": "authorized GET returns customIPDBPath, then the frontend explicitly normalizes it to {CustomIPDBPath} and passes that object to PUT"
+      "request_body_schema": {"type": "object", "properties": {"CustomIPDBPath": {"type": "string"}}},
+      "schema_evidence": "authorized GET verified customIPDBPath as string, then the frontend explicitly normalizes it to {CustomIPDBPath} and passes that object to PUT; no configuration write was executed"
     },
     {
       "path": "/api/ipdb/instanceorderadjustment",
@@ -2283,7 +2289,8 @@
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["theme", "language"],
-      "schema_evidence": "frontend preference sync explicitly constructs {theme: currentTheme, language: currentLocale} before PUT"
+      "request_body_schema": {"type": "object", "properties": {"theme": {"type": "string"}, "language": {"type": "string"}}},
+      "schema_evidence": "frontend preference sync explicitly constructs {theme: currentTheme, language: currentLocale} from string UI identifiers before PUT; no preference write was executed"
     },
     {
       "path": "/api/ftpserver/configure",
@@ -2298,7 +2305,8 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["challengeId", "cipherText"],
-      "schema_evidence": "frontend first GETs /api/login/challenge, AES-GCM encrypts the account/password/timestamp plaintext locally, and POSTs only {challengeId,cipherText}; no login attempt was sent for schema discovery"
+      "request_body_schema": {"type": "object", "properties": {"challengeId": {"type": "string"}, "cipherText": {"type": "string"}}},
+      "schema_evidence": "frontend first GETs /api/login/challenge (runtime-verified challengeId string), AES-GCM encrypts the account/password/timestamp plaintext locally to a string cipherText, and POSTs only {challengeId,cipherText}; no login attempt was sent for schema discovery"
     },
     {
       "path": "/api/modules/{param}/2fa/config",
@@ -2312,14 +2320,16 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["challengeId", "cipherText"],
-      "schema_evidence": "frontend first GETs /api/login/challenge, encrypts the OAuth provider/code/timestamp payload locally, and POSTs only {challengeId,cipherText}; no OAuth login attempt was sent"
+      "request_body_schema": {"type": "object", "properties": {"challengeId": {"type": "string"}, "cipherText": {"type": "string"}}},
+      "schema_evidence": "frontend first GETs /api/login/challenge (runtime-verified challengeId string), encrypts the OAuth provider/code/timestamp payload locally to string cipherText, and POSTs only {challengeId,cipherText}; no OAuth login attempt was sent"
     },
     {
       "path": "/api/password/verify",
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["oldPassword"],
-      "schema_evidence": "frontend password-change workflow explicitly calls password verification with {oldPassword} before any base-config update; no password verification request was sent for schema discovery"
+      "request_body_schema": {"type": "object", "properties": {"oldPassword": {"type": "string"}}},
+      "schema_evidence": "frontend password-change workflow explicitly calls password verification with the oldPassword form string before any base-config update; no password verification request was sent for schema discovery"
     },
     {
       "path": "/api/smb/configure",
@@ -2356,7 +2366,8 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["v2l"],
-      "schema_evidence": "frontend About page explicitly POSTs {v2l: localStorageValue} after startup; this schema was recovered statically and no request was sent"
+      "request_body_schema": {"type": "object", "properties": {"v2l": {"type": "string"}}},
+      "schema_evidence": "frontend About page explicitly POSTs {v2l: localStorageValue}; browser localStorage yields a string value, and this schema was recovered statically without sending the request"
     },
     {
       "path": "/api/webdav/configure",
