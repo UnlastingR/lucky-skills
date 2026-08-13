@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 64:
+    if len(untyped_request_routes) > 62:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 64 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 62 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     coraza_request = {
@@ -566,6 +566,33 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     }
     if coraza_item_props != expected_coraza_item_props:
         fail("Coraza safe list item schema regressed")
+
+    ipdb_item_request = {
+        "type": "object",
+        "properties": {
+            "Key": {"type": "string"},
+            "Remark": {"type": "string"},
+            "Enable": {"type": "boolean"},
+            "Format": {"type": "string"},
+            "FilePath": {"type": "string"},
+            "SupportTypes": {"type": "integer"},
+            "BufferType": {"type": "integer"},
+            "DBParam1": {"type": "string"},
+        },
+    }
+    for route_key in {
+        ("POST", "/api/ipdb/item"),
+        ("PUT", "/api/ipdb/item"),
+    }:
+        route = merged_by_key[route_key]
+        if route.request_body_schema != ipdb_item_request:
+            fail(f"IPDB parser-verified item request schema regressed for {route_key}")
+        if set(route.body_keys) != set(ipdb_item_request["properties"]):
+            fail(f"IPDB item request schema must cover exactly the frontend body fields for {route_key}")
+        if isinstance(route.request_body_schema, dict) and "required" in route.request_body_schema:
+            fail(f"IPDB item request schema must not invent required fields for {route_key}")
+        if route.response_schema is not None:
+            fail(f"IPDB parser-only schema evidence must not claim a success response for {route_key}")
 
     explicit_small_request_schemas = {
         ("PUT", "/api/frontend-preferences"): {
