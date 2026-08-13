@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 37:
+    if len(untyped_request_routes) > 32:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 37 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 32 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     coraza_request = {
@@ -860,6 +860,83 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("STUN webhook-test request schema must not invent required fields")
     if stun_webhook_route.response_schema is not None:
         fail("STUN webhook-test request-only evidence must not claim a success response")
+
+    webterminal_connection_request = {
+        "type": "object",
+        "properties": {
+            "key": {"type": "string"}, "name": {"type": "string"}, "type": {"type": "string"},
+            "remark": {"type": "string"}, "localConfig": {"type": "object"}, "sshConfig": {"type": "object"},
+            "telnetConfig": {"type": "object"}, "shortcuts": {"type": "array", "items": {"type": "object"}},
+            "quickAccessDirs": {"type": "array", "items": {"type": "string"}},
+        },
+    }
+    webterminal_ret_only = {"type": "object", "properties": {"ret": {"type": "integer"}}}
+    for route_key in {("POST", "/api/webterminal/connections"), ("PUT", "/api/webterminal/connections"), ("POST", "/api/webterminal/connections/test")}:
+        route = merged_by_key[route_key]
+        if route.request_body_schema != webterminal_connection_request:
+            fail(f"WebTerminal connection request schema regressed for {route_key}")
+        if set(route.body_keys) != set(webterminal_connection_request["properties"]):
+            fail(f"WebTerminal connection request schema must cover exactly the frontend body fields for {route_key}")
+        if isinstance(route.request_body_schema, dict) and "required" in route.request_body_schema:
+            fail(f"WebTerminal connection request schema must not invent required fields for {route_key}")
+        if route_key[1] == "/api/webterminal/connections" and route.response_schema != webterminal_ret_only:
+            fail(f"WebTerminal disposable CRUD ret-only response schema regressed for {route_key}")
+        if route_key[1].endswith("/test") and route.response_schema is not None:
+            fail("WebTerminal connection test was not executed and must not claim a success response")
+
+    webterminal_quickaccess = merged_by_key[("PUT", "/api/webterminal/connections/{param}/quickaccess")]
+    expected_quickaccess = {"type": "object", "properties": {"quickAccessDirs": {"type": "array", "items": {"type": "string"}}}}
+    if webterminal_quickaccess.request_body_schema != expected_quickaccess or webterminal_quickaccess.response_schema != webterminal_ret_only:
+        fail("WebTerminal quick-access schema regressed")
+
+    webterminal_ssh_host_key = merged_by_key[("PUT", "/api/webterminal/connections/{param}/ssh-host-key")]
+    expected_ssh_host_key = {
+        "type": "object",
+        "properties": {
+            "host": {"type": "string"}, "port": {"type": "integer"}, "hostname": {"type": "string"},
+            "hostKey": {"type": "string"}, "hostKeyFingerprint": {"type": "string"},
+            "hostKeyTrustedAt": {"type": "string"}, "keyType": {"type": "string"},
+            "previousHostKeyFingerprint": {"type": "string"}, "changed": {"type": "boolean"},
+        },
+    }
+    if webterminal_ssh_host_key.request_body_schema != expected_ssh_host_key:
+        fail("WebTerminal SSH host-key request schema regressed")
+    if webterminal_ssh_host_key.response_schema is not None:
+        fail("WebTerminal dummy-connection SSH host-key evidence must not claim a success response")
+
+    expected_connection_list = {
+        "type": "object",
+        "properties": {
+            "ret": {"type": "integer"},
+            "list": {"type": ["array", "null"], "items": {"type": "object", "properties": {
+                "key": {"type": "string"}, "name": {"type": "string"}, "type": {"type": "string"},
+                "remark": {"type": "string"}, "target": {"type": "string"},
+            }}},
+        },
+    }
+    if merged_by_key[("GET", "/api/webterminal/connections")].response_schema != expected_connection_list:
+        fail("WebTerminal safe connection-list response schema regressed")
+
+    expected_connection_detail = {
+        "type": "object",
+        "properties": {
+            "ret": {"type": "integer"},
+            "connection": {"type": "object", "properties": {
+                "key": {"type": "string"}, "name": {"type": "string"}, "type": {"type": "string"},
+                "remark": {"type": "string"}, "localConfig": {"type": "object"}, "sshConfig": {"type": "object"},
+                "telnetConfig": {"type": "object"}, "shortcuts": {"type": "array", "items": {"type": "object"}},
+                "quickAccessDirs": {"type": "array", "items": {"type": "string"}},
+            }},
+        },
+    }
+    if merged_by_key[("GET", "/api/webterminal/connections/{param}")].response_schema != expected_connection_detail:
+        fail("WebTerminal safe connection-detail response schema regressed")
+    for nested_name in {"localConfig", "sshConfig", "telnetConfig"}:
+        nested = expected_connection_detail["properties"]["connection"]["properties"][nested_name]
+        if "properties" in nested:
+            fail(f"WebTerminal {nested_name} response must stay opaque to avoid credential disclosure")
+    if merged_by_key[("DELETE", "/api/webterminal/connections/{param}")].response_schema != webterminal_ret_only:
+        fail("WebTerminal disposable connection delete response schema regressed")
 
     explicit_small_request_schemas = {
         ("PUT", "/api/frontend-preferences"): {
@@ -1737,14 +1814,14 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     } or any(value != {"type": "integer"} for value in webterminal_config_props.values()):
         fail("WebTerminal safe numeric config schema regressed")
 
-    for route_key in {
-        ("GET", "/api/webterminal/connections"),
-        ("GET", "/api/webterminal/sessions"),
-    }:
-        response_schema = merged_by_key[route_key].response_schema
-        collection = response_schema.get("properties", {}).get("list") if isinstance(response_schema, dict) else None
-        if collection != {"type": ["array", "null"], "items": {}}:
-            fail(f"WebTerminal session/connection item schema must remain unspecified for {route_key}")
+    webterminal_sessions = merged_by_key[("GET", "/api/webterminal/sessions")].response_schema
+    webterminal_session_list = (
+        webterminal_sessions.get("properties", {}).get("list")
+        if isinstance(webterminal_sessions, dict)
+        else None
+    )
+    if webterminal_session_list != {"type": ["array", "null"], "items": {}}:
+        fail("WebTerminal session item schema must remain unspecified")
 
     shortcuts = merged_by_key[("GET", "/api/webterminal/globalshortcuts")].response_schema
     shortcut_items = shortcuts.get("properties", {}).get("shortcuts") if isinstance(shortcuts, dict) else None
