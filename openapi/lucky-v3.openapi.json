@@ -62,7 +62,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend global 2FA settings explicitly constructs {TwoFAEnable,TwoFAKey,TwoFACode} before PUT; no authenticated 2FA write was executed",
+        "x-schema-evidence": "frontend global 2FA settings explicitly constructs {TwoFAEnable,TwoFAKey,TwoFACode}; authorized type-only /api/baseconfigure inspection cross-checked TwoFAEnable as boolean and TwoFAKey as string while the current state remained disabled with no key, and the frontend code input establishes TwoFACode as string. No authenticated 2FA write was executed and no sensitive value is documented",
         "requestBody": {
           "required": true,
           "content": {
@@ -70,9 +70,15 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "TwoFAEnable": {},
-                  "TwoFAKey": {},
-                  "TwoFACode": {}
+                  "TwoFAEnable": {
+                    "type": "boolean"
+                  },
+                  "TwoFAKey": {
+                    "type": "string"
+                  },
+                  "TwoFACode": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -24114,11 +24120,30 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "config": {
+                      "type": "object",
+                      "properties": {
+                        "enable": {
+                          "type": "boolean"
+                        },
+                        "hasKey": {
+                          "type": "boolean"
+                        },
+                        "validated": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -24139,6 +24164,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET of an existing module 2FA config observed only enable/hasKey/validated booleans; no key, secret or code values are exposed or documented",
         "parameters": [
           {
             "name": "param",
@@ -24189,7 +24215,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend module 2FA dialog explicitly constructs this normalized object before PUT; authorized GET config was used only to observe enable/hasKey/validated state and no 2FA write was executed",
+        "x-schema-evidence": "frontend module 2FA dialog explicitly constructs this normalized object; authorized GET config/status cross-checked enable and validated as booleans with the module currently disabled/no-key, while key/secret/code/oldSecret/oldCode are frontend text/code fields and remain request-only strings. No authenticated module-2FA write was executed",
         "parameters": [
           {
             "name": "param",
@@ -24207,13 +24233,27 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "enable": {},
-                  "key": {},
-                  "secret": {},
-                  "validated": {},
-                  "code": {},
-                  "oldSecret": {},
-                  "oldCode": {}
+                  "enable": {
+                    "type": "boolean"
+                  },
+                  "key": {
+                    "type": "string"
+                  },
+                  "secret": {
+                    "type": "string"
+                  },
+                  "validated": {
+                    "type": "boolean"
+                  },
+                  "code": {
+                    "type": "string"
+                  },
+                  "oldSecret": {
+                    "type": "string"
+                  },
+                  "oldCode": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -24333,6 +24373,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "frontend module verification action submits the code input as {code}; the same module-2FA frontend model treats verification codes as strings. No verification attempt was sent and no success response schema is claimed",
         "parameters": [
           {
             "name": "param",
@@ -24350,7 +24391,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "code": {}
+                  "code": {
+                    "type": "string"
+                  }
                 }
               }
             }
