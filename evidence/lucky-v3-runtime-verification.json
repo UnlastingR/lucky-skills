@@ -895,6 +895,76 @@
       "schema_evidence": "frontend edit dialog rebuilds Docker config/hostConfig then sends explicit {name,config,hostConfig,auto_start,remove_old}; handler was not executed"
     },
     {
+      "path": "/api/docker/containers/{param}/files/mkdir",
+      "method": "POST",
+      "risk": "mutating",
+      "request_body_schema": {"type": "object", "properties": {"path": {"type": "string"}}},
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "msg": {"type": "string"}, "path": {"type": "string"}}},
+      "schema_evidence": "authorized isolated BusyBox file probe created only a directory inside the disposable container, verifying string path input and ret/msg/path response types; path values were not retained and the container was deleted after testing"
+    },
+    {
+      "path": "/api/docker/containers/{param}/files/list",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "output": {"type": "string"}, "path": {"type": "string"}}},
+      "schema_evidence": "authorized GET inside the disposable BusyBox container observed ret/output/path response types for both empty and populated probe directories; listing output and paths were not retained"
+    },
+    {
+      "path": "/api/docker/containers/{param}/files/touch",
+      "method": "POST",
+      "risk": "mutating",
+      "request_body_schema": {"type": "object", "properties": {"path": {"type": "string"}}},
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "msg": {"type": "string"}, "path": {"type": "string"}}},
+      "schema_evidence": "authorized isolated BusyBox file probe touched only a file inside the disposable container, verifying string path input and ret/msg/path response types; the container was fully removed afterward"
+    },
+    {
+      "path": "/api/docker/containers/{param}/files/write",
+      "method": "POST",
+      "risk": "dangerous",
+      "request_body_schema": {"type": "object", "properties": {"content": {"type": "string"}, "path": {"type": "string"}}},
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "msg": {"type": "string"}, "path": {"type": "string"}}},
+      "schema_evidence": "authorized isolated BusyBox file probe wrote a fixed test string only inside the disposable container, verifying string content/path input and ret/msg/path response types; test content/path values were not retained"
+    },
+    {
+      "path": "/api/docker/containers/{param}/files/read",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "content": {"type": "string"}, "path": {"type": "string"}}},
+      "schema_evidence": "authorized GET read only the fixed probe file inside the disposable BusyBox container and observed ret/content/path response types; file content and path were not retained"
+    },
+    {
+      "path": "/api/docker/containers/{param}/files/rename",
+      "method": "POST",
+      "risk": "dangerous",
+      "request_body_schema": {"type": "object", "properties": {"new_path": {"type": "string"}, "old_path": {"type": "string"}}},
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "msg": {"type": "string"}, "new_path": {"type": "string"}, "old_path": {"type": "string"}}},
+      "schema_evidence": "authorized isolated BusyBox file probe renamed only the temporary probe file, verifying string old_path/new_path input and ret/msg/old_path/new_path response types; paths were not retained"
+    },
+    {
+      "path": "/api/docker/containers/{param}/files/copy",
+      "method": "POST",
+      "risk": "dangerous",
+      "request_body_schema": {"type": "object", "properties": {"dst_path": {"type": "string"}, "src_path": {"type": "string"}}},
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "msg": {"type": "string"}, "dst_path": {"type": "string"}, "src_path": {"type": "string"}}},
+      "schema_evidence": "authorized isolated BusyBox file probe copied only the temporary probe file, verifying string src_path/dst_path input and ret/msg/src_path/dst_path response types; paths were not retained"
+    },
+    {
+      "path": "/api/docker/containers/{param}/files/chmod",
+      "method": "POST",
+      "risk": "dangerous",
+      "request_body_schema": {"type": "object", "properties": {"path": {"type": "string"}, "permissions": {"type": "string"}}},
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "msg": {"type": "string"}, "path": {"type": "string"}, "permissions": {"type": "string"}}},
+      "schema_evidence": "authorized isolated BusyBox file probe chmodded only the copied test file, verifying string path/permissions input and ret/msg/path/permissions response types; no business container was touched"
+    },
+    {
+      "path": "/api/docker/containers/{param}/files",
+      "method": "DELETE",
+      "risk": "mutating",
+      "request_body_schema": {"type": "object", "properties": {"path": {"type": "string"}, "recursive": {"type": "boolean"}}},
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "msg": {"type": "string"}, "path": {"type": "string"}}},
+      "schema_evidence": "authorized isolated BusyBox file probe recursively deleted only the temporary probe directory, verifying string path/boolean recursive input and ret/msg/path response types; the disposable container and image were then fully cleaned up"
+    },
+    {
       "path": "/api/docker/containers/{param}/files/upload",
       "method": "POST",
       "risk": "dangerous",

@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 129:
+    if len(untyped_request_routes) > 123:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 129 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 123 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     read_model_put_schemas = {
@@ -658,8 +658,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("Local Path Browser delete response schema regressed")
 
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 218:
-        fail(f"response-schema coverage regressed below 218 routes: {response_schema_count}")
+    if response_schema_count < 227:
+        fail(f"response-schema coverage regressed below 227 routes: {response_schema_count}")
 
     safe_utility_response_routes = {
         ("GET", "/api/baseconfigure"),
@@ -1067,6 +1067,67 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         "properties": {"ret": {"type": "integer"}, "logs": {"type": "string"}},
     }:
         fail("Docker logs response schema regressed")
+
+    docker_file_requests = {
+        ("POST", "/api/docker/containers/{param}/files/mkdir"): {
+            "type": "object", "properties": {"path": {"type": "string"}}
+        },
+        ("POST", "/api/docker/containers/{param}/files/touch"): {
+            "type": "object", "properties": {"path": {"type": "string"}}
+        },
+        ("POST", "/api/docker/containers/{param}/files/write"): {
+            "type": "object", "properties": {"content": {"type": "string"}, "path": {"type": "string"}}
+        },
+        ("POST", "/api/docker/containers/{param}/files/rename"): {
+            "type": "object", "properties": {"new_path": {"type": "string"}, "old_path": {"type": "string"}}
+        },
+        ("POST", "/api/docker/containers/{param}/files/copy"): {
+            "type": "object", "properties": {"dst_path": {"type": "string"}, "src_path": {"type": "string"}}
+        },
+        ("POST", "/api/docker/containers/{param}/files/chmod"): {
+            "type": "object", "properties": {"path": {"type": "string"}, "permissions": {"type": "string"}}
+        },
+        ("DELETE", "/api/docker/containers/{param}/files"): {
+            "type": "object", "properties": {"path": {"type": "string"}, "recursive": {"type": "boolean"}}
+        },
+    }
+    for route_key, expected in docker_file_requests.items():
+        if merged_by_key[route_key].request_body_schema != expected:
+            fail(f"Docker disposable file request schema regressed for {route_key}")
+
+    docker_file_path_response = {
+        "type": "object",
+        "properties": {"ret": {"type": "integer"}, "msg": {"type": "string"}, "path": {"type": "string"}},
+    }
+    for route_key in {
+        ("POST", "/api/docker/containers/{param}/files/mkdir"),
+        ("POST", "/api/docker/containers/{param}/files/touch"),
+        ("POST", "/api/docker/containers/{param}/files/write"),
+        ("DELETE", "/api/docker/containers/{param}/files"),
+    }:
+        if merged_by_key[route_key].response_schema != docker_file_path_response:
+            fail(f"Docker disposable file path response schema regressed for {route_key}")
+
+    docker_file_responses = {
+        ("GET", "/api/docker/containers/{param}/files/list"): {
+            "type": "object", "properties": {"ret": {"type": "integer"}, "output": {"type": "string"}, "path": {"type": "string"}}
+        },
+        ("GET", "/api/docker/containers/{param}/files/read"): {
+            "type": "object", "properties": {"ret": {"type": "integer"}, "content": {"type": "string"}, "path": {"type": "string"}}
+        },
+        ("POST", "/api/docker/containers/{param}/files/rename"): {
+            "type": "object", "properties": {"ret": {"type": "integer"}, "msg": {"type": "string"}, "new_path": {"type": "string"}, "old_path": {"type": "string"}}
+        },
+        ("POST", "/api/docker/containers/{param}/files/copy"): {
+            "type": "object", "properties": {"ret": {"type": "integer"}, "msg": {"type": "string"}, "dst_path": {"type": "string"}, "src_path": {"type": "string"}}
+        },
+        ("POST", "/api/docker/containers/{param}/files/chmod"): {
+            "type": "object", "properties": {"ret": {"type": "integer"}, "msg": {"type": "string"}, "path": {"type": "string"}, "permissions": {"type": "string"}}
+        },
+    }
+    for route_key, expected in docker_file_responses.items():
+        if merged_by_key[route_key].response_schema != expected:
+            fail(f"Docker disposable file response schema regressed for {route_key}")
 
     image_schema = merged_by_key[("GET", "/api/docker/images/{param}")].response_schema
     image_props = image_schema.get("properties", {}).get("image", {}).get("properties", {}) if isinstance(image_schema, dict) else {}

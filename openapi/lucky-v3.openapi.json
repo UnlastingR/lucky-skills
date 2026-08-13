@@ -10011,11 +10011,22 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "path": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -10036,6 +10047,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized isolated BusyBox file probe recursively deleted only the temporary probe directory, verifying string path/boolean recursive input and ret/msg/path response types; the disposable container and image were then fully cleaned up",
         "parameters": [
           {
             "name": "param",
@@ -10053,8 +10065,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "path": {},
-                  "recursive": {}
+                  "path": {
+                    "type": "string"
+                  },
+                  "recursive": {
+                    "type": "boolean"
+                  }
                 }
               }
             }
@@ -10077,11 +10093,25 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "path": {
+                      "type": "string"
+                    },
+                    "permissions": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -10102,6 +10132,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "dangerous",
+        "x-schema-evidence": "authorized isolated BusyBox file probe chmodded only the copied test file, verifying string path/permissions input and ret/msg/path/permissions response types; no business container was touched",
         "parameters": [
           {
             "name": "param",
@@ -10119,8 +10150,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "path": {},
-                  "permissions": {}
+                  "path": {
+                    "type": "string"
+                  },
+                  "permissions": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -10277,11 +10312,25 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "dst_path": {
+                      "type": "string"
+                    },
+                    "src_path": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -10302,6 +10351,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "dangerous",
+        "x-schema-evidence": "authorized isolated BusyBox file probe copied only the temporary probe file, verifying string src_path/dst_path input and ret/msg/src_path/dst_path response types; paths were not retained",
         "parameters": [
           {
             "name": "param",
@@ -10319,8 +10369,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "dst_path": {},
-                  "src_path": {}
+                  "dst_path": {
+                    "type": "string"
+                  },
+                  "src_path": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -10534,11 +10588,22 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "output": {
+                      "type": "string"
+                    },
+                    "path": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -10559,6 +10624,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET inside the disposable BusyBox container observed ret/output/path response types for both empty and populated probe directories; listing output and paths were not retained",
         "parameters": [
           {
             "name": "param",
@@ -10592,11 +10658,22 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "path": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -10617,6 +10694,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized isolated BusyBox file probe created only a directory inside the disposable container, verifying string path input and ret/msg/path response types; path values were not retained and the container was deleted after testing",
         "parameters": [
           {
             "name": "param",
@@ -10634,7 +10712,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "path": {}
+                  "path": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -10715,11 +10795,22 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "content": {
+                      "type": "string"
+                    },
+                    "path": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -10740,6 +10831,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET read only the fixed probe file inside the disposable BusyBox container and observed ret/content/path response types; file content and path were not retained",
         "parameters": [
           {
             "name": "param",
@@ -10773,11 +10865,25 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "new_path": {
+                      "type": "string"
+                    },
+                    "old_path": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -10798,6 +10904,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "dangerous",
+        "x-schema-evidence": "authorized isolated BusyBox file probe renamed only the temporary probe file, verifying string old_path/new_path input and ret/msg/old_path/new_path response types; paths were not retained",
         "parameters": [
           {
             "name": "param",
@@ -10815,8 +10922,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "new_path": {},
-                  "old_path": {}
+                  "new_path": {
+                    "type": "string"
+                  },
+                  "old_path": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -10908,11 +11019,22 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "path": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -10933,6 +11055,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized isolated BusyBox file probe touched only a file inside the disposable container, verifying string path input and ret/msg/path response types; the container was fully removed afterward",
         "parameters": [
           {
             "name": "param",
@@ -10950,7 +11073,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "path": {}
+                  "path": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -11045,11 +11170,22 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "path": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -11070,6 +11206,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "dangerous",
+        "x-schema-evidence": "authorized isolated BusyBox file probe wrote a fixed test string only inside the disposable container, verifying string content/path input and ret/msg/path response types; test content/path values were not retained",
         "parameters": [
           {
             "name": "param",
@@ -11087,8 +11224,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "content": {},
-                  "path": {}
+                  "content": {
+                    "type": "string"
+                  },
+                  "path": {
+                    "type": "string"
+                  }
                 }
               }
             }
