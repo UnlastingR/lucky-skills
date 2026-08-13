@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 94:
+    if len(untyped_request_routes) > 86:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 94 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 86 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     explicit_small_request_schemas = {
@@ -679,6 +679,67 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     for field in ("name", "path", "configFileName"):
         if compose_project_props.get(field) != {"type": "string"}:
             fail(f"Docker Compose project string evidence regressed for {field}")
+
+    compose_file_request_schemas = {
+        ("POST", "/api/docker/compose/backup"): {
+            "type": "object", "properties": {"project_name": {"type": "string"}, "project_path": {"type": "string"}}
+        },
+        ("POST", "/api/docker/compose/config"): {
+            "type": "object", "properties": {"project_path": {"type": "string"}}
+        },
+        ("POST", "/api/docker/compose/discover"): {
+            "type": "object", "properties": {"scan_path": {"type": "string"}}
+        },
+        ("POST", "/api/docker/compose/dockerfile"): {
+            "type": "object", "properties": {"project_path": {"type": "string"}}
+        },
+        ("POST", "/api/docker/compose/read-file"): {
+            "type": "object", "properties": {"filename": {"type": "string"}, "working_dir": {"type": "string"}}
+        },
+        ("POST", "/api/docker/compose/update-config"): {
+            "type": "object", "properties": {"content": {"type": "string"}, "project_path": {"type": "string"}}
+        },
+        ("POST", "/api/docker/compose/update-dockerfile"): {
+            "type": "object", "properties": {"content": {"type": "string"}, "project_path": {"type": "string"}}
+        },
+    }
+    for route_key, expected in compose_file_request_schemas.items():
+        request_schema = merged_by_key[route_key].request_body_schema
+        if request_schema != expected:
+            fail(f"Docker Compose file request schema regressed for {route_key}")
+        if isinstance(request_schema, dict) and "required" in request_schema:
+            fail(f"Docker Compose file request schema must not invent required fields for {route_key}")
+
+    local_path_list = merged_by_key[("GET", "/api/local-path-browser/list")].response_schema
+    local_path_data = (
+        local_path_list.get("properties", {}).get("data", {}).get("properties", {})
+        if isinstance(local_path_list, dict)
+        else {}
+    )
+    local_path_entry = local_path_data.get("entries", {}).get("items", {}).get("properties", {})
+    if local_path_data.get("path") != {"type": "string"}:
+        fail("Local Path Browser path string evidence regressed")
+    for field in ("name", "path"):
+        if local_path_entry.get(field) != {"type": "string"}:
+            fail(f"Local Path Browser entry string evidence regressed for {field}")
+
+    docker_create_request = merged_by_key[("POST", "/api/docker/containers")].request_body_schema
+    docker_create_props = docker_create_request.get("properties", {}) if isinstance(docker_create_request, dict) else {}
+    expected_edit_schema = {
+        "type": "object",
+        "properties": {
+            "name": {"type": "string"},
+            "config": docker_create_props.get("config"),
+            "hostConfig": docker_create_props.get("hostConfig"),
+            "auto_start": {"type": "boolean"},
+            "remove_old": {"type": "boolean"},
+        },
+    }
+    docker_edit = merged_by_key[("POST", "/api/docker/containers/{param}/edit")].request_body_schema
+    if docker_edit != expected_edit_schema:
+        fail("Docker container edit request schema must reuse the verified create-container config/hostConfig model")
+    if isinstance(docker_edit, dict) and "required" in docker_edit:
+        fail("Docker container edit request schema must not invent required fields")
 
     container_copy_rename_schema = {"type": "object", "properties": {"name": {"type": "string"}}}
     for route_key in {
