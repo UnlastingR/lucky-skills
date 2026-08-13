@@ -753,8 +753,6 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     parser_models = {
         ("POST", "/api/storagemanagement/list"): storage_item_request,
         ("PUT", "/api/storagemanagement/list"): storage_item_request,
-        ("POST", "/api/thirdPartyAuthManager/list"): third_party_user_request,
-        ("PUT", "/api/thirdPartyAuthManager/list"): third_party_user_request,
     }
     for route_key, expected in parser_models.items():
         route = merged_by_key[route_key]
@@ -2568,6 +2566,84 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     if any("secret" in field.lower() or "token" in field.lower() or "password" in field.lower() for field in auth_manager_props):
         fail("third-party auth config schema must remain secret/token/password-free")
 
+    auth_user_request = {
+        "type": "object",
+        "properties": {
+            "Key": {"type": "string"},
+            "Type": {"type": "string"},
+            "Enable": {"type": "boolean"},
+            "Remark": {"type": "string"},
+            "ID": {"type": "string"},
+            "Name": {"type": "string"},
+            "Avatar": {"type": "string"},
+            "EMail": {"type": "string"},
+            "Phone": {"type": "string"},
+            "RefreshToken": {"type": "string"},
+            "AccessToken": {"type": "string"},
+            "CreateTime": {"type": "integer"},
+            "UpdateTime": {"type": "integer"},
+            "TwoFAKey": {"type": "string"},
+        },
+    }
+    key_ret_schema = {
+        "type": "object",
+        "properties": {"key": {"type": "string"}, "ret": {"type": "integer"}},
+    }
+    for route_key in {
+        ("POST", "/api/thirdPartyAuthManager/list"),
+        ("PUT", "/api/thirdPartyAuthManager/list"),
+    }:
+        route = merged_by_key[route_key]
+        if route.request_body_schema != auth_user_request:
+            fail(f"third-party auth disposable-user request schema regressed for {route_key}")
+        if set(route.body_keys) != set(auth_user_request["properties"]):
+            fail(f"third-party auth request schema must cover exactly the frontend body fields for {route_key}")
+        if isinstance(route.request_body_schema, dict) and "required" in route.request_body_schema:
+            fail(f"third-party auth request schema must not invent required fields for {route_key}")
+        if route.response_schema != key_ret_schema:
+            fail(f"third-party auth disposable-user key/ret response schema regressed for {route_key}")
+    if merged_by_key[("DELETE", "/api/thirdPartyAuthManager/list/{param}")].response_schema != ret_only_schema:
+        fail("third-party auth disposable-user delete response schema regressed")
+
+    safe_auth_user_props = {
+        "Key": {"type": "string"},
+        "Enable": {"type": "boolean"},
+        "Remark": {"type": "string"},
+        "CreateTime": {"type": "integer"},
+        "UpdateTime": {"type": "integer"},
+        "HasTwoFA": {"type": "boolean"},
+        "Type": {"type": "string"},
+        "ID": {"type": "string"},
+        "Name": {"type": "string"},
+        "Avatar": {"type": "string"},
+        "EMail": {"type": "string"},
+        "Phone": {"type": "string"},
+    }
+    auth_user_list = merged_by_key[("GET", "/api/thirdPartyAuthManager/list")].response_schema
+    auth_user_list_schema = (
+        auth_user_list.get("properties", {}).get("list")
+        if isinstance(auth_user_list, dict)
+        else None
+    )
+    if auth_user_list_schema != {
+        "type": ["array", "null"],
+        "items": {"type": "object", "properties": safe_auth_user_props},
+    }:
+        fail("third-party auth safe nullable-list schema regressed")
+
+    auth_user_detail = merged_by_key[("GET", "/api/thirdPartyAuthManager/list/{param}")].response_schema
+    auth_user_detail_props = (
+        auth_user_detail.get("properties", {}).get("authUser", {}).get("properties", {})
+        if isinstance(auth_user_detail, dict)
+        else {}
+    )
+    expected_auth_user_detail_props = dict(safe_auth_user_props)
+    expected_auth_user_detail_props["IsNew"] = {"type": "boolean"}
+    if auth_user_detail_props != expected_auth_user_detail_props:
+        fail("third-party auth safe detail schema regressed")
+    if merged_by_key[("GET", "/api/thirdPartyAuthManager/list/{param}/{param2}")].response_schema != ret_only_schema:
+        fail("third-party auth two-parameter GET response schema regressed")
+
     webauth_sessions = merged_by_key[("GET", "/api/webservice/webauth/sessions")].response_schema
     webauth_props = webauth_sessions.get("properties", {}) if isinstance(webauth_sessions, dict) else {}
     if webauth_props.get("list") != {"type": "array", "items": {}}:
@@ -2624,7 +2700,6 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         ("GET", "/api/portforwards_lite"): ("list", "Moduledisable"),
         ("GET", "/api/ipdb/avalidDBFiles"): ("list", None),
         ("GET", "/api/ssl/syncclients"): ("list", None),
-        ("GET", "/api/thirdPartyAuthManager/list"): ("list", None),
     }
     for route_key, (list_field, flag_field) in nullable_list_response_routes.items():
         response_schema = merged_by_key[route_key].response_schema
@@ -3304,6 +3379,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             "QuickControlBasicAuthPasswd",
             "WebhookProxyPassword",
         },
+        ("GET", "/api/thirdPartyAuthManager/list"): {"RefreshToken", "AccessToken", "TwoFAKey"},
+        ("GET", "/api/thirdPartyAuthManager/list/{param}"): {"RefreshToken", "AccessToken", "TwoFAKey"},
         ("GET", "/api/third/filebrowser/configure"): {"RedisCacheUrl"},
         ("GET", "/api/status/host-processes"): {"command"},
         ("GET", "/api/modules/list"): {"baseURL"},

@@ -2140,7 +2140,8 @@
       "risk": "mutating",
       "body_keys": ["Key", "Type", "Enable", "Remark", "ID", "Name", "Avatar", "EMail", "Phone", "RefreshToken", "AccessToken", "CreateTime", "UpdateTime", "TwoFAKey"],
       "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"Type":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"ID":{"type":"string"},"Name":{"type":"string"},"Avatar":{"type":"string"},"EMail":{"type":"string"},"Phone":{"type":"string"},"RefreshToken":{"type":"string"},"AccessToken":{"type":"string"},"CreateTime":{"type":"integer"},"UpdateTime":{"type":"integer"},"TwoFAKey":{"type":"string"}}},
-      "schema_evidence": "frontend third-party auth user form initializes this explicit model and passes it directly to POST; paced parser-only probes verified AuthUser/AuthUserInfo string fields, Enable bool and CreateTime/UpdateTime int64 before handler execution, with the third-party auth user baseline remaining zero"
+      "response_schema": {"type":"object","properties":{"key":{"type":"string"},"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend third-party auth user form initializes this explicit model and passes it directly to POST; an authorized disposable github-type mapping with Enable=false and empty RefreshToken/AccessToken/TwoFAKey returned key+ret success, then cleanup restored the exact null-list baseline"
     },
     {
       "path": "/api/thirdPartyAuthManager/list",
@@ -2148,7 +2149,29 @@
       "risk": "mutating",
       "body_keys": ["Key", "Type", "Enable", "Remark", "ID", "Name", "Avatar", "EMail", "Phone", "RefreshToken", "AccessToken", "CreateTime", "UpdateTime", "TwoFAKey"],
       "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"Type":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"ID":{"type":"string"},"Name":{"type":"string"},"Avatar":{"type":"string"},"EMail":{"type":"string"},"Phone":{"type":"string"},"RefreshToken":{"type":"string"},"AccessToken":{"type":"string"},"CreateTime":{"type":"integer"},"UpdateTime":{"type":"integer"},"TwoFAKey":{"type":"string"}}},
-      "schema_evidence": "frontend edits and passes the same third-party auth user model directly to PUT; request types reuse the parser-verified AuthUser struct and no successful third-party account create/update handler was executed"
+      "response_schema": {"type":"object","properties":{"key":{"type":"string"},"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend edits and passes the same third-party auth user model directly to PUT; the disabled disposable mapping accepted an identical PUT with all credential/2FA fields empty and returned the same generated key plus ret before cleanup"
+    },
+    {
+      "path": "/api/thirdPartyAuthManager/list/{param}",
+      "method": "DELETE",
+      "risk": "mutating",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "authorized cleanup deleted only the disabled disposable third-party auth mapping by its generated key and returned ret-only success; the full list response hash returned exactly to the original null-list baseline"
+    },
+    {
+      "path": "/api/thirdPartyAuthManager/list/{param}",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"authUser":{"type":"object","properties":{"Key":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"CreateTime":{"type":"integer"},"UpdateTime":{"type":"integer"},"HasTwoFA":{"type":"boolean"},"IsNew":{"type":"boolean"},"Type":{"type":"string"},"ID":{"type":"string"},"Name":{"type":"string"},"Avatar":{"type":"string"},"EMail":{"type":"string"},"Phone":{"type":"string"}}},"ret":{"type":"integer"}}},
+      "schema_evidence": "authorized GET of the disabled disposable mapping by generated key observed these safe account/profile field types. TwoFAKey is intentionally omitted from response documentation, and no token fields are documented"
+    },
+    {
+      "path": "/api/thirdPartyAuthManager/list/{param}/{param2}",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "authorized GETs against the disposable mapping with several inert second-path values returned ret-only success; the semantic meaning of param2 remains intentionally unspecified"
     },
     {
       "path": "/api/thirdPartyAuthManager/orderadjustment",
@@ -2978,8 +3001,8 @@
       "path": "/api/thirdPartyAuthManager/list",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": ["array", "null"], "items": {}}}},
-      "schema_evidence": "authorized GET /api/thirdPartyAuthManager/list observed list=null on this instance; provider/account/credential item fields remain unspecified"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"list":{"type":["array","null"],"items":{"type":"object","properties":{"Key":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"CreateTime":{"type":"integer"},"UpdateTime":{"type":"integer"},"HasTwoFA":{"type":"boolean"},"Type":{"type":"string"},"ID":{"type":"string"},"Name":{"type":"string"},"Avatar":{"type":"string"},"EMail":{"type":"string"},"Phone":{"type":"string"}}}}}},
+      "schema_evidence": "authorized disabled disposable mapping populated GET /api/thirdPartyAuthManager/list and verified these safe account/profile field types; RefreshToken, AccessToken and TwoFAKey are intentionally excluded, and cleanup restored the original nullable-list baseline"
     },
     {
       "path": "/api/thirdPartyAuthManager/config",
