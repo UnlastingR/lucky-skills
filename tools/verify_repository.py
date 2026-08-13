@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 141:
+    if len(untyped_request_routes) > 137:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 141 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 137 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     read_model_put_schemas = {
@@ -524,6 +524,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         "/api/rclone/globalconfig": "globalConfig",
         "/api/ipfliter/list/{param}": "rule",
         "/api/thirdPartyAuthManager/config": "config",
+        "/api/ftpserver/configure": "configure",
+        "/api/smb/configure": "configure",
+        "/api/webdav/configure": "configure",
+        "/api/wol/service/configure": "configure",
     }
     for path, response_field in read_model_put_schemas.items():
         put_schema = merged_by_key[("PUT", path)].request_body_schema
@@ -537,6 +541,15 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             fail(f"PUT request schema must match verified GET {response_field} model for {path}")
         if isinstance(put_schema, dict) and "required" in put_schema:
             fail(f"read-model-derived PUT schema must not invent required fields for {path}")
+
+    wol_put = merged_by_key[("PUT", "/api/wol/service/configure")].request_body_schema
+    wol_server_props = (
+        wol_put.get("properties", {}).get("Server", {}).get("properties", {})
+        if isinstance(wol_put, dict)
+        else {}
+    )
+    if "WebhookProxyPassword" in wol_server_props:
+        fail("WOL safe read-model PUT schema must not document request-only proxy password")
 
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
     if response_schema_count < 204:
