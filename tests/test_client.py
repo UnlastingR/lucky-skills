@@ -38,8 +38,23 @@ class FakeResponse:
         return None
 
 
-def route(path: str, method: str) -> Route:
-    return Route(path, method, path.split("/")[2], "test", (), (), False, "json")
+def route(
+    path: str,
+    method: str,
+    *,
+    success_response_markers: tuple[tuple[int, str], ...] = (),
+) -> Route:
+    return Route(
+        path,
+        method,
+        path.split("/")[2],
+        "test",
+        (),
+        (),
+        False,
+        "json",
+        success_response_markers=success_response_markers,
+    )
 
 
 class ClientTests(unittest.TestCase):
@@ -54,6 +69,7 @@ class ClientTests(unittest.TestCase):
                 route("/api/ddns/getipfromcmdtest", "GET"),
                 route("/api/cron/enable", "GET"),
                 route("/api/ddns", "PUT"),
+                route("/api/about-content", "PUT", success_response_markers=((1, "成功"),)),
                 route("/api/docker/containers/{param}/restart", "POST"),
                 route("/api/status/ws", "UNKNOWN"),
             ],
@@ -104,6 +120,32 @@ class ClientTests(unittest.TestCase):
         message = str(context.exception)
         self.assertNotIn("T" * 32, message)
         self.assertNotIn("private-entry", message)
+
+    def test_positive_business_error_still_raises_without_route_override(self) -> None:
+        response = FakeResponse(json.dumps({"ret": 1, "msg": "validation failed"}).encode())
+        with self.assertRaises(LuckyAPIError) as context:
+            self.client(lambda request, timeout: response).request("GET", "/api/status")
+        self.assertEqual(context.exception.ret, 1)
+
+    def test_route_specific_positive_success_ret_is_accepted(self) -> None:
+        response = FakeResponse(json.dumps({"ret": 1, "msg": "成功"}).encode())
+        payload = self.client(lambda request, timeout: response).request_json(
+            "PUT",
+            "/api/about-content",
+            json_body={},
+            allow_unsafe=True,
+        )
+        self.assertEqual(payload, {"ret": 1, "msg": "成功"})
+
+    def test_route_specific_positive_ret_with_other_message_still_raises(self) -> None:
+        response = FakeResponse(json.dumps({"ret": 1, "msg": "validation failed"}).encode())
+        with self.assertRaises(LuckyAPIError):
+            self.client(lambda request, timeout: response).request(
+                "PUT",
+                "/api/about-content",
+                json_body={},
+                allow_unsafe=True,
+            )
 
     def test_base_url_rejects_embedded_credentials(self) -> None:
         with self.assertRaises(ValueError):

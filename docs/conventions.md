@@ -31,11 +31,13 @@
 
 其他端点可能返回 `list`、`info`、`Modules` 等顶层字段；下载接口则直接返回文件。不要假设所有接口都严格遵循同一 schema。
 
+`ret: 0` 只是最常见的成功约定，不是全局不变量。Lucky 3.0.0 已实测存在成功写接口返回非零 `ret` 的情况；这类例外必须按具体 `METHOD + path` 写入运行时目录的 `success_response_markers`，并精确记录 `ret + msg` 组合，客户端才会接受。未在目录中明确验证的非零 `ret` 仍按业务错误处理。
+
 客户端至少应同时检查：
 
 1. HTTP 状态码；
 2. 响应 `Content-Type`；
-3. JSON 中的 `ret`；
+3. JSON 中的 `ret`，以及该端点是否有运行时验证过的精确成功响应标记；
 4. 可选的 `msg` 错误说明。
 
 Lucky 历史接口可能以 HTTP 200 返回业务错误，所以仅调用 `raise_for_status()` 不足以判断成功。

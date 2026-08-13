@@ -418,6 +418,36 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             value = item.get(field)
             if value is not None and (not isinstance(value, str) or not value.strip()):
                 fail(f"runtime verified route {field} must be a non-empty string")
+        success_response_markers = item.get("success_response_markers")
+        if success_response_markers is not None:
+            if not isinstance(success_response_markers, list) or not success_response_markers:
+                fail("runtime success_response_markers must be a non-empty array")
+            normalized_markers: list[tuple[int, str]] = []
+            for marker in success_response_markers:
+                if (
+                    not isinstance(marker, dict)
+                    or set(marker) != {"ret", "msg"}
+                    or type(marker.get("ret")) is not int
+                    or marker["ret"] <= 0
+                    or not isinstance(marker.get("msg"), str)
+                    or not marker["msg"]
+                ):
+                    fail(
+                        "runtime success_response_markers entries require positive integer ret and non-empty msg"
+                    )
+                normalized_markers.append((marker["ret"], marker["msg"]))
+            if len(normalized_markers) != len(set(normalized_markers)):
+                fail("runtime success_response_markers must be unique")
+            response_schema = item.get("response_schema")
+            properties = response_schema.get("properties", {}) if isinstance(response_schema, dict) else {}
+            if (
+                properties.get("ret") != {"type": "integer"}
+                or properties.get("msg") != {"type": "string"}
+                or not item.get("schema_evidence")
+            ):
+                fail(
+                    "runtime success_response_markers require integer ret/string msg response schema and schema evidence"
+                )
         keys.append((path, str(method)))
     if len(keys) != len(set(keys)):
         fail("runtime verified routes contain duplicate path/method entries")
@@ -2215,6 +2245,14 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("About-content PUT request schema must match verified GET public-content model")
     if isinstance(about_put, dict) and "required" in about_put:
         fail("About-content PUT schema must not invent required fields")
+    about_route = merged_by_key[("PUT", "/api/about-content")]
+    if about_route.response_schema != {
+        "type": "object",
+        "properties": {"ret": {"type": "integer"}, "msg": {"type": "string"}},
+    }:
+        fail("About-content same-value PUT response schema regressed")
+    if about_route.success_response_markers != ((1, "成功"),):
+        fail("About-content verified success response marker regressed")
 
     cron_group_requests = {
         ("POST", "/api/cron/groups"): {

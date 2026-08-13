@@ -257,12 +257,20 @@ class LuckyClient:
         if not response.is_json or not response.body:
             return
         payload = response.json()
-        if isinstance(payload, dict) and payload.get("ret", 0) not in {0, None}:
-            message = str(payload.get("msg") or payload.get("message") or "")
-            message = message.replace(self._open_token, "<redacted>")
-            if self._safe_entry:
-                message = message.replace(self._safe_entry, "/<redacted-safe-entry>")
-            raise LuckyAPIError(payload.get("ret"), message, response.method, response.path)
+        if not isinstance(payload, dict):
+            return
+        ret = payload.get("ret", 0)
+        if ret in {0, None}:
+            return
+        message = str(payload.get("msg") or payload.get("message") or "")
+        if self.catalog is not None:
+            route = self.catalog.match(response.method, response.path)
+            if route is not None and (ret, message) in route.success_response_markers:
+                return
+        message = message.replace(self._open_token, "<redacted>")
+        if self._safe_entry:
+            message = message.replace(self._safe_entry, "/<redacted-safe-entry>")
+        raise LuckyAPIError(ret, message, response.method, response.path)
 
     def _error_detail(self, error: urllib.error.HTTPError) -> str:
         body = error.read(min(self.max_response_bytes, 4096)) if error.fp is not None else b""

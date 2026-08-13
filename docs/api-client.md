@@ -190,11 +190,13 @@ result = client.request_json(
 - `UnsafeOperationError`：目录未知或操作不是只读；
 - `TransportError`：DNS、连接、TLS 或超时失败；
 - `HTTPStatusError`：HTTP 非成功状态；
-- `LuckyAPIError`：HTTP 可为 200，但 JSON 中 `ret` 非零；
+- `LuckyAPIError`：HTTP 可为 200，但 JSON 中 `ret` 既不是常规成功值，也没有匹配该 `METHOD + path` 的运行时验证 `success_response_markers`；
 - `ResponseDecodeError`：预期读取 JSON，但响应不是合法 JSON；
 - `ResponseTooLargeError`：响应超过配置上限。
 
 异常消息只包含 API 路径，不包含基础 URL、安全入口或 OpenToken。HTTP 错误正文最多保留一小段，并再次替换可能出现的 Token。
+
+默认成功值仍是 `ret: 0`（或缺少 `ret`）。少数端点的闭源 v3 语义不同，例如本机 Lucky 3.0.0 已验证 `PUT /api/about-content` 在同值保存成功时返回 `ret: 1, msg: "成功"`。这种例外由运行时目录逐路由精确声明；同一路由若返回 `ret: 1` 但消息不同，客户端仍会按业务错误处理。
 
 ## 重试规则
 

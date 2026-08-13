@@ -144,6 +144,7 @@ class Route:
     request_content_type: str | None = field(default=None, compare=False)
     response_schema: dict | None = field(default=None, compare=False)
     schema_evidence: str | None = field(default=None, compare=False)
+    success_response_markers: tuple[tuple[int, str], ...] = field(default=(), compare=False)
 
     @property
     def risk(self) -> OperationRisk:
@@ -303,6 +304,25 @@ class RouteCatalog:
                     raise CatalogError("malformed route catalog entry")
                 raw_risk = item.get("risk")
                 risk_override = OperationRisk(str(raw_risk)) if raw_risk is not None else None
+                raw_success_response_markers = item.get("success_response_markers", [])
+                if not isinstance(raw_success_response_markers, list):
+                    raise CatalogError("route success_response_markers must be an array")
+                success_response_markers: list[tuple[int, str]] = []
+                for marker in raw_success_response_markers:
+                    if (
+                        not isinstance(marker, dict)
+                        or set(marker) != {"ret", "msg"}
+                        or type(marker.get("ret")) is not int
+                        or marker["ret"] <= 0
+                        or not isinstance(marker.get("msg"), str)
+                        or not marker["msg"]
+                    ):
+                        raise CatalogError(
+                            "route success_response_markers entries require positive integer ret and non-empty msg"
+                        )
+                    success_response_markers.append((marker["ret"], marker["msg"]))
+                if len(success_response_markers) != len(set(success_response_markers)):
+                    raise CatalogError("route success_response_markers must be unique")
                 routes.append(
                     Route(
                         path=str(item["path"]),
@@ -334,6 +354,7 @@ class RouteCatalog:
                             if item.get("schema_evidence") is not None
                             else None
                         ),
+                        success_response_markers=tuple(success_response_markers),
                     )
                 )
             except (KeyError, TypeError, ValueError) as error:
