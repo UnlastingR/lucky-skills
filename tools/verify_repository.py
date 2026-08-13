@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 78:
+    if len(untyped_request_routes) > 76:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 78 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 76 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     explicit_small_request_schemas = {
@@ -1197,6 +1197,21 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             fail(f"PortForward nullable list item schema must remain unspecified: {field}")
     if portforward_rule_props.get("Enable") != {"type": "boolean"}:
         fail("PortForward Enable response schema regressed")
+
+    expected_portforward_request_props = dict(portforward_rule_props)
+    expected_portforward_request_props["Options"] = {"type": "object"}
+    expected_portforward_request_props["LogStreamSettings"] = {"type": "object"}
+    for route_key in {
+        ("POST", "/api/portforward"),
+        ("PUT", "/api/portforward"),
+    }:
+        route = merged_by_key[route_key]
+        if route.request_body_schema != {"type": "object", "properties": expected_portforward_request_props}:
+            fail(f"PortForward request schema regressed for {route_key}")
+        if set(route.body_keys) != set(expected_portforward_request_props):
+            fail(f"PortForward request schema must cover exactly the frontend body fields for {route_key}")
+        if isinstance(route.request_body_schema, dict) and "required" in route.request_body_schema:
+            fail(f"PortForward request schema must not invent required fields for {route_key}")
 
     for route_key, field in {
         ("GET", "/api/portforward/{param}/lastlogs"): "lastLogs",
