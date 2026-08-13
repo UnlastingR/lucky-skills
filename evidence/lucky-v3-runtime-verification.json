@@ -743,6 +743,78 @@
       "schema_evidence": "frontend SSH host-key confirmation normalizes the server response to this object; an authorized dummy-connection probe with string host/hostname/key/fingerprints/trustedAt/keyType, integer port and boolean changed reached the connection-not-found handler, while integer hostKeyTrustedAt failed parsing; no host-key write executed"
     },
     {
+      "path": "/api/webterminal/sessions/{param}/remark",
+      "method": "PUT",
+      "risk": "mutating",
+      "body_keys": ["remark"],
+      "request_body_schema": {"type":"object","properties":{"remark":{"type":"string"}}},
+      "schema_evidence": "authorized probe ran only while the WebTerminal session baseline was zero; a string remark passed JSON decoding and reached the session-not-found handler for a dummy session id, so no session state was modified"
+    },
+    {
+      "path": "/api/webterminal/sftp/{param}/chmod",
+      "method": "POST",
+      "risk": "dangerous",
+      "body_keys": ["path", "permissions"],
+      "request_body_schema": {"type":"object","properties":{"path":{"type":"string"},"permissions":{"type":"string"}}},
+      "schema_evidence": "authorized zero-session dummy-id probe verified path and permissions as strings: string permissions reached the session-not-found handler while integer permissions failed JSON parsing; no SFTP operation executed"
+    },
+    {
+      "path": "/api/webterminal/sftp/{param}/compress",
+      "method": "POST",
+      "risk": "dangerous",
+      "body_keys": ["output_name", "output_path", "paths"],
+      "request_body_schema": {"type":"object","properties":{"output_name":{"type":"string"},"output_path":{"type":"string"},"paths":{"type":"array","items":{"type":"string"}}}},
+      "schema_evidence": "authorized zero-session dummy-id probe with string output_name/output_path and string-array paths reached only the session-not-found handler; no archive/file operation executed"
+    },
+    {
+      "path": "/api/webterminal/sftp/{param}/copy",
+      "method": "POST",
+      "risk": "dangerous",
+      "body_keys": ["dst_path", "src_path"],
+      "request_body_schema": {"type":"object","properties":{"dst_path":{"type":"string"},"src_path":{"type":"string"}}},
+      "schema_evidence": "authorized zero-session dummy-id probe verified dst_path/src_path strings by reaching only the session-not-found handler; no file copy executed"
+    },
+    {
+      "path": "/api/webterminal/sftp/{param}/decompress",
+      "method": "POST",
+      "risk": "dangerous",
+      "body_keys": ["file_path", "output_path"],
+      "request_body_schema": {"type":"object","properties":{"file_path":{"type":"string"},"output_path":{"type":"string"}}},
+      "schema_evidence": "authorized zero-session dummy-id probe verified file_path/output_path strings by reaching only the session-not-found handler; no archive extraction executed"
+    },
+    {
+      "path": "/api/webterminal/sftp/{param}/mkdir",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["path"],
+      "request_body_schema": {"type":"object","properties":{"path":{"type":"string"}}},
+      "schema_evidence": "authorized zero-session dummy-id probe verified path as string by reaching only the session-not-found handler; no directory creation executed"
+    },
+    {
+      "path": "/api/webterminal/sftp/{param}/rename",
+      "method": "POST",
+      "risk": "dangerous",
+      "body_keys": ["newPath", "oldPath"],
+      "request_body_schema": {"type":"object","properties":{"newPath":{"type":"string"},"oldPath":{"type":"string"}}},
+      "schema_evidence": "authorized zero-session dummy-id probe verified newPath/oldPath strings by reaching only the session-not-found handler; no rename executed"
+    },
+    {
+      "path": "/api/webterminal/sftp/{param}/touch",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["path"],
+      "request_body_schema": {"type":"object","properties":{"path":{"type":"string"}}},
+      "schema_evidence": "authorized zero-session dummy-id probe verified path as string by reaching only the session-not-found handler; no file creation/touch executed"
+    },
+    {
+      "path": "/api/webterminal/sftp/{param}/write",
+      "method": "POST",
+      "risk": "dangerous",
+      "body_keys": ["content", "path"],
+      "request_body_schema": {"type":"object","properties":{"content":{"type":"string"},"path":{"type":"string"}}},
+      "schema_evidence": "authorized zero-session dummy-id probe verified content/path strings by reaching only the session-not-found handler; no file write executed"
+    },
+    {
       "path": "/api/webterminal/globalshortcuts",
       "method": "PUT",
       "risk": "mutating",

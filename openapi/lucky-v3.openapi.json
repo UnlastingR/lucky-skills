@@ -42248,6 +42248,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized probe ran only while the WebTerminal session baseline was zero; a string remark passed JSON decoding and reached the session-not-found handler for a dummy session id, so no session state was modified",
         "parameters": [
           {
             "name": "param",
@@ -42265,7 +42266,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "remark": {}
+                  "remark": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -42365,6 +42368,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "dangerous",
+        "x-schema-evidence": "authorized zero-session dummy-id probe verified path and permissions as strings: string permissions reached the session-not-found handler while integer permissions failed JSON parsing; no SFTP operation executed",
         "parameters": [
           {
             "name": "param",
@@ -42382,8 +42386,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "path": {},
-                  "permissions": {}
+                  "path": {
+                    "type": "string"
+                  },
+                  "permissions": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -42431,6 +42439,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "dangerous",
+        "x-schema-evidence": "authorized zero-session dummy-id probe with string output_name/output_path and string-array paths reached only the session-not-found handler; no archive/file operation executed",
         "parameters": [
           {
             "name": "param",
@@ -42448,9 +42457,18 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "output_name": {},
-                  "output_path": {},
-                  "paths": {}
+                  "output_name": {
+                    "type": "string"
+                  },
+                  "output_path": {
+                    "type": "string"
+                  },
+                  "paths": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -42498,6 +42516,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "dangerous",
+        "x-schema-evidence": "authorized zero-session dummy-id probe verified dst_path/src_path strings by reaching only the session-not-found handler; no file copy executed",
         "parameters": [
           {
             "name": "param",
@@ -42515,8 +42534,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "dst_path": {},
-                  "src_path": {}
+                  "dst_path": {
+                    "type": "string"
+                  },
+                  "src_path": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -42564,6 +42587,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "dangerous",
+        "x-schema-evidence": "authorized zero-session dummy-id probe verified file_path/output_path strings by reaching only the session-not-found handler; no archive extraction executed",
         "parameters": [
           {
             "name": "param",
@@ -42581,8 +42605,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "file_path": {},
-                  "output_path": {}
+                  "file_path": {
+                    "type": "string"
+                  },
+                  "output_path": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -42688,6 +42716,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized zero-session dummy-id probe verified path as string by reaching only the session-not-found handler; no directory creation executed",
         "parameters": [
           {
             "name": "param",
@@ -42705,7 +42734,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "path": {}
+                  "path": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -42927,6 +42958,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "dangerous",
+        "x-schema-evidence": "authorized zero-session dummy-id probe verified newPath/oldPath strings by reaching only the session-not-found handler; no rename executed",
         "parameters": [
           {
             "name": "param",
@@ -42944,8 +42976,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "newPath": {},
-                  "oldPath": {}
+                  "newPath": {
+                    "type": "string"
+                  },
+                  "oldPath": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -42993,6 +43029,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized zero-session dummy-id probe verified path as string by reaching only the session-not-found handler; no file creation/touch executed",
         "parameters": [
           {
             "name": "param",
@@ -43010,7 +43047,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "path": {}
+                  "path": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -43209,6 +43248,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "dangerous",
+        "x-schema-evidence": "authorized zero-session dummy-id probe verified content/path strings by reaching only the session-not-found handler; no file write executed",
         "parameters": [
           {
             "name": "param",
@@ -43226,8 +43266,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "content": {},
-                  "path": {}
+                  "content": {
+                    "type": "string"
+                  },
+                  "path": {
+                    "type": "string"
+                  }
                 }
               }
             }

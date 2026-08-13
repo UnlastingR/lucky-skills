@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 32:
+    if len(untyped_request_routes) > 23:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 32 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 23 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     coraza_request = {
@@ -937,6 +937,49 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             fail(f"WebTerminal {nested_name} response must stay opaque to avoid credential disclosure")
     if merged_by_key[("DELETE", "/api/webterminal/connections/{param}")].response_schema != webterminal_ret_only:
         fail("WebTerminal disposable connection delete response schema regressed")
+
+    webterminal_missing_session_requests = {
+        ("PUT", "/api/webterminal/sessions/{param}/remark"): {
+            "type": "object", "properties": {"remark": {"type": "string"}}
+        },
+        ("POST", "/api/webterminal/sftp/{param}/chmod"): {
+            "type": "object", "properties": {"path": {"type": "string"}, "permissions": {"type": "string"}}
+        },
+        ("POST", "/api/webterminal/sftp/{param}/compress"): {
+            "type": "object", "properties": {
+                "output_name": {"type": "string"}, "output_path": {"type": "string"},
+                "paths": {"type": "array", "items": {"type": "string"}},
+            }
+        },
+        ("POST", "/api/webterminal/sftp/{param}/copy"): {
+            "type": "object", "properties": {"dst_path": {"type": "string"}, "src_path": {"type": "string"}}
+        },
+        ("POST", "/api/webterminal/sftp/{param}/decompress"): {
+            "type": "object", "properties": {"file_path": {"type": "string"}, "output_path": {"type": "string"}}
+        },
+        ("POST", "/api/webterminal/sftp/{param}/mkdir"): {
+            "type": "object", "properties": {"path": {"type": "string"}}
+        },
+        ("POST", "/api/webterminal/sftp/{param}/rename"): {
+            "type": "object", "properties": {"newPath": {"type": "string"}, "oldPath": {"type": "string"}}
+        },
+        ("POST", "/api/webterminal/sftp/{param}/touch"): {
+            "type": "object", "properties": {"path": {"type": "string"}}
+        },
+        ("POST", "/api/webterminal/sftp/{param}/write"): {
+            "type": "object", "properties": {"content": {"type": "string"}, "path": {"type": "string"}}
+        },
+    }
+    for route_key, expected in webterminal_missing_session_requests.items():
+        route = merged_by_key[route_key]
+        if route.request_body_schema != expected:
+            fail(f"WebTerminal zero-session request schema regressed for {route_key}")
+        if set(route.body_keys) != set(expected["properties"]):
+            fail(f"WebTerminal zero-session request schema must cover exactly the frontend body fields for {route_key}")
+        if isinstance(route.request_body_schema, dict) and "required" in route.request_body_schema:
+            fail(f"WebTerminal zero-session request schema must not invent required fields for {route_key}")
+        if route.response_schema is not None:
+            fail(f"WebTerminal session-not-found evidence must not claim a success response for {route_key}")
 
     explicit_small_request_schemas = {
         ("PUT", "/api/frontend-preferences"): {
