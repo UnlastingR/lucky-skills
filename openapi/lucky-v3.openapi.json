@@ -181,11 +181,19 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "msg": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -206,7 +214,13 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend normalizes the remote/backend About content to {version,display,cards} and passes that object directly to PUT; request types are copied exactly from the authorized GET public-content model without inventing required fields",
+        "x-schema-evidence": "frontend normalizes the remote/backend About content to {version,display,cards} and passes that object directly to PUT; request types are copied exactly from the authorized GET public-content model without inventing required fields. An authorized same-value PUT returned HTTP 200 with ret=1 and msg='成功'; canonical before/after GET hashes were identical, so runtime metadata records the exact success marker instead of weakening nonzero-ret handling globally",
+        "x-lucky-success-response-markers": [
+          {
+            "ret": 1,
+            "msg": "成功"
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -46930,7 +46944,7 @@
         "properties": {
           "ret": {
             "type": "integer",
-            "description": "0 usually means success."
+            "description": "0 usually means success; runtime-verified endpoint extensions may declare exact additional success response markers."
           },
           "msg": {
             "type": "string"

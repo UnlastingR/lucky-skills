@@ -307,6 +307,8 @@ def write_openapi(snapshot: dict, output: Path) -> None:
         }
         if route.get("schema_evidence"):
             operation["x-schema-evidence"] = route["schema_evidence"]
+        if route.get("success_response_markers"):
+            operation["x-lucky-success-response-markers"] = route["success_response_markers"]
         parameters = []
         for name in re.findall(r"\{([^}]+)\}", route["path"]):
             parameters.append({"name": name, "in": "path", "required": True, "schema": {"type": "string"}})
@@ -346,7 +348,10 @@ def write_openapi(snapshot: dict, output: Path) -> None:
                 "LuckyEnvelope": {
                     "type": "object",
                     "properties": {
-                        "ret": {"type": "integer", "description": "0 usually means success."},
+                        "ret": {
+                            "type": "integer",
+                            "description": "0 usually means success; runtime-verified endpoint extensions may declare exact additional success response markers.",
+                        },
                         "msg": {"type": "string"},
                         "data": {},
                     },

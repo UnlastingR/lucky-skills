@@ -137,6 +137,9 @@ def command_catalog(args: argparse.Namespace, catalog: RouteCatalog) -> int:
                 "request_content_type": route.request_content_type,
                 "response_schema": route.response_schema,
                 "schema_evidence": route.schema_evidence,
+                "success_response_markers": [
+                    {"ret": ret, "msg": msg} for ret, msg in route.success_response_markers
+                ],
                 "confidence": route.confidence,
             }
             for route in routes

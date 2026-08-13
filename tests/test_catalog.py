@@ -263,6 +263,7 @@ class RuntimeVerificationTests(unittest.TestCase):
                         "risk": "mutating",
                         "request_body_schema": {"type": "array", "items": {"type": "string"}},
                         "request_content_type": "application/json",
+                        "success_response_markers": [{"ret": 1, "msg": "success"}],
                         "schema_evidence": "frontend array mapping",
                     }
                 ],
@@ -274,6 +275,7 @@ class RuntimeVerificationTests(unittest.TestCase):
         self.assertEqual(route.request_body_schema, {"type": "array", "items": {"type": "string"}})  # type: ignore[union-attr]
         self.assertEqual(route.request_content_type, "application/json")  # type: ignore[union-attr]
         self.assertEqual(route.schema_evidence, "frontend array mapping")  # type: ignore[union-attr]
+        self.assertEqual(route.success_response_markers, ((1, "success"),))  # type: ignore[union-attr]
         self.assertIsInstance(hash(route), int)  # type: ignore[arg-type]
         self.assertEqual({route}, {route})  # type: ignore[arg-type]
 
