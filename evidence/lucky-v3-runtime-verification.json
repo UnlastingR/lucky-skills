@@ -1128,6 +1128,68 @@
       "schema_evidence": "frontend container file uploader FormData appends file and target path; handler was not executed"
     },
     {
+      "path": "/api/docker/containers/{param}/files/compress",
+      "method": "POST",
+      "risk": "dangerous",
+      "request_body_schema": {"type": "object", "properties": {"output_name": {"type": "string"}, "output_path": {"type": "string"}, "paths": {"type": "array", "items": {"type": "string"}}}},
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "command": {"type": "string"}, "msg": {"type": "string"}, "output_name": {"type": "string"}, "output_path": {"type": "string"}}},
+      "schema_evidence": "authorized isolated network-none BusyBox probe compressed only a fixed test file inside /tmp, verifying string output_name/output_path, string-array paths and ret/command/msg/output_name/output_path response types; no path or command values were retained and the container/image baseline returned to 5/5"
+    },
+    {
+      "path": "/api/docker/containers/{param}/files/compress-async",
+      "method": "POST",
+      "risk": "mutating",
+      "request_body_schema": {"type": "object", "properties": {"output_name": {"type": "string"}, "output_path": {"type": "string"}, "paths": {"type": "array", "items": {"type": "string"}}}},
+      "schema_evidence": "frontend async compress route uses the same body fields as the runtime-verified synchronous sibling; request types are copied from that isolated BusyBox probe and the async handler itself was not executed"
+    },
+    {
+      "path": "/api/docker/containers/{param}/files/decompress",
+      "method": "POST",
+      "risk": "dangerous",
+      "request_body_schema": {"type": "object", "properties": {"file_path": {"type": "string"}, "output_path": {"type": "string"}}},
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "command": {"type": "string"}, "file_path": {"type": "string"}, "msg": {"type": "string"}, "output_path": {"type": "string"}}},
+      "schema_evidence": "authorized isolated network-none BusyBox probe decompressed only the disposable archive into /tmp, verifying string file_path/output_path and ret/command/file_path/msg/output_path response types; values were not retained and cleanup restored the 5/5 Docker baseline"
+    },
+    {
+      "path": "/api/docker/containers/{param}/files/decompress-async",
+      "method": "POST",
+      "risk": "mutating",
+      "request_body_schema": {"type": "object", "properties": {"file_path": {"type": "string"}, "output_path": {"type": "string"}}},
+      "schema_evidence": "frontend async decompress route uses the same body fields as the runtime-verified synchronous sibling; request types are copied from that isolated BusyBox probe and the async handler itself was not executed"
+    },
+    {
+      "path": "/api/docker/containers/{param}/files/search",
+      "method": "POST",
+      "risk": "read-only",
+      "request_body_schema": {"type": "object", "properties": {"file_type": {"type": "string"}, "keyword": {"type": "string"}, "max_depth": {"type": "integer"}, "max_result": {"type": "integer"}, "path": {"type": "string"}}},
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "command": {"type": "string"}, "count": {"type": "integer"}, "files": {"type": "array", "items": {}}, "keyword": {"type": "string"}, "limit": {"type": "integer"}, "path": {"type": "string"}}},
+      "schema_evidence": "authorized POST inside the isolated network-none BusyBox container searched only /tmp and made no changes, verifying string file_type/keyword/path, integer max_depth/max_result, and ret/command/count/files/keyword/limit/path response types; file item shape and all values remain unspecified, establishing this POST as read-only"
+    },
+    {
+      "path": "/api/docker/containers/{param}/label",
+      "method": "POST",
+      "risk": "mutating",
+      "request_body_schema": {"type": "object", "properties": {"label": {"type": "string"}}},
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}}},
+      "schema_evidence": "authorized isolated BusyBox probe applied only a unique disposable label to the disposable container, verifying string label input and ret-only response; the container was deleted and the 5/5 baseline restored"
+    },
+    {
+      "path": "/api/docker/containers/{param}/restart",
+      "method": "POST",
+      "risk": "dangerous",
+      "request_body_schema": {"type": "object", "properties": {"timeout": {"type": "integer"}}},
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}}},
+      "schema_evidence": "authorized isolated network-none BusyBox probe restarted only the disposable container with an integer timeout and observed a ret-only success response; no business container was touched"
+    },
+    {
+      "path": "/api/docker/containers/{param}/stop",
+      "method": "POST",
+      "risk": "dangerous",
+      "request_body_schema": {"type": "object", "properties": {"timeout": {"type": "integer"}}},
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}}},
+      "schema_evidence": "authorized isolated network-none BusyBox probe stopped only the disposable container with an integer timeout and observed a ret-only success response; cleanup then returned container/image counts to 5/5"
+    },
+    {
       "path": "/api/docker/images/load",
       "method": "POST",
       "risk": "mutating",

@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 76:
+    if len(untyped_request_routes) > 68:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 76 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 68 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     explicit_small_request_schemas = {
@@ -1073,8 +1073,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("Local Path Browser delete response schema regressed")
 
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 228:
-        fail(f"response-schema coverage regressed below 228 routes: {response_schema_count}")
+    if response_schema_count < 234:
+        fail(f"response-schema coverage regressed below 234 routes: {response_schema_count}")
 
     safe_utility_response_routes = {
         ("GET", "/api/baseconfigure"),
@@ -1520,6 +1520,30 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         ("DELETE", "/api/docker/containers/{param}/files"): {
             "type": "object", "properties": {"path": {"type": "string"}, "recursive": {"type": "boolean"}}
         },
+        ("POST", "/api/docker/containers/{param}/files/compress"): {
+            "type": "object", "properties": {"output_name": {"type": "string"}, "output_path": {"type": "string"}, "paths": {"type": "array", "items": {"type": "string"}}}
+        },
+        ("POST", "/api/docker/containers/{param}/files/compress-async"): {
+            "type": "object", "properties": {"output_name": {"type": "string"}, "output_path": {"type": "string"}, "paths": {"type": "array", "items": {"type": "string"}}}
+        },
+        ("POST", "/api/docker/containers/{param}/files/decompress"): {
+            "type": "object", "properties": {"file_path": {"type": "string"}, "output_path": {"type": "string"}}
+        },
+        ("POST", "/api/docker/containers/{param}/files/decompress-async"): {
+            "type": "object", "properties": {"file_path": {"type": "string"}, "output_path": {"type": "string"}}
+        },
+        ("POST", "/api/docker/containers/{param}/files/search"): {
+            "type": "object", "properties": {"file_type": {"type": "string"}, "keyword": {"type": "string"}, "max_depth": {"type": "integer"}, "max_result": {"type": "integer"}, "path": {"type": "string"}}
+        },
+        ("POST", "/api/docker/containers/{param}/label"): {
+            "type": "object", "properties": {"label": {"type": "string"}}
+        },
+        ("POST", "/api/docker/containers/{param}/restart"): {
+            "type": "object", "properties": {"timeout": {"type": "integer"}}
+        },
+        ("POST", "/api/docker/containers/{param}/stop"): {
+            "type": "object", "properties": {"timeout": {"type": "integer"}}
+        },
     }
     for route_key, expected in docker_file_requests.items():
         if merged_by_key[route_key].request_body_schema != expected:
@@ -1554,10 +1578,39 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         ("POST", "/api/docker/containers/{param}/files/chmod"): {
             "type": "object", "properties": {"ret": {"type": "integer"}, "msg": {"type": "string"}, "path": {"type": "string"}, "permissions": {"type": "string"}}
         },
+        ("POST", "/api/docker/containers/{param}/files/compress"): {
+            "type": "object", "properties": {"ret": {"type": "integer"}, "command": {"type": "string"}, "msg": {"type": "string"}, "output_name": {"type": "string"}, "output_path": {"type": "string"}}
+        },
+        ("POST", "/api/docker/containers/{param}/files/decompress"): {
+            "type": "object", "properties": {"ret": {"type": "integer"}, "command": {"type": "string"}, "file_path": {"type": "string"}, "msg": {"type": "string"}, "output_path": {"type": "string"}}
+        },
+        ("POST", "/api/docker/containers/{param}/files/search"): {
+            "type": "object", "properties": {"ret": {"type": "integer"}, "command": {"type": "string"}, "count": {"type": "integer"}, "files": {"type": "array", "items": {}}, "keyword": {"type": "string"}, "limit": {"type": "integer"}, "path": {"type": "string"}}
+        },
+        ("POST", "/api/docker/containers/{param}/label"): docker_ret_only,
+        ("POST", "/api/docker/containers/{param}/restart"): docker_ret_only,
+        ("POST", "/api/docker/containers/{param}/stop"): docker_ret_only,
     }
     for route_key, expected in docker_file_responses.items():
         if merged_by_key[route_key].response_schema != expected:
             fail(f"Docker disposable file response schema regressed for {route_key}")
+
+    docker_file_search = merged_by_key[("POST", "/api/docker/containers/{param}/files/search")]
+    if docker_file_search.risk is not OperationRisk.READ_ONLY:
+        fail("Docker container file search must remain runtime-verified read-only")
+    search_files = (
+        docker_file_search.response_schema.get("properties", {}).get("files")
+        if isinstance(docker_file_search.response_schema, dict)
+        else None
+    )
+    if search_files != {"type": "array", "items": {}}:
+        fail("Docker file-search item schema must remain unspecified")
+    for route_key in {
+        ("POST", "/api/docker/containers/{param}/files/compress-async"),
+        ("POST", "/api/docker/containers/{param}/files/decompress-async"),
+    }:
+        if merged_by_key[route_key].response_schema is not None:
+            fail(f"Docker async file route must not claim an unverified response schema for {route_key}")
 
     image_schema = merged_by_key[("GET", "/api/docker/images/{param}")].response_schema
     image_props = image_schema.get("properties", {}).get("image", {}).get("properties", {}) if isinstance(image_schema, dict) else {}

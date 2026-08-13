@@ -202,7 +202,7 @@
 | `GET` | `/api/docker/containers/{param}/files/preview-archive` | `read-only` | `path` | — | `json` | `frontend-call` |
 | `GET` | `/api/docker/containers/{param}/files/read` | `read-only` | `path` | — | `json` | `frontend-call` |
 | `POST` | `/api/docker/containers/{param}/files/rename` | `dangerous` | — | `new_path`, `old_path` | `json` | `frontend-call` |
-| `POST` | `/api/docker/containers/{param}/files/search` | `mutating` | — | `file_type`, `keyword`, `max_depth`, `max_result`, `path` | `json` | `frontend-call` |
+| `POST` | `/api/docker/containers/{param}/files/search` | `read-only` | — | `file_type`, `keyword`, `max_depth`, `max_result`, `path` | `json` | `frontend-call` |
 | `POST` | `/api/docker/containers/{param}/files/touch` | `mutating` | — | `path` | `json` | `frontend-call` |
 | `POST` | `/api/docker/containers/{param}/files/upload` | `dangerous` | — | `file`, `path` | `json` | `frontend-call` |
 | `POST` | `/api/docker/containers/{param}/files/write` | `dangerous` | — | `content`, `path` | `json` | `frontend-call` |
