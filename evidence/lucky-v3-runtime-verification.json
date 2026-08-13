@@ -748,42 +748,48 @@
       "method": "POST",
       "risk": "dangerous",
       "body_keys": ["project_name", "project_path", "config_file_name", "remove_volumes"],
-      "schema_evidence": "wrapper passes request object directly; async sibling UI calls show project_name/project_path/config_file_name/remove_volumes; synchronous handler was not executed"
+      "request_body_schema": {"type": "object", "properties": {"project_name": {"type": "string"}, "project_path": {"type": "string"}, "config_file_name": {"type": "string"}, "remove_volumes": {"type": "boolean"}}},
+      "schema_evidence": "wrapper passes request object directly; async sibling UI calls show project_name/project_path/config_file_name/remove_volumes, with project identity strings cross-checked against runtime-verified Compose project name/path/configFileName and remove_volumes coming from the frontend boolean delete option; synchronous handler was not executed"
     },
     {
       "path": "/api/docker/compose/down-async",
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["project_name", "project_path", "config_file_name", "remove_volumes"],
-      "schema_evidence": "frontend Compose delete actions construct project_name/project_path and optionally config_file_name/remove_volumes before apiComposeDownAsync"
+      "request_body_schema": {"type": "object", "properties": {"project_name": {"type": "string"}, "project_path": {"type": "string"}, "config_file_name": {"type": "string"}, "remove_volumes": {"type": "boolean"}}},
+      "schema_evidence": "frontend Compose delete actions construct project_name/project_path and optionally config_file_name/remove_volumes before apiComposeDownAsync; project identity strings are cross-checked against runtime-verified Compose project summaries and remove_volumes is a frontend boolean option"
     },
     {
       "path": "/api/docker/compose/start",
       "method": "POST",
       "risk": "dangerous",
       "body_keys": ["project_name", "project_path", "config_file_name"],
-      "schema_evidence": "wrapper passes request object directly; current Compose UI uses equivalent project identity fields on async start paths; handler was not executed"
+      "request_body_schema": {"type": "object", "properties": {"project_name": {"type": "string"}, "project_path": {"type": "string"}, "config_file_name": {"type": "string"}}},
+      "schema_evidence": "wrapper passes request object directly; current Compose UI uses equivalent project identity fields on async start paths, and runtime-verified Compose project summaries establish name/path/configFileName as strings; handler was not executed"
     },
     {
       "path": "/api/docker/compose/stop",
       "method": "POST",
       "risk": "dangerous",
       "body_keys": ["project_name", "project_path", "config_file_name"],
-      "schema_evidence": "wrapper passes request object directly; current UI uses the async sibling with project_name/project_path/config_file_name; handler was not executed"
+      "request_body_schema": {"type": "object", "properties": {"project_name": {"type": "string"}, "project_path": {"type": "string"}, "config_file_name": {"type": "string"}}},
+      "schema_evidence": "wrapper passes request object directly; current UI uses the async sibling with project_name/project_path/config_file_name, cross-checked against runtime-verified Compose project name/path/configFileName strings; handler was not executed"
     },
     {
       "path": "/api/docker/compose/stop-async",
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["project_name", "project_path", "config_file_name"],
-      "schema_evidence": "frontend Compose stop actions construct project_name/project_path/config_file_name before apiComposeStopAsync"
+      "request_body_schema": {"type": "object", "properties": {"project_name": {"type": "string"}, "project_path": {"type": "string"}, "config_file_name": {"type": "string"}}},
+      "schema_evidence": "frontend Compose stop actions construct project_name/project_path/config_file_name before apiComposeStopAsync; field types are cross-checked against runtime-verified Compose project name/path/configFileName strings"
     },
     {
       "path": "/api/docker/compose/restart",
       "method": "POST",
       "risk": "dangerous",
       "body_keys": ["project_name", "project_path", "config_file_name"],
-      "schema_evidence": "wrapper passes a Compose project request object directly; no authenticated restart was executed and current page does not call the synchronous wrapper"
+      "request_body_schema": {"type": "object", "properties": {"project_name": {"type": "string"}, "project_path": {"type": "string"}, "config_file_name": {"type": "string"}}},
+      "schema_evidence": "wrapper passes a Compose project request object directly; runtime-verified Compose project summaries establish name/path/configFileName as strings, and no authenticated restart was executed"
     },
     {
       "path": "/api/docker/compose/restore",
@@ -938,6 +944,20 @@
       "risk": "mutating",
       "request_body_schema": {"type": "object", "properties": {"repository": {"type": "string"}, "tag": {"type": "string"}}},
       "schema_evidence": "frontend image-tag request carries repository/tag text values; runtime-verified RepoTags and pull tag metadata are strings and no tag mutation was executed"
+    },
+    {
+      "path": "/api/docker/containers/{param}/copy",
+      "method": "POST",
+      "risk": "dangerous",
+      "request_body_schema": {"type": "object", "properties": {"name": {"type": "string"}}},
+      "schema_evidence": "frontend copy request carries a container name; runtime-verified Docker inspect establishes container Name as string and the copy handler was not executed"
+    },
+    {
+      "path": "/api/docker/containers/{param}/rename",
+      "method": "POST",
+      "risk": "dangerous",
+      "request_body_schema": {"type": "object", "properties": {"name": {"type": "string"}}},
+      "schema_evidence": "frontend rename request carries a container name; runtime-verified Docker inspect establishes container Name as string and the rename handler was not executed"
     },
     {
       "path": "/api/docker/containers/{param}/commit",
