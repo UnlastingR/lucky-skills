@@ -20270,7 +20270,7 @@
           "lucky_ipfilter-CGTD3trT.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend Rule editor normalizes and sends this explicit main-rule model directly to PUT",
+        "x-schema-evidence": "frontend Rule editor normalizes and sends this explicit main-rule model directly to PUT; request types are copied from the matching authorized GET main-rule model and SubRuleList item shape remains unspecified",
         "parameters": [
           {
             "name": "param",
@@ -20288,12 +20288,28 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Key": {},
-                  "Name": {},
-                  "Action": {},
-                  "SubRuleList": {},
-                  "AutoRecordTxtLimit": {},
-                  "AutoRecordMemLimit": {}
+                  "Key": {
+                    "type": "string"
+                  },
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Action": {
+                    "type": "integer"
+                  },
+                  "SubRuleList": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {}
+                  },
+                  "AutoRecordTxtLimit": {
+                    "type": "integer"
+                  },
+                  "AutoRecordMemLimit": {
+                    "type": "integer"
+                  }
                 }
               }
             }
@@ -24231,7 +24247,7 @@
           "lucky_rclone-sFF3mpk8.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend passes the global settings object directly + authorized GET /api/rclone/globalconfig observed these field names and primitive types",
+        "x-schema-evidence": "frontend passes the global settings object directly + authorized GET /api/rclone/globalconfig observed these field names and primitive types; PUT request types are copied from the matching verified GET globalConfig model",
         "requestBody": {
           "required": true,
           "content": {
@@ -24239,8 +24255,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "DefaultCaCheDir": {},
-                  "UploadFileTmpDir": {}
+                  "DefaultCaCheDir": {
+                    "type": "string"
+                  },
+                  "UploadFileTmpDir": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -32345,7 +32365,7 @@
           "lucky_thirdPartyAuthManager-C0VqZjAx.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend provider settings initializes and passes this explicit config object + authorized GET /api/thirdPartyAuthManager/config observed the same field names; no credential values are recorded",
+        "x-schema-evidence": "frontend provider settings initializes and passes this explicit config object + authorized GET /api/thirdPartyAuthManager/config observed the same field names/types; PUT request types are copied from that verified public-metadata model and no credential values are recorded",
         "requestBody": {
           "required": true,
           "content": {
@@ -32353,20 +32373,48 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "GithubRedirectURI": {},
-                  "GithubClientID": {},
-                  "GoogleRedirectURI": {},
-                  "GoogleClientID": {},
-                  "QQRedirectURI": {},
-                  "QQClientID": {},
-                  "AuthentikRedirectURI": {},
-                  "AuthentikClientID": {},
-                  "AuthentikServer": {},
-                  "WeiboClientKey": {},
-                  "WeiboRedirectURI": {},
-                  "OIDCRedirectURI": {},
-                  "OIDCClientID": {},
-                  "OIDCAuthorizationEndpoint": {}
+                  "GithubRedirectURI": {
+                    "type": "string"
+                  },
+                  "GithubClientID": {
+                    "type": "string"
+                  },
+                  "GoogleRedirectURI": {
+                    "type": "string"
+                  },
+                  "GoogleClientID": {
+                    "type": "string"
+                  },
+                  "QQRedirectURI": {
+                    "type": "string"
+                  },
+                  "QQClientID": {
+                    "type": "string"
+                  },
+                  "AuthentikRedirectURI": {
+                    "type": "string"
+                  },
+                  "AuthentikClientID": {
+                    "type": "string"
+                  },
+                  "AuthentikServer": {
+                    "type": "string"
+                  },
+                  "WeiboClientKey": {
+                    "type": "string"
+                  },
+                  "WeiboRedirectURI": {
+                    "type": "string"
+                  },
+                  "OIDCRedirectURI": {
+                    "type": "string"
+                  },
+                  "OIDCClientID": {
+                    "type": "string"
+                  },
+                  "OIDCAuthorizationEndpoint": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -38844,7 +38892,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend config pass-through + authorized GET /api/webterminal/config field-name and primitive-type shape",
+        "x-schema-evidence": "frontend config pass-through + authorized GET /api/webterminal/config field-name and primitive-type shape; PUT request types are copied from the matching verified GET config model without inventing required fields",
         "requestBody": {
           "required": true,
           "content": {
@@ -38852,11 +38900,21 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "bufferSize": {},
-                  "heartbeatInterval": {},
-                  "idleTimeout": {},
-                  "maxSessions": {},
-                  "sessionKeepAlive": {}
+                  "bufferSize": {
+                    "type": "integer"
+                  },
+                  "heartbeatInterval": {
+                    "type": "integer"
+                  },
+                  "idleTimeout": {
+                    "type": "integer"
+                  },
+                  "maxSessions": {
+                    "type": "integer"
+                  },
+                  "sessionKeepAlive": {
+                    "type": "integer"
+                  }
                 }
               }
             }

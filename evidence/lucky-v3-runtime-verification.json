@@ -657,7 +657,8 @@
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["bufferSize", "heartbeatInterval", "idleTimeout", "maxSessions", "sessionKeepAlive"],
-      "schema_evidence": "frontend config pass-through + authorized GET /api/webterminal/config field-name and primitive-type shape"
+      "request_body_schema": {"type": "object", "properties": {"bufferSize": {"type": "integer"}, "heartbeatInterval": {"type": "integer"}, "idleTimeout": {"type": "integer"}, "maxSessions": {"type": "integer"}, "sessionKeepAlive": {"type": "integer"}}},
+      "schema_evidence": "frontend config pass-through + authorized GET /api/webterminal/config field-name and primitive-type shape; PUT request types are copied from the matching verified GET config model without inventing required fields"
     },
     {
       "path": "/api/webterminal/connectionorderadjustment",
@@ -901,7 +902,8 @@
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["DefaultCaCheDir", "UploadFileTmpDir"],
-      "schema_evidence": "frontend passes the global settings object directly + authorized GET /api/rclone/globalconfig observed these field names and primitive types"
+      "request_body_schema": {"type": "object", "properties": {"DefaultCaCheDir": {"type": "string"}, "UploadFileTmpDir": {"type": "string"}}},
+      "schema_evidence": "frontend passes the global settings object directly + authorized GET /api/rclone/globalconfig observed these field names and primitive types; PUT request types are copied from the matching verified GET globalConfig model"
     },
     {
       "path": "/api/rclone/itemorderadjustment",
@@ -1034,7 +1036,8 @@
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["Key", "Name", "Action", "SubRuleList", "AutoRecordTxtLimit", "AutoRecordMemLimit"],
-      "schema_evidence": "frontend Rule editor normalizes and sends this explicit main-rule model directly to PUT"
+      "request_body_schema": {"type": "object", "properties": {"Key": {"type": "string"}, "Name": {"type": "string"}, "Action": {"type": "integer"}, "SubRuleList": {"type": ["array", "null"], "items": {}}, "AutoRecordTxtLimit": {"type": "integer"}, "AutoRecordMemLimit": {"type": "integer"}}},
+      "schema_evidence": "frontend Rule editor normalizes and sends this explicit main-rule model directly to PUT; request types are copied from the matching authorized GET main-rule model and SubRuleList item shape remains unspecified"
     },
     {
       "path": "/api/ipfliter/list/{param}/{param2}",
@@ -1282,7 +1285,8 @@
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["GithubRedirectURI", "GithubClientID", "GoogleRedirectURI", "GoogleClientID", "QQRedirectURI", "QQClientID", "AuthentikRedirectURI", "AuthentikClientID", "AuthentikServer", "WeiboClientKey", "WeiboRedirectURI", "OIDCRedirectURI", "OIDCClientID", "OIDCAuthorizationEndpoint"],
-      "schema_evidence": "frontend provider settings initializes and passes this explicit config object + authorized GET /api/thirdPartyAuthManager/config observed the same field names; no credential values are recorded"
+      "request_body_schema": {"type": "object", "properties": {"GithubRedirectURI": {"type": "string"}, "GithubClientID": {"type": "string"}, "GoogleRedirectURI": {"type": "string"}, "GoogleClientID": {"type": "string"}, "QQRedirectURI": {"type": "string"}, "QQClientID": {"type": "string"}, "AuthentikRedirectURI": {"type": "string"}, "AuthentikClientID": {"type": "string"}, "AuthentikServer": {"type": "string"}, "WeiboClientKey": {"type": "string"}, "WeiboRedirectURI": {"type": "string"}, "OIDCRedirectURI": {"type": "string"}, "OIDCClientID": {"type": "string"}, "OIDCAuthorizationEndpoint": {"type": "string"}}},
+      "schema_evidence": "frontend provider settings initializes and passes this explicit config object + authorized GET /api/thirdPartyAuthManager/config observed the same field names/types; PUT request types are copied from that verified public-metadata model and no credential values are recorded"
     },
     {
       "path": "/api/thirdPartyAuthManager/list",
