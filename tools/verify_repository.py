@@ -3203,6 +3203,7 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         ("GET", "/api/ipfliter/autorecordipconf"): {"BasicPassword"},
         ("GET", "/api/stun/configure"): {"WebhookProxyPassword"},
         ("GET", "/api/stun/{param}"): {
+            "Options",
             "WebhookProxyPassword",
             "WebhookURL",
             "WebhookHeaders",
