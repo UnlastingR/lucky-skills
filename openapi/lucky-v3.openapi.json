@@ -8749,6 +8749,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized parser-only probes verified collapsed as bool and key as string; both requests failed during JSON decoding before the Docker group-collapse handler executed",
         "requestBody": {
           "required": true,
           "content": {
@@ -8756,8 +8757,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "collapsed": {},
-                  "key": {}
+                  "collapsed": {
+                    "type": "boolean"
+                  },
+                  "key": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -9323,6 +9328,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized parser-only probes verified containerName and groupKey as strings and failed before the Docker grouping handler executed",
         "requestBody": {
           "required": true,
           "content": {
@@ -9330,8 +9336,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "containerName": {},
-                  "groupKey": {}
+                  "containerName": {
+                    "type": "string"
+                  },
+                  "groupKey": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -9453,6 +9463,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized parser-only probes verified containerOrders as map[string][]string and groupOrder as []string; neither request reached the Compose sorting handler",
         "requestBody": {
           "required": true,
           "content": {
@@ -9460,8 +9471,21 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "containerOrders": {},
-                  "groupOrder": {}
+                  "containerOrders": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "groupOrder": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -9509,6 +9533,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized parser-only probes verified containerGroupMap as map[string]string, containerOrders as map[string][]string and groupOrder as []string; no custom sorting handler executed",
         "requestBody": {
           "required": true,
           "content": {
@@ -9516,9 +9541,27 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "containerGroupMap": {},
-                  "containerOrders": {},
-                  "groupOrder": {}
+                  "containerGroupMap": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "containerOrders": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "groupOrder": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -9566,6 +9609,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized parser-only probe supplied an object array element and was rejected before sorting handler execution, verifying orderList as []string",
         "requestBody": {
           "required": true,
           "content": {
@@ -9573,7 +9617,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "orderList": {}
+                  "orderList": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -9786,6 +9835,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized parser-only probes verified container_ids as []string and target_image_ref as string; requests failed during JSON decoding before any container version-switch handler ran",
         "requestBody": {
           "required": true,
           "content": {
@@ -9793,8 +9843,15 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "container_ids": {},
-                  "target_image_ref": {}
+                  "container_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "target_image_ref": {
+                    "type": "string"
+                  }
                 }
               }
             }
