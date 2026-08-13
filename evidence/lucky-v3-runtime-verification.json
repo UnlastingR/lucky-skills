@@ -1611,14 +1611,16 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["Key", "Remark", "Enable", "Format", "FilePath", "SupportTypes", "BufferType", "DBParam1"],
-      "schema_evidence": "frontend IPDB editor clones the item model and sends it directly; the form explicitly reads/writes these fields before POST"
+      "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"Remark":{"type":"string"},"Enable":{"type":"boolean"},"Format":{"type":"string"},"FilePath":{"type":"string"},"SupportTypes":{"type":"integer"},"BufferType":{"type":"integer"},"DBParam1":{"type":"string"}}},
+      "schema_evidence": "frontend IPDB editor clones the item model and sends it directly; authorized parser-only probes intentionally supplied wrong JSON types and were rejected with HTTP 400 before handler execution, verifying Go field types Key/Remark/Format/FilePath/DBParam1=string, Enable=bool and SupportTypes/BufferType=int while the IPDB item baseline remained zero"
     },
     {
       "path": "/api/ipdb/item",
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["Key", "Remark", "Enable", "Format", "FilePath", "SupportTypes", "BufferType", "DBParam1"],
-      "schema_evidence": "frontend IPDB editor clones the existing item into the same model and sends it directly after normalization"
+      "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"Remark":{"type":"string"},"Enable":{"type":"boolean"},"Format":{"type":"string"},"FilePath":{"type":"string"},"SupportTypes":{"type":"integer"},"BufferType":{"type":"integer"},"DBParam1":{"type":"string"}}},
+      "schema_evidence": "frontend IPDB editor clones the existing item into the same model and sends it directly after normalization; request types reuse the parser-verified POST struct field types, and no successful IPDB create/update handler was executed for schema discovery"
     },
     {
       "path": "/api/iconlib/sources",
