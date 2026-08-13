@@ -513,11 +513,31 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 147:
+    if len(untyped_request_routes) > 141:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 147 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 141 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
+
+    read_model_put_schemas = {
+        "/api/webterminal/config": "config",
+        "/api/rclone/globalconfig": "globalConfig",
+        "/api/ipfliter/list/{param}": "rule",
+        "/api/thirdPartyAuthManager/config": "config",
+    }
+    for path, response_field in read_model_put_schemas.items():
+        put_schema = merged_by_key[("PUT", path)].request_body_schema
+        get_schema = merged_by_key[("GET", path)].response_schema
+        expected = (
+            get_schema.get("properties", {}).get(response_field)
+            if isinstance(get_schema, dict)
+            else None
+        )
+        if put_schema != expected:
+            fail(f"PUT request schema must match verified GET {response_field} model for {path}")
+        if isinstance(put_schema, dict) and "required" in put_schema:
+            fail(f"read-model-derived PUT schema must not invent required fields for {path}")
+
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
     if response_schema_count < 204:
         fail(f"response-schema coverage regressed below 204 routes: {response_schema_count}")
