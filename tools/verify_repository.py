@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 133:
+    if len(untyped_request_routes) > 130:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 133 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 130 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     read_model_put_schemas = {
@@ -611,9 +611,55 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     if states_schema != {"type": "object", "additionalProperties": {"type": "boolean"}}:
         fail("Cron group collapsed-state map schema regressed")
 
+    host_kill = merged_by_key[("POST", "/api/status/host-process-kill")].request_body_schema
+    if host_kill != {
+        "type": "object",
+        "properties": {"pid": {"type": "integer"}},
+    }:
+        fail("host-process kill request schema regressed")
+    host_processes = merged_by_key[("GET", "/api/status/host-processes")].response_schema
+    host_pid_schema = (
+        host_processes.get("properties", {}).get("list", {}).get("items", {}).get("properties", {}).get("pid")
+        if isinstance(host_processes, dict)
+        else None
+    )
+    if host_pid_schema != {"type": "integer"}:
+        fail("host-process list pid evidence regressed")
+
+    local_path_requests = {
+        ("POST", "/api/local-path-browser/mkdir"): {
+            "type": "object",
+            "properties": {"path": {"type": "string"}},
+        },
+        ("PUT", "/api/local-path-browser/rename"): {
+            "type": "object",
+            "properties": {"path": {"type": "string"}, "newName": {"type": "string"}},
+        },
+        ("DELETE", "/api/local-path-browser/path"): {
+            "type": "object",
+            "properties": {"confirmName": {"type": "string"}, "path": {"type": "string"}},
+        },
+    }
+    for route_key, expected in local_path_requests.items():
+        if merged_by_key[route_key].request_body_schema != expected:
+            fail(f"Local Path Browser disposable-probe request schema regressed for {route_key}")
+
+    path_response_schema = {
+        "type": "object",
+        "properties": {"ret": {"type": "integer"}, "path": {"type": "string"}},
+    }
+    for route_key in {
+        ("POST", "/api/local-path-browser/mkdir"),
+        ("PUT", "/api/local-path-browser/rename"),
+    }:
+        if merged_by_key[route_key].response_schema != path_response_schema:
+            fail(f"Local Path Browser path response schema regressed for {route_key}")
+    if merged_by_key[("DELETE", "/api/local-path-browser/path")].response_schema != ret_only_schema:
+        fail("Local Path Browser delete response schema regressed")
+
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 208:
-        fail(f"response-schema coverage regressed below 208 routes: {response_schema_count}")
+    if response_schema_count < 211:
+        fail(f"response-schema coverage regressed below 211 routes: {response_schema_count}")
 
     safe_utility_response_routes = {
         ("GET", "/api/baseconfigure"),

@@ -2220,7 +2220,8 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["pid"],
-      "schema_evidence": "frontend process dialog explicitly invokes POST with {pid: selectedProcess.pid}; the kill handler was not executed for schema discovery"
+      "request_body_schema": {"type": "object", "properties": {"pid": {"type": "integer"}}},
+      "schema_evidence": "frontend process dialog explicitly invokes POST with {pid: selectedProcess.pid}; authorized GET /api/status/host-processes independently verified pid as integer, and the kill handler was not executed for schema discovery"
     },
     {
       "path": "/api/third/filebrowser/configure",
@@ -2589,6 +2590,30 @@
       "risk": "read-only",
       "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "rootPath": {"type": "string"}, "roots": {"type": "array", "items": {"type": "object", "properties": {"name": {"type": "string"}, "path": {"type": "string"}}}}}},
       "schema_evidence": "authorized GET /api/local-path-browser/roots observed only root entry field names and JSON types; filesystem paths and names were not retained"
+    },
+    {
+      "path": "/api/local-path-browser/mkdir",
+      "method": "POST",
+      "risk": "mutating",
+      "request_body_schema": {"type": "object", "properties": {"path": {"type": "string"}}},
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "path": {"type": "string"}}},
+      "schema_evidence": "authorized disposable /tmp directory probe verified string path input and ret/path success response; the temporary directory was later renamed/deleted via Lucky API and the zero-match baseline was restored"
+    },
+    {
+      "path": "/api/local-path-browser/rename",
+      "method": "PUT",
+      "risk": "dangerous",
+      "request_body_schema": {"type": "object", "properties": {"path": {"type": "string"}, "newName": {"type": "string"}}},
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "path": {"type": "string"}}},
+      "schema_evidence": "authorized disposable /tmp directory probe renamed only the newly created empty probe directory, verifying string path/newName input and ret/path success response; generated path/name values were not retained"
+    },
+    {
+      "path": "/api/local-path-browser/path",
+      "method": "DELETE",
+      "risk": "mutating",
+      "request_body_schema": {"type": "object", "properties": {"confirmName": {"type": "string"}, "path": {"type": "string"}}},
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}}},
+      "schema_evidence": "authorized disposable /tmp directory cleanup verified string path/confirmName input and a ret-only success response; post-cleanup matching-directory count returned to the zero baseline"
     },
     {
       "path": "/api/local-path-browser/list",
