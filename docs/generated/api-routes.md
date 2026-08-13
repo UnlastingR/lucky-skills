@@ -380,7 +380,7 @@
 | `GET` | `/api/ipfliter/list/{param}/{param2}` | `read-only` | — | — | `json` | `frontend-call` |
 | `PUT` | `/api/ipfliter/list/{param}/{param2}` | `mutating` | — | `Key`, `Remark`, `Enable`, `Type`, `LongTermValid`, `ValidTimestamp`, `IPTextSets`, `IPDBKeyWords`, `AutoDeleteOnExpiry`, `InvalidIPTextEntryCount`, `InvalidIPTextEntriesPreview`, `IPInfoKeywordFilter` | `json` | `frontend-call` |
 | `POST` | `/api/ipfliter/list/{param}/{param2}/match` | `mutating` | — | `ip` | `json` | `frontend-call` |
-| `GET` | `/api/ipfliter/list/{param}/{param2}/{param3}` | `read-only` | — | — | `json` | `frontend-call` |
+| `GET` | `/api/ipfliter/list/{param}/{param2}/{param3}` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/ipfliter/listlite` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/ipfliter/oneclickrecord` | `mutating` | `ip` | — | `json` | `frontend-call` |
 | `GET` | `/api/ipfliter/porttrap/blockedips` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |

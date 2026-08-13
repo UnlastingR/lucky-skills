@@ -21760,7 +21760,84 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "Key": {
+                            "type": "string"
+                          },
+                          "Enable": {
+                            "type": "boolean"
+                          },
+                          "Remark": {
+                            "type": "string"
+                          },
+                          "Type": {
+                            "type": "string"
+                          },
+                          "LongTermValid": {
+                            "type": "boolean"
+                          },
+                          "ValidTimestamp": {
+                            "type": "integer"
+                          },
+                          "IPTextSets": {
+                            "type": "string"
+                          },
+                          "InvalidIPTextEntryCount": {
+                            "type": "integer"
+                          },
+                          "InvalidIPTextEntriesPreview": {
+                            "type": [
+                              "array",
+                              "null"
+                            ],
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "IPDBKeyWords": {
+                            "type": "string"
+                          },
+                          "IPTextSetsCount": {
+                            "type": "integer"
+                          },
+                          "AutoDeleteOnExpiry": {
+                            "type": "boolean"
+                          },
+                          "IPInfoKeywordFilter": {
+                            "type": "object",
+                            "properties": {
+                              "Source": {
+                                "type": "string"
+                              },
+                              "IncludeMode": {
+                                "type": "string"
+                              },
+                              "IncludeKeywords": {
+                                "type": [
+                                  "array",
+                                  "null"
+                                ],
+                                "items": {}
+                              },
+                              "ExcludeMode": {
+                                "type": "string"
+                              },
+                              "ExcludeKeywords": {
+                                "type": [
+                                  "array",
+                                  "null"
+                                ],
+                                "items": {}
+                              },
+                              "CaseSensitive": {
+                                "type": "boolean"
+                              }
+                            }
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -21783,7 +21860,7 @@
           "lucky_ipfilter-CGTD3trT.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/ipfliter/list/subrulelist/{key} observed response envelope; current built-in rules have null subRuleList so item schema is intentionally unspecified",
+        "x-schema-evidence": "authorized disposable Enable=false TEST-NET txt subrule populated the previously empty subRuleList and verified the list-item field types, including IPTextSetsCount. Keyword include/exclude arrays were null so their item shapes remain unspecified; cleanup returned the list hash exactly to the original empty baseline",
         "parameters": [
           {
             "name": "param",
@@ -21944,11 +22021,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -21969,7 +22051,7 @@
           "lucky_ipfilter-CGTD3trT.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend SubRule editor initializes and sends this model directly for create; authorized parser-only probes against a dummy parent verified all primitive fields, InvalidIPTextEntriesPreview as string[] and IPInfoKeywordFilter as object before any subrule handler could create a resource",
+        "x-schema-evidence": "frontend SubRule editor initializes and sends this model directly for create; parser probes verified request types, then an authorized Enable=false txt subrule containing only TEST-NET address 203.0.113.1 returned ret-only create success. The disposable subrule was deleted and both the parent-rule detail hash and subrule-list hash returned exactly to baseline",
         "parameters": [
           {
             "name": "param",
@@ -22133,11 +22215,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -22158,6 +22245,7 @@
           "lucky_ipfilter-CGTD3trT.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized cleanup deleted only the disposable disabled TEST-NET subrule and returned ret-only success; the parent-rule detail and subrule-list hashes matched their pre-probe values afterward",
         "parameters": [
           {
             "name": "param",
@@ -22191,11 +22279,91 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "subRule": {
+                      "type": "object",
+                      "properties": {
+                        "Key": {
+                          "type": "string"
+                        },
+                        "Enable": {
+                          "type": "boolean"
+                        },
+                        "Remark": {
+                          "type": "string"
+                        },
+                        "Type": {
+                          "type": "string"
+                        },
+                        "LongTermValid": {
+                          "type": "boolean"
+                        },
+                        "ValidTimestamp": {
+                          "type": "integer"
+                        },
+                        "IPTextSets": {
+                          "type": "string"
+                        },
+                        "InvalidIPTextEntryCount": {
+                          "type": "integer"
+                        },
+                        "InvalidIPTextEntriesPreview": {
+                          "type": [
+                            "array",
+                            "null"
+                          ],
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "IPDBKeyWords": {
+                          "type": "string"
+                        },
+                        "AutoDeleteOnExpiry": {
+                          "type": "boolean"
+                        },
+                        "IPInfoKeywordFilter": {
+                          "type": "object",
+                          "properties": {
+                            "Source": {
+                              "type": "string"
+                            },
+                            "IncludeMode": {
+                              "type": "string"
+                            },
+                            "IncludeKeywords": {
+                              "type": [
+                                "array",
+                                "null"
+                              ],
+                              "items": {}
+                            },
+                            "ExcludeMode": {
+                              "type": "string"
+                            },
+                            "ExcludeKeywords": {
+                              "type": [
+                                "array",
+                                "null"
+                              ],
+                              "items": {}
+                            },
+                            "CaseSensitive": {
+                              "type": "boolean"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -22216,6 +22384,7 @@
           "lucky_ipfilter-CGTD3trT.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET of the disposable Enable=false TEST-NET txt subrule observed the detail envelope and safe field types. InvalidIPTextEntriesPreview was null but its string-array alternative is cross-checked by the verified write model; keyword include/exclude arrays were null so their item shapes remain unspecified",
         "parameters": [
           {
             "name": "param",
@@ -22249,11 +22418,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -22274,7 +22448,7 @@
           "lucky_ipfilter-CGTD3trT.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend SubRule editor sends the same normalized subrule model directly to PUT; request types reuse the parser-verified SubRule struct and no successful subrule update handler was executed",
+        "x-schema-evidence": "frontend SubRule editor sends the same normalized subrule model directly to PUT; an authorized disposable Enable=false TEST-NET txt subrule accepted the same model and returned ret-only success before deletion restored both parent and subrule baselines exactly",
         "parameters": [
           {
             "name": "param",
@@ -22437,11 +22611,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -22461,7 +22640,8 @@
         "x-evidence-bundles": [
           "lucky_ipfilter-CGTD3trT.js"
         ],
-        "x-lucky-risk": "read-only",
+        "x-lucky-risk": "mutating",
+        "x-schema-evidence": "current Lucky 3.0.0 IPFilter panel invokes GET /api/ipfliter/list/{RuleKey}/{SubRuleKey}/{desiredEnable} from the subrule enable/disable confirmation action. An authorized disposable subrule was already disabled; calling desiredEnable=false returned ret-only success and left it disabled before cleanup restored the exact baseline",
         "parameters": [
           {
             "name": "param",
