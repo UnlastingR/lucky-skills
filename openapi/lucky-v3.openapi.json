@@ -21991,11 +21991,19 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "path": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -22016,6 +22024,7 @@
           "lucky_LocalPathPicker-DtQ2R714.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized disposable /tmp directory probe verified string path input and ret/path success response; the temporary directory was later renamed/deleted via Lucky API and the zero-match baseline was restored",
         "requestBody": {
           "required": true,
           "content": {
@@ -22023,7 +22032,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "path": {}
+                  "path": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -22046,11 +22057,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -22071,6 +22087,7 @@
           "lucky_LocalPathPicker-DtQ2R714.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized disposable /tmp directory cleanup verified string path/confirmName input and a ret-only success response; post-cleanup matching-directory count returned to the zero baseline",
         "requestBody": {
           "required": true,
           "content": {
@@ -22078,8 +22095,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "confirmName": {},
-                  "path": {}
+                  "confirmName": {
+                    "type": "string"
+                  },
+                  "path": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -22102,11 +22123,19 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "path": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -22127,6 +22156,7 @@
           "lucky_LocalPathPicker-DtQ2R714.js"
         ],
         "x-lucky-risk": "dangerous",
+        "x-schema-evidence": "authorized disposable /tmp directory probe renamed only the newly created empty probe directory, verifying string path/newName input and ret/path success response; generated path/name values were not retained",
         "requestBody": {
           "required": true,
           "content": {
@@ -22134,8 +22164,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "newName": {},
-                  "path": {}
+                  "path": {
+                    "type": "string"
+                  },
+                  "newName": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -29993,7 +30027,7 @@
           "lucky_Status-C4uRGOYn.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend process dialog explicitly invokes POST with {pid: selectedProcess.pid}; the kill handler was not executed for schema discovery",
+        "x-schema-evidence": "frontend process dialog explicitly invokes POST with {pid: selectedProcess.pid}; authorized GET /api/status/host-processes independently verified pid as integer, and the kill handler was not executed for schema discovery",
         "requestBody": {
           "required": true,
           "content": {
@@ -30001,7 +30035,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "pid": {}
+                  "pid": {
+                    "type": "integer"
+                  }
                 }
               }
             }
