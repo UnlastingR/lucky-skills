@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 46:
+    if len(untyped_request_routes) > 40:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 46 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 40 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     coraza_request = {
@@ -753,6 +753,46 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             fail(f"parser-only small request schema must not invent required fields for {route_key}")
         if route.response_schema is not None:
             fail(f"parser-only small request must not claim a success response for {route_key}")
+
+    docker_parser_requests = {
+        ("PUT", "/api/docker/container-groups/collapsed"): {
+            "type": "object", "properties": {"collapsed": {"type": "boolean"}, "key": {"type": "string"}}
+        },
+        ("PUT", "/api/docker/containers/group"): {
+            "type": "object", "properties": {"containerName": {"type": "string"}, "groupKey": {"type": "string"}}
+        },
+        ("PUT", "/api/docker/containers/sort/flat"): {
+            "type": "object", "properties": {"orderList": {"type": "array", "items": {"type": "string"}}}
+        },
+        ("PUT", "/api/docker/containers/sort/compose"): {
+            "type": "object",
+            "properties": {
+                "containerOrders": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}}},
+                "groupOrder": {"type": "array", "items": {"type": "string"}},
+            },
+        },
+        ("PUT", "/api/docker/containers/sort/custom"): {
+            "type": "object",
+            "properties": {
+                "containerGroupMap": {"type": "object", "additionalProperties": {"type": "string"}},
+                "containerOrders": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}}},
+                "groupOrder": {"type": "array", "items": {"type": "string"}},
+            },
+        },
+        ("POST", "/api/docker/containers/switch-version"): {
+            "type": "object", "properties": {"container_ids": {"type": "array", "items": {"type": "string"}}, "target_image_ref": {"type": "string"}}
+        },
+    }
+    for route_key, expected in docker_parser_requests.items():
+        route = merged_by_key[route_key]
+        if route.request_body_schema != expected:
+            fail(f"Docker parser-only request schema regressed for {route_key}")
+        if set(route.body_keys) != set(expected["properties"]):
+            fail(f"Docker parser-only request schema must cover exactly the frontend body fields for {route_key}")
+        if isinstance(route.request_body_schema, dict) and "required" in route.request_body_schema:
+            fail(f"Docker parser-only request schema must not invent required fields for {route_key}")
+        if route.response_schema is not None:
+            fail(f"Docker parser-only request must not claim a success response for {route_key}")
 
     explicit_small_request_schemas = {
         ("PUT", "/api/frontend-preferences"): {

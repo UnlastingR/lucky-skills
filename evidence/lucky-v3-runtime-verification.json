@@ -865,6 +865,48 @@
       "schema_evidence": "frontend edit-group action passes {Key:string,Name:string} editor model"
     },
     {
+      "path": "/api/docker/container-groups/collapsed",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type":"object","properties":{"collapsed":{"type":"boolean"},"key":{"type":"string"}}},
+      "schema_evidence": "authorized parser-only probes verified collapsed as bool and key as string; both requests failed during JSON decoding before the Docker group-collapse handler executed"
+    },
+    {
+      "path": "/api/docker/containers/group",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type":"object","properties":{"containerName":{"type":"string"},"groupKey":{"type":"string"}}},
+      "schema_evidence": "authorized parser-only probes verified containerName and groupKey as strings and failed before the Docker grouping handler executed"
+    },
+    {
+      "path": "/api/docker/containers/sort/flat",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type":"object","properties":{"orderList":{"type":"array","items":{"type":"string"}}}},
+      "schema_evidence": "authorized parser-only probe supplied an object array element and was rejected before sorting handler execution, verifying orderList as []string"
+    },
+    {
+      "path": "/api/docker/containers/sort/compose",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type":"object","properties":{"containerOrders":{"type":"object","additionalProperties":{"type":"array","items":{"type":"string"}}},"groupOrder":{"type":"array","items":{"type":"string"}}}},
+      "schema_evidence": "authorized parser-only probes verified containerOrders as map[string][]string and groupOrder as []string; neither request reached the Compose sorting handler"
+    },
+    {
+      "path": "/api/docker/containers/sort/custom",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type":"object","properties":{"containerGroupMap":{"type":"object","additionalProperties":{"type":"string"}},"containerOrders":{"type":"object","additionalProperties":{"type":"array","items":{"type":"string"}}},"groupOrder":{"type":"array","items":{"type":"string"}}}},
+      "schema_evidence": "authorized parser-only probes verified containerGroupMap as map[string]string, containerOrders as map[string][]string and groupOrder as []string; no custom sorting handler executed"
+    },
+    {
+      "path": "/api/docker/containers/switch-version",
+      "method": "POST",
+      "risk": "mutating",
+      "request_body_schema": {"type":"object","properties":{"container_ids":{"type":"array","items":{"type":"string"}},"target_image_ref":{"type":"string"}}},
+      "schema_evidence": "authorized parser-only probes verified container_ids as []string and target_image_ref as string; requests failed during JSON decoding before any container version-switch handler ran"
+    },
+    {
       "path": "/api/docker/containers",
       "method": "POST",
       "risk": "mutating",
