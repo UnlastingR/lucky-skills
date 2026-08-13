@@ -847,6 +847,28 @@
       "schema_evidence": "frontend create-container dialog explicitly transforms its form into Lucky body {name,config,hostConfig}; authorized isolated BusyBox probe created one network-disabled disposable container and observed ret/container_id/warnings response types, then removed the container and restored the five-container baseline"
     },
     {
+      "path": "/api/docker/images/search",
+      "method": "POST",
+      "risk": "read-only",
+      "request_body_schema": {"type": "object", "properties": {"limit": {"type": "integer"}, "term": {"type": "string"}}},
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "results": {"type": "array", "items": {"type": "object", "properties": {"star_count": {"type": "integer"}, "is_official": {"type": "boolean"}, "name": {"type": "string"}, "is_automated": {"type": "boolean"}, "description": {"type": "string"}}}}}},
+      "schema_evidence": "authorized POST /api/docker/images/search with limit=1 and a public registry term returned ret=0 without changing local Docker state; only request/result field names and JSON types were retained, establishing this POST as read-only"
+    },
+    {
+      "path": "/api/docker/images/pull-with-backup",
+      "method": "POST",
+      "risk": "mutating",
+      "request_body_schema": {"type": "object", "properties": {"architecture": {"type": "string"}, "backup_tag": {"type": "string"}, "image_ref": {"type": "string"}}},
+      "schema_evidence": "frontend-call request fields are cross-checked against runtime-verified Docker image Architecture and string tag/reference metadata; pull-with-backup was not executed"
+    },
+    {
+      "path": "/api/docker/images/pull-with-backup-async",
+      "method": "POST",
+      "risk": "mutating",
+      "request_body_schema": {"type": "object", "properties": {"architecture": {"type": "string"}, "backup_tag": {"type": "string"}, "image_ref": {"type": "string"}}},
+      "schema_evidence": "frontend-call request fields are cross-checked against runtime-verified Docker image Architecture and string tag/reference metadata; async pull-with-backup was not executed"
+    },
+    {
       "path": "/api/docker/images/pull",
       "method": "POST",
       "risk": "mutating",

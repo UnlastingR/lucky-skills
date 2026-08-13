@@ -237,7 +237,7 @@
 | `DELETE` | `/api/docker/images/remove` | `dangerous` | `force`, `noprune`, `tag` | — | `json` | `frontend-call` |
 | `POST` | `/api/docker/images/remove-saved-digest` | `mutating` | — | `image_id` | `json` | `frontend-call` |
 | `GET` | `/api/docker/images/save.withoutcompression` | `dangerous` | `imageid` | — | `unknown` | `runtime-verified` |
-| `POST` | `/api/docker/images/search` | `mutating` | — | `limit`, `term` | `json` | `frontend-call` |
+| `POST` | `/api/docker/images/search` | `read-only` | — | `limit`, `term` | `json` | `frontend-call` |
 | `POST` | `/api/docker/images/upgrade-check` | `mutating` | — | `image_ref` | `json` | `frontend-call` |
 | `GET` | `/api/docker/images/upgrade-check-ws` | `mutating` | — | — | `websocket` | `runtime-verified` |
 | `POST` | `/api/docker/images/upgrade-containers` | `mutating` | — | `container_ids`, `image_ref`, `upgrade_compose`, `upgrade_standalone` | `json` | `frontend-call` |
