@@ -41129,7 +41129,26 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "key": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "type": {
+                            "type": "string"
+                          },
+                          "remark": {
+                            "type": "string"
+                          },
+                          "target": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -41152,7 +41171,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/webterminal/connections observed list=null; connection item/endpoint/session fields remain unspecified"
+        "x-schema-evidence": "authorized disposable local connection made GET /api/webterminal/connections return a one-item list with string key/name/type/remark/target summary fields; nested endpoint and credential details remain intentionally omitted, and cleanup restored list=null"
       },
       "post": {
         "summary": "Lucky frontend call: POST /api/webterminal/connections",
@@ -41168,11 +41187,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -41193,7 +41217,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend connection editor submits its connection model directly; nested local/ssh/telnet defaults and secret-redaction helper are visible in the page bundle; authorized connection list is empty",
+        "x-schema-evidence": "frontend connection editor submits its connection model directly; authorized disposable local-connection probes verified string key/name/type/remark, object local/ssh/telnet configs, object-array shortcuts, string-array quickAccessDirs and a ret-only POST success response, with the saved-connection baseline restored to zero",
         "requestBody": {
           "required": true,
           "content": {
@@ -41201,15 +41225,39 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "key": {},
-                  "name": {},
-                  "type": {},
-                  "remark": {},
-                  "localConfig": {},
-                  "sshConfig": {},
-                  "telnetConfig": {},
-                  "shortcuts": {},
-                  "quickAccessDirs": {}
+                  "key": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "remark": {
+                    "type": "string"
+                  },
+                  "localConfig": {
+                    "type": "object"
+                  },
+                  "sshConfig": {
+                    "type": "object"
+                  },
+                  "telnetConfig": {
+                    "type": "object"
+                  },
+                  "shortcuts": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "quickAccessDirs": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -41230,11 +41278,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -41255,7 +41308,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend update calls Cn(connection), which preserves the model while stripping empty/masked credential fields; authorized connection list is empty",
+        "x-schema-evidence": "frontend update calls Cn(connection), which preserves the model while stripping empty/masked credential fields; the same disposable local connection was PUT successfully with a ret-only response and then deleted, restoring the zero-connection baseline",
         "requestBody": {
           "required": true,
           "content": {
@@ -41263,15 +41316,39 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "key": {},
-                  "name": {},
-                  "type": {},
-                  "remark": {},
-                  "localConfig": {},
-                  "sshConfig": {},
-                  "telnetConfig": {},
-                  "shortcuts": {},
-                  "quickAccessDirs": {}
+                  "key": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "remark": {
+                    "type": "string"
+                  },
+                  "localConfig": {
+                    "type": "object"
+                  },
+                  "sshConfig": {
+                    "type": "object"
+                  },
+                  "telnetConfig": {
+                    "type": "object"
+                  },
+                  "shortcuts": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "quickAccessDirs": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -41319,7 +41396,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend connection test passes the same editor model directly; no authenticated connection test was executed for schema discovery",
+        "x-schema-evidence": "frontend connection test passes the same editor model directly; request types reuse the disposable-CRUD-verified connection model and no authenticated connection test was executed",
         "requestBody": {
           "required": true,
           "content": {
@@ -41327,15 +41404,39 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "key": {},
-                  "name": {},
-                  "type": {},
-                  "remark": {},
-                  "localConfig": {},
-                  "sshConfig": {},
-                  "telnetConfig": {},
-                  "shortcuts": {},
-                  "quickAccessDirs": {}
+                  "key": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "remark": {
+                    "type": "string"
+                  },
+                  "localConfig": {
+                    "type": "object"
+                  },
+                  "sshConfig": {
+                    "type": "object"
+                  },
+                  "telnetConfig": {
+                    "type": "object"
+                  },
+                  "shortcuts": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "quickAccessDirs": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -41358,11 +41459,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -41383,6 +41489,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized disposable local connection DELETE returned a ret-only success response and restored the saved-connection baseline to zero",
         "parameters": [
           {
             "name": "param",
@@ -41408,11 +41515,54 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "connection": {
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "remark": {
+                          "type": "string"
+                        },
+                        "localConfig": {
+                          "type": "object"
+                        },
+                        "sshConfig": {
+                          "type": "object"
+                        },
+                        "telnetConfig": {
+                          "type": "object"
+                        },
+                        "shortcuts": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "quickAccessDirs": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -41433,6 +41583,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized disposable local-connection GET detail verified safe top-level connection field types plus object local/ssh/telnet configs, object-array shortcuts and string-array quickAccessDirs; nested config properties are intentionally not documented to avoid credential/host-key disclosure",
         "parameters": [
           {
             "name": "param",
@@ -41460,11 +41611,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -41485,6 +41641,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized disposable local connection accepted quickAccessDirs as a string array, returned a ret-only success response, GET detail echoed string items, and cleanup restored the zero-connection baseline",
         "parameters": [
           {
             "name": "param",
@@ -41502,7 +41659,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "quickAccessDirs": {}
+                  "quickAccessDirs": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -41600,7 +41762,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend SSH host-key confirmation normalizes the server response to this object before PUT; no host-key write was executed",
+        "x-schema-evidence": "frontend SSH host-key confirmation normalizes the server response to this object; an authorized dummy-connection probe with string host/hostname/key/fingerprints/trustedAt/keyType, integer port and boolean changed reached the connection-not-found handler, while integer hostKeyTrustedAt failed parsing; no host-key write executed",
         "parameters": [
           {
             "name": "param",
@@ -41618,15 +41780,33 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "host": {},
-                  "port": {},
-                  "hostname": {},
-                  "hostKey": {},
-                  "hostKeyFingerprint": {},
-                  "hostKeyTrustedAt": {},
-                  "keyType": {},
-                  "previousHostKeyFingerprint": {},
-                  "changed": {}
+                  "host": {
+                    "type": "string"
+                  },
+                  "port": {
+                    "type": "integer"
+                  },
+                  "hostname": {
+                    "type": "string"
+                  },
+                  "hostKey": {
+                    "type": "string"
+                  },
+                  "hostKeyFingerprint": {
+                    "type": "string"
+                  },
+                  "hostKeyTrustedAt": {
+                    "type": "string"
+                  },
+                  "keyType": {
+                    "type": "string"
+                  },
+                  "previousHostKeyFingerprint": {
+                    "type": "string"
+                  },
+                  "changed": {
+                    "type": "boolean"
+                  }
                 }
               }
             }
