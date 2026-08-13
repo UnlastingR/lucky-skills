@@ -408,7 +408,8 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["type", "path", "rcloneKey", "rcloneRoot", "storeKey", "storeRoot"],
-      "schema_evidence": "frontend constructs explicit {type,path,rcloneKey,rcloneRoot,storeKey,storeRoot} request object"
+      "request_body_schema": {"type": "object", "properties": {"type": {"type": "string"}, "path": {"type": "string"}, "rcloneKey": {"type": "string"}, "rcloneRoot": {"type": "string"}, "storeKey": {"type": "string"}, "storeRoot": {"type": "string"}}},
+      "schema_evidence": "frontend constructs explicit {type,path,rcloneKey,rcloneRoot,storeKey,storeRoot} request object; field types are cross-checked against the runtime-verified IconLib source Type/Path/RcloneKey/RcloneRoot/StoreKey/StoreRoot string model, and no template generation was executed"
     },
     {
       "path": "/api/webservice/statistics/geo/rebuild",
@@ -2509,7 +2510,8 @@
       "method": "PUT",
       "risk": "dangerous",
       "body_keys": ["Name", "ARCH", "OS", "Version", "GoVersion", "Date", "MD5"],
-      "schema_evidence": "frontend program-upgrade flow stores the uploaded package's info object as {Name,ARCH,OS,Version,GoVersion,Date,MD5} and passes that object to the confirm endpoint; upgrade handler was not executed"
+      "request_body_schema": {"type": "object", "properties": {"Name": {"type": "string"}, "ARCH": {"type": "string"}, "OS": {"type": "string"}, "Version": {"type": "string"}, "GoVersion": {"type": "string"}, "Date": {"type": "string"}, "MD5": {"type": "string"}}},
+      "schema_evidence": "frontend program-upgrade flow stores the uploaded package's info object as {Name,ARCH,OS,Version,GoVersion,Date,MD5} and passes that object to the confirm endpoint; ARCH/OS/Version/GoVersion/Date/MD5 are cross-checked against runtime-verified /api/info strings, Name is textual package metadata, and the upgrade handler was not executed"
     },
     {
       "path": "/api/v2l",

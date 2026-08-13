@@ -33863,7 +33863,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "dangerous",
-        "x-schema-evidence": "frontend program-upgrade flow stores the uploaded package's info object as {Name,ARCH,OS,Version,GoVersion,Date,MD5} and passes that object to the confirm endpoint; upgrade handler was not executed",
+        "x-schema-evidence": "frontend program-upgrade flow stores the uploaded package's info object as {Name,ARCH,OS,Version,GoVersion,Date,MD5} and passes that object to the confirm endpoint; ARCH/OS/Version/GoVersion/Date/MD5 are cross-checked against runtime-verified /api/info strings, Name is textual package metadata, and the upgrade handler was not executed",
         "requestBody": {
           "required": true,
           "content": {
@@ -33871,13 +33871,27 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Name": {},
-                  "ARCH": {},
-                  "OS": {},
-                  "Version": {},
-                  "GoVersion": {},
-                  "Date": {},
-                  "MD5": {}
+                  "Name": {
+                    "type": "string"
+                  },
+                  "ARCH": {
+                    "type": "string"
+                  },
+                  "OS": {
+                    "type": "string"
+                  },
+                  "Version": {
+                    "type": "string"
+                  },
+                  "GoVersion": {
+                    "type": "string"
+                  },
+                  "Date": {
+                    "type": "string"
+                  },
+                  "MD5": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -35497,7 +35511,7 @@
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend constructs explicit {type,path,rcloneKey,rcloneRoot,storeKey,storeRoot} request object",
+        "x-schema-evidence": "frontend constructs explicit {type,path,rcloneKey,rcloneRoot,storeKey,storeRoot} request object; field types are cross-checked against the runtime-verified IconLib source Type/Path/RcloneKey/RcloneRoot/StoreKey/StoreRoot string model, and no template generation was executed",
         "requestBody": {
           "required": true,
           "content": {
@@ -35505,12 +35519,24 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "type": {},
-                  "path": {},
-                  "rcloneKey": {},
-                  "rcloneRoot": {},
-                  "storeKey": {},
-                  "storeRoot": {}
+                  "type": {
+                    "type": "string"
+                  },
+                  "path": {
+                    "type": "string"
+                  },
+                  "rcloneKey": {
+                    "type": "string"
+                  },
+                  "rcloneRoot": {
+                    "type": "string"
+                  },
+                  "storeKey": {
+                    "type": "string"
+                  },
+                  "storeRoot": {
+                    "type": "string"
+                  }
                 }
               }
             }

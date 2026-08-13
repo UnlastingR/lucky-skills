@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 83:
+    if len(untyped_request_routes) > 81:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 83 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 81 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     explicit_small_request_schemas = {
@@ -582,6 +582,55 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     )
     if custom_ipdb_path_schema != {"type": "string"}:
         fail("IPDB custom path runtime evidence regressed")
+
+    update_confirm = merged_by_key[("PUT", "/api/update/comfire")].request_body_schema
+    expected_update_confirm = {
+        "type": "object",
+        "properties": {
+            "Name": {"type": "string"},
+            "ARCH": {"type": "string"},
+            "OS": {"type": "string"},
+            "Version": {"type": "string"},
+            "GoVersion": {"type": "string"},
+            "Date": {"type": "string"},
+            "MD5": {"type": "string"},
+        },
+    }
+    if update_confirm != expected_update_confirm:
+        fail("program-update confirm request schema regressed")
+    info_schema = merged_by_key[("GET", "/api/info")].response_schema
+    info_props = (
+        info_schema.get("properties", {}).get("info", {}).get("properties", {})
+        if isinstance(info_schema, dict)
+        else {}
+    )
+    for field in ("ARCH", "OS", "Version", "GoVersion", "Date", "MD5"):
+        if info_props.get(field) != {"type": "string"}:
+            fail(f"/api/info string evidence regressed for update field {field}")
+
+    lightpanel_template = merged_by_key[("POST", "/api/webservice/lightpanel/configtemplate")].request_body_schema
+    expected_lightpanel = {
+        "type": "object",
+        "properties": {
+            "type": {"type": "string"},
+            "path": {"type": "string"},
+            "rcloneKey": {"type": "string"},
+            "rcloneRoot": {"type": "string"},
+            "storeKey": {"type": "string"},
+            "storeRoot": {"type": "string"},
+        },
+    }
+    if lightpanel_template != expected_lightpanel:
+        fail("WebService lightpanel config-template request schema regressed")
+    icon_sources = merged_by_key[("GET", "/api/iconlib/sources")].response_schema
+    icon_source_props = (
+        icon_sources.get("properties", {}).get("sources", {}).get("items", {}).get("properties", {})
+        if isinstance(icon_sources, dict)
+        else {}
+    )
+    for field in ("Type", "Path", "RcloneKey", "RcloneRoot", "StoreKey", "StoreRoot"):
+        if icon_source_props.get(field) != {"type": "string"}:
+            fail(f"IconLib source string evidence regressed for {field}")
 
     crosschecked_resource_request_schemas = {
         ("PUT", "/api/modules/hidden"): {
