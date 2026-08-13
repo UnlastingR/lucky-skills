@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 1:
+    if untyped_request_routes:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 1 field-bearing write route without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected zero field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     coraza_request = {
@@ -909,6 +909,72 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("WebService discovery-cancel request schema regressed")
     if discovery_cancel.response_schema is not None:
         fail("WebService nonexistent-job cancel evidence must not claim a success response")
+
+    discovery_request = {
+        "type": "object",
+        "properties": {
+            "ruleKey": {"type": "string"},
+            "targets": {"type": "string"},
+            "ports": {"type": "string"},
+            "excludePorts": {"type": "string"},
+            "domainSuffix": {"type": "string"},
+            "timeoutMs": {"type": "integer"},
+            "maxScanDurationMs": {"type": "integer"},
+            "maxHostRetriesPerEndpoint": {"type": "integer"},
+            "allowedRedirectHosts": {"type": "array", "items": {"type": "string"}},
+            "maxHosts": {"type": "integer"},
+            "maxPortTargets": {"type": "integer"},
+            "tcpConcurrency": {"type": "integer"},
+            "probeConcurrency": {"type": "integer"},
+            "tcpCompatibilityMode": {"type": "boolean"},
+            "maxRedirects": {"type": "integer"},
+        },
+    }
+    discovery_summary = {
+        "type": "object",
+        "properties": {
+            "parsedHosts": {"type": "integer"},
+            "parsedPorts": {"type": "integer"},
+            "checkedPortPairs": {"type": "integer"},
+            "openPorts": {"type": "integer"},
+            "probeAttempts": {"type": "integer"},
+            "discovered": {"type": "integer"},
+            "mergedResults": {"type": "integer"},
+            "alreadyAddedCount": {"type": "integer"},
+        },
+    }
+    discovery_response = {
+        "type": "object",
+        "properties": {
+            "active": {"type": "boolean"},
+            "elapsedMs": {"type": "integer"},
+            "error": {"type": "string"},
+            "jobId": {"type": "string"},
+            "results": {"type": ["array", "null"], "items": {}},
+            "ret": {"type": "integer"},
+            "reused": {"type": "boolean"},
+            "ruleKey": {"type": "string"},
+            "runtimePlatform": {"type": "string"},
+            "startedAt": {"type": "integer"},
+            "status": {"type": "string"},
+            "summary": discovery_summary,
+            "tcpCompatibilityModeSupported": {"type": "boolean"},
+        },
+    }
+    discovery_start = merged_by_key[("POST", "/api/webservice/discovery/start")]
+    if discovery_start.request_body_schema != discovery_request:
+        fail("WebService discovery-start request schema regressed")
+    if set(discovery_start.body_keys) != set(discovery_request["properties"]):
+        fail("WebService discovery-start request schema must cover exactly the frontend body fields")
+    if discovery_start.risk is not OperationRisk.DANGEROUS:
+        fail("WebService discovery-start must remain dangerous")
+    if discovery_start.response_schema != discovery_response:
+        fail("WebService discovery-start success response schema regressed")
+    discovery_status = merged_by_key[("GET", "/api/webservice/discovery/status/{param}")]
+    if discovery_status.risk is not OperationRisk.READ_ONLY:
+        fail("WebService discovery-status GET must remain read-only")
+    if discovery_status.response_schema != discovery_response:
+        fail("WebService discovery-status success response schema regressed")
 
     cloudflared_instance_request = {
         "type": "object",
@@ -1849,8 +1915,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("Local Path Browser delete response schema regressed")
 
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 240:
-        fail(f"response-schema coverage regressed below 240 routes: {response_schema_count}")
+    if response_schema_count < 255:
+        fail(f"response-schema coverage regressed below 255 routes: {response_schema_count}")
 
     safe_utility_response_routes = {
         ("GET", "/api/baseconfigure"),
