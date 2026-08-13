@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 68:
+    if len(untyped_request_routes) > 66:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 68 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 66 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     explicit_small_request_schemas = {
@@ -661,6 +661,69 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("WOL webhook-test request schema regressed")
     if isinstance(wol_webhook, dict) and "required" in wol_webhook:
         fail("WOL webhook-test request schema must not invent required fields")
+
+    wol_device_request = {
+        "type": "object",
+        "properties": {
+            "Key": {"type": "string"},
+            "DeviceName": {"type": "string"},
+            "MacList": {"type": "array", "items": {"type": "string"}},
+            "BroadcastIPs": {"type": "array", "items": {}},
+            "ProbeTargets": {"type": "array", "items": {}},
+            "Port": {"type": "integer"},
+            "Relay": {"type": "boolean"},
+            "Repeat": {"type": "integer"},
+            "IOT_DianDeng_Enable": {"type": "boolean"},
+            "IOT_DianDeng_AUTHKEY": {"type": "string"},
+            "IOT_DianDeng_InsecureSkipVerify": {"type": "boolean"},
+            "IOT_DianDengBindComponentEnable": {"type": "boolean"},
+            "IOT_DianDengBindComponent": {"type": "string"},
+            "IOT_Bemfa_Enable": {"type": "boolean"},
+            "IOT_Bemfa_SecretKey": {"type": "string"},
+            "IOT_Bemfa_Topic": {"type": "string"},
+            "IOT_Bemfa_InsecureSkipVerify": {"type": "boolean"},
+        },
+    }
+    for route_key in {
+        ("POST", "/api/wol/device"),
+        ("PUT", "/api/wol/device"),
+    }:
+        route = merged_by_key[route_key]
+        if route.request_body_schema != wol_device_request:
+            fail(f"WOL disposable-device request schema regressed for {route_key}")
+        if isinstance(route.request_body_schema, dict) and "required" in route.request_body_schema:
+            fail(f"WOL device request schema must not invent required fields for {route_key}")
+        if route.response_schema != {"type": "object", "properties": {"ret": {"type": "integer"}}}:
+            fail(f"WOL disposable-device ret-only response schema regressed for {route_key}")
+    if merged_by_key[("DELETE", "/api/wol/device")].response_schema != {
+        "type": "object", "properties": {"ret": {"type": "integer"}}
+    }:
+        fail("WOL disposable-device delete response schema regressed")
+
+    wol_devices = merged_by_key[("GET", "/api/wol/devices")].response_schema
+    wol_device_props = (
+        wol_devices.get("properties", {}).get("list", {}).get("items", {}).get("properties", {})
+        if isinstance(wol_devices, dict)
+        else {}
+    )
+    for secret_field in ("IOT_DianDeng_AUTHKEY", "IOT_Bemfa_SecretKey"):
+        if secret_field in wol_device_props:
+            fail(f"WOL device response schema must omit secret field {secret_field}")
+    for field, expected in {
+        "Key": {"type": "string"},
+        "DeviceName": {"type": "string"},
+        "MacList": {"type": "array", "items": {"type": "string"}},
+        "BroadcastIPs": {"type": "array", "items": {}},
+        "ProbeTargets": {"type": "array", "items": {}},
+        "Port": {"type": "integer"},
+        "Relay": {"type": "boolean"},
+        "Repeat": {"type": "integer"},
+        "Probe": {"type": "object"},
+        "CanShutdown": {"type": "boolean"},
+        "CanWakeup": {"type": "boolean"},
+    }.items():
+        if wol_device_props.get(field) != expected:
+            fail(f"WOL device safe response type regressed for {field}")
 
     update_confirm = merged_by_key[("PUT", "/api/update/comfire")].request_body_schema
     expected_update_confirm = {
@@ -1073,8 +1136,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("Local Path Browser delete response schema regressed")
 
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 234:
-        fail(f"response-schema coverage regressed below 234 routes: {response_schema_count}")
+    if response_schema_count < 237:
+        fail(f"response-schema coverage regressed below 237 routes: {response_schema_count}")
 
     safe_utility_response_routes = {
         ("GET", "/api/baseconfigure"),
