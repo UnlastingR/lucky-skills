@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "verified_at": "2026-08-13T14:28:53Z",
+  "verified_at": "2026-08-13T15:10:39Z",
   "target": {
     "product": "Lucky",
     "version": "3.0.0"
@@ -65,9 +65,9 @@
       "path": "/api/configure",
       "method": "POST",
       "risk": "dangerous",
-      "response_type": "unknown",
+      "response_type": "json",
       "confidence": "runtime-verified",
-      "verification": "Unauthenticated POST reached Lucky authentication; handler was not executed."
+      "verification": "Unauthenticated POST reached Lucky authentication; handler was not executed. Current Lucky 3.0.0 frontend restores configuration with an XMLHttpRequest POST and parses responseText as JSON before handling the Lucky envelope, confirming a JSON response type."
     },
     {
       "path": "/api/docker/images/save.withoutcompression",
@@ -76,9 +76,9 @@
       "query_keys": [
         "imageid"
       ],
-      "response_type": "unknown",
+      "response_type": "blob",
       "confidence": "runtime-verified",
-      "verification": "Authenticated GET with no imageid returned Missing imageid parameter; no real image export was requested."
+      "verification": "Authenticated GET with no imageid returned Missing imageid parameter; no real image export was requested. Current Lucky 3.0.0 frontend obtains a temporary-access URL for this route and then fetches it as an image-export download, inspecting Content-Type/Content-Length/Content-Disposition and streaming the body to a .tar file, confirming binary download semantics."
     },
     {
       "path": "/api/docker/images/upgrade-check-ws",
@@ -103,9 +103,9 @@
       "path": "/api/ipdb/download",
       "method": "GET",
       "risk": "dangerous",
-      "response_type": "unknown",
+      "response_type": "blob",
       "confidence": "runtime-verified",
-      "verification": "Unauthenticated GET reached Lucky authentication; handler was not executed. Conservatively classified dangerous because it is a database download/update action."
+      "verification": "Unauthenticated GET reached Lucky authentication; handler was not executed. Conservatively classified dangerous because it is a database download/update action. Current Lucky 3.0.0 frontend obtains a temporary-access URL for /api/ipdb/download and assigns that URL directly to an anchor download, confirming file-download semantics."
     },
     {
       "path": "/api/logscenter/query",
@@ -164,9 +164,9 @@
       "query_keys": [
         "key"
       ],
-      "response_type": "unknown",
+      "response_type": "blob",
       "confidence": "runtime-verified",
-      "verification": "Authenticated GET using a deliberately nonexistent key reached the dedicated download handler and returned no found:<key>; no certificate material was returned."
+      "verification": "Authenticated GET using a deliberately nonexistent key reached the dedicated download handler and returned no found:<key>; no certificate material was returned. Current Lucky 3.0.0 frontend invokes the shared temporary-ticket download opener for this route, confirming binary/file download semantics."
     },
     {
       "path": "/api/status/ws",
@@ -188,9 +188,9 @@
       "path": "/api/third/filebrowser/backupdb",
       "method": "GET",
       "risk": "dangerous",
-      "response_type": "unknown",
+      "response_type": "blob",
       "confidence": "runtime-verified",
-      "verification": "Unauthenticated GET reached Lucky authentication; the backup handler was not executed."
+      "verification": "Unauthenticated GET reached Lucky authentication; the backup handler was not executed. Current Lucky 3.0.0 frontend invokes the shared temporary-ticket download opener for the FileBrowser database backup route, confirming binary/file download semantics."
     },
     {
       "path": "/api/webservice/rules",

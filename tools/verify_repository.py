@@ -473,6 +473,14 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     unknown = merged.search(risk=OperationRisk.UNKNOWN)
     if unknown:
         fail(f"runtime route verification leaves {len(unknown)} unknown route(s)")
+    unknown_response_types = [
+        route for route in merged.routes if route.response_type == "unknown"
+    ]
+    if unknown_response_types:
+        fail(
+            "runtime route verification leaves "
+            f"{len(unknown_response_types)} unknown response type(s)"
+        )
 
     expected_body_schema_gaps: set[tuple[str, str]] = set()
     actual_body_schema_gaps = {

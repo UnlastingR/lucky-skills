@@ -54,7 +54,7 @@ pageClass: api-routes-page
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
 | `GET` | `/api/configure` | `dangerous` | — | — | `blob` | `runtime-verified` |
-| `POST` | `/api/configure` | `dangerous` | — | — | `unknown` | `runtime-verified` |
+| `POST` | `/api/configure` | `dangerous` | — | — | `json` | `runtime-verified` |
 
 ## `coraza`
 
@@ -240,7 +240,7 @@ pageClass: api-routes-page
 | `POST` | `/api/docker/images/push` | `mutating` | — | `image`, `tag` | `json` | `frontend-call` |
 | `DELETE` | `/api/docker/images/remove` | `dangerous` | `force`, `noprune`, `tag` | — | `json` | `frontend-call` |
 | `POST` | `/api/docker/images/remove-saved-digest` | `mutating` | — | `image_id` | `json` | `frontend-call` |
-| `GET` | `/api/docker/images/save.withoutcompression` | `dangerous` | `imageid` | — | `unknown` | `runtime-verified` |
+| `GET` | `/api/docker/images/save.withoutcompression` | `dangerous` | `imageid` | — | `blob` | `runtime-verified` |
 | `POST` | `/api/docker/images/search` | `read-only` | — | `limit`, `term` | `json` | `frontend-call` |
 | `POST` | `/api/docker/images/upgrade-check` | `mutating` | — | `image_ref` | `json` | `frontend-call` |
 | `GET` | `/api/docker/images/upgrade-check-ws` | `mutating` | — | — | `websocket` | `runtime-verified` |
@@ -357,7 +357,7 @@ pageClass: api-routes-page
 | `GET` | `/api/ipdb/configure` | `read-only` | — | — | `json` | `frontend-call` |
 | `PUT` | `/api/ipdb/configure` | `mutating` | — | `CustomIPDBPath` | `json` | `frontend-call` |
 | `DELETE` | `/api/ipdb/dbfile` | `mutating` | `file`, `key` | — | `json` | `frontend-call` |
-| `GET` | `/api/ipdb/download` | `dangerous` | — | — | `unknown` | `runtime-verified` |
+| `GET` | `/api/ipdb/download` | `dangerous` | — | — | `blob` | `runtime-verified` |
 | `PUT` | `/api/ipdb/instanceorderadjustment` | `mutating` | — | `array<string>` | `json` | `frontend-call` |
 | `DELETE` | `/api/ipdb/item` | `mutating` | `key` | — | `json` | `frontend-call` |
 | `POST` | `/api/ipdb/item` | `mutating` | — | `Key`, `Remark`, `Enable`, `Format`, `FilePath`, `SupportTypes`, `BufferType`, `DBParam1` | `json` | `frontend-call` |
@@ -603,7 +603,7 @@ pageClass: api-routes-page
 | `POST` | `/api/ssl` | `mutating` | — | `AcmeErrorMsg`, `AddFrom`, `AddTime`, `AllSyncClient`, `CertBase64`, `Enable`, `ExtParams`, `IssuerCertificate`, `Key`, `KeyBase64`, `MappingChangeScript`, `MappingPath`, `MappingToPath`, `Remark`, `SyncClientList`, `UpdateTime` | `json` | `frontend-call` |
 | `PUT` | `/api/ssl` | `mutating` | — | `AcmeErrorMsg`, `AddFrom`, `AddTime`, `AllSyncClient`, `CertBase64`, `Enable`, `ExtParams`, `IssuerCertificate`, `Key`, `KeyBase64`, `MappingChangeScript`, `MappingPath`, `MappingToPath`, `Remark`, `SyncClientList`, `UpdateTime` | `json` | `frontend-call` |
 | `GET` | `/api/ssl/credential-sources` | `read-only` | — | — | `json` | `frontend-call` |
-| `GET` | `/api/ssl/download` | `dangerous` | `key` | — | `unknown` | `runtime-verified` |
+| `GET` | `/api/ssl/download` | `dangerous` | `key` | — | `blob` | `runtime-verified` |
 | `PUT` | `/api/ssl/flush` | `mutating` | `key` | — | `json` | `frontend-call` |
 | `GET` | `/api/ssl/lastlogs` | `read-only` | `key` | — | `json` | `frontend-call` |
 | `GET` | `/api/ssl/logs` | `read-only` | `key`, `page`, `pageSize` | — | `json` | `frontend-call` |
@@ -689,7 +689,7 @@ pageClass: api-routes-page
 
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
-| `GET` | `/api/third/filebrowser/backupdb` | `dangerous` | — | — | `unknown` | `runtime-verified` |
+| `GET` | `/api/third/filebrowser/backupdb` | `dangerous` | — | — | `blob` | `runtime-verified` |
 | `GET` | `/api/third/filebrowser/configure` | `read-only` | — | — | `json` | `frontend-call` |
 | `PUT` | `/api/third/filebrowser/configure` | `mutating` | — | `Address`, `AutoFirewall`, `BaseURL`, `CacheDir`, `ConfVersion`, `DBFile`, `DirPerm`, `DisableExec`, `DisablePreviewResize`, `DisableThumbnails`, `DisableTypeDetectionByHeader`, `Enable`, `FilePerm`, `HTTPEnable`, `IMGProcessors`, `ListenNetwork`, `MountList`, `Port`, `RedisCacheUrl`, `TLSEnable`, `TLSListenPort`, `TokenExpirationHour`, `TrustHostList` | `json` | `frontend-call` |
 | `GET` | `/api/third/filebrowser/lastlogs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
