@@ -72,14 +72,17 @@ def make_client(args: argparse.Namespace, catalog: RouteCatalog) -> LuckyClient:
     )
 
 
-def print_response(response: Any, output: str | None) -> None:
+def print_response(response: Any, output: str | None, *, json_redactor: Any = None) -> None:
     if output:
         target = Path(output)
         target.write_bytes(response.body)
         print(f"wrote {len(response.body)} bytes to {target}", file=sys.stderr)
         return
     if response.is_json:
-        print(json.dumps(response.json(), ensure_ascii=False, indent=2))
+        payload = response.json()
+        if json_redactor is not None:
+            payload = json_redactor(payload)
+        print(json.dumps(payload, ensure_ascii=False, indent=2))
         return
     if sys.stdout.isatty():
         raise ValueError("binary response requires --output FILE")
@@ -107,7 +110,8 @@ def command_call(args: argparse.Namespace, catalog: RouteCatalog) -> int:
             raise ValueError("JSON and raw request bodies are mutually exclusive")
         kwargs["raw_body"] = Path(args.raw_file).read_bytes()
         kwargs["content_type"] = args.content_type
-    response = make_client(args, catalog).request(method, args.path, **kwargs)
+    client = make_client(args, catalog)
+    response = client.request(method, args.path, **kwargs)
     if args.show_meta:
         rate = response.rate_limit
         print(
@@ -115,7 +119,11 @@ def command_call(args: argparse.Namespace, catalog: RouteCatalog) -> int:
             f"rate-limit={rate.limit}; remaining={rate.remaining}; reset={rate.reset_seconds}",
             file=sys.stderr,
         )
-    print_response(response, args.output)
+    print_response(
+        response,
+        args.output,
+        json_redactor=None if args.show_secrets else client.redact_json,
+    )
     return 0
 
 
@@ -171,6 +179,11 @@ def build_parser() -> argparse.ArgumentParser:
         shortcut.set_defaults(shortcut_path=path)
         shortcut.add_argument("--output")
         shortcut.add_argument("--show-meta", action="store_true")
+        shortcut.add_argument(
+            "--show-secrets",
+            action="store_true",
+            help="print exact JSON without display redaction; may expose administrator secrets",
+        )
 
     call = subparsers.add_parser("call", help="call an arbitrary cataloged API route")
     call.add_argument("path")
@@ -182,6 +195,11 @@ def build_parser() -> argparse.ArgumentParser:
     call.add_argument("--content-type")
     call.add_argument("--output", metavar="FILE")
     call.add_argument("--show-meta", action="store_true")
+    call.add_argument(
+        "--show-secrets",
+        action="store_true",
+        help="print exact JSON without display redaction; may expose administrator secrets",
+    )
     call.add_argument("--allow-write", action="store_true")
     call.add_argument("--confirm", help="exact confirmation, for example 'PUT /api/ddns'")
 

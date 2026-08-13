@@ -4,11 +4,11 @@ import io
 import tempfile
 import unittest
 from argparse import Namespace
-from contextlib import redirect_stderr
+from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
-from lucky_api import Route, RouteCatalog
+from lucky_api import APIResponse, Route, RouteCatalog
 from tools.lucky_api import command_call, main, make_client, parse_query, read_json_body
 from tools.lucky_credentials import CredentialError
 
@@ -132,6 +132,41 @@ class CLITests(unittest.TestCase):
         with self.assertRaises(ValueError) as context:
             command_call(Namespace(**base), catalog)
         self.assertIn("--confirm 'PUT /api/ddns'", str(context.exception))
+
+    def test_call_redacts_json_output_by_default(self) -> None:
+        catalog = RouteCatalog([Route("/api/status", "GET", "status", "test", (), (), False, "json")])
+        response = APIResponse(
+            200,
+            {"Content-Type": "application/json"},
+            b'{"ret":0,"OpenToken":"secret-value"}',
+            "application/json",
+            "GET",
+            "/api/status",
+        )
+        client = Mock()
+        client.request.return_value = response
+        client.redact_json.side_effect = lambda payload: {**payload, "OpenToken": "<redacted>"}
+        args = Namespace(
+            method="GET",
+            path="/api/status",
+            allow_write=False,
+            confirm=None,
+            json_file=None,
+            json_stdin=False,
+            query=[],
+            raw_file=None,
+            content_type=None,
+            show_meta=False,
+            output=None,
+            show_secrets=False,
+        )
+        stdout = io.StringIO()
+        with patch("tools.lucky_api.make_client", return_value=client), redirect_stdout(stdout):
+            result = command_call(args, catalog)
+        self.assertEqual(result, 0)
+        self.assertIn("<redacted>", stdout.getvalue())
+        self.assertNotIn("secret-value", stdout.getvalue())
+        client.redact_json.assert_called_once()
 
 
 if __name__ == "__main__":

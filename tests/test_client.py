@@ -121,6 +121,33 @@ class ClientTests(unittest.TestCase):
         self.assertNotIn("T" * 32, message)
         self.assertNotIn("private-entry", message)
 
+    def test_redact_json_masks_secret_fields_and_known_credentials(self) -> None:
+        client = self.client(lambda request, timeout: FakeResponse(b'{"ret":0}'))
+        payload = {
+            "OpenToken": "token-from-response",
+            "Token": 123456,
+            "TokenExpirationHour": 24,
+            "HasPassword": True,
+            "nested": {
+                "acmeDNSSecret": "dns-secret",
+                "ECDHPrivateKey": "private-key",
+                "Key": "non-secret-resource-key",
+                "message": "credential=" + ("T" * 32) + " path=/private-entry",
+            },
+        }
+
+        redacted = client.redact_json(payload)
+
+        self.assertEqual(redacted["OpenToken"], "<redacted>")
+        self.assertEqual(redacted["Token"], "<redacted>")
+        self.assertEqual(redacted["TokenExpirationHour"], 24)
+        self.assertEqual(redacted["HasPassword"], True)
+        self.assertEqual(redacted["nested"]["acmeDNSSecret"], "<redacted>")
+        self.assertEqual(redacted["nested"]["ECDHPrivateKey"], "<redacted>")
+        self.assertEqual(redacted["nested"]["Key"], "non-secret-resource-key")
+        self.assertNotIn("T" * 32, redacted["nested"]["message"])
+        self.assertNotIn("private-entry", redacted["nested"]["message"])
+
     def test_positive_business_error_still_raises_without_route_override(self) -> None:
         response = FakeResponse(json.dumps({"ret": 1, "msg": "validation failed"}).encode())
         with self.assertRaises(LuckyAPIError) as context:

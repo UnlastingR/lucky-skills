@@ -26,7 +26,7 @@
 
 同时提供 `.codex-plugin/plugin.json`，插件安装使用规范要求的 `skills/lucky/SKILL.md`。仓库级发现继续使用 `.agents/skills/lucky/SKILL.md`；CI 会强制两份 Skill 内容完全一致，避免维护过程中漂移。完整插件安装应包含整个仓库/插件目录，因为 Skill 会调用本仓库的 `tools/lucky_credentials.py`、`tools/lucky_api.py`、路由证据和文档。
 
-Skill 的安全约束与客户端一致：默认只读；修改操作必须是用户明确请求，并通过路由风险分级、`--allow-write` 与精确 `--confirm` 才会执行。OpenToken 仍由[统一安全凭据安装与调用](docs/credentials.md)管理，不写入 Skill 或插件清单。
+Skill 的安全约束与客户端一致：默认只读；修改操作必须是用户明确请求，并通过路由风险分级、`--allow-write` 与精确 `--confirm` 才会执行。CLI 的 JSON 显示还会默认脱敏密码、Token、Secret、私钥、2FA Key 与安全入口，减少排查日志意外泄密；Python 库仍保留原始响应语义。OpenToken 仍由[统一安全凭据安装与调用](docs/credentials.md)管理，不写入 Skill 或插件清单。
 
 ## 最重要的结论
 

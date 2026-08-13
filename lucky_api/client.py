@@ -101,6 +101,16 @@ class APIResponse:
 
 _UNSET = object()
 RETRY_STATUSES = {429, 502, 503, 504}
+_SENSITIVE_JSON_KEYS = {
+    "accesstoken",
+    "apikey",
+    "authorization",
+    "cookie",
+    "opentoken",
+    "refreshtoken",
+    "safeurl",
+    "twofakey",
+}
 
 
 class LuckyClient:
@@ -220,6 +230,41 @@ class LuckyClient:
         response = self.request(method, path, **kwargs)
         return response.json()
 
+    def redact_json(self, payload: Any) -> Any:
+        """Return a display-safe copy of a Lucky JSON payload.
+
+        Library callers still receive the exact response from ``request_json``.
+        This helper is intended for logs, CLI output, issue reports, and other
+        places where accidentally echoing administrator secrets would be unsafe.
+        """
+
+        def redact(value: Any) -> Any:
+            if isinstance(value, dict):
+                result: dict[Any, Any] = {}
+                for key, item in value.items():
+                    normalized = "".join(char.lower() for char in str(key) if char.isalnum())
+                    secret_field = (
+                        normalized in _SENSITIVE_JSON_KEYS
+                        or "password" in normalized
+                        or "secret" in normalized
+                        or "privatekey" in normalized
+                        or normalized.endswith("token")
+                        or normalized.endswith("apikey")
+                        or normalized.endswith("authkey")
+                    )
+                    if secret_field and not isinstance(item, bool) and item is not None:
+                        result[key] = "<redacted>"
+                    else:
+                        result[key] = redact(item)
+                return result
+            if isinstance(value, list):
+                return [redact(item) for item in value]
+            if isinstance(value, str):
+                return self._redact_text(value)
+            return value
+
+        return redact(payload)
+
     @staticmethod
     def _validate_api_path(path: str) -> None:
         parsed = urllib.parse.urlsplit(path)
@@ -272,19 +317,20 @@ class LuckyClient:
                 and (ret, raw_msg) in route.success_response_markers
             ):
                 return
-        message = str(payload.get("msg") or payload.get("message") or "")
-        message = message.replace(self._open_token, "<redacted>")
-        if self._safe_entry:
-            message = message.replace(self._safe_entry, "/<redacted-safe-entry>")
+        message = self._redact_text(str(payload.get("msg") or payload.get("message") or ""))
         raise LuckyAPIError(ret, message, response.method, response.path)
 
     def _error_detail(self, error: urllib.error.HTTPError) -> str:
         body = error.read(min(self.max_response_bytes, 4096)) if error.fp is not None else b""
-        text = body.decode("utf-8", errors="replace").replace(self._open_token, "<redacted>")
+        text = self._redact_text(body.decode("utf-8", errors="replace"))
+        return " ".join(text.split())[:500]
+
+    def _redact_text(self, text: str) -> str:
+        text = text.replace(self._open_token, "<redacted>")
         text = text.replace(self.base_url, "<redacted-base-url>")
         if self._safe_entry:
             text = text.replace(self._safe_entry, "/<redacted-safe-entry>")
-        return " ".join(text.split())[:500]
+        return text
 
     @staticmethod
     def _retry_delay(headers: Mapping[str, str], attempt: int) -> float:

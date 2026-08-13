@@ -12,6 +12,7 @@
 - `RateLimit-Limit`、`RateLimit-Remaining` 和 `RateLimit-Reset` 元数据；
 - 只读请求遇到 429/502/503/504 时的有限重试；
 - 基于当前 v3 前端静态快照 + 与该快照版本和 SHA-256 精确绑定的覆盖层做路径模板匹配、风险分级和部分请求/响应 schema 补全。
+- CLI 的 JSON 显示默认递归脱敏常见密码、Token、Secret、私钥、2FA Key、安全入口等敏感内容，同时仍保留普通资源 `Key`、状态字段和非敏感配置供排查。
 
 客户端不提供“自动猜测配置字段”、网页登录模拟、模块 2FA 绕过或批量试探接口。multipart 表单可作为原始请求体发送，但客户端不会替你构造包含密钥或文件的表单。
 
@@ -46,6 +47,16 @@ CLI 只在 `LUCKY_BASE_URL` 与 `LUCKY_OPEN_TOKEN` 同时为非空值时使用�
 ```bash
 python3 tools/lucky_api.py status --show-meta
 ```
+
+CLI 打印 JSON 时默认使用客户端的 display-safe 脱敏层，因此即使某个只读端点意外返回 OpenToken、密码、Secret、私钥或安全入口，也不会直接回显到终端日志。Python 库的 `request_json()` 仍返回服务器原始对象，不会静默改写业务数据；调用方需要自己决定如何存储和展示。
+
+只有在明确需要逐字检查原始 JSON、且确认当前终端/日志环境安全时，才使用：
+
+```bash
+python3 tools/lucky_api.py call /api/some-readonly-route --show-secrets
+```
+
+`--show-secrets` 只影响终端 JSON 显示，不改变请求风险分级。`--output FILE` 仍按原始字节保存响应，以便二进制下载和精确取证；如果目标是 JSON，请把输出文件本身按敏感数据处理。
 
 ## 查询路由目录
 
