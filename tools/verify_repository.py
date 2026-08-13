@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 130:
+    if len(untyped_request_routes) > 129:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 130 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 129 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     read_model_put_schemas = {
@@ -658,8 +658,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("Local Path Browser delete response schema regressed")
 
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 211:
-        fail(f"response-schema coverage regressed below 211 routes: {response_schema_count}")
+    if response_schema_count < 218:
+        fail(f"response-schema coverage regressed below 218 routes: {response_schema_count}")
 
     safe_utility_response_routes = {
         ("GET", "/api/baseconfigure"),
@@ -985,6 +985,13 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("storage-management AliyunPan authorization-URL response schema regressed")
 
     docker_resource_response_routes = {
+        ("POST", "/api/docker/containers"),
+        ("POST", "/api/docker/containers/{param}/start"),
+        ("DELETE", "/api/docker/containers/{param}"),
+        ("DELETE", "/api/docker/images/remove"),
+        ("GET", "/api/docker/containers/{param}/processes"),
+        ("GET", "/api/docker/containers/{param}/logs"),
+        ("POST", "/api/docker/images/pull"),
         ("GET", "/api/docker/images/{param}"),
         ("GET", "/api/docker/images/{param}/history"),
         ("GET", "/api/docker/images/containers"),
@@ -999,6 +1006,67 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     for route_key in docker_resource_response_routes:
         if not isinstance(merged_by_key[route_key].response_schema, dict):
             fail(f"Docker resource response schema missing for {route_key}")
+
+    docker_pull = merged_by_key[("POST", "/api/docker/images/pull")]
+    if docker_pull.request_body_schema != {
+        "type": "object",
+        "properties": {"image": {"type": "string"}, "tag": {"type": "string"}},
+    }:
+        fail("Docker image pull request schema regressed")
+    if docker_pull.response_schema != {
+        "type": "object",
+        "properties": {"ret": {"type": "integer"}, "output": {"type": "string"}},
+    }:
+        fail("Docker image pull response schema regressed")
+
+    docker_create_response = merged_by_key[("POST", "/api/docker/containers")].response_schema
+    if docker_create_response != {
+        "type": "object",
+        "properties": {
+            "ret": {"type": "integer"},
+            "container_id": {"type": "string"},
+            "warnings": {"type": "array", "items": {}},
+        },
+    }:
+        fail("Docker disposable create response schema regressed")
+
+    docker_ret_only = {"type": "object", "properties": {"ret": {"type": "integer"}}}
+    for route_key in {
+        ("POST", "/api/docker/containers/{param}/start"),
+        ("DELETE", "/api/docker/containers/{param}"),
+    }:
+        if merged_by_key[route_key].response_schema != docker_ret_only:
+            fail(f"Docker disposable lifecycle ret-only response schema regressed for {route_key}")
+
+    docker_remove_image = merged_by_key[("DELETE", "/api/docker/images/remove")].response_schema
+    if docker_remove_image != {
+        "type": "object",
+        "properties": {"ret": {"type": "integer"}, "removed": {"type": "array", "items": {}}},
+    }:
+        fail("Docker image-remove response schema regressed")
+
+    docker_processes = merged_by_key[("GET", "/api/docker/containers/{param}/processes")].response_schema
+    if docker_processes != {
+        "type": "object",
+        "properties": {
+            "ret": {"type": "integer"},
+            "processes": {
+                "type": "object",
+                "properties": {
+                    "Titles": {"type": "array", "items": {"type": "string"}},
+                    "Processes": {"type": "array", "items": {"type": "array", "items": {"type": "string"}}},
+                },
+            },
+        },
+    }:
+        fail("Docker process-table response schema regressed")
+
+    docker_logs = merged_by_key[("GET", "/api/docker/containers/{param}/logs")].response_schema
+    if docker_logs != {
+        "type": "object",
+        "properties": {"ret": {"type": "integer"}, "logs": {"type": "string"}},
+    }:
+        fail("Docker logs response schema regressed")
 
     image_schema = merged_by_key[("GET", "/api/docker/images/{param}")].response_schema
     image_props = image_schema.get("properties", {}).get("image", {}).get("properties", {}) if isinstance(image_schema, dict) else {}

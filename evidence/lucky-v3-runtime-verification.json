@@ -834,7 +834,51 @@
       "method": "POST",
       "risk": "mutating",
       "request_body_schema": {"type": "object", "properties": {"name": {"type": "string"}, "config": {"type": "object", "properties": {"Image": {"type": "string"}, "Hostname": {"type": "string"}, "User": {"type": "string"}, "WorkingDir": {"type": "string"}, "Tty": {"type": "boolean"}, "OpenStdin": {"type": "boolean"}, "Env": {"type": "array", "items": {"type": "string"}}, "Cmd": {"type": "array", "items": {"type": "string"}}, "Entrypoint": {"type": "array", "items": {"type": "string"}}}}, "hostConfig": {"type": "object", "properties": {"NetworkMode": {"type": "string"}, "Privileged": {"type": "boolean"}, "AutoRemove": {"type": "boolean"}, "RestartPolicy": {"type": "object", "properties": {"Name": {"type": "string"}, "MaximumRetryCount": {"type": "integer"}}}, "PortBindings": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "object", "properties": {"HostIp": {"type": "string"}, "HostPort": {"type": "string"}}}}}, "Mounts": {"type": "array", "items": {"type": "object", "properties": {"Type": {"type": "string"}, "Source": {"type": "string"}, "Target": {"type": "string"}, "ReadOnly": {"type": "boolean"}}}}, "NanoCpus": {"type": "integer"}, "Memory": {"type": "integer"}, "DNS": {"type": "array", "items": {"type": "string"}}, "DNSSearch": {"type": "array", "items": {"type": "string"}}, "ExtraHosts": {"type": "array", "items": {"type": "string"}}, "CapAdd": {"type": "array", "items": {"type": "string"}}, "CapDrop": {"type": "array", "items": {"type": "string"}}, "Devices": {"type": "array", "items": {"type": "object", "properties": {"PathOnHost": {"type": "string"}, "PathInContainer": {"type": "string"}, "CgroupPermissions": {"type": "string"}}}}, "ShmSize": {"type": "integer"}}}}},
-      "schema_evidence": "frontend create-container dialog explicitly transforms its form into Lucky body {name,config,hostConfig}; no container was created for schema discovery"
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "container_id": {"type": "string"}, "warnings": {"type": "array", "items": {}}}},
+      "schema_evidence": "frontend create-container dialog explicitly transforms its form into Lucky body {name,config,hostConfig}; authorized isolated BusyBox probe created one network-disabled disposable container and observed ret/container_id/warnings response types, then removed the container and restored the five-container baseline"
+    },
+    {
+      "path": "/api/docker/images/pull",
+      "method": "POST",
+      "risk": "mutating",
+      "request_body_schema": {"type": "object", "properties": {"image": {"type": "string"}, "tag": {"type": "string"}}},
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "output": {"type": "string"}}},
+      "schema_evidence": "authorized isolated BusyBox probe pulled one dedicated lightweight image through Lucky API, verifying string image/tag request fields and ret/output response types; pull output and tag values were not retained, and the image was removed after testing"
+    },
+    {
+      "path": "/api/docker/containers/{param}/start",
+      "method": "POST",
+      "risk": "dangerous",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}}},
+      "schema_evidence": "authorized isolated BusyBox probe started only the newly created network-disabled disposable container and observed a ret-only success response"
+    },
+    {
+      "path": "/api/docker/containers/{param}",
+      "method": "DELETE",
+      "risk": "mutating",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}}},
+      "schema_evidence": "authorized isolated BusyBox cleanup force-removed only the disposable probe container and observed a ret-only success response; container count returned to its five-container baseline"
+    },
+    {
+      "path": "/api/docker/images/remove",
+      "method": "DELETE",
+      "risk": "dangerous",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "removed": {"type": "array", "items": {}}}},
+      "schema_evidence": "authorized isolated BusyBox cleanup removed only the image pulled for the probe and observed a removed-event array plus ret; removal-event item fields remain unspecified and image count returned to its five-image baseline"
+    },
+    {
+      "path": "/api/docker/containers/{param}/processes",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "processes": {"type": "object", "properties": {"Titles": {"type": "array", "items": {"type": "string"}}, "Processes": {"type": "array", "items": {"type": "array", "items": {"type": "string"}}}}}}},
+      "schema_evidence": "authorized GET on the disposable BusyBox container observed process-table title strings and row arrays of strings only; process values were not retained"
+    },
+    {
+      "path": "/api/docker/containers/{param}/logs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": "string"}}},
+      "schema_evidence": "authorized GET on the disposable BusyBox container observed ret/logs response types with tail/timestamps query parameters; log contents were not retained"
     },
     {
       "path": "/api/docker/containers/{param}/commit",
