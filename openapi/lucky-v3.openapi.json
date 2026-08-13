@@ -7503,7 +7503,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "wrapper passes request object directly; current UI exercises the async sibling with these observed fields, while the synchronous handler was not executed",
+        "x-schema-evidence": "wrapper passes request object directly; authorized parser-only probes verified project_name/project_path/working_dir/compose_content strings and force_recreate/build booleans before handler execution. config_file_name accepted heterogeneous JSON values during parser probes, so its schema intentionally remains unspecified",
         "requestBody": {
           "required": true,
           "content": {
@@ -7511,13 +7511,25 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "project_name": {},
-                  "project_path": {},
+                  "project_name": {
+                    "type": "string"
+                  },
+                  "project_path": {
+                    "type": "string"
+                  },
                   "config_file_name": {},
-                  "working_dir": {},
-                  "compose_content": {},
-                  "force_recreate": {},
-                  "build": {}
+                  "working_dir": {
+                    "type": "string"
+                  },
+                  "compose_content": {
+                    "type": "string"
+                  },
+                  "force_recreate": {
+                    "type": "boolean"
+                  },
+                  "build": {
+                    "type": "boolean"
+                  }
                 }
               }
             }
@@ -7565,7 +7577,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend Compose create/start/rebuild actions construct these fields before apiComposeUpAsync",
+        "x-schema-evidence": "frontend Compose create/start/rebuild actions construct these fields before apiComposeUpAsync; request types reuse the parser-verified synchronous Compose-up model and the async handler was not executed for schema discovery",
         "requestBody": {
           "required": true,
           "content": {
@@ -7573,13 +7585,25 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "project_name": {},
-                  "project_path": {},
+                  "project_name": {
+                    "type": "string"
+                  },
+                  "project_path": {
+                    "type": "string"
+                  },
                   "config_file_name": {},
-                  "working_dir": {},
-                  "compose_content": {},
-                  "force_recreate": {},
-                  "build": {}
+                  "working_dir": {
+                    "type": "string"
+                  },
+                  "compose_content": {
+                    "type": "string"
+                  },
+                  "force_recreate": {
+                    "type": "boolean"
+                  },
+                  "build": {
+                    "type": "boolean"
+                  }
                 }
               }
             }
@@ -8037,6 +8061,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "dangerous",
+        "x-schema-evidence": "authorized probe first confirmed the existing Compose project's backup list was empty; a nonexistent string backup name passed request parsing and stopped at Backup path not configured, while object candidates were treated as missing backup names; no restore executed and the backup list remained empty",
         "parameters": [
           {
             "name": "param",
@@ -8054,7 +8079,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "backup": {}
+                  "backup": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -8146,11 +8173,22 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "logs": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -8171,7 +8209,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend Compose log dialog constructs this explicit request object before POST",
+        "x-schema-evidence": "frontend Compose log dialog constructs this explicit request object; authorized requests against the existing project verified project_name/project_path strings, services string[], tail string, timestamps/follow booleans, and ret/logs:string[] response types without retaining log contents",
         "parameters": [
           {
             "name": "param",
@@ -8189,12 +8227,27 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "project_name": {},
-                  "project_path": {},
-                  "services": {},
-                  "tail": {},
-                  "timestamps": {},
-                  "follow": {}
+                  "project_name": {
+                    "type": "string"
+                  },
+                  "project_path": {
+                    "type": "string"
+                  },
+                  "services": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "tail": {
+                    "type": "string"
+                  },
+                  "timestamps": {
+                    "type": "boolean"
+                  },
+                  "follow": {
+                    "type": "boolean"
+                  }
                 }
               }
             }
@@ -14367,6 +14420,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized fake-container/fake-image probe verified container_ids as string[], image_ref as string and both upgrade flags as booleans; the parser-valid request stopped at Image not found before any container change, while object/array/integer type violations were rejected",
         "requestBody": {
           "required": true,
           "content": {
@@ -14374,10 +14428,21 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "container_ids": {},
-                  "image_ref": {},
-                  "upgrade_compose": {},
-                  "upgrade_standalone": {}
+                  "container_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "image_ref": {
+                    "type": "string"
+                  },
+                  "upgrade_compose": {
+                    "type": "boolean"
+                  },
+                  "upgrade_standalone": {
+                    "type": "boolean"
+                  }
                 }
               }
             }
@@ -14425,6 +14490,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "async upgrade request uses the same frontend model as the synchronously runtime-verified upgrade request; no async upgrade handler was executed for schema discovery",
         "requestBody": {
           "required": true,
           "content": {
@@ -14432,10 +14498,21 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "container_ids": {},
-                  "image_ref": {},
-                  "upgrade_compose": {},
-                  "upgrade_standalone": {}
+                  "container_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "image_ref": {
+                    "type": "string"
+                  },
+                  "upgrade_compose": {
+                    "type": "boolean"
+                  },
+                  "upgrade_standalone": {
+                    "type": "boolean"
+                  }
                 }
               }
             }
@@ -15878,11 +15955,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -15903,6 +15985,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized deletion of the disposable .invalid mirror returned ret=0, restored mirrors to the empty baseline and preserved the five-container baseline",
         "requestBody": {
           "required": true,
           "content": {
@@ -15910,7 +15993,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "mirror": {}
+                  "mirror": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -15945,7 +16030,9 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "string"
+                      }
                     }
                   }
                 }
@@ -15968,7 +16055,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/docker/registry/mirrors returned mirrors=null; mirror item type/URLs are intentionally unspecified"
+        "x-schema-evidence": "authorized disposable registry-mirror probe observed mirrors=null at baseline, then a one-item string list after adding a reserved .invalid URL, and mirrors returned to null after cleanup; URL values were not retained"
       },
       "post": {
         "summary": "Lucky frontend call: POST /api/docker/registry/mirrors",
@@ -15984,11 +16071,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -16009,6 +16101,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized disposable .invalid registry mirror POST returned ret=0 and produced one string mirror entry; cleanup immediately removed it and container count remained unchanged",
         "requestBody": {
           "required": true,
           "content": {
@@ -16016,7 +16109,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "mirror": {}
+                  "mirror": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -17260,6 +17355,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "dangerous",
+        "x-schema-evidence": "authorized probe first confirmed an existing volume's backup list was empty; a nonexistent string backup name passed request parsing and stopped at Backup path not configured, object candidates were treated as missing names, and the backup list remained empty",
         "parameters": [
           {
             "name": "param",
@@ -17277,7 +17373,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "backup": {}
+                  "backup": {
+                    "type": "string"
+                  }
                 }
               }
             }

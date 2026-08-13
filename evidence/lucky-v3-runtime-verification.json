@@ -850,14 +850,16 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["project_name", "project_path", "config_file_name", "working_dir", "compose_content", "force_recreate", "build"],
-      "schema_evidence": "wrapper passes request object directly; current UI exercises the async sibling with these observed fields, while the synchronous handler was not executed"
+      "request_body_schema": {"type":"object","properties":{"project_name":{"type":"string"},"project_path":{"type":"string"},"config_file_name":{},"working_dir":{"type":"string"},"compose_content":{"type":"string"},"force_recreate":{"type":"boolean"},"build":{"type":"boolean"}}},
+      "schema_evidence": "wrapper passes request object directly; authorized parser-only probes verified project_name/project_path/working_dir/compose_content strings and force_recreate/build booleans before handler execution. config_file_name accepted heterogeneous JSON values during parser probes, so its schema intentionally remains unspecified"
     },
     {
       "path": "/api/docker/compose/up-async",
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["project_name", "project_path", "config_file_name", "working_dir", "compose_content", "force_recreate", "build"],
-      "schema_evidence": "frontend Compose create/start/rebuild actions construct these fields before apiComposeUpAsync"
+      "request_body_schema": {"type":"object","properties":{"project_name":{"type":"string"},"project_path":{"type":"string"},"config_file_name":{},"working_dir":{"type":"string"},"compose_content":{"type":"string"},"force_recreate":{"type":"boolean"},"build":{"type":"boolean"}}},
+      "schema_evidence": "frontend Compose create/start/rebuild actions construct these fields before apiComposeUpAsync; request types reuse the parser-verified synchronous Compose-up model and the async handler was not executed for schema discovery"
     },
     {
       "path": "/api/docker/compose/down",
@@ -916,6 +918,14 @@
       "schema_evidence": "frontend restore dialog builds FormData with file,target_path,project_name,auto_start and optional config_file_name; restore handler was not executed"
     },
     {
+      "path": "/api/docker/compose/{param}/backups/restore",
+      "method": "POST",
+      "risk": "dangerous",
+      "body_keys": ["backup"],
+      "request_body_schema": {"type":"object","properties":{"backup":{"type":"string"}}},
+      "schema_evidence": "authorized probe first confirmed the existing Compose project's backup list was empty; a nonexistent string backup name passed request parsing and stopped at Backup path not configured, while object candidates were treated as missing backup names; no restore executed and the backup list remained empty"
+    },
+    {
       "path": "/api/docker/compose/{param}/backups/upload",
       "method": "POST",
       "risk": "dangerous",
@@ -928,7 +938,9 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["project_name", "project_path", "services", "tail", "timestamps", "follow"],
-      "schema_evidence": "frontend Compose log dialog constructs this explicit request object before POST"
+      "request_body_schema": {"type":"object","properties":{"project_name":{"type":"string"},"project_path":{"type":"string"},"services":{"type":"array","items":{"type":"string"}},"tail":{"type":"string"},"timestamps":{"type":"boolean"},"follow":{"type":"boolean"}}},
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"logs":{"type":"array","items":{"type":"string"}}}},
+      "schema_evidence": "frontend Compose log dialog constructs this explicit request object; authorized requests against the existing project verified project_name/project_path strings, services string[], tail string, timestamps/follow booleans, and ret/logs:string[] response types without retaining log contents"
     },
     {
       "path": "/api/docker/config",
@@ -2253,11 +2265,53 @@
       "schema_evidence": "authorized GET /api/docker/images/upgrade-status returned an empty dynamic data object; per-image value schema remains unspecified"
     },
     {
+      "path": "/api/docker/images/upgrade-containers",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["container_ids", "image_ref", "upgrade_compose", "upgrade_standalone"],
+      "request_body_schema": {"type":"object","properties":{"container_ids":{"type":"array","items":{"type":"string"}},"image_ref":{"type":"string"},"upgrade_compose":{"type":"boolean"},"upgrade_standalone":{"type":"boolean"}}},
+      "schema_evidence": "authorized fake-container/fake-image probe verified container_ids as string[], image_ref as string and both upgrade flags as booleans; the parser-valid request stopped at Image not found before any container change, while object/array/integer type violations were rejected"
+    },
+    {
+      "path": "/api/docker/images/upgrade-containers-async",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["container_ids", "image_ref", "upgrade_compose", "upgrade_standalone"],
+      "request_body_schema": {"type":"object","properties":{"container_ids":{"type":"array","items":{"type":"string"}},"image_ref":{"type":"string"},"upgrade_compose":{"type":"boolean"},"upgrade_standalone":{"type":"boolean"}}},
+      "schema_evidence": "async upgrade request uses the same frontend model as the synchronously runtime-verified upgrade request; no async upgrade handler was executed for schema discovery"
+    },
+    {
+      "path": "/api/docker/volumes/{param}/backups/restore",
+      "method": "POST",
+      "risk": "dangerous",
+      "body_keys": ["backup"],
+      "request_body_schema": {"type":"object","properties":{"backup":{"type":"string"}}},
+      "schema_evidence": "authorized probe first confirmed an existing volume's backup list was empty; a nonexistent string backup name passed request parsing and stopped at Backup path not configured, object candidates were treated as missing names, and the backup list remained empty"
+    },
+    {
       "path": "/api/docker/registry/mirrors",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "mirrors": {"type": ["array", "null"], "items": {}}}},
-      "schema_evidence": "authorized GET /api/docker/registry/mirrors returned mirrors=null; mirror item type/URLs are intentionally unspecified"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"mirrors":{"type":["array","null"],"items":{"type":"string"}}}},
+      "schema_evidence": "authorized disposable registry-mirror probe observed mirrors=null at baseline, then a one-item string list after adding a reserved .invalid URL, and mirrors returned to null after cleanup; URL values were not retained"
+    },
+    {
+      "path": "/api/docker/registry/mirrors",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["mirror"],
+      "request_body_schema": {"type":"object","properties":{"mirror":{"type":"string"}}},
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "authorized disposable .invalid registry mirror POST returned ret=0 and produced one string mirror entry; cleanup immediately removed it and container count remained unchanged"
+    },
+    {
+      "path": "/api/docker/registry/mirrors",
+      "method": "DELETE",
+      "risk": "mutating",
+      "body_keys": ["mirror"],
+      "request_body_schema": {"type":"object","properties":{"mirror":{"type":"string"}}},
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "authorized deletion of the disposable .invalid mirror returned ret=0, restored mirrors to the empty baseline and preserved the five-container baseline"
     },
     {
       "path": "/api/docker/volumes/backup/status",
