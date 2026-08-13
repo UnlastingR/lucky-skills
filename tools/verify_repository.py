@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 23:
+    if len(untyped_request_routes) > 19:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 23 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 19 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     coraza_request = {
@@ -980,6 +980,43 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             fail(f"WebTerminal zero-session request schema must not invent required fields for {route_key}")
         if route.response_schema is not None:
             fail(f"WebTerminal session-not-found evidence must not claim a success response for {route_key}")
+
+    ipfilter_subrule_request = {
+        "type": "object",
+        "properties": {
+            "Key": {"type": "string"}, "Remark": {"type": "string"}, "Enable": {"type": "boolean"},
+            "Type": {"type": "string"}, "LongTermValid": {"type": "boolean"}, "ValidTimestamp": {"type": "integer"},
+            "IPTextSets": {"type": "string"}, "IPDBKeyWords": {"type": "string"},
+            "AutoDeleteOnExpiry": {"type": "boolean"}, "InvalidIPTextEntryCount": {"type": "integer"},
+            "InvalidIPTextEntriesPreview": {"type": "array", "items": {"type": "string"}},
+            "IPInfoKeywordFilter": {"type": "object"},
+        },
+    }
+    for route_key in {("POST", "/api/ipfliter/list/{param}"), ("PUT", "/api/ipfliter/list/{param}/{param2}")}:
+        route = merged_by_key[route_key]
+        if route.request_body_schema != ipfilter_subrule_request:
+            fail(f"IPFilter parser-verified SubRule request schema regressed for {route_key}")
+        if set(route.body_keys) != set(ipfilter_subrule_request["properties"]):
+            fail(f"IPFilter SubRule request schema must cover exactly the frontend body fields for {route_key}")
+        if isinstance(route.request_body_schema, dict) and "required" in route.request_body_schema:
+            fail(f"IPFilter SubRule request schema must not invent required fields for {route_key}")
+        if route.response_schema is not None:
+            fail(f"IPFilter parser-only SubRule evidence must not claim a success response for {route_key}")
+
+    ipfilter_match = merged_by_key[("POST", "/api/ipfliter/list/{param}/{param2}/match")]
+    if ipfilter_match.request_body_schema != {"type": "object", "properties": {"ip": {"type": "string"}}}:
+        fail("IPFilter subrule-match request schema regressed")
+    if ipfilter_match.response_schema is not None:
+        fail("IPFilter dummy-rule match evidence must not claim a success response")
+
+    ipfilter_batch_delete = merged_by_key[("POST", "/api/ipfliter/porttrap/blockedips/batch-delete")]
+    expected_ipfilter_batch_delete = {
+        "type": "object", "properties": {"ips": {"type": "array", "items": {"type": "string"}}}
+    }
+    if ipfilter_batch_delete.request_body_schema != expected_ipfilter_batch_delete:
+        fail("IPFilter blocked-IP batch-delete request schema regressed")
+    if ipfilter_batch_delete.response_schema != {"type": "object", "properties": {"ret": {"type": "integer"}}}:
+        fail("IPFilter blocked-IP empty-baseline ret-only response schema regressed")
 
     explicit_small_request_schemas = {
         ("PUT", "/api/frontend-preferences"): {

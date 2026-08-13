@@ -21449,7 +21449,7 @@
           "lucky_ipfilter-CGTD3trT.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend SubRule editor initializes and sends this model directly for create; authorized built-in rules currently have no subrules",
+        "x-schema-evidence": "frontend SubRule editor initializes and sends this model directly for create; authorized parser-only probes against a dummy parent verified all primitive fields, InvalidIPTextEntriesPreview as string[] and IPInfoKeywordFilter as object before any subrule handler could create a resource",
         "parameters": [
           {
             "name": "param",
@@ -21467,18 +21467,45 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Key": {},
-                  "Remark": {},
-                  "Enable": {},
-                  "Type": {},
-                  "LongTermValid": {},
-                  "ValidTimestamp": {},
-                  "IPTextSets": {},
-                  "IPDBKeyWords": {},
-                  "AutoDeleteOnExpiry": {},
-                  "InvalidIPTextEntryCount": {},
-                  "InvalidIPTextEntriesPreview": {},
-                  "IPInfoKeywordFilter": {}
+                  "Key": {
+                    "type": "string"
+                  },
+                  "Remark": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "Type": {
+                    "type": "string"
+                  },
+                  "LongTermValid": {
+                    "type": "boolean"
+                  },
+                  "ValidTimestamp": {
+                    "type": "integer"
+                  },
+                  "IPTextSets": {
+                    "type": "string"
+                  },
+                  "IPDBKeyWords": {
+                    "type": "string"
+                  },
+                  "AutoDeleteOnExpiry": {
+                    "type": "boolean"
+                  },
+                  "InvalidIPTextEntryCount": {
+                    "type": "integer"
+                  },
+                  "InvalidIPTextEntriesPreview": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "IPInfoKeywordFilter": {
+                    "type": "object"
+                  }
                 }
               }
             }
@@ -21727,7 +21754,7 @@
           "lucky_ipfilter-CGTD3trT.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend SubRule editor sends the same normalized subrule model directly to PUT; current authorized built-in rules have no subrules",
+        "x-schema-evidence": "frontend SubRule editor sends the same normalized subrule model directly to PUT; request types reuse the parser-verified SubRule struct and no successful subrule update handler was executed",
         "parameters": [
           {
             "name": "param",
@@ -21753,18 +21780,45 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Key": {},
-                  "Remark": {},
-                  "Enable": {},
-                  "Type": {},
-                  "LongTermValid": {},
-                  "ValidTimestamp": {},
-                  "IPTextSets": {},
-                  "IPDBKeyWords": {},
-                  "AutoDeleteOnExpiry": {},
-                  "InvalidIPTextEntryCount": {},
-                  "InvalidIPTextEntriesPreview": {},
-                  "IPInfoKeywordFilter": {}
+                  "Key": {
+                    "type": "string"
+                  },
+                  "Remark": {
+                    "type": "string"
+                  },
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "Type": {
+                    "type": "string"
+                  },
+                  "LongTermValid": {
+                    "type": "boolean"
+                  },
+                  "ValidTimestamp": {
+                    "type": "integer"
+                  },
+                  "IPTextSets": {
+                    "type": "string"
+                  },
+                  "IPDBKeyWords": {
+                    "type": "string"
+                  },
+                  "AutoDeleteOnExpiry": {
+                    "type": "boolean"
+                  },
+                  "InvalidIPTextEntryCount": {
+                    "type": "integer"
+                  },
+                  "InvalidIPTextEntriesPreview": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "IPInfoKeywordFilter": {
+                    "type": "object"
+                  }
                 }
               }
             }
@@ -21812,6 +21866,7 @@
           "lucky_ipfilter-CGTD3trT.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized parser-only probe against dummy parent/subrule ids verified ip as string during JSON decoding; no match handler with a real rule executed",
         "parameters": [
           {
             "name": "param",
@@ -21837,7 +21892,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "ip": {}
+                  "ip": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -22125,11 +22182,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -22150,6 +22212,7 @@
           "lucky_ipfilter-CGTD3trT.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized probe ran only after GET confirmed the blocked-IP baseline total was zero; a documentation-range string IP array returned ret=0, an object-array candidate failed parsing, and the blocked-IP baseline remained zero afterward",
         "requestBody": {
           "required": true,
           "content": {
@@ -22157,7 +22220,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "ips": {}
+                  "ips": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
