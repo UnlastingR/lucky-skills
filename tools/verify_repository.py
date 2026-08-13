@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 81:
+    if len(untyped_request_routes) > 78:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 81 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 78 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     explicit_small_request_schemas = {
@@ -582,6 +582,85 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     )
     if custom_ipdb_path_schema != {"type": "string"}:
         fail("IPDB custom path runtime evidence regressed")
+
+    base_put_route = merged_by_key[("PUT", "/api/baseconfigure")]
+    base_put = base_put_route.request_body_schema
+    base_props = base_put.get("properties", {}) if isinstance(base_put, dict) else {}
+    if not isinstance(base_put, dict) or base_put.get("type") != "object":
+        fail("baseconfigure PUT request schema must remain an object")
+    if set(base_props) != set(base_put_route.body_keys):
+        fail("baseconfigure PUT request schema must cover exactly the frontend body fields")
+    base_string_fields = {
+        "AdminAccount", "AdminPassword", "AdminWebListenIP", "BackendServerListBackup",
+        "BackgroundColor", "BackgroundImage", "CustomDNSA", "CustomDNSB", "CustomDNSC",
+        "CustomDNSD", "CustomDNSList", "DeviceID", "FrontendLanguage", "FrontendTheme",
+        "GlobalNoLimitCIDRs", "OldPassword", "OpenToken", "OriginsList",
+        "ProxyProtocolTrustedCIDRs", "SafeURL", "TimeZone", "TwoFAKey",
+    }
+    base_integer_fields = {
+        "AdminWebListenHttpsPort", "AdminWebListenPort", "BackgroundBlur", "ConfVer",
+        "FirewallInitDelay", "GCPercent", "GOMAXPROCS", "HttpClientTimeout", "LogMaxSize",
+        "MaxConsecutiveLoginFailures", "StatusHistoryRetentionDays",
+        "StatusHistorySampleIntervalSeconds", "TokenExpirationHour", "TwoFADigits",
+    }
+    base_boolean_fields = {
+        "AdminWebListenTLS", "AllowAllThirdAuthUsers", "AllowInternetaccess",
+        "AutoOptionsFirewall", "CatchPanic", "DisableAllowAllOrigins", "DisableNTPSync",
+        "DisableNTPSyncLog", "EnableCustomBackgroundColor", "EnableCustomBackgroundImage",
+        "EnableOpenToken", "EnableStatusHistory", "EnableThirdAuthLogin", "ForceHTTPS",
+        "FrontendDisableAutoExpandLeftMenu", "GlobalDisableFirewallOpt", "IgnoreAuthInfoCheck",
+        "IgnoreSafeURLCheck", "InsecureSkipVerify", "OpenTokenConfirmed", "RestartAfterPanic",
+        "SetGCPercent", "ThirdAuthLoginSkipTwoFA", "TwoFAEnable",
+    }
+    for field in base_string_fields:
+        if base_props.get(field) != {"type": "string"}:
+            fail(f"baseconfigure string request type regressed for {field}")
+    for field in base_integer_fields:
+        if base_props.get(field) != {"type": "integer"}:
+            fail(f"baseconfigure integer request type regressed for {field}")
+    for field in base_boolean_fields:
+        if base_props.get(field) != {"type": "boolean"}:
+            fail(f"baseconfigure boolean request type regressed for {field}")
+    for field in ("DisableModules", "Keys", "StatNetInterfaceList", "ThirdAuthLoginUserList"):
+        if base_props.get(field) != {}:
+            fail(f"baseconfigure null-only runtime field must remain untyped for {field}")
+    if base_props.get("hiddenModules") != {"type": ["array", "null"], "items": {}}:
+        fail("baseconfigure hiddenModules request type must reuse verified module model")
+    if "required" in base_put:
+        fail("baseconfigure PUT request schema must not invent required fields")
+
+    filebrowser_put = merged_by_key[("PUT", "/api/third/filebrowser/configure")].request_body_schema
+    filebrowser_get = merged_by_key[("GET", "/api/third/filebrowser/configure")].response_schema
+    filebrowser_get_props = (
+        filebrowser_get.get("properties", {}).get("configure", {}).get("properties", {})
+        if isinstance(filebrowser_get, dict)
+        else {}
+    )
+    expected_filebrowser_props = dict(filebrowser_get_props)
+    expected_filebrowser_props["RedisCacheUrl"] = {"type": "string"}
+    if filebrowser_put != {"type": "object", "properties": expected_filebrowser_props}:
+        fail("FileBrowser PUT request schema must match safe GET projection plus RedisCacheUrl:string")
+    if isinstance(filebrowser_put, dict) and "required" in filebrowser_put:
+        fail("FileBrowser PUT request schema must not invent required fields")
+
+    wol_webhook = merged_by_key[("POST", "/api/wol/webhooktest")].request_body_schema
+    wol_get = merged_by_key[("GET", "/api/wol/service/configure")].response_schema
+    wol_server_props = (
+        wol_get.get("properties", {}).get("configure", {}).get("properties", {}).get("Server", {}).get("properties", {})
+        if isinstance(wol_get, dict)
+        else {}
+    )
+    wol_webhook_fields = tuple(merged_by_key[("POST", "/api/wol/webhooktest")].body_keys)
+    expected_wol_webhook_props = {
+        field: ({"type": "string"} if field == "WebhookProxyPassword" else wol_server_props.get(field))
+        for field in wol_webhook_fields
+    }
+    if any(value is None for value in expected_wol_webhook_props.values()):
+        fail("WOL webhook request fields must remain backed by the verified Server read model")
+    if wol_webhook != {"type": "object", "properties": expected_wol_webhook_props}:
+        fail("WOL webhook-test request schema regressed")
+    if isinstance(wol_webhook, dict) and "required" in wol_webhook:
+        fail("WOL webhook-test request schema must not invent required fields")
 
     update_confirm = merged_by_key[("PUT", "/api/update/comfire")].request_body_schema
     expected_update_confirm = {
