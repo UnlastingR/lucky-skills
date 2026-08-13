@@ -1385,6 +1385,7 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             "IPInfoKeywordFilter": {"type": "object"},
         },
     }
+    ipfilter_ret_only = {"type": "object", "properties": {"ret": {"type": "integer"}}}
     for route_key in {("POST", "/api/ipfliter/list/{param}"), ("PUT", "/api/ipfliter/list/{param}/{param2}")}:
         route = merged_by_key[route_key]
         if route.request_body_schema != ipfilter_subrule_request:
@@ -1393,8 +1394,67 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             fail(f"IPFilter SubRule request schema must cover exactly the frontend body fields for {route_key}")
         if isinstance(route.request_body_schema, dict) and "required" in route.request_body_schema:
             fail(f"IPFilter SubRule request schema must not invent required fields for {route_key}")
-        if route.response_schema is not None:
-            fail(f"IPFilter parser-only SubRule evidence must not claim a success response for {route_key}")
+        if route.response_schema != ipfilter_ret_only:
+            fail(f"IPFilter disposable SubRule ret-only response schema regressed for {route_key}")
+    if merged_by_key[("DELETE", "/api/ipfliter/list/{param}/{param2}")].response_schema != ipfilter_ret_only:
+        fail("IPFilter disposable SubRule delete response schema regressed")
+
+    ipfilter_keyword_filter = {
+        "type": "object",
+        "properties": {
+            "Source": {"type": "string"},
+            "IncludeMode": {"type": "string"},
+            "IncludeKeywords": {"type": ["array", "null"], "items": {}},
+            "ExcludeMode": {"type": "string"},
+            "ExcludeKeywords": {"type": ["array", "null"], "items": {}},
+            "CaseSensitive": {"type": "boolean"},
+        },
+    }
+    ipfilter_subrule_props = {
+        "Key": {"type": "string"},
+        "Enable": {"type": "boolean"},
+        "Remark": {"type": "string"},
+        "Type": {"type": "string"},
+        "LongTermValid": {"type": "boolean"},
+        "ValidTimestamp": {"type": "integer"},
+        "IPTextSets": {"type": "string"},
+        "InvalidIPTextEntryCount": {"type": "integer"},
+        "InvalidIPTextEntriesPreview": {"type": ["array", "null"], "items": {"type": "string"}},
+        "IPDBKeyWords": {"type": "string"},
+        "AutoDeleteOnExpiry": {"type": "boolean"},
+        "IPInfoKeywordFilter": ipfilter_keyword_filter,
+    }
+    expected_ipfilter_detail = {
+        "type": "object",
+        "properties": {
+            "ret": {"type": "integer"},
+            "subRule": {"type": "object", "properties": ipfilter_subrule_props},
+        },
+    }
+    if merged_by_key[("GET", "/api/ipfliter/list/{param}/{param2}")].response_schema != expected_ipfilter_detail:
+        fail("IPFilter disposable SubRule detail response schema regressed")
+
+    expected_ipfilter_subrule_list = {
+        "type": "object",
+        "properties": {
+            "ret": {"type": "integer"},
+            "subRuleList": {
+                "type": ["array", "null"],
+                "items": {
+                    "type": "object",
+                    "properties": {**ipfilter_subrule_props, "IPTextSetsCount": {"type": "integer"}},
+                },
+            },
+        },
+    }
+    if merged_by_key[("GET", "/api/ipfliter/list/subrulelist/{param}")].response_schema != expected_ipfilter_subrule_list:
+        fail("IPFilter disposable SubRule list item schema regressed")
+
+    ipfilter_toggle = merged_by_key[("GET", "/api/ipfliter/list/{param}/{param2}/{param3}")]
+    if ipfilter_toggle.risk is not OperationRisk.MUTATING:
+        fail("IPFilter SubRule enable/disable GET must remain classified as mutating")
+    if ipfilter_toggle.response_schema != ipfilter_ret_only:
+        fail("IPFilter SubRule enable/disable GET ret-only response schema regressed")
 
     ipfilter_match = merged_by_key[("POST", "/api/ipfliter/list/{param}/{param2}/match")]
     if ipfilter_match.request_body_schema != {"type": "object", "properties": {"ip": {"type": "string"}}}:
@@ -2028,8 +2088,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("Local Path Browser delete response schema regressed")
 
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 274:
-        fail(f"response-schema coverage regressed below 274 routes: {response_schema_count}")
+    if response_schema_count < 279:
+        fail(f"response-schema coverage regressed below 279 routes: {response_schema_count}")
 
     safe_utility_response_routes = {
         ("GET", "/api/baseconfigure"),
