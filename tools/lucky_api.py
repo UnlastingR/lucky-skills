@@ -133,6 +133,7 @@ def command_catalog(args: argparse.Namespace, catalog: RouteCatalog) -> int:
                 "body_keys": list(route.body_keys),
                 "has_body": route.has_body,
                 "response_type": route.response_type,
+                "response_content_type": route.response_content_type,
                 "request_body_schema": route.request_body_schema,
                 "request_content_type": route.request_content_type,
                 "response_schema": route.response_schema,

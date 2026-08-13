@@ -431,7 +431,7 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             value = item.get(field)
             if value is not None and not isinstance(value, dict):
                 fail(f"runtime verified route {field} must be an object")
-        for field in ("request_content_type", "schema_evidence"):
+        for field in ("request_content_type", "response_content_type", "schema_evidence"):
             value = item.get(field)
             if value is not None and (not isinstance(value, str) or not value.strip()):
                 fail(f"runtime verified route {field} must be a non-empty string")
@@ -2488,10 +2488,16 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             fail(f"Local Path Browser path response schema regressed for {route_key}")
     if merged_by_key[("DELETE", "/api/local-path-browser/path")].response_schema != ret_only_schema:
         fail("Local Path Browser delete response schema regressed")
+    if merged_by_key[("DELETE", "/api/local-path-browser/path")].risk is not OperationRisk.DANGEROUS:
+        fail("Local Path Browser delete must remain classified dangerous")
 
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
     if response_schema_count < 324:
         fail(f"response-schema coverage regressed below 324 routes: {response_schema_count}")
+
+    icon_response = merged_by_key[("GET", "/api/iconlib/icon")]
+    if icon_response.response_type != "blob" or icon_response.response_content_type != "image/png":
+        fail("IconLib icon response must retain its runtime-verified image/png media type")
 
     def count_schema_holes(value: object) -> int:
         if value == {}:
@@ -3232,6 +3238,86 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         if "meta" in top_props or "settings" in top_props:
             fail(f"WebService statistics sensitive config fields leaked into schema for {route_key}")
 
+    def schema_property_paths(schema: object, prefix: str = "") -> set[str]:
+        if not isinstance(schema, dict):
+            return set()
+        properties = schema.get("properties")
+        paths: set[str] = set()
+        if not isinstance(properties, dict):
+            return paths
+        for name, child in properties.items():
+            path = f"{prefix}.{name}" if prefix else name
+            paths.add(path)
+            paths.update(schema_property_paths(child, path))
+            if isinstance(child, dict) and "items" in child:
+                paths.update(schema_property_paths(child.get("items"), path + "[]"))
+        return paths
+
+    statistics_safe_property_paths = {
+        ("GET", "/api/webservice/statistics/capabilities"): {
+            "ret",
+            "capabilities",
+            "capabilities.contractVersion",
+            "capabilities.timeRangeSemantics",
+            "capabilities.bucketBoundary",
+            "capabilities.granularities",
+            "capabilities.retention",
+            "capabilities.retention.minuteHours",
+            "capabilities.retention.hourDays",
+            "capabilities.retention.dayDays",
+            "capabilities.metrics",
+            "capabilities.metrics[].key",
+            "capabilities.metrics[].label",
+            "capabilities.filters",
+            "capabilities.filters[].key",
+            "capabilities.filters[].availability",
+            "capabilities.rankingDimensions",
+            "capabilities.rankingDimensions[].key",
+            "capabilities.rankingDimensions[].availability",
+            "capabilities.rankingDimensions[].candidateLimit",
+            "capabilities.geoDimensions",
+            "capabilities.geoDimensions[].key",
+            "capabilities.geoDimensions[].availability",
+        },
+        ("GET", "/api/webservice/statistics/daily"): {
+            "ret",
+            "aggregateGranularity",
+            "approximate",
+            "days",
+            "days[].date",
+            "end",
+            "quality",
+            "quality.complete",
+            "quality.estimated",
+            "quality.missingFrom",
+            "quality.requestedStart",
+            "quality.requestedEnd",
+            "quality.actualStart",
+            "quality.actualEnd",
+            "quality.boundaryTruncated",
+            "stale",
+            "start",
+            "summary",
+            "summary.date",
+        },
+        ("GET", "/api/webservice/statistics/realtime"): {
+            "ret",
+            "connections",
+            "lastMinute",
+            "point",
+            "point.timestamp",
+            "traffic",
+            "waf",
+        },
+    }
+    for route_key, allowed_paths in statistics_safe_property_paths.items():
+        actual_paths = schema_property_paths(merged_by_key[route_key].response_schema)
+        if actual_paths != allowed_paths:
+            fail(
+                f"WebService statistics safe response allowlist regressed for {route_key}: "
+                f"expected {sorted(allowed_paths)}, got {sorted(actual_paths)}"
+            )
+
     capabilities = merged_by_key[("GET", "/api/webservice/statistics/capabilities")].response_schema
     capability_props = (
         capabilities.get("properties", {}).get("capabilities", {}).get("properties", {})
@@ -3504,7 +3590,9 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     }:
         fail("SSL syncClientList response schema regressed")
     certificate_check_time = ssl_setting_props.get("certificateCheckTime", {})
-    if not isinstance(certificate_check_time, dict) or "syncClientList" in certificate_check_time:
+    if not isinstance(certificate_check_time, dict) or "syncClientList" in certificate_check_time.get(
+        "properties", {}
+    ):
         fail("SSL syncClientList must remain a top-level settings response field")
 
     sensitive_response_fields = {

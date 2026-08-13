@@ -34,9 +34,9 @@ def default_credentials_path() -> Path:
     if override:
         return Path(override).expanduser()
     if os.name == "nt":
-        root = Path(os.environ.get("APPDATA", Path.home() / "AppData" / "Roaming"))
+        root = Path(os.environ.get("APPDATA") or (Path.home() / "AppData" / "Roaming"))
     else:
-        root = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config"))
+        root = Path(os.environ.get("XDG_CONFIG_HOME") or (Path.home() / ".config"))
     return root / "lucky-skills" / "credentials.json"
 
 

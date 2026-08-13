@@ -147,6 +147,26 @@ class ClientTests(unittest.TestCase):
                 allow_unsafe=True,
             )
 
+    def test_route_specific_success_marker_requires_raw_msg_field(self) -> None:
+        response = FakeResponse(json.dumps({"ret": 1, "message": "成功"}).encode())
+        with self.assertRaises(LuckyAPIError):
+            self.client(lambda request, timeout: response).request(
+                "PUT",
+                "/api/about-content",
+                json_body={},
+                allow_unsafe=True,
+            )
+
+    def test_route_specific_success_marker_rejects_boolean_ret(self) -> None:
+        response = FakeResponse(json.dumps({"ret": True, "msg": "成功"}).encode())
+        with self.assertRaises(LuckyAPIError):
+            self.client(lambda request, timeout: response).request(
+                "PUT",
+                "/api/about-content",
+                json_body={},
+                allow_unsafe=True,
+            )
+
     def test_base_url_rejects_embedded_credentials(self) -> None:
         with self.assertRaises(ValueError):
             LuckyClient("https://user:password@example.test/safe", "T" * 32)

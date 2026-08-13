@@ -40,6 +40,13 @@ VERIFIED_MUTATING_GET_TEMPLATES = {
     "/api/rclone/sync/option",
 }
 
+# These operations are destructive even when their path does not contain a
+# generic action word. Keep the conservative classification without relying on
+# the optional runtime-verification sidecar.
+VERIFIED_DANGEROUS_OPERATIONS = {
+    ("DELETE", "/api/local-path-browser/path"),
+}
+
 # Lucky has state-changing GET routes. Match complete path segments or well-known
 # action names instead of assuming all GET requests are safe.
 SIDE_EFFECT_GET_ACTIONS = {
@@ -139,6 +146,7 @@ class Route:
     body_keys: tuple[str, ...]
     has_body: bool
     response_type: str
+    response_content_type: str | None = field(default=None, compare=False)
     risk_override: OperationRisk | None = None
     request_body_schema: dict | None = field(default=None, compare=False)
     request_content_type: str | None = field(default=None, compare=False)
@@ -162,6 +170,8 @@ def classify_known_operation(method: str, path: str) -> OperationRisk:
     method = method.upper()
     if (method, path) in VERIFIED_READ_ONLY:
         return OperationRisk.READ_ONLY
+    if (method, path) in VERIFIED_DANGEROUS_OPERATIONS:
+        return OperationRisk.DANGEROUS
     if method == "GET" and path in VERIFIED_MUTATING_GET_TEMPLATES:
         return OperationRisk.MUTATING
     segments = _segments(path)
@@ -333,6 +343,11 @@ class RouteCatalog:
                         body_keys=tuple(str(value) for value in item.get("body_keys", [])),
                         has_body=bool(item.get("has_body", False)),
                         response_type=str(item.get("response_type", "unknown")),
+                        response_content_type=(
+                            str(item["response_content_type"])
+                            if item.get("response_content_type") is not None
+                            else None
+                        ),
                         risk_override=risk_override,
                         request_body_schema=(
                             dict(item["request_body_schema"])

@@ -11,6 +11,7 @@ from unittest import mock
 from tools.lucky_credentials import (
     CredentialError,
     command_run,
+    default_credentials_path,
     load_credentials,
     normalize_base_url,
     redacted_base_url,
@@ -21,6 +22,18 @@ from tools.lucky_credentials import (
 
 
 class CredentialTests(unittest.TestCase):
+    @unittest.skipIf(os.name == "nt", "XDG config-home test")
+    def test_empty_xdg_config_home_falls_back_to_home(self) -> None:
+        with mock.patch.dict(
+            os.environ,
+            {"XDG_CONFIG_HOME": "", "LUCKY_CREDENTIALS_FILE": ""},
+            clear=False,
+        ), mock.patch("tools.lucky_credentials.Path.home", return_value=Path("/home/tester")):
+            self.assertEqual(
+                default_credentials_path(),
+                Path("/home/tester/.config/lucky-skills/credentials.json"),
+            )
+
     def test_loopback_http_and_https_are_accepted(self) -> None:
         self.assertEqual(
             normalize_base_url("http://127.0.0.1:16601/safe-entry/"),

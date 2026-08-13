@@ -412,7 +412,7 @@ pageClass: api-routes-page
 |---|---|---|---|---|---|---|
 | `GET` | `/api/local-path-browser/list` | `read-only` | `path`, `showFiles` | — | `json` | `frontend-call` |
 | `POST` | `/api/local-path-browser/mkdir` | `mutating` | — | `path` | `json` | `frontend-call` |
-| `DELETE` | `/api/local-path-browser/path` | `mutating` | — | `confirmName`, `path` | `json` | `frontend-call` |
+| `DELETE` | `/api/local-path-browser/path` | `dangerous` | — | `confirmName`, `path` | `json` | `frontend-call` |
 | `PUT` | `/api/local-path-browser/rename` | `dangerous` | — | `newName`, `path` | `json` | `frontend-call` |
 | `GET` | `/api/local-path-browser/roots` | `read-only` | — | — | `json` | `frontend-call` |
 

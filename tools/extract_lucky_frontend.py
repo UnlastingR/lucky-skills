@@ -377,12 +377,17 @@ def response_spec(route: dict) -> dict:
         content = {"application/json": {"schema": route["response_schema"]}}
         description = "Response schema observed from runtime evidence; see x-schema-evidence for provenance."
     elif route["response_type"] in {"blob", "arraybuffer"}:
+        content_type = route.get("response_content_type") or "application/octet-stream"
         content = {
-            "application/octet-stream": {
+            content_type: {
                 "schema": {"type": "string", "format": "binary"}
             }
         }
-        description = "Binary download inferred from the frontend responseType."
+        description = (
+            "Binary response with runtime-verified media type."
+            if route.get("response_content_type")
+            else "Binary download inferred from the frontend responseType."
+        )
     else:
         content = {"application/json": {"schema": {"$ref": "#/components/schemas/LuckyEnvelope"}}}
         description = "Lucky JSON response; envelope shape varies by endpoint."

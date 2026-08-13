@@ -16,7 +16,7 @@
 4. 运行 `tools/render_lucky_artifacts.py` 从静态快照与绑定覆盖层生成 Markdown 和 OpenAPI。
 5. 审核生成 diff，特别注意 URL、token、域名、配置值和风险等级变化。
 6. 运行 `python3 -m unittest discover -s tests -v` 和 `python3 tools/verify_repository.py`；verifier 必须确认默认合并目录不残留 `unknown`。
-7. 在 PR 中写明 Lucky 版本、镜像类型、bundle 数量、运行时验证方法和实际执行过的只读请求范围。
+7. 在 PR 中写明 Lucky 版本、镜像类型、bundle 数量、运行时验证方法，以及实际执行过的只读请求和任何获授权 disposable 写探针范围；不得只写“已验证”而省略真实调用边界。
 
 不要仅为了让快照“更完整”而对**现有业务资源**调用删除、启停、同步、触发任务、终端、上传、下载、恢复或 Docker 写操作。上面的显式授权隔离 schema-probe 例外不得扩展到现有业务对象，也不得把生产级全局危险动作直接打到真实后端。恢复未知 HTTP 方法时，若已经在目标版本上校准确认路由器会在业务 handler 前执行鉴权，可优先使用**不带 OpenToken**的 method probe；非 404 只能证明 `METHOD + path` 被路由接受，不能证明请求体或业务成功语义。
 

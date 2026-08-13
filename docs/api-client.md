@@ -57,7 +57,7 @@ python3 tools/lucky_api.py catalog --module ddns --risk mutating
 python3 tools/lucky_api.py catalog --search logs --json
 ```
 
-目录输出包括方法、路径模板、模块、风险、查询字段、请求体字段、请求体 JSON Schema/Content-Type、响应 schema、schema 证据和路由证据等级。默认加载 `evidence/lucky-v3-endpoints.json` 后，会自动叠加同目录、且 `target.version` 与 `static_snapshot_sha256` 都精确匹配的 `lucky-v3-runtime-verification.json`；显式 `--catalog-file` 指向该静态快照时也会应用同目录运行时文件。任一绑定不匹配都会 fail-closed。字段为空表示当前证据无法恢复，不代表请求体确实没有字段。
+目录输出包括方法、路径模板、模块、风险、查询字段、请求体字段、请求体 JSON Schema/Content-Type、响应类型/已验证媒体类型、响应 schema、schema 证据和路由证据等级。默认加载 `evidence/lucky-v3-endpoints.json` 后，会自动叠加同目录、且 `target.version` 与 `static_snapshot_sha256` 都精确匹配的 `lucky-v3-runtime-verification.json`；显式 `--catalog-file` 指向该静态快照时也会应用同目录运行时文件。任一绑定不匹配都会 fail-closed。字段为空表示当前证据无法恢复，不代表请求体确实没有字段。
 
 当前 Lucky 3.0.0 运行时覆盖已把静态快照中的 41 条 `UNKNOWN` 全部归类或抑制为字面量误报，默认目录应返回 0 条 unknown：
 
@@ -65,7 +65,7 @@ python3 tools/lucky_api.py catalog --search logs --json
 python3 tools/lucky_api.py catalog --risk unknown --json
 ```
 
-`runtime-verified` 只表示方法/路由或受控 GET 行为已经在授权实例上确认，不代表所有请求体字段、WebSocket 协议或成功响应 schema 都已完整恢复。请求体补全另看 `schema_evidence`：例如前端模型直传、前端显式对象构造、授权只读 GET 的字段名/类型交叉验证，或隔离测试资源上的受控写入。当前 OpenAPI 已能表达 object、`array<string>`、multipart binary、octet-stream、嵌套对象、动态 map、enum 与数值上下界。Lucky 3.0.0 的“有请求体但字段/schema 为空”缺口已从 122 条降到 0 条；进一步的类型化覆盖按 merged catalog 统计：当前共有 **242 条 POST/PUT/PATCH**，其中 **218 条**标记 `has_body=true` 并在 OpenAPI 生成 `requestBody`；这 218 条中，顶层仍含未类型化属性的操作已压到 **1 条**，全路由显式 response schema 已提升到 **323 条**。当前已优先补深 DDNS、WebService、Docker、FRP、SSL/ACME、Security Groups、IPFilter/PortTrap、PortForward、STUN，并继续覆盖 Rclone、Cron、WOL、StorageManagement、FileBrowser、Status、IPDB、IconLib、Modules/About 与 Frontend Preferences 的运行时响应；运行时 GET 只保留字段名/JSON 类型，动态 RuleKey、域名、容器/网络标识、路径和秘密值都不进入证据文件。受保护 response schema 还会由 verifier 递归扫描 combinator/list 分支，禁止重新文档化 password/secret/private-key 字段。最后 6 条 Docker legacy wrapper 仍只记录隔离 BusyBox probe、请求校验差异或非破坏性 mock Docker API 实际证明的字段，不扩展推测字段。
+`runtime-verified` 只表示方法/路由或受控 GET 行为已经在授权实例上确认，不代表所有请求体字段、WebSocket 协议或成功响应 schema 都已完整恢复。请求体补全另看 `schema_evidence`：例如前端模型直传、前端显式对象构造、授权只读 GET 的字段名/类型交叉验证，或在实例所有者明确授权后对新建一次性资源执行并立即清理的有界 API 写探针。当前 OpenAPI 已能表达 object、`array<string>`、multipart binary、octet-stream、嵌套对象、动态 map、enum 与数值上下界。Lucky 3.0.0 的“有请求体但字段/schema 为空”缺口已从 122 条降到 0 条；进一步的类型化覆盖按 merged catalog 统计：当前共有 **242 条 POST/PUT/PATCH**，其中 **218 条**标记 `has_body=true` 并在 OpenAPI 生成 `requestBody`；这 218 条中，顶层仍含未类型化属性的操作已压到 **1 条**，全路由显式 response schema 已提升到 **324 条**。当前已优先补深 DDNS、WebService、Docker、FRP、SSL/ACME、Security Groups、IPFilter/PortTrap、PortForward、STUN，并继续覆盖 Rclone、Cron、WOL、StorageManagement、FileBrowser、Status、IPDB、IconLib、Modules/About 与 Frontend Preferences 的运行时响应；运行时 GET 只保留字段名/JSON 类型，动态 RuleKey、域名、容器/网络标识、路径和秘密值都不进入证据文件。受保护 response schema 还会由 verifier 递归扫描 combinator/list 分支，禁止重新文档化 password/secret/private-key 字段。最后 6 条 Docker legacy wrapper 仍只记录隔离 BusyBox probe、请求校验差异或非破坏性 mock Docker API 实际证明的字段，不扩展推测字段。
 
 ## 查询参数与二进制响应
 

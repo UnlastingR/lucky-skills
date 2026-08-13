@@ -8193,7 +8193,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "current Lucky 3.0.0 Compose backup-delete wrapper sends {backup:<name>} using the same backup-name argument as the runtime-verified restore wrapper, whose parser accepts a string and rejects object candidates as missing names; no backup DELETE handler was executed",
+        "x-schema-evidence": "current Lucky 3.0.0 Compose backup-delete wrapper sends the selected backup name as explicit {backup:<name>}; frontend inspection establishes backup as a string and no backup DELETE handler was executed for schema discovery",
         "parameters": [
           {
             "name": "param",
@@ -8432,7 +8432,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "dangerous",
-        "x-schema-evidence": "authorized probe first confirmed the existing Compose project's backup list was empty; a nonexistent string backup name passed request parsing and stopped at Backup path not configured, while object candidates were treated as missing backup names; no restore executed and the backup list remained empty",
+        "x-schema-evidence": "current Lucky 3.0.0 frontend Compose backup actions pass the selected backup name through the explicit {backup:<name>} request object for restore and delete; the frontend contract establishes backup as a string and no restore handler was executed for schema discovery",
         "parameters": [
           {
             "name": "param",
@@ -9535,7 +9535,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend create-container dialog explicitly transforms its form into Lucky body {name,config,hostConfig}; authorized isolated BusyBox probe created one network-disabled disposable container and observed ret/container_id/warnings response types, then removed the container and restored the five-container baseline",
+        "x-schema-evidence": "frontend create-container dialog explicitly transforms its form into Lucky body {name,config,hostConfig}; authorized isolated BusyBox probe created one network-disabled disposable container and observed ret/container_id/warnings response types, then removed the container and restored the pre-probe container baseline",
         "requestBody": {
           "required": true,
           "content": {
@@ -10328,7 +10328,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "authorized isolated BusyBox cleanup force-removed only the disposable probe container and observed a ret-only success response; container count returned to its five-container baseline",
+        "x-schema-evidence": "authorized isolated BusyBox cleanup force-removed only the disposable probe container and observed a ret-only success response; the pre-probe container baseline was restored",
         "parameters": [
           {
             "name": "param",
@@ -11291,7 +11291,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "dangerous",
-        "x-schema-evidence": "authorized isolated network-none BusyBox probe compressed only a fixed test file inside /tmp, verifying string output_name/output_path, string-array paths and ret/command/msg/output_name/output_path response types; no path or command values were retained and the container/image baseline returned to 5/5",
+        "x-schema-evidence": "authorized isolated network-none BusyBox probe compressed only a fixed test file inside /tmp, verifying string output_name/output_path, string-array paths and ret/command/msg/output_name/output_path response types; no path or command values were retained and the pre-probe container/image baseline was restored",
         "parameters": [
           {
             "name": "param",
@@ -11547,7 +11547,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "dangerous",
-        "x-schema-evidence": "authorized isolated network-none BusyBox probe decompressed only the disposable archive into /tmp, verifying string file_path/output_path and ret/command/file_path/msg/output_path response types; values were not retained and cleanup restored the 5/5 Docker baseline",
+        "x-schema-evidence": "authorized isolated network-none BusyBox probe decompressed only the disposable archive into /tmp, verifying string file_path/output_path and ret/command/file_path/msg/output_path response types; values were not retained and cleanup restored the pre-probe Docker inventory baseline",
         "parameters": [
           {
             "name": "param",
@@ -12502,7 +12502,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "authorized isolated BusyBox probe applied only a unique disposable label to the disposable container, verifying string label input and ret-only response; the container was deleted and the 5/5 baseline restored",
+        "x-schema-evidence": "authorized isolated BusyBox probe applied only a unique disposable label to the disposable container, verifying string label input and ret-only response; the container was deleted and the pre-probe inventory baseline restored",
         "parameters": [
           {
             "name": "param",
@@ -13205,7 +13205,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "dangerous",
-        "x-schema-evidence": "authorized isolated network-none BusyBox probe stopped only the disposable container with an integer timeout and observed a ret-only success response; cleanup then returned container/image counts to 5/5",
+        "x-schema-evidence": "authorized isolated network-none BusyBox probe stopped only the disposable container with an integer timeout and observed a ret-only success response; cleanup then restored the pre-probe container/image inventory baseline",
         "parameters": [
           {
             "name": "param",
@@ -14435,7 +14435,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "dangerous",
-        "x-schema-evidence": "authorized isolated BusyBox cleanup removed only the image pulled for the probe and observed a removed-event array plus ret; removal-event item fields remain unspecified and image count returned to its five-image baseline",
+        "x-schema-evidence": "authorized isolated BusyBox cleanup removed only the image pulled for the probe and observed a removed-event array plus ret; removal-event item fields remain unspecified and the pre-probe image baseline was restored",
         "parameters": [
           {
             "name": "force",
@@ -16357,7 +16357,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "authorized deletion of the disposable .invalid mirror returned ret=0, restored mirrors to the empty baseline and preserved the five-container baseline",
+        "x-schema-evidence": "authorized deletion of the disposable .invalid mirror returned ret=0, restored mirrors to the empty baseline and left the pre-probe container inventory unchanged",
         "requestBody": {
           "required": true,
           "content": {
@@ -17602,7 +17602,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "current Lucky 3.0.0 frontend sends the backup name as a string field; this matches the runtime-verified sibling restore request model",
+        "x-schema-evidence": "current Lucky 3.0.0 volume-backup frontend sends the selected backup name as an explicit string field for both delete and restore actions; no backup mutation handler was executed for schema discovery",
         "parameters": [
           {
             "name": "param",
@@ -17730,7 +17730,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "dangerous",
-        "x-schema-evidence": "authorized probe first confirmed an existing volume's backup list was empty; a nonexistent string backup name passed request parsing and stopped at Backup path not configured, object candidates were treated as missing names, and the backup list remained empty",
+        "x-schema-evidence": "current Lucky 3.0.0 frontend volume-backup actions pass the selected backup name through the explicit {backup:<name>} request object for restore and delete; the frontend contract establishes backup as a string and no restore handler was executed for schema discovery",
         "parameters": [
           {
             "name": "param",
@@ -20133,9 +20133,9 @@
         ],
         "responses": {
           "200": {
-            "description": "Binary download inferred from the frontend responseType.",
+            "description": "Binary response with runtime-verified media type.",
             "content": {
-              "application/octet-stream": {
+              "image/png": {
                 "schema": {
                   "type": "string",
                   "format": "binary"
@@ -24167,7 +24167,7 @@
         "x-evidence-bundles": [
           "lucky_LocalPathPicker-DtQ2R714.js"
         ],
-        "x-lucky-risk": "mutating",
+        "x-lucky-risk": "dangerous",
         "x-schema-evidence": "authorized disposable /tmp directory cleanup verified string path/confirmName input and a ret-only success response; post-cleanup matching-directory count returned to the zero baseline",
         "requestBody": {
           "required": true,

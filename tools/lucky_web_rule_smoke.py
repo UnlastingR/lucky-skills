@@ -247,7 +247,10 @@ def run_smoke_test(client: LuckyClient, name: str) -> dict[str, Any]:
     except BaseException as error:
         primary_error = error
     finally:
-        if create_succeeded and not cleanup_keys:
+        # A transport failure can happen after Lucky persisted the rule but
+        # before the client received the response. Always re-scan by the
+        # unique test name when we do not already know the cleanup key.
+        if not cleanup_keys:
             try:
                 cleanup_keys = find_created_keys(client, name, baseline_keys)
             except BaseException as error:

@@ -26,7 +26,7 @@ class ExtractorTests(unittest.TestCase):
     def test_openapi_uses_runtime_request_schema_and_content_type(self) -> None:
         snapshot = {
             "target": {"version": "test"},
-            "route_count": 2,
+            "route_count": 3,
             "routes": [
                 {
                     "path": "/api/order",
@@ -63,6 +63,19 @@ class ExtractorTests(unittest.TestCase):
                         "properties": {"file": {"type": "string", "format": "binary"}},
                     },
                 },
+                {
+                    "path": "/api/icon",
+                    "method": "GET",
+                    "module": "icon",
+                    "confidence": "runtime-verified",
+                    "evidence": [],
+                    "query_keys": [],
+                    "body_keys": [],
+                    "has_body": False,
+                    "response_type": "blob",
+                    "response_content_type": "image/png",
+                    "risk": "read-only",
+                },
             ],
         }
         with tempfile.TemporaryDirectory() as directory:
@@ -83,6 +96,11 @@ class ExtractorTests(unittest.TestCase):
         self.assertEqual(
             upload["requestBody"]["content"]["multipart/form-data"]["schema"]["properties"]["file"]["format"],
             "binary",
+        )
+        icon = document["paths"]["/api/icon"]["get"]
+        self.assertEqual(
+            icon["responses"]["200"]["content"]["image/png"]["schema"],
+            {"type": "string", "format": "binary"},
         )
 
 

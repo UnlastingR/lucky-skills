@@ -262,11 +262,17 @@ class LuckyClient:
         ret = payload.get("ret", 0)
         if ret in {0, None}:
             return
-        message = str(payload.get("msg") or payload.get("message") or "")
         if self.catalog is not None:
             route = self.catalog.match(response.method, response.path)
-            if route is not None and (ret, message) in route.success_response_markers:
+            raw_msg = payload.get("msg")
+            if (
+                route is not None
+                and type(ret) is int
+                and isinstance(raw_msg, str)
+                and (ret, raw_msg) in route.success_response_markers
+            ):
                 return
+        message = str(payload.get("msg") or payload.get("message") or "")
         message = message.replace(self._open_token, "<redacted>")
         if self._safe_entry:
             message = message.replace(self._safe_entry, "/<redacted-safe-entry>")
