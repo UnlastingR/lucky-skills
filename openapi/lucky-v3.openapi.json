@@ -6219,6 +6219,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "dangerous",
+        "x-schema-evidence": "frontend-call body fields identify one Compose project; project_name/project_path types are cross-checked against runtime-verified /api/docker/compose/projects name/path strings, and no backup was executed",
         "requestBody": {
           "required": true,
           "content": {
@@ -6226,8 +6227,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "project_name": {},
-                  "project_path": {}
+                  "project_name": {
+                    "type": "string"
+                  },
+                  "project_path": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -6331,6 +6336,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "frontend-call body carries project_path; its string type is cross-checked against runtime-verified Compose project path metadata, and the config handler was not executed",
         "requestBody": {
           "required": true,
           "content": {
@@ -6338,7 +6344,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "project_path": {}
+                  "project_path": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -6457,6 +6465,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "frontend-call body carries scan_path; authorized Local Path Browser runtime evidence establishes filesystem paths as strings, and discovery was not executed",
         "requestBody": {
           "required": true,
           "content": {
@@ -6464,7 +6473,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "scan_path": {}
+                  "scan_path": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -6512,6 +6523,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "frontend-call body carries project_path; its string type is cross-checked against runtime-verified Compose project path metadata, and the Dockerfile handler was not executed",
         "requestBody": {
           "required": true,
           "content": {
@@ -6519,7 +6531,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "project_path": {}
+                  "project_path": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -6788,6 +6802,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "frontend-call body carries filename/working_dir; authorized Local Path Browser evidence establishes entry names and paths as strings, and no file was read for schema discovery",
         "requestBody": {
           "required": true,
           "content": {
@@ -6795,8 +6810,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "filename": {},
-                  "working_dir": {}
+                  "filename": {
+                    "type": "string"
+                  },
+                  "working_dir": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -7295,6 +7314,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "frontend-call body carries editor content plus project_path; content is textual and project_path is cross-checked against runtime-verified Compose path strings, with no config write executed",
         "requestBody": {
           "required": true,
           "content": {
@@ -7302,8 +7322,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "content": {},
-                  "project_path": {}
+                  "content": {
+                    "type": "string"
+                  },
+                  "project_path": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -7351,6 +7375,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "frontend-call body carries Dockerfile editor content plus project_path; content is textual and project_path is cross-checked against runtime-verified Compose path strings, with no Dockerfile write executed",
         "requestBody": {
           "required": true,
           "content": {
@@ -7358,8 +7383,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "content": {},
-                  "project_path": {}
+                  "content": {
+                    "type": "string"
+                  },
+                  "project_path": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -9998,7 +10027,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "dangerous",
-        "x-schema-evidence": "frontend edit dialog rebuilds Docker config/hostConfig then sends explicit {name,config,hostConfig,auto_start,remove_old}; handler was not executed",
+        "x-schema-evidence": "frontend edit dialog rebuilds Docker config/hostConfig then sends explicit {name,config,hostConfig,auto_start,remove_old}; name and both nested config objects reuse the already verified create-container model, while auto_start/remove_old are frontend boolean switches; handler was not executed",
         "parameters": [
           {
             "name": "param",
@@ -10016,11 +10045,174 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": {},
-                  "config": {},
-                  "hostConfig": {},
-                  "auto_start": {},
-                  "remove_old": {}
+                  "name": {
+                    "type": "string"
+                  },
+                  "config": {
+                    "type": "object",
+                    "properties": {
+                      "Image": {
+                        "type": "string"
+                      },
+                      "Hostname": {
+                        "type": "string"
+                      },
+                      "User": {
+                        "type": "string"
+                      },
+                      "WorkingDir": {
+                        "type": "string"
+                      },
+                      "Tty": {
+                        "type": "boolean"
+                      },
+                      "OpenStdin": {
+                        "type": "boolean"
+                      },
+                      "Env": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "Cmd": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "Entrypoint": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "hostConfig": {
+                    "type": "object",
+                    "properties": {
+                      "NetworkMode": {
+                        "type": "string"
+                      },
+                      "Privileged": {
+                        "type": "boolean"
+                      },
+                      "AutoRemove": {
+                        "type": "boolean"
+                      },
+                      "RestartPolicy": {
+                        "type": "object",
+                        "properties": {
+                          "Name": {
+                            "type": "string"
+                          },
+                          "MaximumRetryCount": {
+                            "type": "integer"
+                          }
+                        }
+                      },
+                      "PortBindings": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "HostIp": {
+                                "type": "string"
+                              },
+                              "HostPort": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "Mounts": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "Type": {
+                              "type": "string"
+                            },
+                            "Source": {
+                              "type": "string"
+                            },
+                            "Target": {
+                              "type": "string"
+                            },
+                            "ReadOnly": {
+                              "type": "boolean"
+                            }
+                          }
+                        }
+                      },
+                      "NanoCpus": {
+                        "type": "integer"
+                      },
+                      "Memory": {
+                        "type": "integer"
+                      },
+                      "DNS": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "DNSSearch": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "ExtraHosts": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "CapAdd": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "CapDrop": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "Devices": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "PathOnHost": {
+                              "type": "string"
+                            },
+                            "PathInContainer": {
+                              "type": "string"
+                            },
+                            "CgroupPermissions": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "ShmSize": {
+                        "type": "integer"
+                      }
+                    }
+                  },
+                  "auto_start": {
+                    "type": "boolean"
+                  },
+                  "remove_old": {
+                    "type": "boolean"
+                  }
                 }
               }
             }
