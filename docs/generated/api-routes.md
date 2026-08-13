@@ -32,7 +32,7 @@
 | `PUT` | `/api/cloudflared/list` | `mutating` | — | `Key`, `Remark`, `Enable`, `Type`, `Params` | `json` | `frontend-call` |
 | `DELETE` | `/api/cloudflared/list/{param}` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/cloudflared/list/{param}` | `read-only` | — | — | `json` | `frontend-call` |
-| `GET` | `/api/cloudflared/list/{param}/{param2}` | `read-only` | — | — | `json` | `frontend-call` |
+| `GET` | `/api/cloudflared/list/{param}/{param2}` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/cloudflared/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
 | `PUT` | `/api/cloudflared/orderadjustment` | `mutating` | — | `array<string>` | `json` | `frontend-call` |
 | `GET` | `/api/cloudflared/{param}/cname/check` | `read-only` | `hostname` | — | `json` | `frontend-call` |

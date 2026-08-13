@@ -1009,14 +1009,101 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             "Type": {"type": "string"}, "Params": {"type": "object"},
         },
     }
+    cloudflared_ret_only = {"type": "object", "properties": {"ret": {"type": "integer"}}}
     for route_key in {("POST", "/api/cloudflared/list"), ("PUT", "/api/cloudflared/list")}:
         route = merged_by_key[route_key]
         if route.request_body_schema != cloudflared_instance_request:
             fail(f"Cloudflared semantic-sentinel request schema regressed for {route_key}")
         if set(route.body_keys) != set(cloudflared_instance_request["properties"]):
             fail(f"Cloudflared instance request schema must cover exactly the frontend body fields for {route_key}")
-        if route.response_schema is not None:
-            fail(f"Cloudflared semantic-invalid instance evidence must not claim a success response for {route_key}")
+        if route.response_schema != cloudflared_ret_only:
+            fail(f"Cloudflared disposable access instance ret-only response schema regressed for {route_key}")
+    if merged_by_key[("DELETE", "/api/cloudflared/list/{param}")].response_schema != cloudflared_ret_only:
+        fail("Cloudflared disposable access instance delete response schema regressed")
+
+    cloudflared_toggle = merged_by_key[("GET", "/api/cloudflared/list/{param}/{param2}")]
+    if cloudflared_toggle.risk is not OperationRisk.MUTATING:
+        fail("Cloudflared enable/disable GET must remain classified as mutating")
+    if cloudflared_toggle.response_schema != cloudflared_ret_only:
+        fail("Cloudflared enable/disable GET ret-only response schema regressed")
+
+    expected_cloudflared_list = {
+        "type": "object",
+        "properties": {
+            "ret": {"type": "integer"},
+            "list": {
+                "type": ["array", "null"],
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "Key": {"type": "string"},
+                        "Remark": {"type": "string"},
+                        "Type": {"type": "string"},
+                        "Enable": {"type": "boolean"},
+                        "RunErrorMsg": {"type": "string"},
+                        "Running": {"type": "boolean"},
+                        "Connected": {"type": "boolean"},
+                        "Reconnecting": {"type": "boolean"},
+                        "LocalURL": {"type": "string"},
+                        "AccessTarget": {"type": "string"},
+                    },
+                },
+            },
+        },
+    }
+    if merged_by_key[("GET", "/api/cloudflared/list")].response_schema != expected_cloudflared_list:
+        fail("Cloudflared disposable access list summary schema regressed")
+
+    expected_cloudflared_detail = {
+        "type": "object",
+        "properties": {
+            "instance": {
+                "type": "object",
+                "properties": {
+                    "Key": {"type": "string"},
+                    "Enable": {"type": "boolean"},
+                    "Remark": {"type": "string"},
+                    "Type": {"type": "string"},
+                    "Params": {
+                        "type": "object",
+                        "properties": {
+                            "Hostname": {"type": "string"},
+                            "Network": {"type": "string"},
+                            "ListenIP": {"type": "string"},
+                            "ListenPort": {"type": "integer"},
+                            "NoTlsVerify": {"type": "boolean"},
+                            "Destination": {"type": "string"},
+                            "ConnectTo": {"type": "string"},
+                            "UserAgent": {"type": "string"},
+                        },
+                    },
+                },
+            },
+            "ret": {"type": "integer"},
+        },
+    }
+    if merged_by_key[("GET", "/api/cloudflared/list/{param}")].response_schema != expected_cloudflared_detail:
+        fail("Cloudflared disposable access detail response schema regressed")
+
+    cloudflared_nullable_logs = {"type": ["array", "null"], "items": {}}
+    expected_cloudflared_reads = {
+        ("GET", "/api/cloudflared/{param}/lastlogs"): {
+            "type": "object", "properties": {"lastLogs": cloudflared_nullable_logs, "ret": {"type": "integer"}}
+        },
+        ("GET", "/api/cloudflared/{param}/logs"): {
+            "type": "object",
+            "properties": {
+                "logs": cloudflared_nullable_logs,
+                "page": {"type": "integer"},
+                "pageSize": {"type": "integer"},
+                "ret": {"type": "integer"},
+                "total": {"type": "integer"},
+            },
+        },
+    }
+    for route_key, expected_schema in expected_cloudflared_reads.items():
+        if merged_by_key[route_key].response_schema != expected_schema:
+            fail(f"Cloudflared disposable access read response schema regressed for {route_key}")
 
     cloudflared_ingress_rule = {
         "type": "object",
@@ -1941,8 +2028,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("Local Path Browser delete response schema regressed")
 
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 267:
-        fail(f"response-schema coverage regressed below 267 routes: {response_schema_count}")
+    if response_schema_count < 274:
+        fail(f"response-schema coverage regressed below 274 routes: {response_schema_count}")
 
     safe_utility_response_routes = {
         ("GET", "/api/baseconfigure"),
