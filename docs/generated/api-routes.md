@@ -64,7 +64,7 @@
 | `PUT` | `/api/coraza/list` | `mutating` | — | `Key`, `Name`, `Enable`, `InboundScoreThreshold`, `OutboundScoreThreshold`, `CorazaWAFConfigList`, `RuleExclusions` | `json` | `frontend-call` |
 | `DELETE` | `/api/coraza/list/{param}` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/coraza/list/{param}` | `read-only` | — | — | `json` | `frontend-call` |
-| `GET` | `/api/coraza/list/{param}/{param2}` | `read-only` | — | — | `json` | `frontend-call` |
+| `GET` | `/api/coraza/list/{param}/{param2}` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/coraza/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
 
 ## `cron`

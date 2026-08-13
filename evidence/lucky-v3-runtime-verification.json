@@ -1559,6 +1559,20 @@
       "schema_evidence": "authorized disposable Coraza cleanup deleted only the disabled unattached schema-probe instance by its generated Key and observed a ret-only success response; the instance-list baseline returned to zero"
     },
     {
+      "path": "/api/coraza/list/{param}",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"instance":{"type":"object","properties":{"Key":{"type":"string"},"Name":{"type":"string"},"Enable":{"type":"boolean"},"InboundScoreThreshold":{"type":"integer"},"OutboundScoreThreshold":{"type":"integer"},"CorazaWAFConfigList":{"type":"array","items":{}},"RuleExclusions":{"type":"array","items":{}}}},"ret":{"type":"integer"}}},
+      "schema_evidence": "authorized GET of an Enable=false unattached disposable Coraza instance observed the complete top-level instance model and array container types; empty config/exclusion arrays keep item schemas unspecified. The instance was deleted and the zero-instance baseline restored"
+    },
+    {
+      "path": "/api/coraza/list/{param}/{param2}",
+      "method": "GET",
+      "risk": "mutating",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "current Lucky 3.0.0 Coraza panel invokes GET /api/coraza/list/{Key}/{desiredEnable} from the enable/disable confirmation action, so this GET is mutating. An authorized disabled disposable instance was called with desiredEnable=false, remained disabled, returned ret-only success, and was then deleted"
+    },
+    {
       "path": "/api/security-groups",
       "method": "POST",
       "risk": "mutating",

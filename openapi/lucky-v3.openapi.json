@@ -2222,11 +2222,44 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "instance": {
+                      "type": "object",
+                      "properties": {
+                        "Key": {
+                          "type": "string"
+                        },
+                        "Name": {
+                          "type": "string"
+                        },
+                        "Enable": {
+                          "type": "boolean"
+                        },
+                        "InboundScoreThreshold": {
+                          "type": "integer"
+                        },
+                        "OutboundScoreThreshold": {
+                          "type": "integer"
+                        },
+                        "CorazaWAFConfigList": {
+                          "type": "array",
+                          "items": {}
+                        },
+                        "RuleExclusions": {
+                          "type": "array",
+                          "items": {}
+                        }
+                      }
+                    },
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -2247,6 +2280,7 @@
           "lucky_coraza-D1zcK8x_.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET of an Enable=false unattached disposable Coraza instance observed the complete top-level instance model and array container types; empty config/exclusion arrays keep item schemas unspecified. The instance was deleted and the zero-instance baseline restored",
         "parameters": [
           {
             "name": "param",
@@ -2274,11 +2308,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -2298,7 +2337,8 @@
         "x-evidence-bundles": [
           "lucky_coraza-D1zcK8x_.js"
         ],
-        "x-lucky-risk": "read-only",
+        "x-lucky-risk": "mutating",
+        "x-schema-evidence": "current Lucky 3.0.0 Coraza panel invokes GET /api/coraza/list/{Key}/{desiredEnable} from the enable/disable confirmation action, so this GET is mutating. An authorized disabled disposable instance was called with desiredEnable=false, remained disabled, returned ret-only success, and was then deleted",
         "parameters": [
           {
             "name": "param",
