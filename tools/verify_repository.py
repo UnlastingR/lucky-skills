@@ -3018,6 +3018,7 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         ("GET", "/api/ddns/configure"): {"WebhookProxyPassword"},
         ("GET", "/api/ddns/credential-sources"): {"secretValue", "proxyPassword"},
         ("GET", "/api/ddns/task/{param}"): {"Secret", "HttpClientProxyPassword", "WebhookProxyPassword"},
+        ("GET", "/api/frp/list/{param}"): {"ConfigText"},
         ("GET", "/api/wol/service/configure"): {
             "Token",
             "QuickControlSafeURL",
@@ -3117,7 +3118,6 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
                     "Remark": {"type": "string"},
                     "Type": {"type": "string"},
                     "ConfigMode": {"type": "string"},
-                    "ConfigText": {"type": "string"},
                     "Params": {"type": ["object", "null"]},
                 },
             },

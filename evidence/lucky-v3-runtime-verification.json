@@ -706,8 +706,8 @@
       "path": "/api/frp/list/{param}",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type":"object","properties":{"instance":{"type":"object","properties":{"Key":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"Type":{"type":"string"},"ConfigMode":{"type":"string"},"ConfigText":{"type":"string"},"Params":{"type":["object","null"]}}},"ret":{"type":"integer"}}},
-      "schema_evidence": "authorized GET of the disposable Enable=false text-mode FRP client observed the detail envelope and public instance field types; Params was null in text mode and no credential-bearing nested form parameters are documented"
+      "response_schema": {"type":"object","properties":{"instance":{"type":"object","properties":{"Key":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"Type":{"type":"string"},"ConfigMode":{"type":"string"},"Params":{"type":["object","null"]}}},"ret":{"type":"integer"}}},
+      "schema_evidence": "authorized GET of the disposable Enable=false text-mode FRP client observed the detail envelope and public instance field types; ConfigText is intentionally omitted because raw FRP text configuration can contain credentials, while Params was null in text mode and no credential-bearing nested form parameters are documented"
     },
     {
       "path": "/api/frp/{param}/status",
