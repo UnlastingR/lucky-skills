@@ -1734,6 +1734,28 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         if isinstance(request_schema, dict) and "required" in request_schema:
             fail(f"explicit small request schema must not invent required fields for {route_key}")
 
+    frontend_preferences_response = {
+        "type": "object",
+        "properties": {
+            "preferences": {
+                "type": "object",
+                "properties": {
+                    "BackgroundBlur": {"type": "integer"},
+                    "BackgroundColor": {"type": "string"},
+                    "BackgroundImage": {"type": "string"},
+                    "EnableCustomBackgroundColor": {"type": "boolean"},
+                    "EnableCustomBackgroundImage": {"type": "boolean"},
+                    "FrontendDisableAutoExpandLeftMenu": {"type": "boolean"},
+                    "FrontendLanguage": {"type": "string"},
+                    "FrontendTheme": {"type": "string"},
+                },
+            },
+            "ret": {"type": "integer"},
+        },
+    }
+    if merged_by_key[("PUT", "/api/frontend-preferences")].response_schema != frontend_preferences_response:
+        fail("Frontend preferences same-value PUT response schema regressed")
+
     login_challenge = merged_by_key[("GET", "/api/login/challenge")].response_schema
     challenge_id_schema = (
         login_challenge.get("properties", {}).get("challengeId")
@@ -2406,8 +2428,24 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("Local Path Browser delete response schema regressed")
 
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 296:
-        fail(f"response-schema coverage regressed below 296 routes: {response_schema_count}")
+    if response_schema_count < 323:
+        fail(f"response-schema coverage regressed below 323 routes: {response_schema_count}")
+
+    top_level_untyped_write_routes = []
+    for route in merged.routes:
+        if route.method not in {"POST", "PUT", "PATCH"} or not route.has_body:
+            continue
+        schema = route.request_body_schema
+        if not isinstance(schema, dict) or schema.get("type") != "object":
+            continue
+        properties = schema.get("properties", {})
+        if isinstance(properties, dict) and any(value == {} for value in properties.values()):
+            top_level_untyped_write_routes.append((route.method, route.path))
+    if len(top_level_untyped_write_routes) > 3:
+        fail(
+            "top-level untyped write-schema coverage regressed above 3 routes: "
+            f"{len(top_level_untyped_write_routes)}"
+        )
 
     safe_utility_response_routes = {
         ("GET", "/api/baseconfigure"),

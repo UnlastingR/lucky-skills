@@ -17812,11 +17812,45 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "preferences": {
+                      "type": "object",
+                      "properties": {
+                        "BackgroundBlur": {
+                          "type": "integer"
+                        },
+                        "BackgroundColor": {
+                          "type": "string"
+                        },
+                        "BackgroundImage": {
+                          "type": "string"
+                        },
+                        "EnableCustomBackgroundColor": {
+                          "type": "boolean"
+                        },
+                        "EnableCustomBackgroundImage": {
+                          "type": "boolean"
+                        },
+                        "FrontendDisableAutoExpandLeftMenu": {
+                          "type": "boolean"
+                        },
+                        "FrontendLanguage": {
+                          "type": "string"
+                        },
+                        "FrontendTheme": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -17837,7 +17871,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend preference sync explicitly constructs {theme: currentTheme, language: currentLocale} from string UI identifiers before PUT; no preference write was executed",
+        "x-schema-evidence": "frontend preference sync explicitly constructs {theme: currentTheme, language: currentLocale} from string UI identifiers before PUT; an authorized same-value write using the current light/zh_CN preference returned ret=0 plus a preferences object containing only frontend theme/language/background/menu fields. A read of /api/baseconfigure before and after confirmed FrontendTheme and FrontendLanguage remained unchanged",
         "requestBody": {
           "required": true,
           "content": {
