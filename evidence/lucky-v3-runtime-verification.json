@@ -1537,14 +1537,25 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["Key", "DeviceName", "MacList", "BroadcastIPs", "ProbeTargets", "Port", "Relay", "Repeat", "IOT_DianDeng_Enable", "IOT_DianDeng_AUTHKEY", "IOT_DianDeng_InsecureSkipVerify", "IOT_DianDengBindComponentEnable", "IOT_DianDengBindComponent", "IOT_Bemfa_Enable", "IOT_Bemfa_SecretKey", "IOT_Bemfa_Topic", "IOT_Bemfa_InsecureSkipVerify"],
-      "schema_evidence": "frontend WOL device form initializes this explicit model and passes it directly to POST; authorized device list is empty"
+      "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"DeviceName":{"type":"string"},"MacList":{"type":"array","items":{"type":"string"}},"BroadcastIPs":{"type":"array","items":{}},"ProbeTargets":{"type":"array","items":{}},"Port":{"type":"integer"},"Relay":{"type":"boolean"},"Repeat":{"type":"integer"},"IOT_DianDeng_Enable":{"type":"boolean"},"IOT_DianDeng_AUTHKEY":{"type":"string"},"IOT_DianDeng_InsecureSkipVerify":{"type":"boolean"},"IOT_DianDengBindComponentEnable":{"type":"boolean"},"IOT_DianDengBindComponent":{"type":"string"},"IOT_Bemfa_Enable":{"type":"boolean"},"IOT_Bemfa_SecretKey":{"type":"string"},"IOT_Bemfa_Topic":{"type":"string"},"IOT_Bemfa_InsecureSkipVerify":{"type":"boolean"}}},
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend WOL device form initializes this explicit model and passes it directly to POST; an authorized disposable device probe used a locally administered fake MAC, never invoked wakeup/shutdown, verified the request JSON types and ret-only success response, then removed the device with the device-count baseline restored to zero"
     },
     {
       "path": "/api/wol/device",
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["Key", "DeviceName", "MacList", "BroadcastIPs", "ProbeTargets", "Port", "Relay", "Repeat", "IOT_DianDeng_Enable", "IOT_DianDeng_AUTHKEY", "IOT_DianDeng_InsecureSkipVerify", "IOT_DianDengBindComponentEnable", "IOT_DianDengBindComponent", "IOT_Bemfa_Enable", "IOT_Bemfa_SecretKey", "IOT_Bemfa_Topic", "IOT_Bemfa_InsecureSkipVerify"],
-      "schema_evidence": "frontend WOL device editor copies these fields from a list item and passes the model directly to PUT; authorized device list is empty"
+      "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"DeviceName":{"type":"string"},"MacList":{"type":"array","items":{"type":"string"}},"BroadcastIPs":{"type":"array","items":{}},"ProbeTargets":{"type":"array","items":{}},"Port":{"type":"integer"},"Relay":{"type":"boolean"},"Repeat":{"type":"integer"},"IOT_DianDeng_Enable":{"type":"boolean"},"IOT_DianDeng_AUTHKEY":{"type":"string"},"IOT_DianDeng_InsecureSkipVerify":{"type":"boolean"},"IOT_DianDengBindComponentEnable":{"type":"boolean"},"IOT_DianDengBindComponent":{"type":"string"},"IOT_Bemfa_Enable":{"type":"boolean"},"IOT_Bemfa_SecretKey":{"type":"string"},"IOT_Bemfa_Topic":{"type":"string"},"IOT_Bemfa_InsecureSkipVerify":{"type":"boolean"}}},
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend WOL device editor copies the same model into PUT; the authorized disposable device probe round-tripped the generated string Key and the same typed request body, observed ret-only success, and deleted the probe without sending any wake or shutdown action"
+    },
+    {
+      "path": "/api/wol/device",
+      "method": "DELETE",
+      "risk": "mutating",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "authorized disposable WOL device cleanup deleted only the schema-probe device by its generated Key and observed a ret-only success response; the device-count baseline returned to zero"
     },
     {
       "path": "/api/wol/service/configure",
@@ -2792,8 +2803,8 @@
       "path": "/api/wol/devices",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": ["array", "null"], "items": {}}, "lastLogs": {"type": ["array", "null"], "items": {}}}},
-      "schema_evidence": "authorized GET /api/wol/devices returned null device/log collections; device and log item schemas remain unspecified"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"list":{"type":["array","null"],"items":{"type":"object","properties":{"Key":{"type":"string"},"DeviceName":{"type":"string"},"MacList":{"type":"array","items":{"type":"string"}},"BroadcastIPs":{"type":"array","items":{}},"ProbeTargets":{"type":"array","items":{}},"Port":{"type":"integer"},"Relay":{"type":"boolean"},"Repeat":{"type":"integer"},"UpdateTime":{"type":"integer"},"IOT_DianDeng_Enable":{"type":"boolean"},"IOT_DianDeng_InsecureSkipVerify":{"type":"boolean"},"IOT_DianDengBindComponentEnable":{"type":"boolean"},"IOT_DianDengBindComponent":{"type":"string"},"IOT_Bemfa_Enable":{"type":"boolean"},"IOT_Bemfa_Topic":{"type":"string"},"IOT_Bemfa_InsecureSkipVerify":{"type":"boolean"},"State":{"type":"string"},"OnlineMacList":{"type":["array","null"],"items":{}},"ConnectionState":{"type":"string"},"ConnectedMacList":{"type":["array","null"],"items":{}},"ReachabilityState":{"type":"string"},"ReachableTargetList":{"type":["array","null"],"items":{}},"Probe":{"type":"object"},"StateConflict":{"type":"boolean"},"CanShutdown":{"type":"boolean"},"CanWakeup":{"type":"boolean"},"DianDengClientState":{"type":"string"},"BemfaClientState":{"type":"string"}}}},"lastLogs":{"type":["array","null"],"items":{}}}},
+      "schema_evidence": "authorized GET /api/wol/devices observed one disposable device created solely for schema verification; only safe field names and JSON types were retained, IOT authentication/secret fields are intentionally omitted from the response model, empty or null collection item shapes remain unspecified, and the device was deleted with the baseline restored to zero"
     },
     {
       "path": "/api/wol/devices_lite",
