@@ -1909,9 +1909,39 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         if isinstance(icon_sources, dict)
         else {}
     )
-    for field in ("Type", "Path", "RcloneKey", "RcloneRoot", "StoreKey", "StoreRoot"):
-        if icon_source_props.get(field) != {"type": "string"}:
-            fail(f"IconLib source string evidence regressed for {field}")
+    expected_icon_source_props = {
+        "Alias": {"type": "string"},
+        "Type": {"type": "string"},
+        "Path": {"type": "string"},
+        "RcloneKey": {"type": "string"},
+        "RcloneRoot": {"type": "string"},
+        "StoreKey": {"type": "string"},
+        "StoreRoot": {"type": "string"},
+        "Enable": {"type": "boolean"},
+        "Description": {"type": "string"},
+    }
+    if icon_source_props != expected_icon_source_props:
+        fail("IconLib safe source item schema regressed")
+
+    icon_source_request = {"type": "object", "properties": expected_icon_source_props}
+    icon_ret_only_schema = {"type": "object", "properties": {"ret": {"type": "integer"}}}
+    for route_key in {
+        ("POST", "/api/iconlib/sources"),
+        ("PUT", "/api/iconlib/sources"),
+    }:
+        route = merged_by_key[route_key]
+        if route.request_body_schema != icon_source_request:
+            fail(f"IconLib source request schema regressed for {route_key}")
+        if set(route.body_keys) != set(expected_icon_source_props):
+            fail(f"IconLib source body keys regressed for {route_key}")
+        if route.response_schema != icon_ret_only_schema:
+            fail(f"IconLib source ret-only response schema regressed for {route_key}")
+    for route_key in {
+        ("DELETE", "/api/iconlib/sources/{param}"),
+        ("GET", "/api/iconlib/sources/{param}/enable/{param2}"),
+    }:
+        if merged_by_key[route_key].response_schema != icon_ret_only_schema:
+            fail(f"IconLib disposable-source ret-only response schema regressed for {route_key}")
 
     crosschecked_resource_request_schemas = {
         ("PUT", "/api/modules/hidden"): {
