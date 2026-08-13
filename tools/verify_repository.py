@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 62:
+    if len(untyped_request_routes) > 60:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 62 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 60 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     coraza_request = {
@@ -593,6 +593,37 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             fail(f"IPDB item request schema must not invent required fields for {route_key}")
         if route.response_schema is not None:
             fail(f"IPDB parser-only schema evidence must not claim a success response for {route_key}")
+
+    rclone_remote_request = {
+        "type": "object",
+        "properties": {
+            "Key": {"type": "string"},
+            "Type": {"type": "string"},
+            "Enable": {"type": "boolean"},
+            "Remark": {"type": "string"},
+            "Root": {"type": "array", "items": {}},
+            "Params": {"type": "object", "additionalProperties": {}},
+            "HttpClienInsecureSkipVerify": {"type": "boolean"},
+            "HttpClientProxyType": {"type": "string"},
+            "HttpClientProxyAddr": {"type": "string"},
+            "HttpClientProxyUser": {"type": "string"},
+            "HttpClientProxyPassword": {"type": "string"},
+            "SystemMount": {"type": "object"},
+        },
+    }
+    for route_key in {
+        ("POST", "/api/rclone/remotelist"),
+        ("PUT", "/api/rclone/remotelist"),
+    }:
+        route = merged_by_key[route_key]
+        if route.request_body_schema != rclone_remote_request:
+            fail(f"Rclone parser-verified remote request schema regressed for {route_key}")
+        if set(route.body_keys) != set(rclone_remote_request["properties"]):
+            fail(f"Rclone remote request schema must cover exactly the frontend body fields for {route_key}")
+        if isinstance(route.request_body_schema, dict) and "required" in route.request_body_schema:
+            fail(f"Rclone remote request schema must not invent required fields for {route_key}")
+        if route.response_schema is not None:
+            fail(f"Rclone parser-only remote evidence must not claim a success response for {route_key}")
 
     explicit_small_request_schemas = {
         ("PUT", "/api/frontend-preferences"): {
