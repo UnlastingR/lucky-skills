@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 19:
+    if len(untyped_request_routes) > 11:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 19 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 11 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     coraza_request = {
@@ -793,6 +793,76 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             fail(f"Docker parser-only request schema must not invent required fields for {route_key}")
         if route.response_schema is not None:
             fail(f"Docker parser-only request must not claim a success response for {route_key}")
+
+    docker_compose_up_request = {
+        "type": "object",
+        "properties": {
+            "project_name": {"type": "string"}, "project_path": {"type": "string"}, "config_file_name": {},
+            "working_dir": {"type": "string"}, "compose_content": {"type": "string"},
+            "force_recreate": {"type": "boolean"}, "build": {"type": "boolean"},
+        },
+    }
+    for route_key in {("POST", "/api/docker/compose/up"), ("POST", "/api/docker/compose/up-async")}:
+        route = merged_by_key[route_key]
+        if route.request_body_schema != docker_compose_up_request:
+            fail(f"Docker Compose-up request schema regressed for {route_key}")
+        if set(route.body_keys) != set(docker_compose_up_request["properties"]):
+            fail(f"Docker Compose-up request schema must cover exactly the frontend body fields for {route_key}")
+        if route.request_body_schema["properties"]["config_file_name"] != {}:
+            fail("Docker Compose-up config_file_name must remain unspecified after heterogeneous parser acceptance")
+        if route.response_schema is not None:
+            fail(f"Docker Compose-up parser-only evidence must not claim a success response for {route_key}")
+
+    docker_backup_restore = {"type": "object", "properties": {"backup": {"type": "string"}}}
+    for route_key in {("POST", "/api/docker/compose/{param}/backups/restore"), ("POST", "/api/docker/volumes/{param}/backups/restore")}:
+        route = merged_by_key[route_key]
+        if route.request_body_schema != docker_backup_restore:
+            fail(f"Docker backup-restore request schema regressed for {route_key}")
+        if route.response_schema is not None:
+            fail(f"Docker backup-restore missing-backup evidence must not claim a success response for {route_key}")
+
+    docker_compose_logs = merged_by_key[("POST", "/api/docker/compose/{param}/logs")]
+    expected_compose_logs_request = {
+        "type": "object",
+        "properties": {
+            "project_name": {"type": "string"}, "project_path": {"type": "string"},
+            "services": {"type": "array", "items": {"type": "string"}}, "tail": {"type": "string"},
+            "timestamps": {"type": "boolean"}, "follow": {"type": "boolean"},
+        },
+    }
+    expected_compose_logs_response = {
+        "type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": "array", "items": {"type": "string"}}}
+    }
+    if docker_compose_logs.request_body_schema != expected_compose_logs_request:
+        fail("Docker Compose logs request schema regressed")
+    if docker_compose_logs.response_schema != expected_compose_logs_response:
+        fail("Docker Compose logs response schema regressed")
+
+    docker_upgrade_request = {
+        "type": "object",
+        "properties": {
+            "container_ids": {"type": "array", "items": {"type": "string"}}, "image_ref": {"type": "string"},
+            "upgrade_compose": {"type": "boolean"}, "upgrade_standalone": {"type": "boolean"},
+        },
+    }
+    for route_key in {("POST", "/api/docker/images/upgrade-containers"), ("POST", "/api/docker/images/upgrade-containers-async")}:
+        route = merged_by_key[route_key]
+        if route.request_body_schema != docker_upgrade_request:
+            fail(f"Docker upgrade request schema regressed for {route_key}")
+        if route.response_schema is not None:
+            fail(f"Docker fake-image upgrade evidence must not claim a success response for {route_key}")
+
+    docker_mirror_request = {"type": "object", "properties": {"mirror": {"type": "string"}}}
+    docker_ret_only = {"type": "object", "properties": {"ret": {"type": "integer"}}}
+    for route_key in {("POST", "/api/docker/registry/mirrors"), ("DELETE", "/api/docker/registry/mirrors")}:
+        route = merged_by_key[route_key]
+        if route.request_body_schema != docker_mirror_request or route.response_schema != docker_ret_only:
+            fail(f"Docker disposable registry-mirror schema regressed for {route_key}")
+    expected_mirror_list = {
+        "type": "object", "properties": {"ret": {"type": "integer"}, "mirrors": {"type": ["array", "null"], "items": {"type": "string"}}}
+    }
+    if merged_by_key[("GET", "/api/docker/registry/mirrors")].response_schema != expected_mirror_list:
+        fail("Docker registry-mirror list schema regressed")
 
     stun_rule_request = {
         "type": "object",
