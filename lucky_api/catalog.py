@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 import re
+from copy import deepcopy
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
@@ -189,12 +190,65 @@ def _route_module(path: str) -> str:
     return parts[2] if len(parts) > 2 else "unknown"
 
 
+def _apply_schema_patches(
+    route_map: dict[tuple[str, str], dict],
+    patches: object,
+) -> None:
+    if patches is None:
+        return
+    if not isinstance(patches, list):
+        raise CatalogError("runtime schema_patches must be an array")
+    seen: set[tuple[str, str, tuple[str, ...]]] = set()
+    for patch in patches:
+        if not isinstance(patch, dict):
+            raise CatalogError("runtime schema patch must be an object")
+        path = patch.get("path")
+        method = patch.get("method")
+        at = patch.get("at")
+        value = patch.get("value")
+        evidence = patch.get("evidence")
+        if not isinstance(path, str) or not path.startswith("/api/"):
+            raise CatalogError("runtime schema patch has invalid path")
+        if method not in {"GET", "POST", "PUT", "DELETE", "PATCH"}:
+            raise CatalogError("runtime schema patch has invalid method")
+        if not isinstance(at, list) or not at or not all(isinstance(key, str) and key for key in at):
+            raise CatalogError("runtime schema patch at must be a non-empty string path")
+        if not isinstance(value, dict) or not value:
+            raise CatalogError("runtime schema patch value must be a non-empty object")
+        if not isinstance(evidence, str) or not evidence.strip():
+            raise CatalogError("runtime schema patch requires evidence")
+        key = (path, method, tuple(at))
+        if key in seen:
+            raise CatalogError("runtime schema patch target is duplicated")
+        seen.add(key)
+        route = route_map.get((path, method))
+        if route is None:
+            raise CatalogError("runtime schema patch route is not backed by the merged catalog")
+        schema = route.get("response_schema")
+        if not isinstance(schema, dict):
+            raise CatalogError("runtime schema patch requires an existing response schema")
+        patched_schema = deepcopy(schema)
+        current: object = patched_schema
+        for segment in at[:-1]:
+            if not isinstance(current, dict) or segment not in current:
+                raise CatalogError("runtime schema patch target path does not exist")
+            current = current[segment]
+        leaf = at[-1]
+        if not isinstance(current, dict) or leaf not in current:
+            raise CatalogError("runtime schema patch target path does not exist")
+        if current[leaf] != {}:
+            raise CatalogError("runtime schema patch may only replace an empty schema object")
+        current[leaf] = deepcopy(value)
+        route["response_schema"] = patched_schema
+
+
 def _apply_runtime_verification(
     raw_routes: list[dict],
     source: Path,
     *,
     version: str,
     snapshot_sha256: str,
+    apply_schema_patches: bool = True,
 ) -> list[dict]:
     try:
         payload = json.loads(source.read_text(encoding="utf-8"))
@@ -257,6 +311,9 @@ def _apply_runtime_verification(
         merged.setdefault("response_type", "unknown")
         route_map[(path, method)] = merged
 
+    if apply_schema_patches:
+        _apply_schema_patches(route_map, payload.get("schema_patches"))
+
     return sorted(route_map.values(), key=lambda item: (str(item.get("module", "")), item["path"], item["method"]))
 
 
@@ -264,6 +321,7 @@ def load_merged_snapshot(
     path: str | Path,
     *,
     runtime_verification: str | Path | None = None,
+    apply_schema_patches: bool = True,
 ) -> dict:
     source = Path(path).expanduser()
     try:
@@ -282,6 +340,7 @@ def load_merged_snapshot(
             Path(runtime_verification).expanduser(),
             version=version,
             snapshot_sha256=hashlib.sha256(source_bytes).hexdigest(),
+            apply_schema_patches=apply_schema_patches,
         )
     merged = dict(payload)
     merged["routes"] = raw_routes
@@ -302,8 +361,13 @@ class RouteCatalog:
         path: str | Path,
         *,
         runtime_verification: str | Path | None = None,
+        apply_schema_patches: bool = True,
     ) -> "RouteCatalog":
-        payload = load_merged_snapshot(path, runtime_verification=runtime_verification)
+        payload = load_merged_snapshot(
+            path,
+            runtime_verification=runtime_verification,
+            apply_schema_patches=apply_schema_patches,
+        )
         raw_routes = payload["routes"]
         target = payload.get("target", {})
         version = str(target.get("version", "unknown"))

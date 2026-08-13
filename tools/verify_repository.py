@@ -469,12 +469,43 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     if len(keys) != len(set(keys)):
         fail("runtime verified routes contain duplicate path/method entries")
 
-    merged = RouteCatalog.from_file(snapshot_path, runtime_verification=runtime_path)
-    unknown = merged.search(risk=OperationRisk.UNKNOWN)
+    schema_patches = runtime.get("schema_patches", [])
+    if not isinstance(schema_patches, list):
+        fail("runtime schema_patches must be an array")
+    patch_keys = []
+    for patch in schema_patches:
+        if not isinstance(patch, dict):
+            fail("runtime schema patch must be an object")
+        path = patch.get("path")
+        method = patch.get("method")
+        at = patch.get("at")
+        value = patch.get("value")
+        evidence = patch.get("evidence")
+        if not isinstance(path, str) or not path.startswith("/api/"):
+            fail("runtime schema patch has invalid path")
+        if method not in {"GET", "POST", "PUT", "DELETE", "PATCH"}:
+            fail("runtime schema patch has invalid method")
+        if not isinstance(at, list) or not at or not all(isinstance(key, str) and key for key in at):
+            fail("runtime schema patch at must be a non-empty string path")
+        if not isinstance(value, dict) or not value:
+            fail("runtime schema patch value must be a non-empty object")
+        if not isinstance(evidence, str) or not evidence.strip():
+            fail("runtime schema patch requires evidence")
+        patch_keys.append((path, method, tuple(at)))
+    if len(patch_keys) != len(set(patch_keys)):
+        fail("runtime schema_patches contain duplicate targets")
+
+    patched_merged = RouteCatalog.from_file(snapshot_path, runtime_verification=runtime_path)
+    merged = RouteCatalog.from_file(
+        snapshot_path,
+        runtime_verification=runtime_path,
+        apply_schema_patches=False,
+    )
+    unknown = patched_merged.search(risk=OperationRisk.UNKNOWN)
     if unknown:
         fail(f"runtime route verification leaves {len(unknown)} unknown route(s)")
     unknown_response_types = [
-        route for route in merged.routes if route.response_type == "unknown"
+        route for route in patched_merged.routes if route.response_type == "unknown"
     ]
     if unknown_response_types:
         fail(
@@ -1205,7 +1236,19 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     if merged_by_key[("GET", "/api/cloudflared/list/{param}")].response_schema != expected_cloudflared_detail:
         fail("Cloudflared disposable access detail response schema regressed")
 
-    cloudflared_nullable_logs = {"type": ["array", "null"], "items": {}}
+    shared_module_log_item = {
+        "type": "object",
+        "properties": {
+            "LogContent": {"type": "string"},
+            "LogTime": {"type": "string"},
+            "ShowTime": {"type": "boolean"},
+            "Level": {"type": "string"},
+        },
+    }
+    cloudflared_nullable_logs = {
+        "type": ["array", "null"],
+        "items": shared_module_log_item,
+    }
     expected_cloudflared_reads = {
         ("GET", "/api/cloudflared/{param}/lastlogs"): {
             "type": "object", "properties": {"lastLogs": cloudflared_nullable_logs, "ret": {"type": "integer"}}
@@ -1417,7 +1460,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     if merged_by_key[("GET", "/api/stun/{param}")].response_schema != expected_stun_detail:
         fail("STUN disposable rule safe detail response schema regressed")
 
-    stun_nullable_logs = {"type": ["array", "null"], "items": {}}
+    stun_nullable_logs = {
+        "type": ["array", "null"],
+        "items": shared_module_log_item,
+    }
     if merged_by_key[("GET", "/api/stun/{param}/lastlogs")].response_schema != {
         "type": "object",
         "properties": {"lastLogs": stun_nullable_logs, "ret": {"type": "integer"}},
@@ -1650,9 +1696,9 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         "properties": {
             "Source": {"type": "string"},
             "IncludeMode": {"type": "string"},
-            "IncludeKeywords": {"type": ["array", "null"], "items": {}},
+            "IncludeKeywords": {"type": ["array", "null"], "items": {"type": "string"}},
             "ExcludeMode": {"type": "string"},
-            "ExcludeKeywords": {"type": ["array", "null"], "items": {}},
+            "ExcludeKeywords": {"type": ["array", "null"], "items": {"type": "string"}},
             "CaseSensitive": {"type": "boolean"},
         },
     }
@@ -2165,6 +2211,14 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     for field in ("name", "path", "configFileName"):
         if compose_project_props.get(field) != {"type": "string"}:
             fail(f"Docker Compose project string evidence regressed for {field}")
+    compose_container_detail = (
+        compose_project_props.get("containerDetails", {}).get("items", {}).get("properties", {})
+    )
+    if compose_container_detail != {
+        "name": {"type": "string"},
+        "state": {"type": "string"},
+    }:
+        fail("Docker Compose containerDetails response schema regressed")
 
     compose_file_request_schemas = {
         ("POST", "/api/docker/compose/backup"): {
@@ -2491,7 +2545,7 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     if merged_by_key[("DELETE", "/api/local-path-browser/path")].risk is not OperationRisk.DANGEROUS:
         fail("Local Path Browser delete must remain classified dangerous")
 
-    response_schema_count = sum(route.response_schema is not None for route in merged.routes)
+    response_schema_count = sum(route.response_schema is not None for route in patched_merged.routes)
     if response_schema_count < 324:
         fail(f"response-schema coverage regressed below 324 routes: {response_schema_count}")
 
@@ -2518,11 +2572,11 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
 
     response_schema_holes = sum(
         count_schema_holes(route.response_schema)
-        for route in merged.routes
+        for route in patched_merged.routes
         if route.response_schema is not None
     )
-    if response_schema_holes > 121:
-        fail(f"nested response-schema coverage regressed above 121 holes: {response_schema_holes}")
+    if response_schema_holes != 0:
+        fail(f"nested response-schema coverage must remain at zero holes: {response_schema_holes}")
 
     top_level_untyped_write_routes = []
     for route in merged.routes:
@@ -2683,8 +2737,20 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     }.items():
         response_schema = merged_by_key[route_key].response_schema
         collection = response_schema.get("properties", {}).get(field) if isinstance(response_schema, dict) else None
-        if collection != {"type": ["array", "null"], "items": {}}:
-            fail(f"PortForward disposable log item schema must remain unspecified for {route_key}")
+        expected_collection = {
+            "type": ["array", "null"],
+            "items": {
+                "type": "object",
+                "properties": {
+                    "LogContent": {"type": "string"},
+                    "LogTime": {"type": "string"},
+                    "ShowTime": {"type": "boolean"},
+                    "Level": {"type": "string"},
+                },
+            },
+        }
+        if collection != expected_collection:
+            fail(f"PortForward shared log item schema regressed for {route_key}")
 
     for route_key in {
         ("GET", "/api/ipfliter/porttrap/blockedips"),
@@ -3399,9 +3465,54 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         if isinstance(disk_usage, dict)
         else {}
     )
-    for field in ("Images", "Containers", "Volumes", "BuildCache"):
-        if disk_usage_props.get(field) != {"type": "array", "items": {}}:
-            fail(f"Docker disk-usage resource detail schema must remain unspecified: {field}")
+    expected_disk_usage_collections = {
+        "Images": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "Containers": {"type": "integer"},
+                    "Created": {"type": "integer"},
+                    "SharedSize": {"type": "integer"},
+                    "Size": {"type": "integer"},
+                },
+            },
+        },
+        "Containers": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "Created": {"type": "integer"},
+                    "SizeRw": {"type": "integer"},
+                    "SizeRootFs": {"type": "integer"},
+                    "State": {"type": "string"},
+                    "Status": {"type": "string"},
+                },
+            },
+        },
+        "Volumes": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "Driver": {"type": "string"},
+                    "Scope": {"type": "string"},
+                    "UsageData": {
+                        "type": "object",
+                        "properties": {
+                            "RefCount": {"type": "integer"},
+                            "Size": {"type": "integer"},
+                        },
+                    },
+                },
+            },
+        },
+        "BuildCache": {"type": "array", "items": {}},
+    }
+    for field, expected in expected_disk_usage_collections.items():
+        if disk_usage_props.get(field) != expected:
+            fail(f"Docker disk-usage resource detail schema regressed: {field}")
 
     service_response_routes = {
         ("GET", "/api/dlnaservice/configure"),
@@ -3445,10 +3556,18 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         "Level": {"type": "string"},
     }
     typed_log_routes = {
+        ("GET", "/api/cloudflared/{param}/lastlogs"): "lastLogs",
+        ("GET", "/api/cloudflared/{param}/logs"): "logs",
+        ("GET", "/api/cloudflared/logs"): "logs",
+        ("GET", "/api/coraza/logs"): "logs",
         ("GET", "/api/dlnaservice/lastlogs"): "lastLogs",
         ("GET", "/api/dlnaservice/logs"): "logs",
         ("GET", "/api/ftpserver/lastlogs"): "lastLogs",
         ("GET", "/api/ftpserver/logs"): "logs",
+        ("GET", "/api/frp/{param}/lastlogs"): "lastLogs",
+        ("GET", "/api/frp/{param}/logs"): "logs",
+        ("GET", "/api/frp/logs"): "logs",
+        ("GET", "/api/ipdb/logs"): "logs",
         ("GET", "/api/smb/lastlogs"): "lastLogs",
         ("GET", "/api/smb/logs"): "logs",
         ("GET", "/api/webdav/lastlogs"): "lastLogs",
@@ -3459,11 +3578,24 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         ("GET", "/api/ddns/logs"): "logs",
         ("GET", "/api/docker/logs"): "logs",
         ("GET", "/api/ipfliter/porttrap/logs"): "logs",
+        ("GET", "/api/portforward/{param}/lastlogs"): "lastLogs",
+        ("GET", "/api/portforward/{param}/logs"): "logs",
+        ("GET", "/api/rclone/lastlogs"): "lastLogs",
+        ("GET", "/api/rclone/logs"): "logs",
+        ("GET", "/api/ssl/lastlogs"): "lastLogs",
+        ("GET", "/api/ssl/logs"): "logs",
+        ("GET", "/api/storagemanagement/lastlogs"): "lastLogs",
+        ("GET", "/api/storagemanagement/logs"): "logs",
+        ("GET", "/api/stun/{param}/lastlogs"): "lastLogs",
+        ("GET", "/api/stun/{param}/logs"): "logs",
         ("GET", "/api/third/filebrowser/lastlogs"): "lastLogs",
         ("GET", "/api/third/filebrowser/logs"): "logs",
+        ("GET", "/api/thirdPartyAuthManager/logs"): "logs",
         ("GET", "/api/webservice/lastlogs"): "lastLogs",
         ("GET", "/api/webservice/logs"): "logs",
         ("GET", "/api/webterminal/logs"): "logs",
+        ("GET", "/api/wol/lastlogs"): "lastLogs",
+        ("GET", "/api/wol/logs"): "logs",
     }
     for route_key, field in typed_log_routes.items():
         response_schema = merged_by_key[route_key].response_schema
@@ -3477,28 +3609,6 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         )
         if item_properties != expected_log_item_properties:
             fail(f"typed log item schema regressed for {route_key}")
-
-    nullable_log_routes = {
-        ("GET", "/api/coraza/logs"): "logs",
-        ("GET", "/api/frp/logs"): "logs",
-        ("GET", "/api/ipdb/logs"): "logs",
-        ("GET", "/api/rclone/lastlogs"): "lastLogs",
-        ("GET", "/api/rclone/logs"): "logs",
-        ("GET", "/api/ssl/lastlogs"): "lastLogs",
-        ("GET", "/api/ssl/logs"): "logs",
-        ("GET", "/api/storagemanagement/lastlogs"): "lastLogs",
-        ("GET", "/api/storagemanagement/logs"): "logs",
-        ("GET", "/api/thirdPartyAuthManager/logs"): "logs",
-        ("GET", "/api/wol/lastlogs"): "lastLogs",
-        ("GET", "/api/wol/logs"): "logs",
-    }
-    for route_key, field in nullable_log_routes.items():
-        response_schema = merged_by_key[route_key].response_schema
-        if not isinstance(response_schema, dict):
-            fail(f"nullable log response schema missing for {route_key}")
-        collection_schema = response_schema.get("properties", {}).get(field)
-        if collection_schema != {"type": ["array", "null"], "items": {}}:
-            fail(f"nullable log collection schema regressed for {route_key}")
 
     global_logs = merged_by_key[("GET", "/api/logs")].response_schema
     if not isinstance(global_logs, dict):
@@ -3798,14 +3908,26 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("FRP disabled-client status response schema regressed")
 
     nullable_untyped_array = {"type": ["array", "null"], "items": {}}
+    nullable_log_array = {
+        "type": ["array", "null"],
+        "items": {
+            "type": "object",
+            "properties": {
+                "LogContent": {"type": "string"},
+                "LogTime": {"type": "string"},
+                "ShowTime": {"type": "boolean"},
+                "Level": {"type": "string"},
+            },
+        },
+    }
     frp_read_schemas = {
         ("GET", "/api/frp/{param}/lastlogs"): {
-            "type": "object", "properties": {"lastLogs": nullable_untyped_array, "ret": {"type": "integer"}}
+            "type": "object", "properties": {"lastLogs": nullable_log_array, "ret": {"type": "integer"}}
         },
         ("GET", "/api/frp/{param}/logs"): {
             "type": "object",
             "properties": {
-                "logs": nullable_untyped_array,
+                "logs": nullable_log_array,
                 "page": {"type": "integer"},
                 "pageSize": {"type": "integer"},
                 "ret": {"type": "integer"},

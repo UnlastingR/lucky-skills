@@ -1117,7 +1117,23 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     },
                     "page": {
                       "type": "integer"
@@ -1149,7 +1165,7 @@
           "lucky_cloudflared-CZXQeEtG.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/cloudflared/logs observed paginated envelope; current logs are null so log item schema remains unspecified",
+        "x-schema-evidence": "authorized GET /api/cloudflared/logs observed the paginated envelope; item shape reuses the shared Lucky module-log model runtime-verified across sibling modules",
         "parameters": [
           {
             "name": "page",
@@ -1715,7 +1731,23 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     },
                     "ret": {
                       "type": "integer"
@@ -1741,7 +1773,7 @@
           "lucky_cloudflared-CZXQeEtG.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET for the disabled disposable Cloudflared access instance returned lastLogs=null; the envelope is verified and log item schema remains unspecified",
+        "x-schema-evidence": "authorized GET for the disabled disposable Cloudflared access instance returned lastLogs=null; item shape reuses the shared Lucky module-log model runtime-verified across sibling modules",
         "parameters": [
           {
             "name": "param",
@@ -1780,7 +1812,23 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     },
                     "page": {
                       "type": "integer"
@@ -1815,7 +1863,7 @@
           "lucky_cloudflared-CZXQeEtG.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized paginated log GET for the disabled disposable Cloudflared access instance returned logs=null with integer pagination fields; log item schema remains unspecified",
+        "x-schema-evidence": "authorized paginated log GET for the disabled disposable Cloudflared access instance returned logs=null with integer pagination fields; item shape reuses the shared Lucky module-log model runtime-verified across sibling modules",
         "parameters": [
           {
             "name": "param",
@@ -2002,7 +2050,26 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "Key": {
+                            "type": "string"
+                          },
+                          "Name": {
+                            "type": "string"
+                          },
+                          "Enable": {
+                            "type": "boolean"
+                          },
+                          "InboundScoreThreshold": {
+                            "type": "integer"
+                          },
+                          "OutboundScoreThreshold": {
+                            "type": "integer"
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -2431,11 +2498,21 @@
                         },
                         "CorazaWAFConfigList": {
                           "type": "array",
-                          "items": {}
+                          "items": {
+                            "type": [
+                              "string",
+                              "object"
+                            ]
+                          }
                         },
                         "RuleExclusions": {
                           "type": "array",
-                          "items": {}
+                          "items": {
+                            "type": [
+                              "string",
+                              "object"
+                            ]
+                          }
                         }
                       }
                     },
@@ -2571,7 +2648,23 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     },
                     "page": {
                       "type": "integer"
@@ -2603,7 +2696,7 @@
           "lucky_coraza-D1zcK8x_.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/coraza/logs observed the paginated envelope; current logs are null so log item schema remains unspecified",
+        "x-schema-evidence": "authorized GET /api/coraza/logs returned live log entries and verified the shared module-log item fields/types without retaining values",
         "parameters": [
           {
             "name": "page",
@@ -5644,7 +5737,9 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -6460,7 +6555,9 @@
                             "array",
                             "null"
                           ],
-                          "items": {}
+                          "items": {
+                            "type": "object"
+                          }
                         },
                         "ListenPort": {
                           "type": "integer"
@@ -6473,7 +6570,9 @@
                             "array",
                             "null"
                           ],
-                          "items": {}
+                          "items": {
+                            "type": "string"
+                          }
                         },
                         "FriendlyName": {
                           "type": "string"
@@ -6943,11 +7042,15 @@
                     },
                     "in_progress": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     "queue": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -7410,7 +7513,17 @@
                           },
                           "containerDetails": {
                             "type": "array",
-                            "items": {}
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string"
+                                },
+                                "state": {
+                                  "type": "string"
+                                }
+                              }
+                            }
                           }
                         }
                       }
@@ -7436,7 +7549,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/docker/compose/projects observed project summary types only; project names, paths, config filenames and container identifiers were not retained"
+        "x-schema-evidence": "authorized GET /api/docker/compose/projects observed project summary types; a later read-only refresh populated containerDetails and verified its name/state string fields. Project/container names, paths and config filenames were not retained"
       }
     },
     "/api/docker/compose/read-file": {
@@ -8245,7 +8358,9 @@
                     },
                     "backups": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -8992,7 +9107,17 @@
                     },
                     "list": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "Key": {
+                            "type": "string"
+                          },
+                          "Name": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -9512,7 +9637,9 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "string"
+                      }
                     }
                   }
                 }
@@ -9805,18 +9932,24 @@
                       "properties": {
                         "flat_order": {
                           "type": "array",
-                          "items": {}
+                          "items": {
+                            "type": "string"
+                          }
                         },
                         "compose_group_order": {
                           "type": "array",
-                          "items": {}
+                          "items": {
+                            "type": "string"
+                          }
                         },
                         "compose_container_orders": {
                           "type": "object"
                         },
                         "custom_group_order": {
                           "type": "array",
-                          "items": {}
+                          "items": {
+                            "type": "string"
+                          }
                         },
                         "custom_container_orders": {
                           "type": "object"
@@ -12102,7 +12235,9 @@
                     },
                     "files": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     "keyword": {
                       "type": "string"
@@ -13453,19 +13588,77 @@
                         },
                         "Images": {
                           "type": "array",
-                          "items": {}
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "Containers": {
+                                "type": "integer"
+                              },
+                              "Created": {
+                                "type": "integer"
+                              },
+                              "SharedSize": {
+                                "type": "integer"
+                              },
+                              "Size": {
+                                "type": "integer"
+                              }
+                            }
+                          }
                         },
                         "Containers": {
                           "type": "array",
-                          "items": {}
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "Created": {
+                                "type": "integer"
+                              },
+                              "SizeRw": {
+                                "type": "integer"
+                              },
+                              "SizeRootFs": {
+                                "type": "integer"
+                              },
+                              "State": {
+                                "type": "string"
+                              },
+                              "Status": {
+                                "type": "string"
+                              }
+                            }
+                          }
                         },
                         "Volumes": {
                           "type": "array",
-                          "items": {}
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "Driver": {
+                                "type": "string"
+                              },
+                              "Scope": {
+                                "type": "string"
+                              },
+                              "UsageData": {
+                                "type": "object",
+                                "properties": {
+                                  "RefCount": {
+                                    "type": "integer"
+                                  },
+                                  "Size": {
+                                    "type": "integer"
+                                  }
+                                }
+                              }
+                            }
+                          }
                         },
                         "BuildCache": {
                           "type": "array",
-                          "items": {}
+                          "items": {
+                            "type": "object"
+                          }
                         }
                       }
                     }
@@ -13490,7 +13683,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/docker/disk-usage observed aggregate/collection types only; image/container/volume identifiers, commands, paths, labels and runtime values were intentionally not documented"
+        "x-schema-evidence": "authorized GET /api/docker/disk-usage initially established aggregate/collection types; a later read-only refresh populated image/container/volume collections and verified only safe size/count/state/driver/usage fields. Image/container/volume identifiers, commands, network data, paths, labels and runtime values were not retained; BuildCache remained empty so its item schema is still unspecified"
       }
     },
     "/api/docker/images": {
@@ -14412,7 +14605,9 @@
                     },
                     "removed": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -15743,7 +15938,9 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -16807,7 +17004,9 @@
                     },
                     "tasks": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     "total": {
                       "type": "integer"
@@ -16860,7 +17059,12 @@
                     "ret": {
                       "type": "integer"
                     },
-                    "task": {}
+                    "task": {
+                      "type": [
+                        "object",
+                        "null"
+                      ]
+                    }
                   }
                 }
               }
@@ -17260,11 +17464,15 @@
                     },
                     "in_progress": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     "queue": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -17654,7 +17862,9 @@
                     },
                     "backups": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -18441,7 +18651,23 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     },
                     "page": {
                       "type": "integer"
@@ -18473,7 +18699,7 @@
           "lucky_panel-BjQOfwVI.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/frp/logs observed the paginated envelope; current logs are null so log item schema remains unspecified",
+        "x-schema-evidence": "authorized GET /api/frp/logs returned live log entries and verified the shared module-log item fields/types without retaining values",
         "parameters": [
           {
             "name": "page",
@@ -18577,7 +18803,23 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     },
                     "ret": {
                       "type": "integer"
@@ -18603,7 +18845,7 @@
           "lucky_panel-BjQOfwVI.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET for the disabled disposable FRP client's last logs returned lastLogs=null; envelope type is verified and log item schema remains unspecified",
+        "x-schema-evidence": "authorized GET for the disabled disposable FRP client's last logs returned lastLogs=null; item shape reuses the shared Lucky module-log model runtime-verified on the global FRP log endpoint and sibling modules",
         "parameters": [
           {
             "name": "param",
@@ -18642,7 +18884,23 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     },
                     "page": {
                       "type": "integer"
@@ -18677,7 +18935,7 @@
           "lucky_panel-BjQOfwVI.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized paginated log GET for the disabled disposable FRP client returned logs=null with integer pagination fields; log item schema remains unspecified",
+        "x-schema-evidence": "authorized paginated log GET for the disabled disposable FRP client returned logs=null with integer pagination fields; item shape reuses the shared Lucky module-log model runtime-verified on the global FRP log endpoint and sibling modules",
         "parameters": [
           {
             "name": "param",
@@ -18728,7 +18986,9 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     "ret": {
                       "type": "integer"
@@ -19306,7 +19566,9 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -19668,7 +19930,9 @@
                             "array",
                             "null"
                           ],
-                          "items": {}
+                          "items": {
+                            "type": "object"
+                          }
                         },
                         "AutoFireWall": {
                           "type": "boolean"
@@ -20935,7 +21199,9 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "string"
+                      }
                     }
                   }
                 }
@@ -21522,7 +21788,29 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "Key": {
+                            "type": "string"
+                          },
+                          "Remark": {
+                            "type": "string"
+                          },
+                          "Enable": {
+                            "type": "boolean"
+                          },
+                          "Format": {
+                            "type": "string"
+                          },
+                          "SupportTypes": {
+                            "type": "integer"
+                          },
+                          "BufferType": {
+                            "type": "integer"
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -21577,7 +21865,23 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     },
                     "page": {
                       "type": "integer"
@@ -21609,7 +21913,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/ipdb/logs observed the paginated envelope; current logs are null so log item schema remains unspecified",
+        "x-schema-evidence": "authorized GET /api/ipdb/logs returned null on this instance; item shape reuses the shared Lucky module-log model runtime-verified across sibling modules",
         "parameters": [
           {
             "name": "page",
@@ -22016,7 +22320,9 @@
                                   "array",
                                   "null"
                                 ],
-                                "items": {}
+                                "items": {
+                                  "type": "string"
+                                }
                               },
                               "ExcludeMode": {
                                 "type": "string"
@@ -22026,7 +22332,9 @@
                                   "array",
                                   "null"
                                 ],
-                                "items": {}
+                                "items": {
+                                  "type": "string"
+                                }
                               },
                               "CaseSensitive": {
                                 "type": "boolean"
@@ -22167,7 +22475,9 @@
                             "array",
                             "null"
                           ],
-                          "items": {}
+                          "items": {
+                            "type": "object"
+                          }
                         }
                       }
                     }
@@ -22541,7 +22851,9 @@
                                 "array",
                                 "null"
                               ],
-                              "items": {}
+                              "items": {
+                                "type": "string"
+                              }
                             },
                             "ExcludeMode": {
                               "type": "string"
@@ -22551,7 +22863,9 @@
                                 "array",
                                 "null"
                               ],
-                              "items": {}
+                              "items": {
+                                "type": "string"
+                              }
                             },
                             "CaseSensitive": {
                               "type": "boolean"
@@ -22907,7 +23221,9 @@
                               "array",
                               "null"
                             ],
-                            "items": {}
+                            "items": {
+                              "type": "object"
+                            }
                           }
                         }
                       }
@@ -23015,7 +23331,9 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "string"
+                      }
                     },
                     "page": {
                       "type": "integer"
@@ -23285,7 +23603,9 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "string"
+                      }
                     },
                     "page": {
                       "type": "integer"
@@ -23640,7 +23960,9 @@
                         },
                         "DefaultAllowIPs": {
                           "type": "array",
-                          "items": {}
+                          "items": {
+                            "type": "string"
+                          }
                         },
                         "Enable": {
                           "type": "boolean"
@@ -23659,14 +23981,18 @@
                         },
                         "TCPPorts": {
                           "type": "array",
-                          "items": {}
+                          "items": {
+                            "type": "integer"
+                          }
                         },
                         "TargetRuleKey": {
                           "type": "string"
                         },
                         "UDPPorts": {
                           "type": "array",
-                          "items": {}
+                          "items": {
+                            "type": "integer"
+                          }
                         },
                         "WebhookBody": {
                           "type": "string"
@@ -23679,7 +24005,9 @@
                         },
                         "WebhookHeaders": {
                           "type": "array",
-                          "items": {}
+                          "items": {
+                            "type": "string"
+                          }
                         },
                         "WebhookMethod": {
                           "type": "string"
@@ -23701,7 +24029,9 @@
                         },
                         "WebhookSuccessContent": {
                           "type": "array",
-                          "items": {}
+                          "items": {
+                            "type": "string"
+                          }
                         },
                         "WebhookTimeout": {
                           "type": "integer"
@@ -23722,7 +24052,9 @@
                         },
                         "invalidEntries": {
                           "type": "array",
-                          "items": {}
+                          "items": {
+                            "type": "string"
+                          }
                         },
                         "invalidEntryCount": {
                           "type": "integer"
@@ -24588,7 +24920,9 @@
                     },
                     "logs": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     "nextBeforeSeq": {
                       "type": "string"
@@ -24809,7 +25143,9 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "string"
+                      }
                     },
                     "isDefaultAuthInfo": {
                       "type": "boolean"
@@ -26200,7 +26536,9 @@
                             "array",
                             "null"
                           ],
-                          "items": {}
+                          "items": {
+                            "type": "string"
+                          }
                         },
                         "ListenAddress": {
                           "type": "string"
@@ -26213,7 +26551,9 @@
                             "array",
                             "null"
                           ],
-                          "items": {}
+                          "items": {
+                            "type": "string"
+                          }
                         },
                         "TargetPorts": {
                           "type": "string"
@@ -26298,7 +26638,23 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -26321,7 +26677,7 @@
           "lucky_portforward-13uBauEz.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized isolated disposable disabled PortForward rule returned lastLogs=null; log item/content schema remains unspecified and the rule was deleted immediately afterward",
+        "x-schema-evidence": "authorized isolated disposable disabled PortForward rule returned lastLogs=null; item shape reuses the shared Lucky module-log model runtime-verified across sibling modules and the rule was deleted immediately afterward",
         "parameters": [
           {
             "name": "param",
@@ -26363,7 +26719,23 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     },
                     "page": {
                       "type": "integer"
@@ -26395,7 +26767,7 @@
           "lucky_portforward-13uBauEz.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized isolated disposable disabled PortForward rule returned the paginated logs envelope with logs=null; log item/content schema remains unspecified and baseline was restored after API deletion",
+        "x-schema-evidence": "authorized isolated disposable disabled PortForward rule returned the paginated logs envelope with logs=null; item shape reuses the shared Lucky module-log model runtime-verified across sibling modules and baseline was restored after API deletion",
         "parameters": [
           {
             "name": "param",
@@ -26452,7 +26824,9 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     "statistics": {
                       "type": "object"
@@ -26513,7 +26887,9 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -26750,7 +27126,23 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -26773,7 +27165,7 @@
           "lucky_rclone-sFF3mpk8.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/rclone/lastlogs observed lastLogs=null; only the envelope and nullable-list shape are claimed"
+        "x-schema-evidence": "authorized GET /api/rclone/lastlogs returned live log entries and verified the shared module-log item fields/types without retaining values"
       }
     },
     "/api/rclone/logs": {
@@ -26805,7 +27197,23 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     },
                     "page": {
                       "type": "integer"
@@ -26837,7 +27245,7 @@
           "lucky_rclone-sFF3mpk8.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/rclone/logs observed the paginated envelope; current logs are null so log item schema remains unspecified",
+        "x-schema-evidence": "authorized GET /api/rclone/logs returned live log entries and verified the shared module-log item fields/types without retaining values",
         "parameters": [
           {
             "name": "page",
@@ -27396,7 +27804,9 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -28370,7 +28780,9 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -28585,7 +28997,9 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -28800,7 +29214,9 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -28984,7 +29400,9 @@
                     },
                     "list": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -29107,7 +29525,9 @@
                     },
                     "list": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -29272,7 +29692,9 @@
                     },
                     "list": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -29324,7 +29746,9 @@
                     },
                     "list": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -29610,7 +30034,9 @@
                     },
                     "list": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -30047,14 +30473,18 @@
                             "array",
                             "null"
                           ],
-                          "items": {}
+                          "items": {
+                            "type": "object"
+                          }
                         },
                         "Users": {
                           "type": [
                             "array",
                             "null"
                           ],
-                          "items": {}
+                          "items": {
+                            "type": "object"
+                          }
                         },
                         "ListenNetwork": {
                           "type": "string"
@@ -30505,14 +30935,18 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     "users": {
                       "type": [
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     "summary": {
                       "type": "object",
@@ -30611,7 +31045,12 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": [
+                          "string",
+                          "object"
+                        ]
+                      }
                     }
                   }
                 }
@@ -31506,7 +31945,23 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -31529,7 +31984,7 @@
           "lucky_dnsCredentialSources-CyE9Tpw6.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/ssl/lastlogs using one existing certificate key observed lastLogs=null; certificate key/domain and log item/content values were not retained",
+        "x-schema-evidence": "authorized GET /api/ssl/lastlogs returned live log entries and verified the shared module-log item fields/types without retaining certificate/log values",
         "parameters": [
           {
             "name": "key",
@@ -31569,7 +32024,23 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     },
                     "page": {
                       "type": "integer"
@@ -31601,7 +32072,7 @@
           "lucky_dnsCredentialSources-CyE9Tpw6.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/ssl/logs using one existing certificate key observed the paginated log envelope with logs=null; certificate key/domain and log item/content values were not retained",
+        "x-schema-evidence": "authorized GET /api/ssl/logs returned live log entries and verified the shared module-log item fields/types without retaining certificate/log values",
         "parameters": [
           {
             "name": "key",
@@ -31731,7 +32202,9 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -31937,7 +32410,9 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -32028,7 +32503,9 @@
                         },
                         "SyncClientList": {
                           "type": "array",
-                          "items": {}
+                          "items": {
+                            "type": "object"
+                          }
                         },
                         "ExtParams": {
                           "type": "object",
@@ -32969,7 +33446,26 @@
                                     "array",
                                     "null"
                                   ],
-                                  "items": {}
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "callbackProvider": {
+                                        "type": "string"
+                                      },
+                                      "copyable": {
+                                        "type": "boolean"
+                                      },
+                                      "label": {
+                                        "type": "string"
+                                      },
+                                      "provider": {
+                                        "type": "string"
+                                      },
+                                      "value": {
+                                        "type": "string"
+                                      }
+                                    }
+                                  }
                                 },
                                 "key": {
                                   "type": "string"
@@ -33337,7 +33833,23 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -33360,7 +33872,7 @@
           "lucky_storagemanagement-CxTMWo8S.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/storagemanagement/lastlogs observed lastLogs=null; only the envelope and nullable-list shape are claimed"
+        "x-schema-evidence": "authorized GET /api/storagemanagement/lastlogs returned live log entries and verified the shared module-log item fields/types without retaining values"
       }
     },
     "/api/storagemanagement/list": {
@@ -33598,7 +34110,9 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -33654,7 +34168,23 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     },
                     "page": {
                       "type": "integer"
@@ -33686,7 +34216,7 @@
           "lucky_storagemanagement-CxTMWo8S.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/storagemanagement/logs observed the paginated envelope; current logs are null so log item schema remains unspecified",
+        "x-schema-evidence": "authorized GET /api/storagemanagement/logs returned live log entries and verified the shared module-log item fields/types without retaining values",
         "parameters": [
           {
             "name": "page",
@@ -34235,7 +34765,23 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     },
                     "ret": {
                       "type": "integer"
@@ -34261,7 +34807,7 @@
           "lucky_stun-DdoTf-uI.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET for the disabled disposable STUN rule returned lastLogs=null; the envelope type is verified and log item schema remains unspecified",
+        "x-schema-evidence": "authorized GET for the disabled disposable STUN rule returned lastLogs=null; item shape reuses the shared Lucky module-log model runtime-verified across sibling modules",
         "parameters": [
           {
             "name": "param",
@@ -34300,7 +34846,23 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     },
                     "page": {
                       "type": "integer"
@@ -34335,7 +34897,7 @@
           "lucky_stun-DdoTf-uI.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized paginated log GET for the disabled disposable STUN rule returned logs=null with integer pagination fields; log item schema remains unspecified",
+        "x-schema-evidence": "authorized paginated log GET for the disabled disposable STUN rule returned logs=null with integer pagination fields; item shape reuses the shared Lucky module-log model runtime-verified across sibling modules",
         "parameters": [
           {
             "name": "param",
@@ -35329,7 +35891,9 @@
                             "array",
                             "null"
                           ],
-                          "items": {}
+                          "items": {
+                            "type": "object"
+                          }
                         },
                         "BaseURL": {
                           "type": "string"
@@ -36559,7 +37123,23 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     },
                     "page": {
                       "type": "integer"
@@ -36591,7 +37171,7 @@
           "lucky_thirdPartyAuthManager-C0VqZjAx.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/thirdPartyAuthManager/logs observed the paginated envelope; current logs are null so log item schema remains unspecified",
+        "x-schema-evidence": "authorized GET /api/thirdPartyAuthManager/logs returned live log entries and verified the shared module-log item fields/types without retaining values",
         "parameters": [
           {
             "name": "page",
@@ -36928,7 +37508,9 @@
                             "array",
                             "null"
                           ],
-                          "items": {}
+                          "items": {
+                            "type": "object"
+                          }
                         },
                         "ListenNetwork": {
                           "type": "string"
@@ -37925,7 +38507,9 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     "ret": {
                       "type": "integer"
@@ -38099,7 +38683,9 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     "ret": {
                       "type": "integer"
@@ -38375,7 +38961,17 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "Key": {
+                            "type": "string"
+                          },
+                          "Name": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -40165,7 +40761,17 @@
                               "array",
                               "null"
                             ],
-                            "items": {}
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "Key": {
+                                  "type": "string"
+                                },
+                                "Name": {
+                                  "type": "string"
+                                }
+                              }
+                            }
                           }
                         }
                       }
@@ -40638,7 +41244,9 @@
                     },
                     "list": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     "total": {
                       "type": "integer"
@@ -40739,7 +41347,9 @@
                       "properties": {
                         "items": {
                           "type": "array",
-                          "items": {}
+                          "items": {
+                            "type": "object"
+                          }
                         },
                         "total": {
                           "type": "integer"
@@ -40964,7 +41574,9 @@
                     },
                     "points": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -41573,7 +42185,9 @@
                     },
                     "items": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -41628,7 +42242,9 @@
                     },
                     "lastMinute": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     "point": {
                       "type": "object",
@@ -41697,7 +42313,9 @@
                       "properties": {
                         "items": {
                           "type": "array",
-                          "items": {}
+                          "items": {
+                            "type": "object"
+                          }
                         },
                         "ipLimit": {
                           "type": "integer"
@@ -41718,7 +42336,9 @@
                     },
                     "items": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     "limit": {
                       "type": "integer"
@@ -41799,7 +42419,9 @@
                     },
                     "visits": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -41910,7 +42532,9 @@
                     },
                     "list": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     "total": {
                       "type": "integer"
@@ -42016,7 +42640,9 @@
                     },
                     "list": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     "page": {
                       "type": "integer"
@@ -43864,7 +44490,46 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "command": {
+                            "type": "string"
+                          },
+                          "hotkey": {
+                            "type": "string"
+                          },
+                          "autoExecute": {
+                            "type": "boolean"
+                          },
+                          "steps": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "command": {
+                                  "type": "string"
+                                },
+                                "autoExecute": {
+                                  "type": "boolean"
+                                },
+                                "delay": {
+                                  "type": "integer"
+                                },
+                                "description": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -44101,7 +44766,9 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -46086,11 +46753,15 @@
                           },
                           "BroadcastIPs": {
                             "type": "array",
-                            "items": {}
+                            "items": {
+                              "type": "string"
+                            }
                           },
                           "ProbeTargets": {
                             "type": "array",
-                            "items": {}
+                            "items": {
+                              "type": "string"
+                            }
                           },
                           "Port": {
                             "type": "integer"
@@ -46133,7 +46804,9 @@
                               "array",
                               "null"
                             ],
-                            "items": {}
+                            "items": {
+                              "type": "string"
+                            }
                           },
                           "ConnectionState": {
                             "type": "string"
@@ -46143,7 +46816,9 @@
                               "array",
                               "null"
                             ],
-                            "items": {}
+                            "items": {
+                              "type": "string"
+                            }
                           },
                           "ReachabilityState": {
                             "type": "string"
@@ -46153,7 +46828,9 @@
                               "array",
                               "null"
                             ],
-                            "items": {}
+                            "items": {
+                              "type": "string"
+                            }
                           },
                           "Probe": {
                             "type": "object"
@@ -46181,7 +46858,23 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -46236,7 +46929,9 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object"
+                      }
                     }
                   }
                 }
@@ -46291,7 +46986,23 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -46314,7 +47025,7 @@
           "lucky_useWolI18n-D9PD6Ww6.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/wol/lastlogs observed lastLogs=null; only the envelope and nullable-list shape are claimed"
+        "x-schema-evidence": "authorized GET /api/wol/lastlogs returned null on this instance; item shape reuses the shared Lucky module-log model runtime-verified across sibling modules"
       }
     },
     "/api/wol/logs": {
@@ -46346,7 +47057,23 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "LogContent": {
+                            "type": "string"
+                          },
+                          "LogTime": {
+                            "type": "string"
+                          },
+                          "ShowTime": {
+                            "type": "boolean"
+                          },
+                          "Level": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     },
                     "page": {
                       "type": "integer"
@@ -46378,7 +47105,7 @@
           "lucky_useWolI18n-D9PD6Ww6.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/wol/logs observed the paginated envelope; current logs are null so log item schema remains unspecified",
+        "x-schema-evidence": "authorized GET /api/wol/logs returned null on this instance; item shape reuses the shared Lucky module-log model runtime-verified across sibling modules",
         "parameters": [
           {
             "name": "page",
@@ -46466,7 +47193,9 @@
                                 "array",
                                 "null"
                               ],
-                              "items": {}
+                              "items": {
+                                "type": "string"
+                              }
                             },
                             "WebhookRequestBody": {
                               "type": "string"
@@ -46479,7 +47208,9 @@
                                 "array",
                                 "null"
                               ],
-                              "items": {}
+                              "items": {
+                                "type": "string"
+                              }
                             },
                             "WebhookNetworkType": {
                               "type": "string"
@@ -46634,7 +47365,9 @@
                                 "array",
                                 "null"
                               ],
-                              "items": {}
+                              "items": {
+                                "type": "string"
+                              }
                             },
                             "WebhookRequestBody": {
                               "type": "string"
@@ -46647,7 +47380,9 @@
                                 "array",
                                 "null"
                               ],
-                              "items": {}
+                              "items": {
+                                "type": "string"
+                              }
                             },
                             "WebhookNetworkType": {
                               "type": "string"

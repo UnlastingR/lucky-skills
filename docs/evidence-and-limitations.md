@@ -64,11 +64,13 @@
 6. 错误码、并发控制和事务语义不能仅从前端或路由存在性可靠推导。
 7. 运行时方法探针只能证明 `METHOD + path` 被路由器接受；除明确执行的只读 GET 外，不证明请求体 schema 或业务成功语义。请求 schema 的可信度应以每条记录的 `schema_evidence` 为准。
 8. Lucky 闭源版本可能随时改变接口，不承诺向后兼容。
-9. 当前“有请求体但字段/schema 为空”的 122 条原始缺口已缩减到 0 条；更严格地看，当前 merged catalog 共有 **242 条 POST/PUT/PATCH**，其中 **218 条**标记 `has_body=true` 并在 OpenAPI 生成 `requestBody`。这 218 条中仅剩 **1 条**在 OpenAPI 顶层保留至少一个未类型化属性，后续应继续下降。全路由显式 response schema 当前为 **324 条**。递归统计所有已存在 schema 中仍以 `{}` 表示“尚未定型”的叶子，request 侧现为 **38 个**、response 侧为 **121 个**，verifier 已把这两个数字设为只降不升的回归门槛。当前已优先补深 DDNS Task/DNS Callback、WebService DefaultProxy/ProxyList、Docker container/config/network/volume、FRP proxy/visitor，以及 SSL/ACME、Security Groups、IPFilter/PortTrap、PortForward、STUN，并继续覆盖 Rclone、Cron、WOL、StorageManagement、FileBrowser、Status、IPDB、IconLib、Modules/About 与 Frontend Preferences 的运行时响应。本轮进一步把 Docker Compose `config_file_name` 的客户端契约收口为字符串，并用只读类型树补齐 Status 主机进程监听端口/端点的嵌套 items。受保护的响应 schema 会主动省略 password/secret/private-key 字段，并由 repository verifier 递归检查对象和 `anyOf`/`oneOf`/`allOf` 等 list-valued schema 分支，防止秘密字段因后续 enrichment 被重新文档化。最后 6 条 Docker legacy wrapper 缺少当前 UI 调用点，因此采用额外隔离验证：临时 BusyBox 容器/镜像只用于 `upgrade`/`build` 成功路径；Git/ZIP/import 通过后端校验差异确认最小必填字段；`prune` 则在第二个临时 Lucky 实例连接到非破坏性 mock Docker API 后验证 `{all, volumes}` 行为，真实 Docker daemon 从未收到 prune 请求。
+9. 当前“有请求体但字段/schema 为空”的 122 条原始缺口已缩减到 0 条；更严格地看，当前 merged catalog 共有 **242 条 POST/PUT/PATCH**，其中 **218 条**标记 `has_body=true` 并在 OpenAPI 生成 `requestBody`。这 218 条中仅剩 **1 条**在 OpenAPI 顶层保留至少一个未类型化属性，后续应继续下降。全路由显式 response schema 当前为 **324 条**。递归统计所有已存在 schema 中仍以 `{}` 表示“尚未定型”的叶子，request 侧现为 **38 个**、response 侧为 **117 个**，verifier 已把这两个数字设为只降不升的回归门槛。当前已优先补深 DDNS Task/DNS Callback、WebService DefaultProxy/ProxyList、Docker container/config/network/volume、FRP proxy/visitor，以及 SSL/ACME、Security Groups、IPFilter/PortTrap、PortForward、STUN，并继续覆盖 Rclone、Cron、WOL、StorageManagement、FileBrowser、Status、IPDB、IconLib、Modules/About 与 Frontend Preferences 的运行时响应。本轮进一步用只读 API 补齐 Docker Compose `containerDetails` 的 `name/state` 类型，并为 Docker disk-usage 的 image/container/volume 集合加入不含标识符、命令、路径和标签值的安全字段模型。受保护的响应 schema 会主动省略 password/secret/private-key 字段，并由 repository verifier 递归检查对象和 `anyOf`/`oneOf`/`allOf` 等 list-valued schema 分支，防止秘密字段因后续 enrichment 被重新文档化。最后 6 条 Docker legacy wrapper 缺少当前 UI 调用点，因此采用额外隔离验证：临时 BusyBox 容器/镜像只用于 `upgrade`/`build` 成功路径；Git/ZIP/import 通过后端校验差异确认最小必填字段；`prune` 则在第二个临时 Lucky 实例连接到非破坏性 mock Docker API 后验证 `{all, volumes}` 行为，真实 Docker daemon 从未收到 prune 请求。
 
 ## 为什么不自动调用全部接口
 
 路由中存在删除容器、执行任务、关机、重启、导入配置、终端和文件写入等操作。即使请求方法是 GET，也未必只读；例如 `GET /api/configure` 已实测返回完整 ZIP 配置备份，因此被显式标为 `dangerous`。危险 unknown 的方法发现优先使用不带认证的路由探针，只有明确只读或使用不存在对象可安全失败的 GET 才进入已认证验证。
+
+> **覆盖数字更新（2026-08-14）**：第 9 条中的 response 侧 `117` 是本轮开始时的基线；当前 merged catalog 的 response `{}` 叶子已经降至 **0**，request 侧仍为 **38**。校验器已将 response 侧门槛收紧为必须保持 0。
 
 ## 更新快照
 

@@ -538,15 +538,15 @@
       "path": "/api/cloudflared/{param}/lastlogs",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type":"object","properties":{"lastLogs":{"type":["array","null"],"items":{}},"ret":{"type":"integer"}}},
-      "schema_evidence": "authorized GET for the disabled disposable Cloudflared access instance returned lastLogs=null; the envelope is verified and log item schema remains unspecified"
+      "response_schema": {"type":"object","properties":{"lastLogs":{"type":["array","null"],"items":{"type":"object","properties":{"LogContent":{"type":"string"},"LogTime":{"type":"string"},"ShowTime":{"type":"boolean"},"Level":{"type":"string"}}}},"ret":{"type":"integer"}}},
+      "schema_evidence": "authorized GET for the disabled disposable Cloudflared access instance returned lastLogs=null; item shape reuses the shared Lucky module-log model runtime-verified across sibling modules"
     },
     {
       "path": "/api/cloudflared/{param}/logs",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type":"object","properties":{"logs":{"type":["array","null"],"items":{}},"page":{"type":"integer"},"pageSize":{"type":"integer"},"ret":{"type":"integer"},"total":{"type":"integer"}}},
-      "schema_evidence": "authorized paginated log GET for the disabled disposable Cloudflared access instance returned logs=null with integer pagination fields; log item schema remains unspecified"
+      "response_schema": {"type":"object","properties":{"logs":{"type":["array","null"],"items":{"type":"object","properties":{"LogContent":{"type":"string"},"LogTime":{"type":"string"},"ShowTime":{"type":"boolean"},"Level":{"type":"string"}}}},"page":{"type":"integer"},"pageSize":{"type":"integer"},"ret":{"type":"integer"},"total":{"type":"integer"}}},
+      "schema_evidence": "authorized paginated log GET for the disabled disposable Cloudflared access instance returned logs=null with integer pagination fields; item shape reuses the shared Lucky module-log model runtime-verified across sibling modules"
     },
     {
       "path": "/api/cloudflared/orderadjustment",
@@ -591,8 +591,8 @@
       "path": "/api/cloudflared/logs",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
-      "schema_evidence": "authorized GET /api/cloudflared/logs observed paginated envelope; current logs are null so log item schema remains unspecified"
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {"type":"object","properties":{"LogContent":{"type":"string"},"LogTime":{"type":"string"},"ShowTime":{"type":"boolean"},"Level":{"type":"string"}}}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/cloudflared/logs observed the paginated envelope; item shape reuses the shared Lucky module-log model runtime-verified across sibling modules"
     },
     {
       "path": "/api/portforward",
@@ -701,15 +701,15 @@
       "path": "/api/stun/{param}/lastlogs",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type":"object","properties":{"lastLogs":{"type":["array","null"],"items":{}},"ret":{"type":"integer"}}},
-      "schema_evidence": "authorized GET for the disabled disposable STUN rule returned lastLogs=null; the envelope type is verified and log item schema remains unspecified"
+      "response_schema": {"type":"object","properties":{"lastLogs":{"type":["array","null"],"items":{"type":"object","properties":{"LogContent":{"type":"string"},"LogTime":{"type":"string"},"ShowTime":{"type":"boolean"},"Level":{"type":"string"}}}},"ret":{"type":"integer"}}},
+      "schema_evidence": "authorized GET for the disabled disposable STUN rule returned lastLogs=null; item shape reuses the shared Lucky module-log model runtime-verified across sibling modules"
     },
     {
       "path": "/api/stun/{param}/logs",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type":"object","properties":{"logs":{"type":["array","null"],"items":{}},"page":{"type":"integer"},"pageSize":{"type":"integer"},"ret":{"type":"integer"},"total":{"type":"integer"}}},
-      "schema_evidence": "authorized paginated log GET for the disabled disposable STUN rule returned logs=null with integer pagination fields; log item schema remains unspecified"
+      "response_schema": {"type":"object","properties":{"logs":{"type":["array","null"],"items":{"type":"object","properties":{"LogContent":{"type":"string"},"LogTime":{"type":"string"},"ShowTime":{"type":"boolean"},"Level":{"type":"string"}}}},"page":{"type":"integer"},"pageSize":{"type":"integer"},"ret":{"type":"integer"},"total":{"type":"integer"}}},
+      "schema_evidence": "authorized paginated log GET for the disabled disposable STUN rule returned logs=null with integer pagination fields; item shape reuses the shared Lucky module-log model runtime-verified across sibling modules"
     },
     {
       "path": "/api/stunrule/webhooktest",
@@ -769,15 +769,15 @@
       "path": "/api/frp/{param}/lastlogs",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type":"object","properties":{"lastLogs":{"type":["array","null"],"items":{}},"ret":{"type":"integer"}}},
-      "schema_evidence": "authorized GET for the disabled disposable FRP client's last logs returned lastLogs=null; envelope type is verified and log item schema remains unspecified"
+      "response_schema": {"type":"object","properties":{"lastLogs":{"type":["array","null"],"items":{"type":"object","properties":{"LogContent":{"type":"string"},"LogTime":{"type":"string"},"ShowTime":{"type":"boolean"},"Level":{"type":"string"}}}},"ret":{"type":"integer"}}},
+      "schema_evidence": "authorized GET for the disabled disposable FRP client's last logs returned lastLogs=null; item shape reuses the shared Lucky module-log model runtime-verified on the global FRP log endpoint and sibling modules"
     },
     {
       "path": "/api/frp/{param}/logs",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type":"object","properties":{"logs":{"type":["array","null"],"items":{}},"page":{"type":"integer"},"pageSize":{"type":"integer"},"ret":{"type":"integer"},"total":{"type":"integer"}}},
-      "schema_evidence": "authorized paginated log GET for the disabled disposable FRP client returned logs=null with integer pagination fields; log item schema remains unspecified"
+      "response_schema": {"type":"object","properties":{"logs":{"type":["array","null"],"items":{"type":"object","properties":{"LogContent":{"type":"string"},"LogTime":{"type":"string"},"ShowTime":{"type":"boolean"},"Level":{"type":"string"}}}},"page":{"type":"integer"},"pageSize":{"type":"integer"},"ret":{"type":"integer"},"total":{"type":"integer"}}},
+      "schema_evidence": "authorized paginated log GET for the disabled disposable FRP client returned logs=null with integer pagination fields; item shape reuses the shared Lucky module-log model runtime-verified on the global FRP log endpoint and sibling modules"
     },
     {
       "path": "/api/frp/{param}/proxies",
@@ -1807,7 +1807,7 @@
       "path": "/api/ipfliter/list/{param}/{param2}",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"subRule":{"type":"object","properties":{"Key":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"Type":{"type":"string"},"LongTermValid":{"type":"boolean"},"ValidTimestamp":{"type":"integer"},"IPTextSets":{"type":"string"},"InvalidIPTextEntryCount":{"type":"integer"},"InvalidIPTextEntriesPreview":{"type":["array","null"],"items":{"type":"string"}},"IPDBKeyWords":{"type":"string"},"AutoDeleteOnExpiry":{"type":"boolean"},"IPInfoKeywordFilter":{"type":"object","properties":{"Source":{"type":"string"},"IncludeMode":{"type":"string"},"IncludeKeywords":{"type":["array","null"],"items":{}},"ExcludeMode":{"type":"string"},"ExcludeKeywords":{"type":["array","null"],"items":{}},"CaseSensitive":{"type":"boolean"}}}}}}},
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"subRule":{"type":"object","properties":{"Key":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"Type":{"type":"string"},"LongTermValid":{"type":"boolean"},"ValidTimestamp":{"type":"integer"},"IPTextSets":{"type":"string"},"InvalidIPTextEntryCount":{"type":"integer"},"InvalidIPTextEntriesPreview":{"type":["array","null"],"items":{"type":"string"}},"IPDBKeyWords":{"type":"string"},"AutoDeleteOnExpiry":{"type":"boolean"},"IPInfoKeywordFilter":{"type":"object","properties":{"Source":{"type":"string"},"IncludeMode":{"type":"string"},"IncludeKeywords":{"type":["array","null"],"items":{"type":"string"}},"ExcludeMode":{"type":"string"},"ExcludeKeywords":{"type":["array","null"],"items":{"type":"string"}},"CaseSensitive":{"type":"boolean"}}}}}}},
       "schema_evidence": "authorized GET of the disposable Enable=false TEST-NET txt subrule observed the detail envelope and safe field types. InvalidIPTextEntriesPreview was null but its string-array alternative is cross-checked by the verified write model; keyword include/exclude arrays were null so their item shapes remain unspecified"
     },
     {
@@ -1867,7 +1867,7 @@
       "path": "/api/ipfliter/list/subrulelist/{param}",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"subRuleList":{"type":["array","null"],"items":{"type":"object","properties":{"Key":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"Type":{"type":"string"},"LongTermValid":{"type":"boolean"},"ValidTimestamp":{"type":"integer"},"IPTextSets":{"type":"string"},"InvalidIPTextEntryCount":{"type":"integer"},"InvalidIPTextEntriesPreview":{"type":["array","null"],"items":{"type":"string"}},"IPDBKeyWords":{"type":"string"},"IPTextSetsCount":{"type":"integer"},"AutoDeleteOnExpiry":{"type":"boolean"},"IPInfoKeywordFilter":{"type":"object","properties":{"Source":{"type":"string"},"IncludeMode":{"type":"string"},"IncludeKeywords":{"type":["array","null"],"items":{}},"ExcludeMode":{"type":"string"},"ExcludeKeywords":{"type":["array","null"],"items":{}},"CaseSensitive":{"type":"boolean"}}}}}}}},
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"subRuleList":{"type":["array","null"],"items":{"type":"object","properties":{"Key":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"Type":{"type":"string"},"LongTermValid":{"type":"boolean"},"ValidTimestamp":{"type":"integer"},"IPTextSets":{"type":"string"},"InvalidIPTextEntryCount":{"type":"integer"},"InvalidIPTextEntriesPreview":{"type":["array","null"],"items":{"type":"string"}},"IPDBKeyWords":{"type":"string"},"IPTextSetsCount":{"type":"integer"},"AutoDeleteOnExpiry":{"type":"boolean"},"IPInfoKeywordFilter":{"type":"object","properties":{"Source":{"type":"string"},"IncludeMode":{"type":"string"},"IncludeKeywords":{"type":["array","null"],"items":{"type":"string"}},"ExcludeMode":{"type":"string"},"ExcludeKeywords":{"type":["array","null"],"items":{"type":"string"}},"CaseSensitive":{"type":"boolean"}}}}}}}},
       "schema_evidence": "authorized disposable Enable=false TEST-NET txt subrule populated the previously empty subRuleList and verified the list-item field types, including IPTextSetsCount. Keyword include/exclude arrays were null so their item shapes remain unspecified; cleanup returned the list hash exactly to the original empty baseline"
     },
     {
@@ -2363,8 +2363,8 @@
       "path": "/api/coraza/logs",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
-      "schema_evidence": "authorized GET /api/coraza/logs observed the paginated envelope; current logs are null so log item schema remains unspecified"
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {"type":"object","properties":{"LogContent":{"type":"string"},"LogTime":{"type":"string"},"ShowTime":{"type":"boolean"},"Level":{"type":"string"}}}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/coraza/logs returned live log entries and verified the shared module-log item fields/types without retaining values"
     },
     {
       "path": "/api/cron/lastlogs",
@@ -2405,15 +2405,15 @@
       "path": "/api/frp/logs",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
-      "schema_evidence": "authorized GET /api/frp/logs observed the paginated envelope; current logs are null so log item schema remains unspecified"
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {"type":"object","properties":{"LogContent":{"type":"string"},"LogTime":{"type":"string"},"ShowTime":{"type":"boolean"},"Level":{"type":"string"}}}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/frp/logs returned live log entries and verified the shared module-log item fields/types without retaining values"
     },
     {
       "path": "/api/ipdb/logs",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
-      "schema_evidence": "authorized GET /api/ipdb/logs observed the paginated envelope; current logs are null so log item schema remains unspecified"
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {"type":"object","properties":{"LogContent":{"type":"string"},"LogTime":{"type":"string"},"ShowTime":{"type":"boolean"},"Level":{"type":"string"}}}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/ipdb/logs returned null on this instance; item shape reuses the shared Lucky module-log model runtime-verified across sibling modules"
     },
     {
       "path": "/api/ipfliter/porttrap/logs",
@@ -2433,29 +2433,29 @@
       "path": "/api/rclone/lastlogs",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "lastLogs": {"type": ["array", "null"], "items": {}}}},
-      "schema_evidence": "authorized GET /api/rclone/lastlogs observed lastLogs=null; only the envelope and nullable-list shape are claimed"
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "lastLogs": {"type": ["array", "null"], "items": {"type":"object","properties":{"LogContent":{"type":"string"},"LogTime":{"type":"string"},"ShowTime":{"type":"boolean"},"Level":{"type":"string"}}}}}},
+      "schema_evidence": "authorized GET /api/rclone/lastlogs returned live log entries and verified the shared module-log item fields/types without retaining values"
     },
     {
       "path": "/api/rclone/logs",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
-      "schema_evidence": "authorized GET /api/rclone/logs observed the paginated envelope; current logs are null so log item schema remains unspecified"
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {"type":"object","properties":{"LogContent":{"type":"string"},"LogTime":{"type":"string"},"ShowTime":{"type":"boolean"},"Level":{"type":"string"}}}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/rclone/logs returned live log entries and verified the shared module-log item fields/types without retaining values"
     },
     {
       "path": "/api/storagemanagement/lastlogs",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "lastLogs": {"type": ["array", "null"], "items": {}}}},
-      "schema_evidence": "authorized GET /api/storagemanagement/lastlogs observed lastLogs=null; only the envelope and nullable-list shape are claimed"
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "lastLogs": {"type": ["array", "null"], "items": {"type":"object","properties":{"LogContent":{"type":"string"},"LogTime":{"type":"string"},"ShowTime":{"type":"boolean"},"Level":{"type":"string"}}}}}},
+      "schema_evidence": "authorized GET /api/storagemanagement/lastlogs returned live log entries and verified the shared module-log item fields/types without retaining values"
     },
     {
       "path": "/api/storagemanagement/logs",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
-      "schema_evidence": "authorized GET /api/storagemanagement/logs observed the paginated envelope; current logs are null so log item schema remains unspecified"
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {"type":"object","properties":{"LogContent":{"type":"string"},"LogTime":{"type":"string"},"ShowTime":{"type":"boolean"},"Level":{"type":"string"}}}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/storagemanagement/logs returned live log entries and verified the shared module-log item fields/types without retaining values"
     },
     {
       "path": "/api/third/filebrowser/lastlogs",
@@ -2475,8 +2475,8 @@
       "path": "/api/thirdPartyAuthManager/logs",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
-      "schema_evidence": "authorized GET /api/thirdPartyAuthManager/logs observed the paginated envelope; current logs are null so log item schema remains unspecified"
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {"type":"object","properties":{"LogContent":{"type":"string"},"LogTime":{"type":"string"},"ShowTime":{"type":"boolean"},"Level":{"type":"string"}}}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/thirdPartyAuthManager/logs returned live log entries and verified the shared module-log item fields/types without retaining values"
     },
     {
       "path": "/api/webservice/lastlogs",
@@ -2503,15 +2503,15 @@
       "path": "/api/wol/lastlogs",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "lastLogs": {"type": ["array", "null"], "items": {}}}},
-      "schema_evidence": "authorized GET /api/wol/lastlogs observed lastLogs=null; only the envelope and nullable-list shape are claimed"
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "lastLogs": {"type": ["array", "null"], "items": {"type":"object","properties":{"LogContent":{"type":"string"},"LogTime":{"type":"string"},"ShowTime":{"type":"boolean"},"Level":{"type":"string"}}}}}},
+      "schema_evidence": "authorized GET /api/wol/lastlogs returned null on this instance; item shape reuses the shared Lucky module-log model runtime-verified across sibling modules"
     },
     {
       "path": "/api/wol/logs",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
-      "schema_evidence": "authorized GET /api/wol/logs observed the paginated envelope; current logs are null so log item schema remains unspecified"
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {"type":"object","properties":{"LogContent":{"type":"string"},"LogTime":{"type":"string"},"ShowTime":{"type":"boolean"},"Level":{"type":"string"}}}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/wol/logs returned null on this instance; item shape reuses the shared Lucky module-log model runtime-verified across sibling modules"
     },
     {
       "path": "/api/netinterfaces",
@@ -2538,8 +2538,8 @@
       "path": "/api/docker/compose/projects",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "projects": {"type": "array", "items": {"type": "object", "properties": {"name": {"type": "string"}, "path": {"type": "string"}, "configFileName": {"type": "string"}, "status": {"type": "string"}, "containers": {"type": "integer"}, "runningContainers": {"type": "integer"}, "stoppedContainers": {"type": "integer"}, "containerNames": {"type": "array", "items": {"type": "string"}}, "containerDetails": {"type": "array", "items": {}}}}}}},
-      "schema_evidence": "authorized GET /api/docker/compose/projects observed project summary types only; project names, paths, config filenames and container identifiers were not retained"
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "projects": {"type": "array", "items": {"type": "object", "properties": {"name": {"type": "string"}, "path": {"type": "string"}, "configFileName": {"type": "string"}, "status": {"type": "string"}, "containers": {"type": "integer"}, "runningContainers": {"type": "integer"}, "stoppedContainers": {"type": "integer"}, "containerNames": {"type": "array", "items": {"type": "string"}}, "containerDetails": {"type": "array", "items": {"type": "object", "properties": {"name": {"type": "string"}, "state": {"type": "string"}}}}}}}}},
+      "schema_evidence": "authorized GET /api/docker/compose/projects observed project summary types; a later read-only refresh populated containerDetails and verified its name/state string fields. Project/container names, paths and config filenames were not retained"
     },
     {
       "path": "/api/docker/container-groups",
@@ -2573,8 +2573,8 @@
       "path": "/api/docker/disk-usage",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "disk_usage": {"type": "object", "properties": {"LayersSize": {"type": "integer"}, "Images": {"type": "array", "items": {}}, "Containers": {"type": "array", "items": {}}, "Volumes": {"type": "array", "items": {}}, "BuildCache": {"type": "array", "items": {}}}}}},
-      "schema_evidence": "authorized GET /api/docker/disk-usage observed aggregate/collection types only; image/container/volume identifiers, commands, paths, labels and runtime values were intentionally not documented"
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "disk_usage": {"type": "object", "properties": {"LayersSize": {"type": "integer"}, "Images": {"type": "array", "items": {"type": "object", "properties": {"Containers": {"type": "integer"}, "Created": {"type": "integer"}, "SharedSize": {"type": "integer"}, "Size": {"type": "integer"}}}}, "Containers": {"type": "array", "items": {"type": "object", "properties": {"Created": {"type": "integer"}, "SizeRw": {"type": "integer"}, "SizeRootFs": {"type": "integer"}, "State": {"type": "string"}, "Status": {"type": "string"}}}}, "Volumes": {"type": "array", "items": {"type": "object", "properties": {"Driver": {"type": "string"}, "Scope": {"type": "string"}, "UsageData": {"type": "object", "properties": {"RefCount": {"type": "integer"}, "Size": {"type": "integer"}}}}}}, "BuildCache": {"type": "array", "items": {}}}}}},
+      "schema_evidence": "authorized GET /api/docker/disk-usage initially established aggregate/collection types; a later read-only refresh populated image/container/volume collections and verified only safe size/count/state/driver/usage fields. Image/container/volume identifiers, commands, network data, paths, labels and runtime values were not retained; BuildCache remained empty so its item schema is still unspecified"
     },
     {
       "path": "/api/docker/images/upgrade-status",
@@ -2807,15 +2807,15 @@
       "path": "/api/portforward/{param}/lastlogs",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "lastLogs": {"type": ["array", "null"], "items": {}}}},
-      "schema_evidence": "authorized isolated disposable disabled PortForward rule returned lastLogs=null; log item/content schema remains unspecified and the rule was deleted immediately afterward"
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "lastLogs": {"type": ["array", "null"], "items": {"type":"object","properties":{"LogContent":{"type":"string"},"LogTime":{"type":"string"},"ShowTime":{"type":"boolean"},"Level":{"type":"string"}}}}}},
+      "schema_evidence": "authorized isolated disposable disabled PortForward rule returned lastLogs=null; item shape reuses the shared Lucky module-log model runtime-verified across sibling modules and the rule was deleted immediately afterward"
     },
     {
       "path": "/api/portforward/{param}/logs",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
-      "schema_evidence": "authorized isolated disposable disabled PortForward rule returned the paginated logs envelope with logs=null; log item/content schema remains unspecified and baseline was restored after API deletion"
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {"type":"object","properties":{"LogContent":{"type":"string"},"LogTime":{"type":"string"},"ShowTime":{"type":"boolean"},"Level":{"type":"string"}}}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized isolated disposable disabled PortForward rule returned the paginated logs envelope with logs=null; item shape reuses the shared Lucky module-log model runtime-verified across sibling modules and baseline was restored after API deletion"
     },
     {
       "path": "/api/docker/info",
@@ -3024,15 +3024,15 @@
       "path": "/api/ssl/lastlogs",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "lastLogs": {"type": ["array", "null"], "items": {}}}},
-      "schema_evidence": "authorized GET /api/ssl/lastlogs using one existing certificate key observed lastLogs=null; certificate key/domain and log item/content values were not retained"
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "lastLogs": {"type": ["array", "null"], "items": {"type":"object","properties":{"LogContent":{"type":"string"},"LogTime":{"type":"string"},"ShowTime":{"type":"boolean"},"Level":{"type":"string"}}}}}},
+      "schema_evidence": "authorized GET /api/ssl/lastlogs returned live log entries and verified the shared module-log item fields/types without retaining certificate/log values"
     },
     {
       "path": "/api/ssl/logs",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
-      "schema_evidence": "authorized GET /api/ssl/logs using one existing certificate key observed the paginated log envelope with logs=null; certificate key/domain and log item/content values were not retained"
+      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "logs": {"type": ["array", "null"], "items": {"type":"object","properties":{"LogContent":{"type":"string"},"LogTime":{"type":"string"},"ShowTime":{"type":"boolean"},"Level":{"type":"string"}}}}, "page": {"type": "integer"}, "pageSize": {"type": "integer"}, "total": {"type": "integer"}}},
+      "schema_evidence": "authorized GET /api/ssl/logs returned live log entries and verified the shared module-log item fields/types without retaining certificate/log values"
     },
     {
       "path": "/api/ssl/syncclients",
@@ -3734,6 +3734,497 @@
       "risk": "read-only",
       "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"list":{"type":["array","null"],"items":{"type":"object","properties":{"Key":{"type":"string"},"Name":{"type":"string"},"Enable":{"type":"boolean"},"InboundScoreThreshold":{"type":"integer"},"OutboundScoreThreshold":{"type":"integer"},"EnabledRulesCount":{"type":"integer"},"TotalRulesCount":{"type":"integer"},"ExclusionsCount":{"type":"integer"}}}}}},
       "schema_evidence": "authorized GET /api/coraza/list observed one disabled disposable instance created solely for schema verification; only summary field names and JSON types were retained, config/exclusion contents were not persisted, and the instance was deleted with the list baseline restored to zero"
+    }
+  ],
+  "schema_patches": [
+    {
+      "path": "/api/ipfliter/porttrap/blockedips",
+      "method": "GET",
+      "at": ["properties", "ips", "items"],
+      "value": {"type": "string"},
+      "evidence": "the paired batch-delete endpoint runtime-verifies blocked IPs as a string array"
+    },
+    {
+      "path": "/api/ipfliter/porttrap/blockedips/search",
+      "method": "GET",
+      "at": ["properties", "ips", "items"],
+      "value": {"type": "string"},
+      "evidence": "search returns the same blocked-IP collection consumed by the string-array batch-delete model"
+    },
+    {
+      "path": "/api/ipfliter/porttrapconf",
+      "method": "GET",
+      "at": ["properties", "configure", "properties", "DefaultAllowIPs", "items"],
+      "value": {"type": "string"},
+      "evidence": "bounded disabled PortTrap probe round-tripped a TEST-NET address and restored the exact baseline"
+    },
+    {
+      "path": "/api/ipfliter/porttrapconf",
+      "method": "GET",
+      "at": ["properties", "configure", "properties", "TCPPorts", "items"],
+      "value": {"type": "integer"},
+      "evidence": "bounded disabled PortTrap probe round-tripped one TCP port integer and restored the exact baseline"
+    },
+    {
+      "path": "/api/ipfliter/porttrapconf",
+      "method": "GET",
+      "at": ["properties", "configure", "properties", "UDPPorts", "items"],
+      "value": {"type": "integer"},
+      "evidence": "bounded disabled PortTrap probe round-tripped one UDP port integer and restored the exact baseline"
+    },
+    {
+      "path": "/api/ipfliter/porttrapconf",
+      "method": "GET",
+      "at": ["properties", "configure", "properties", "WebhookHeaders", "items"],
+      "value": {"type": "string"},
+      "evidence": "bounded disabled PortTrap probe round-tripped a header string; DDNS and STUN independently use the same string-array webhook model"
+    },
+    {
+      "path": "/api/ipfliter/porttrapconf",
+      "method": "GET",
+      "at": ["properties", "configure", "properties", "WebhookSuccessContent", "items"],
+      "value": {"type": "string"},
+      "evidence": "bounded disabled PortTrap probe round-tripped a success-content string; DDNS and STUN independently use the same string-array webhook model"
+    },
+    {
+      "path": "/api/ipfliter/porttrapconf",
+      "method": "GET",
+      "at": ["properties", "defaultAllowIPsValidation", "properties", "invalidEntries", "items"],
+      "value": {"type": "string"},
+      "evidence": "validation applies to the verified string-array DefaultAllowIPs model and backend validation errors identify invalid entries as IP/CIDR strings"
+    },
+    {
+      "path": "/api/modules/list",
+      "method": "GET",
+      "at": ["properties", "hiddenModules", "items"],
+      "value": {"type": "string"},
+      "evidence": "hiddenModules contains module keys from the same module-key domain as runtime-verified Modules and extraModules string arrays"
+    },
+    {
+      "path": "/api/webservice/rules_lite",
+      "method": "GET",
+      "at": ["properties", "list", "items", "properties", "SubRuleList", "items"],
+      "value": {"type": "object", "properties": {"Key": {"type": "string"}, "Name": {"type": "string"}}},
+      "evidence": "authorized read-only response directly observed SubRuleList entries with Key and Name string fields"
+    },
+    {
+      "path": "/api/status/module-overview",
+      "method": "GET",
+      "at": ["properties", "modules", "items", "properties", "metrics", "items", "properties", "details", "items"],
+      "value": {"type": "object", "properties": {"callbackProvider": {"type": "string"}, "copyable": {"type": "boolean"}, "label": {"type": "string"}, "provider": {"type": "string"}, "value": {"type": "string"}}},
+      "evidence": "authorized read-only type tree directly observed detail entry fields and JSON types without retaining values"
+    },
+    {
+      "path": "/api/webterminal/globalshortcuts",
+      "method": "GET",
+      "at": ["properties", "shortcuts", "items"],
+      "value": {"type": "object", "properties": {"id": {"type": "string"}, "name": {"type": "string"}, "command": {"type": "string"}, "hotkey": {"type": "string"}, "autoExecute": {"type": "boolean"}, "steps": {"type": "array", "items": {"type": "object", "properties": {"command": {"type": "string"}, "autoExecute": {"type": "boolean"}, "delay": {"type": "integer"}, "description": {"type": "string"}}}}}},
+      "evidence": "GET returns the same shortcut model accepted by the fully typed global-shortcuts PUT contract"
+    },
+    {
+      "path": "/api/coraza/instancelist", "method": "GET",
+      "at": ["properties", "list", "items"],
+      "value": {"type": "object", "properties": {"Key": {"type": "string"}, "Name": {"type": "string"}, "Enable": {"type": "boolean"}, "InboundScoreThreshold": {"type": "integer"}, "OutboundScoreThreshold": {"type": "integer"}}},
+      "evidence": "the disposable Coraza instance and sibling list endpoint runtime-verified this safe instance-summary model"
+    },
+    {
+      "path": "/api/ddns/odhcpdclients", "method": "GET",
+      "at": ["properties", "clients", "items"], "value": {"type": "object"},
+      "evidence": "clients is a collection of DHCP client records; inner identifying fields remain intentionally undocumented"
+    },
+    {
+      "path": "/api/dlnaservice/configure", "method": "GET",
+      "at": ["properties", "configure", "properties", "MountList", "items"], "value": {"type": "object"},
+      "evidence": "MountList is a collection of mount records passed through by the service configuration model; path-bearing fields stay unspecified"
+    },
+    {
+      "path": "/api/dlnaservice/configure", "method": "GET",
+      "at": ["properties", "configure", "properties", "NetInterfaceList", "items"], "value": {"type": "string"},
+      "evidence": "network-interface selections use interface-name strings, consistent with the runtime-verified interface models"
+    },
+    {
+      "path": "/api/docker/compose/backup/status", "method": "GET",
+      "at": ["properties", "in_progress", "items"], "value": {"type": "object"},
+      "evidence": "in_progress is a queue of compose-backup task records; task internals remain intentionally broad"
+    },
+    {
+      "path": "/api/docker/compose/backup/status", "method": "GET",
+      "at": ["properties", "queue", "items"], "value": {"type": "object"},
+      "evidence": "queue is a collection of compose-backup task records; task internals remain intentionally broad"
+    },
+    {
+      "path": "/api/docker/compose/{param}/backups", "method": "GET",
+      "at": ["properties", "backups", "items"], "value": {"type": "object"},
+      "evidence": "backup entries are structured records; names and filesystem metadata are intentionally not modeled here"
+    },
+    {
+      "path": "/api/docker/container-groups", "method": "GET",
+      "at": ["properties", "list", "items"],
+      "value": {"type": "object", "properties": {"Key": {"type": "string"}, "Name": {"type": "string"}}},
+      "evidence": "GET list entries use the same Key/Name group model as the typed container-group update contract"
+    },
+    {
+      "path": "/api/docker/containers", "method": "POST",
+      "at": ["properties", "warnings", "items"], "value": {"type": "string"},
+      "evidence": "container-create warnings follow the Docker API string-warning collection contract"
+    },
+    {
+      "path": "/api/docker/containers/sort-config", "method": "GET",
+      "at": ["properties", "sort", "properties", "flat_order", "items"], "value": {"type": "string"},
+      "evidence": "flat_order stores container identifiers as ordered string keys"
+    },
+    {
+      "path": "/api/docker/containers/sort-config", "method": "GET",
+      "at": ["properties", "sort", "properties", "compose_group_order", "items"], "value": {"type": "string"},
+      "evidence": "compose_group_order stores compose group identifiers as ordered string keys"
+    },
+    {
+      "path": "/api/docker/containers/sort-config", "method": "GET",
+      "at": ["properties", "sort", "properties", "custom_group_order", "items"], "value": {"type": "string"},
+      "evidence": "custom_group_order stores custom group identifiers as ordered string keys"
+    },
+    {
+      "path": "/api/docker/containers/{param}/files/search", "method": "POST",
+      "at": ["properties", "files", "items"], "value": {"type": "object"},
+      "evidence": "file-search results are structured file records; path/name values are intentionally not retained"
+    },
+    {
+      "path": "/api/docker/disk-usage", "method": "GET",
+      "at": ["properties", "disk_usage", "properties", "BuildCache", "items"], "value": {"type": "object"},
+      "evidence": "Docker disk-usage BuildCache is a collection of structured cache-usage records"
+    },
+    {
+      "path": "/api/docker/images/remove", "method": "DELETE",
+      "at": ["properties", "removed", "items"], "value": {"type": "object"},
+      "evidence": "Docker image-removal results are structured removal records; image identifiers remain undocumented"
+    },
+    {
+      "path": "/api/docker/labels/{param}/containers", "method": "GET",
+      "at": ["properties", "containers", "items"], "value": {"type": "object"},
+      "evidence": "label membership returns structured container summary records without documenting container identifiers"
+    },
+    {
+      "path": "/api/docker/tasks", "method": "GET",
+      "at": ["properties", "tasks", "items"], "value": {"type": "object"},
+      "evidence": "tasks is a collection of structured Docker task records"
+    },
+    {
+      "path": "/api/docker/tasks/image-pull/active", "method": "GET",
+      "at": ["properties", "task"], "value": {"type": ["object", "null"]},
+      "evidence": "active image-pull task is either a structured task record or null when idle"
+    },
+    {
+      "path": "/api/docker/volumes/backup/status", "method": "GET",
+      "at": ["properties", "in_progress", "items"], "value": {"type": "object"},
+      "evidence": "in_progress is a collection of structured volume-backup task records"
+    },
+    {
+      "path": "/api/docker/volumes/backup/status", "method": "GET",
+      "at": ["properties", "queue", "items"], "value": {"type": "object"},
+      "evidence": "queue is a collection of structured volume-backup task records"
+    },
+    {
+      "path": "/api/docker/volumes/{param}/backups", "method": "GET",
+      "at": ["properties", "backups", "items"], "value": {"type": "object"},
+      "evidence": "volume backup entries are structured records; backup names and paths remain intentionally unspecified"
+    },
+    {
+      "path": "/api/frp/{param}/proxies", "method": "GET",
+      "at": ["properties", "proxies", "items"], "value": {"type": "object"},
+      "evidence": "the typed FRP write model establishes Proxies as an array of structured objects; credential-bearing nested fields remain undocumented"
+    },
+    {
+      "path": "/api/frp/{param}/visitors", "method": "GET",
+      "at": ["properties", "visitors", "items"], "value": {"type": "object"},
+      "evidence": "the typed FRP write model establishes Visitors as an array of structured objects; credential-bearing nested fields remain undocumented"
+    },
+    {
+      "path": "/api/ftpserver/configure", "method": "GET",
+      "at": ["properties", "configure", "properties", "Users", "items"], "value": {"type": "object"},
+      "evidence": "Users contains structured account records; credential-bearing member fields remain intentionally undocumented"
+    },
+    {
+      "path": "/api/ipdb/avalidDBFiles", "method": "GET",
+      "at": ["properties", "list", "items"], "value": {"type": "string"},
+      "evidence": "available database files are represented as file-name/path strings; actual paths remain unretained"
+    },
+    {
+      "path": "/api/ipdb/items", "method": "GET",
+      "at": ["properties", "list", "items"],
+      "value": {"type": "object", "properties": {"Key": {"type": "string"}, "Remark": {"type": "string"}, "Enable": {"type": "boolean"}, "Format": {"type": "string"}, "SupportTypes": {"type": "integer"}, "BufferType": {"type": "integer"}}},
+      "evidence": "IPDB list entries reuse the typed item model; filesystem/database parameter values are intentionally omitted"
+    },
+    {
+      "path": "/api/ipfliter/list/{param}", "method": "GET",
+      "at": ["properties", "rule", "properties", "SubRuleList", "items"], "value": {"type": "object"},
+      "evidence": "the separately runtime-verified subrule-list endpoint establishes SubRuleList entries as structured subrule objects"
+    },
+    {
+      "path": "/api/ipfliter/listlite", "method": "GET",
+      "at": ["properties", "list", "items", "properties", "SubRuleList", "items"], "value": {"type": "object"},
+      "evidence": "the separately runtime-verified subrule-list endpoint establishes compact SubRuleList entries as structured objects"
+    },
+    {
+      "path": "/api/logscenter/query", "method": "GET",
+      "at": ["properties", "logs", "items"], "value": {"type": "object"},
+      "evidence": "logscenter query returns structured log records; content-bearing fields remain intentionally unspecified"
+    },
+    {
+      "path": "/api/portforward/{param}", "method": "GET",
+      "at": ["properties", "rule", "properties", "ForwardTypes", "items"], "value": {"type": "string"},
+      "evidence": "ForwardTypes is a frontend-selected collection of forwarding-type identifiers"
+    },
+    {
+      "path": "/api/portforward/{param}", "method": "GET",
+      "at": ["properties", "rule", "properties", "TargetAddressList", "items"], "value": {"type": "string"},
+      "evidence": "TargetAddressList uses address strings, consistent with the independently verified STUN target-address model"
+    },
+    {
+      "path": "/api/coraza/list/{param}", "method": "GET",
+      "at": ["properties", "instance", "properties", "CorazaWAFConfigList", "items"], "value": {"type": ["string", "object"]},
+      "evidence": "Coraza configuration entries are collection records that may be textual or structured; exact content stays intentionally broad"
+    },
+    {
+      "path": "/api/coraza/list/{param}", "method": "GET",
+      "at": ["properties", "instance", "properties", "RuleExclusions", "items"], "value": {"type": ["string", "object"]},
+      "evidence": "Coraza exclusion entries may be textual or structured rule records; exact content stays intentionally broad"
+    },
+    {
+      "path": "/api/portforwards", "method": "GET",
+      "at": ["properties", "list", "items"], "value": {"type": "object"},
+      "evidence": "the runtime-verified PortForward detail endpoint establishes list entries as structured rule records"
+    },
+    {
+      "path": "/api/portforwards_lite", "method": "GET",
+      "at": ["properties", "list", "items"], "value": {"type": "object"},
+      "evidence": "the lite collection contains structured PortForward summary records"
+    },
+    {
+      "path": "/api/rclone/remotelistlite", "method": "GET",
+      "at": ["properties", "list", "items"], "value": {"type": "object"},
+      "evidence": "the typed Rclone remote model establishes lite entries as structured remote records; credential-bearing fields remain omitted"
+    },
+    {
+      "path": "/api/rclone/third/115pan/authuserlist", "method": "GET",
+      "at": ["properties", "data", "items"], "value": {"type": "object"},
+      "evidence": "third-party authenticated-user lists contain structured account records; identity/token values remain undocumented"
+    },
+    {
+      "path": "/api/rclone/third/alipan/authuserlist", "method": "GET",
+      "at": ["properties", "data", "items"], "value": {"type": "object"},
+      "evidence": "third-party authenticated-user lists contain structured account records; identity/token values remain undocumented"
+    },
+    {
+      "path": "/api/rclone/third/baidupan/authuserlist", "method": "GET",
+      "at": ["properties", "data", "items"], "value": {"type": "object"},
+      "evidence": "third-party authenticated-user lists contain structured account records; identity/token values remain undocumented"
+    },
+    {
+      "path": "/api/security-groups", "method": "GET",
+      "at": ["properties", "list", "items"], "value": {"type": "object"},
+      "evidence": "the fully typed security-group write model establishes list entries as structured group records"
+    },
+    {
+      "path": "/api/security-groups/grants", "method": "GET",
+      "at": ["properties", "list", "items"], "value": {"type": "object"},
+      "evidence": "grants are structured authorization records; principal/resource details remain intentionally unspecified"
+    },
+    {
+      "path": "/api/security-groups/lite", "method": "GET",
+      "at": ["properties", "list", "items"], "value": {"type": "object"},
+      "evidence": "lite security-group entries are structured group summaries"
+    },
+    {
+      "path": "/api/security-groups/oauth-users", "method": "GET",
+      "at": ["properties", "list", "items"], "value": {"type": "object"},
+      "evidence": "the fully typed OAuth-user write model establishes list entries as structured records; identity values remain unretained"
+    },
+    {
+      "path": "/api/security-groups/users", "method": "GET",
+      "at": ["properties", "list", "items"], "value": {"type": "object"},
+      "evidence": "the typed local-user model establishes structured list entries while password, hash and 2FA-secret fields remain undocumented"
+    },
+    {
+      "path": "/api/smb/configure", "method": "GET",
+      "at": ["properties", "configure", "properties", "PublicMountList", "items"], "value": {"type": "object"},
+      "evidence": "PublicMountList contains structured share/mount records; filesystem paths remain intentionally unspecified"
+    },
+    {
+      "path": "/api/smb/configure", "method": "GET",
+      "at": ["properties", "configure", "properties", "Users", "items"], "value": {"type": "object"},
+      "evidence": "Users contains structured SMB account records; credential-bearing member fields remain undocumented"
+    },
+    {
+      "path": "/api/smb/runtime", "method": "GET",
+      "at": ["properties", "connections", "items"], "value": {"type": "object"},
+      "evidence": "runtime connections are structured session records; client/share identifiers remain undocumented"
+    },
+    {
+      "path": "/api/smb/runtime", "method": "GET",
+      "at": ["properties", "users", "items"], "value": {"type": "object"},
+      "evidence": "runtime users are structured session/user records; identifying values remain undocumented"
+    },
+    {
+      "path": "/api/smb/status", "method": "GET",
+      "at": ["properties", "discoveryFailures", "items"], "value": {"type": ["string", "object"]},
+      "evidence": "discovery failures are diagnostic entries whose content can be textual or structured; exact values stay broad"
+    },
+    {
+      "path": "/api/ssl/setting", "method": "GET",
+      "at": ["properties", "syncClientList", "items"], "value": {"type": "object"},
+      "evidence": "syncClientList contains structured certificate-sync client records; endpoints and credentials remain undocumented"
+    },
+    {
+      "path": "/api/ssl/syncclients", "method": "GET",
+      "at": ["properties", "list", "items"], "value": {"type": "object"},
+      "evidence": "sync-client list entries are structured records; endpoints, credentials and certificate values remain undocumented"
+    },
+    {
+      "path": "/api/ssl/{param}", "method": "GET",
+      "at": ["properties", "info", "properties", "SyncClientList", "items"], "value": {"type": "object"},
+      "evidence": "certificate SyncClientList uses the same structured sync-client model while sensitive values remain omitted"
+    },
+    {
+      "path": "/api/storagemanagement/litelist", "method": "GET",
+      "at": ["properties", "list", "items"], "value": {"type": "object"},
+      "evidence": "the typed storage write model establishes lite entries as structured storage records; path and provider parameters stay unspecified"
+    },
+    {
+      "path": "/api/third/filebrowser/configure", "method": "GET",
+      "at": ["properties", "configure", "properties", "MountList", "items"], "value": {"type": "object"},
+      "evidence": "MountList contains structured mount records; filesystem and remote details remain intentionally unspecified"
+    },
+    {
+      "path": "/api/webdav/configure", "method": "GET",
+      "at": ["properties", "configure", "properties", "Users", "items"], "value": {"type": "object"},
+      "evidence": "Users contains structured WebDAV account records; credential-bearing fields remain undocumented"
+    },
+    {
+      "path": "/api/webservice/discovery/start", "method": "POST",
+      "at": ["properties", "results", "items"], "value": {"type": "object"},
+      "evidence": "discovery results are structured endpoint records; host, port and URL values remain intentionally unspecified"
+    },
+    {
+      "path": "/api/webservice/discovery/status/{param}", "method": "GET",
+      "at": ["properties", "results", "items"], "value": {"type": "object"},
+      "evidence": "discovery status returns the same structured result records as discovery start"
+    },
+    {
+      "path": "/api/webservice/groups", "method": "GET",
+      "at": ["properties", "list", "items"],
+      "value": {"type": "object", "properties": {"Key": {"type": "string"}, "Name": {"type": "string"}}},
+      "evidence": "the typed group create/update model establishes Key/Name string fields for group entries"
+    },
+    {
+      "path": "/api/webservice/statistics/events", "method": "GET",
+      "at": ["properties", "list", "items"], "value": {"type": "object"},
+      "evidence": "statistics events are structured event records; request/client details remain unspecified"
+    },
+    {
+      "path": "/api/webservice/statistics/geo/aggregate", "method": "GET",
+      "at": ["properties", "page", "properties", "items", "items"], "value": {"type": "object"},
+      "evidence": "geo aggregate items are structured aggregate records; geographic values remain unretained"
+    },
+    {
+      "path": "/api/webservice/statistics/history", "method": "GET",
+      "at": ["properties", "points", "items"], "value": {"type": "object"},
+      "evidence": "history points are structured metric records; runtime metric values remain unspecified"
+    },
+    {
+      "path": "/api/webservice/statistics/rankings", "method": "GET",
+      "at": ["properties", "items", "items"], "value": {"type": "object"},
+      "evidence": "ranking items are structured ranking records; identifying values remain unspecified"
+    },
+    {
+      "path": "/api/webservice/statistics/realtime", "method": "GET",
+      "at": ["properties", "lastMinute", "items"], "value": {"type": "object"},
+      "evidence": "lastMinute contains structured realtime sample records"
+    },
+    {
+      "path": "/api/webservice/statistics/recent-ips", "method": "GET",
+      "at": ["properties", "activity", "properties", "items", "items"], "value": {"type": "object"},
+      "evidence": "recent-IP activity items are structured activity records; IP values remain unretained"
+    },
+    {
+      "path": "/api/webservice/statistics/recent-ips", "method": "GET",
+      "at": ["properties", "items", "items"], "value": {"type": "object"},
+      "evidence": "recent-IP items are structured profile records; IP values remain unretained"
+    },
+    {
+      "path": "/api/webservice/statistics/recent-ips/visits", "method": "GET",
+      "at": ["properties", "visits", "items"], "value": {"type": "object"},
+      "evidence": "visits is a collection of structured visit records; client/request values remain unretained"
+    },
+    {
+      "path": "/api/webservice/statistics/waf/events", "method": "GET",
+      "at": ["properties", "list", "items"], "value": {"type": "object"},
+      "evidence": "WAF events are structured event records; request/rule values remain unspecified"
+    },
+    {
+      "path": "/api/webservice/webauth/sessions", "method": "GET",
+      "at": ["properties", "list", "items"], "value": {"type": "object"},
+      "evidence": "web-auth sessions are structured session records; tokens and client identifiers remain undocumented"
+    },
+    {
+      "path": "/api/webterminal/sessions", "method": "GET",
+      "at": ["properties", "list", "items"], "value": {"type": "object"},
+      "evidence": "terminal sessions are structured session records; terminal credentials and command content remain undocumented"
+    },
+    {
+      "path": "/api/wol/devices", "method": "GET",
+      "at": ["properties", "list", "items", "properties", "BroadcastIPs", "items"], "value": {"type": "string"},
+      "evidence": "BroadcastIPs contains broadcast-address strings in the WOL device model"
+    },
+    {
+      "path": "/api/wol/devices", "method": "GET",
+      "at": ["properties", "list", "items", "properties", "ProbeTargets", "items"], "value": {"type": "string"},
+      "evidence": "ProbeTargets contains network target strings in the WOL device model"
+    },
+    {
+      "path": "/api/wol/devices", "method": "GET",
+      "at": ["properties", "list", "items", "properties", "OnlineMacList", "items"], "value": {"type": "string"},
+      "evidence": "OnlineMacList contains MAC-address strings"
+    },
+    {
+      "path": "/api/wol/devices", "method": "GET",
+      "at": ["properties", "list", "items", "properties", "ConnectedMacList", "items"], "value": {"type": "string"},
+      "evidence": "ConnectedMacList contains MAC-address strings"
+    },
+    {
+      "path": "/api/wol/devices", "method": "GET",
+      "at": ["properties", "list", "items", "properties", "ReachableTargetList", "items"], "value": {"type": "string"},
+      "evidence": "ReachableTargetList contains probe-target strings"
+    },
+    {
+      "path": "/api/wol/devices", "method": "GET",
+      "at": ["properties", "lastLogs", "items"],
+      "value": {"type": "object", "properties": {"LogContent": {"type": "string"}, "LogTime": {"type": "string"}, "ShowTime": {"type": "boolean"}, "Level": {"type": "string"}}},
+      "evidence": "WOL device lastLogs reuses the shared module-log model runtime-verified across sibling WOL/module log endpoints"
+    },
+    {
+      "path": "/api/wol/devices_lite", "method": "GET",
+      "at": ["properties", "list", "items"], "value": {"type": "object"},
+      "evidence": "lite WOL entries are structured device summaries; device identifiers remain unspecified"
+    },
+    {
+      "path": "/api/wol/service/configure", "method": "GET",
+      "at": ["properties", "configure", "properties", "Server", "properties", "WebhookHeaders", "items"], "value": {"type": "string"},
+      "evidence": "WOL uses the same string-array webhook header model runtime-verified in DDNS and STUN"
+    },
+    {
+      "path": "/api/wol/service/configure", "method": "GET",
+      "at": ["properties", "configure", "properties", "Server", "properties", "WebhookSuccessContent", "items"], "value": {"type": "string"},
+      "evidence": "WOL uses the same string-array webhook success-content model runtime-verified in DDNS and STUN"
+    },
+    {
+      "path": "/api/wol/service/configure", "method": "PUT",
+      "at": ["properties", "configure", "properties", "Server", "properties", "WebhookHeaders", "items"], "value": {"type": "string"},
+      "evidence": "PUT response reuses the safe WOL Server projection and the shared string-array webhook header model"
+    },
+    {
+      "path": "/api/wol/service/configure", "method": "PUT",
+      "at": ["properties", "configure", "properties", "Server", "properties", "WebhookSuccessContent", "items"], "value": {"type": "string"},
+      "evidence": "PUT response reuses the safe WOL Server projection and the shared string-array webhook success-content model"
     }
   ]
 }

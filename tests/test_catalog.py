@@ -11,6 +11,56 @@ from lucky_api.catalog import CatalogError
 
 
 class RuntimeVerificationTests(unittest.TestCase):
+    def test_runtime_schema_patch_only_replaces_empty_response_schema_leaf(self) -> None:
+        snapshot = {
+            "schema_version": 1,
+            "target": {"product": "Lucky", "version": "3.0.0"},
+            "routes": [
+                {
+                    "path": "/api/example",
+                    "method": "GET",
+                    "module": "example",
+                    "response_type": "json",
+                    "response_schema": {
+                        "type": "object",
+                        "properties": {"items": {"type": "array", "items": {}}},
+                    },
+                }
+            ],
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            snapshot_path = Path(directory) / "snapshot.json"
+            runtime_path = Path(directory) / "runtime.json"
+            snapshot_path.write_text(json.dumps(snapshot), encoding="utf-8")
+            verification = {
+                "schema_version": 1,
+                "target": {"product": "Lucky", "version": "3.0.0"},
+                "static_snapshot_sha256": hashlib.sha256(snapshot_path.read_bytes()).hexdigest(),
+                "suppress_literals": [],
+                "routes": [],
+                "schema_patches": [
+                    {
+                        "path": "/api/example",
+                        "method": "GET",
+                        "at": ["properties", "items", "items"],
+                        "value": {"type": "string"},
+                        "evidence": "fixture evidence",
+                    }
+                ],
+            }
+            runtime_path.write_text(json.dumps(verification), encoding="utf-8")
+            catalog = RouteCatalog.from_file(snapshot_path, runtime_verification=runtime_path)
+            route = catalog.match("GET", "/api/example")
+            self.assertEqual(
+                route.response_schema["properties"]["items"]["items"],  # type: ignore[index,union-attr]
+                {"type": "string"},
+            )
+
+            verification["schema_patches"][0]["at"] = ["properties", "items"]
+            runtime_path.write_text(json.dumps(verification), encoding="utf-8")
+            with self.assertRaises(CatalogError):
+                RouteCatalog.from_file(snapshot_path, runtime_verification=runtime_path)
+
     def test_runtime_verification_suppresses_literals_and_overrides_risk(self) -> None:
         snapshot = {
             "schema_version": 1,
