@@ -1915,8 +1915,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("Local Path Browser delete response schema regressed")
 
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 255:
-        fail(f"response-schema coverage regressed below 255 routes: {response_schema_count}")
+    if response_schema_count < 265:
+        fail(f"response-schema coverage regressed below 265 routes: {response_schema_count}")
 
     safe_utility_response_routes = {
         ("GET", "/api/baseconfigure"),
@@ -2890,6 +2890,117 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         != {"type": "boolean"}
     ):
         fail("FRP natTraversal nested schema regressed")
+
+    frp_ret_only = {"type": "object", "properties": {"ret": {"type": "integer"}}}
+    for route_key in {
+        ("POST", "/api/frp/list"),
+        ("PUT", "/api/frp/list"),
+        ("DELETE", "/api/frp/list/{param}"),
+    }:
+        if merged_by_key[route_key].response_schema != frp_ret_only:
+            fail(f"FRP disposable instance ret-only response schema regressed for {route_key}")
+
+    frp_toggle = merged_by_key[("GET", "/api/frp/list/{param}/{param2}")]
+    if frp_toggle.risk is not OperationRisk.MUTATING:
+        fail("FRP enable/disable GET must remain classified as mutating")
+    if frp_toggle.response_schema != frp_ret_only:
+        fail("FRP enable/disable GET ret-only response schema regressed")
+
+    expected_frp_list = {
+        "type": "object",
+        "properties": {
+            "ret": {"type": "integer"},
+            "list": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "Key": {"type": "string"},
+                        "Remark": {"type": "string"},
+                        "Type": {"type": "string"},
+                        "ConfigMode": {"type": "string"},
+                        "Enable": {"type": "boolean"},
+                        "Running": {"type": "boolean"},
+                        "RunErrorMsg": {"type": "string"},
+                        "ServerAddr": {"type": "string"},
+                        "ProxyCount": {"type": "integer"},
+                        "VisitorCount": {"type": "integer"},
+                    },
+                },
+            },
+        },
+    }
+    if merged_by_key[("GET", "/api/frp/list")].response_schema != expected_frp_list:
+        fail("FRP disposable list summary schema regressed")
+
+    expected_frp_detail = {
+        "type": "object",
+        "properties": {
+            "instance": {
+                "type": "object",
+                "properties": {
+                    "Key": {"type": "string"},
+                    "Enable": {"type": "boolean"},
+                    "Remark": {"type": "string"},
+                    "Type": {"type": "string"},
+                    "ConfigMode": {"type": "string"},
+                    "ConfigText": {"type": "string"},
+                    "Params": {"type": ["object", "null"]},
+                },
+            },
+            "ret": {"type": "integer"},
+        },
+    }
+    if merged_by_key[("GET", "/api/frp/list/{param}")].response_schema != expected_frp_detail:
+        fail("FRP disposable detail response schema regressed")
+
+    expected_frp_status = {
+        "type": "object",
+        "properties": {
+            "ret": {"type": "integer"},
+            "status": {
+                "type": "object",
+                "properties": {
+                    "key": {"type": "string"},
+                    "remark": {"type": "string"},
+                    "type": {"type": "string"},
+                    "running": {"type": "boolean"},
+                    "enable": {"type": "boolean"},
+                    "serverAddr": {"type": "string"},
+                    "proxyCount": {"type": "integer"},
+                    "visitorCount": {"type": "integer"},
+                },
+            },
+        },
+    }
+    if merged_by_key[("GET", "/api/frp/{param}/status")].response_schema != expected_frp_status:
+        fail("FRP disabled-client status response schema regressed")
+
+    nullable_untyped_array = {"type": ["array", "null"], "items": {}}
+    frp_read_schemas = {
+        ("GET", "/api/frp/{param}/lastlogs"): {
+            "type": "object", "properties": {"lastLogs": nullable_untyped_array, "ret": {"type": "integer"}}
+        },
+        ("GET", "/api/frp/{param}/logs"): {
+            "type": "object",
+            "properties": {
+                "logs": nullable_untyped_array,
+                "page": {"type": "integer"},
+                "pageSize": {"type": "integer"},
+                "ret": {"type": "integer"},
+                "total": {"type": "integer"},
+            },
+        },
+        ("GET", "/api/frp/{param}/proxies"): {
+            "type": "object", "properties": {"proxies": nullable_untyped_array, "ret": {"type": "integer"}}
+        },
+        ("GET", "/api/frp/{param}/visitors"): {
+            "type": "object", "properties": {"ret": {"type": "integer"}, "visitors": nullable_untyped_array}
+        },
+    }
+    for route_key, expected_schema in frp_read_schemas.items():
+        if merged_by_key[route_key].response_schema != expected_schema:
+            fail(f"FRP disposable read response schema regressed for {route_key}")
 
 
 def check_generated_artifacts() -> None:
