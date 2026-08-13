@@ -405,7 +405,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend saves a normalized copy of the authorized GET /api/baseconfigure object and conditionally adds OldPassword during password change; an authorized read-only shape check verified scalar JSON types for 60 request fields without retaining any configuration/token values, hiddenModules reuses the verified nullable-array module model, OldPassword reuses the verified password string type, and DisableModules/Keys/StatNetInterfaceList/ThirdAuthLoginUserList remain deliberately untyped because this instance returned null",
+        "x-schema-evidence": "frontend saves a normalized copy of the authorized GET /api/baseconfigure object and conditionally adds OldPassword during password change; an authorized read-only shape check verified scalar JSON types for 60 request fields without retaining any configuration/token values. Current Lucky 3.0.0 frontend code initializes ThirdAuthLoginUserList/StatNetInterfaceList as arrays and constructs them from third-party user Key values and network-interface name values respectively; because the authorized GET returned both as null, the request contract is documented as nullable string arrays. hiddenModules reuses the verified nullable-array module model, OldPassword reuses the verified password string type, while DisableModules and Keys remain deliberately untyped because this instance returned null and the current frontend contains no semantic field use for either one",
         "requestBody": {
           "required": true,
           "content": {
@@ -571,7 +571,15 @@
                   "SetGCPercent": {
                     "type": "boolean"
                   },
-                  "StatNetInterfaceList": {},
+                  "StatNetInterfaceList": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
                   "StatusHistoryRetentionDays": {
                     "type": "integer"
                   },
@@ -581,7 +589,15 @@
                   "ThirdAuthLoginSkipTwoFA": {
                     "type": "boolean"
                   },
-                  "ThirdAuthLoginUserList": {},
+                  "ThirdAuthLoginUserList": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
                   "TimeZone": {
                     "type": "string"
                   },
@@ -6169,6 +6185,7 @@
           "lucky_ddns-rma111lI.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "current Lucky 3.0.0 DDNS delete wrapper defaults its third argument to false and always sends {deleteFromProvider:<boolean>}; the protected DELETE handler was not executed for schema discovery",
         "parameters": [
           {
             "name": "param",
@@ -6194,7 +6211,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "deleteFromProvider": {}
+                  "deleteFromProvider": {
+                    "type": "boolean"
+                  }
                 }
               }
             }
@@ -8174,6 +8193,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "current Lucky 3.0.0 Compose backup-delete wrapper sends {backup:<name>} using the same backup-name argument as the runtime-verified restore wrapper, whose parser accepts a string and rejects object candidates as missing names; no backup DELETE handler was executed",
         "parameters": [
           {
             "name": "param",
@@ -8191,7 +8211,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "backup": {}
+                  "backup": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -17579,6 +17601,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "current Lucky 3.0.0 frontend sends the backup name as a string field; this matches the runtime-verified sibling restore request model",
         "parameters": [
           {
             "name": "param",
@@ -17596,7 +17619,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "backup": {}
+                  "backup": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -32324,11 +32349,37 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "bucket": {
+                      "type": "string"
+                    },
+                    "enabled": {
+                      "type": "boolean"
+                    },
+                    "pointCount": {
+                      "type": "integer"
+                    },
+                    "recordingStartedAt": {
+                      "type": "integer"
+                    },
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "retentionDays": {
+                      "type": "integer"
+                    },
+                    "series": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -32348,7 +32399,28 @@
         "x-evidence-bundles": [
           "lucky_index-DND3_xvE.js"
         ],
-        "x-lucky-risk": "read-only"
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "current Lucky 3.0.0 frontend supplies start/end time bounds and an optional bucket; an authorized read-only request confirmed the successful top-level response field names and primitive types. The current series is empty, while the frontend normalizer explicitly iterates series entries as objects; individual item properties remain intentionally unspecified",
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "schema": {}
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "schema": {}
+          },
+          {
+            "name": "bucket",
+            "in": "query",
+            "required": false,
+            "schema": {}
+          }
+        ]
       }
     },
     "/api/status/history/clear": {

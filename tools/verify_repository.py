@@ -954,6 +954,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             fail(f"Docker backup-restore request schema regressed for {route_key}")
         if route.response_schema is not None:
             fail(f"Docker backup-restore missing-backup evidence must not claim a success response for {route_key}")
+    for route_key in {("DELETE", "/api/docker/compose/{param}/backups"), ("DELETE", "/api/docker/volumes/{param}/backups")}:
+        route = merged_by_key[route_key]
+        if route.request_body_schema != docker_backup_restore:
+            fail(f"Docker backup-delete request schema regressed for {route_key}")
 
     docker_compose_logs = merged_by_key[("POST", "/api/docker/compose/{param}/logs")]
     expected_compose_logs_request = {
@@ -1829,13 +1833,23 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     for field in base_boolean_fields:
         if base_props.get(field) != {"type": "boolean"}:
             fail(f"baseconfigure boolean request type regressed for {field}")
-    for field in ("DisableModules", "Keys", "StatNetInterfaceList", "ThirdAuthLoginUserList"):
+    for field in ("DisableModules", "Keys"):
         if base_props.get(field) != {}:
             fail(f"baseconfigure null-only runtime field must remain untyped for {field}")
+    nullable_string_array = {"type": ["array", "null"], "items": {"type": "string"}}
+    for field in ("StatNetInterfaceList", "ThirdAuthLoginUserList"):
+        if base_props.get(field) != nullable_string_array:
+            fail(f"baseconfigure frontend-constructed nullable string-array type regressed for {field}")
     if base_props.get("hiddenModules") != {"type": ["array", "null"], "items": {}}:
         fail("baseconfigure hiddenModules request type must reuse verified module model")
     if "required" in base_put:
         fail("baseconfigure PUT request schema must not invent required fields")
+
+    ddns_record_delete = merged_by_key[("DELETE", "/api/ddns/{param}/{param2}")]
+    if ddns_record_delete.request_body_schema != {
+        "type": "object", "properties": {"deleteFromProvider": {"type": "boolean"}}
+    }:
+        fail("DDNS record delete request schema regressed")
 
     filebrowser_put = merged_by_key[("PUT", "/api/third/filebrowser/configure")].request_body_schema
     filebrowser_get = merged_by_key[("GET", "/api/third/filebrowser/configure")].response_schema
@@ -2418,6 +2432,24 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     }:
         fail("host-process listeningPorts schema regressed")
 
+    status_history = merged_by_key[("GET", "/api/status/history")]
+    if tuple(status_history.query_keys) != ("start", "end", "bucket"):
+        fail("status-history query-key evidence regressed")
+    expected_status_history = {
+        "type": "object",
+        "properties": {
+            "bucket": {"type": "string"},
+            "enabled": {"type": "boolean"},
+            "pointCount": {"type": "integer"},
+            "recordingStartedAt": {"type": "integer"},
+            "ret": {"type": "integer"},
+            "retentionDays": {"type": "integer"},
+            "series": {"type": "array", "items": {"type": "object"}},
+        },
+    }
+    if status_history.response_schema != expected_status_history:
+        fail("status-history response schema regressed")
+
     local_path_requests = {
         ("POST", "/api/local-path-browser/mkdir"): {
             "type": "object",
@@ -2450,8 +2482,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("Local Path Browser delete response schema regressed")
 
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 323:
-        fail(f"response-schema coverage regressed below 323 routes: {response_schema_count}")
+    if response_schema_count < 324:
+        fail(f"response-schema coverage regressed below 324 routes: {response_schema_count}")
 
     def count_schema_holes(value: object) -> int:
         if value == {}:
@@ -2467,8 +2499,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         for route in merged.routes
         if route.request_body_schema is not None
     )
-    if request_schema_holes > 40:
-        fail(f"nested request-schema coverage regressed above 40 holes: {request_schema_holes}")
+    if request_schema_holes > 38:
+        fail(f"nested request-schema coverage regressed above 38 holes: {request_schema_holes}")
 
     response_schema_holes = sum(
         count_schema_holes(route.response_schema)

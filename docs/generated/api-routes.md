@@ -621,7 +621,7 @@ pageClass: api-routes-page
 | 方法 | 路径 | 风险 | 查询字段 | 请求体 | 响应 | 证据等级 |
 |---|---|---|---|---|---|---|
 | `GET` | `/api/status` | `read-only` | — | — | `json` | `frontend-call` |
-| `GET` | `/api/status/history` | `read-only` | — | — | `json` | `frontend-call` |
+| `GET` | `/api/status/history` | `read-only` | `start`, `end`, `bucket` | — | `json` | `frontend-call` |
 | `POST` | `/api/status/history/clear` | `dangerous` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/status/history/meta` | `read-only` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/status/host-connections` | `read-only` | — | — | `json` | `frontend-call` |
