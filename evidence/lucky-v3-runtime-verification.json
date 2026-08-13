@@ -482,14 +482,16 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["Key", "Remark", "Enable", "Type", "Params"],
-      "schema_evidence": "frontend Cloudflared instance editor submits {Key,Remark,Enable,Type,Params}; current authorized list is empty so field evidence is frontend-only"
+      "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"Remark":{"type":"string"},"Enable":{"type":"boolean"},"Type":{"type":"string"},"Params":{"type":"object"}}},
+      "schema_evidence": "frontend Cloudflared instance editor submits {Key,Remark,Enable,Type,Params}; an authorized semantic-invalid sentinel with string Key/Remark/Type, boolean Enable and object Params parsed successfully and stopped at InstanceTypeIsNotAvailable, while each field changed to an array failed JSON parsing. The Cloudflared instance baseline remained zero"
     },
     {
       "path": "/api/cloudflared/list",
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["Key", "Remark", "Enable", "Type", "Params"],
-      "schema_evidence": "frontend Cloudflared instance editor submits {Key,Remark,Enable,Type,Params}; current authorized list is empty so field evidence is frontend-only"
+      "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"Remark":{"type":"string"},"Enable":{"type":"boolean"},"Type":{"type":"string"},"Params":{"type":"object"}}},
+      "schema_evidence": "frontend Cloudflared instance editor submits the same model for update; request types reuse the semantic-sentinel/parser-verified instance model and no Cloudflared instance update handler was executed"
     },
     {
       "path": "/api/cloudflared/orderadjustment",
@@ -511,14 +513,16 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["hostname", "path", "service", "originRequest"],
-      "schema_evidence": "frontend ingress editor constructs explicit rule object before POST"
+      "request_body_schema": {"type":"object","properties":{"hostname":{"type":"string"},"path":{"type":"string"},"service":{"type":"string"},"originRequest":{"type":"object"}}},
+      "schema_evidence": "frontend ingress editor constructs explicit rule object; an authorized candidate with string hostname/path/service and object originRequest reached ItemNotFoundForKey for a nonexistent Cloudflared instance, while changing each field to an array failed JSON parsing. No ingress could be created"
     },
     {
       "path": "/api/cloudflared/{param}/ingress",
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["oldHostname", "oldPath", "newRule"],
-      "schema_evidence": "frontend ingress editor sends explicit {oldHostname,oldPath,newRule} object before PUT"
+      "request_body_schema": {"type":"object","properties":{"oldHostname":{"type":"string"},"oldPath":{"type":"string"},"newRule":{"type":"object","properties":{"hostname":{"type":"string"},"path":{"type":"string"},"service":{"type":"string"},"originRequest":{"type":"object"}}}}},
+      "schema_evidence": "frontend ingress editor sends explicit {oldHostname,oldPath,newRule}; an authorized nonexistent-instance candidate verified oldHostname/oldPath strings and newRule object, and nested wrong-type probes verified the same hostname/path/service string plus originRequest object structure. Every parser-valid request stopped at ItemNotFoundForKey and the instance baseline stayed zero"
     },
     {
       "path": "/api/cloudflared/list",
