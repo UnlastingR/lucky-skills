@@ -884,11 +884,68 @@
       "schema_evidence": "authorized GET on the disposable BusyBox container observed ret/logs response types with tail/timestamps query parameters; log contents were not retained"
     },
     {
+      "path": "/api/modules/hidden",
+      "method": "PUT",
+      "risk": "mutating",
+      "request_body_schema": {"type": "object", "properties": {"hiddenModules": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "authorized GET /api/modules/list verified hiddenModules as a nullable array; item schema remains unspecified and no hidden-module write was executed"
+    },
+    {
+      "path": "/api/docker/images/pull-async",
+      "method": "POST",
+      "risk": "mutating",
+      "request_body_schema": {"type": "object", "properties": {"architecture": {"type": "string"}, "image": {"type": "string"}, "tag": {"type": "string"}}},
+      "schema_evidence": "request fields come from the frontend wrapper; architecture is cross-checked against runtime-verified image Architecture string and image/tag reuse the verified synchronous pull string fields; async pull was not executed"
+    },
+    {
+      "path": "/api/docker/images/push",
+      "method": "POST",
+      "risk": "mutating",
+      "request_body_schema": {"type": "object", "properties": {"image": {"type": "string"}, "tag": {"type": "string"}}},
+      "schema_evidence": "frontend push body uses image/tag fields matching the runtime-verified synchronous pull string request fields; push was not executed"
+    },
+    {
+      "path": "/api/docker/images/remove-saved-digest",
+      "method": "POST",
+      "risk": "mutating",
+      "request_body_schema": {"type": "object", "properties": {"image_id": {"type": "string"}}},
+      "schema_evidence": "frontend request carries image_id; runtime-verified Docker image metadata establishes image Id as string and no digest-removal action was executed"
+    },
+    {
+      "path": "/api/docker/images/backup-tag",
+      "method": "POST",
+      "risk": "mutating",
+      "request_body_schema": {"type": "object", "properties": {"image_ref": {"type": "string"}}},
+      "schema_evidence": "frontend request carries image_ref; runtime-verified image references/tags are strings and no backup-tag action was executed"
+    },
+    {
+      "path": "/api/docker/images/upgrade-check",
+      "method": "POST",
+      "risk": "mutating",
+      "request_body_schema": {"type": "object", "properties": {"image_ref": {"type": "string"}}},
+      "schema_evidence": "frontend request carries image_ref; runtime-verified image references/tags are strings and no upgrade check was executed for schema discovery"
+    },
+    {
+      "path": "/api/docker/images/upgrade-dismiss",
+      "method": "POST",
+      "risk": "mutating",
+      "request_body_schema": {"type": "object", "properties": {"image_id": {"type": "string"}, "image_ref": {"type": "string"}}},
+      "schema_evidence": "frontend request carries image_id/image_ref; runtime-verified image Id and image references are strings and no dismissal was executed"
+    },
+    {
+      "path": "/api/docker/images/{param}/tag",
+      "method": "POST",
+      "risk": "mutating",
+      "request_body_schema": {"type": "object", "properties": {"repository": {"type": "string"}, "tag": {"type": "string"}}},
+      "schema_evidence": "frontend image-tag request carries repository/tag text values; runtime-verified RepoTags and pull tag metadata are strings and no tag mutation was executed"
+    },
+    {
       "path": "/api/docker/containers/{param}/commit",
       "method": "POST",
       "risk": "dangerous",
       "body_keys": ["repository", "tag", "comment"],
-      "schema_evidence": "frontend commit dialog sends explicit {repository,tag,comment}; handler was not executed"
+      "request_body_schema": {"type": "object", "properties": {"repository": {"type": "string"}, "tag": {"type": "string"}, "comment": {"type": "string"}}},
+      "schema_evidence": "frontend commit dialog sends explicit text fields {repository,tag,comment}; tag is cross-checked against runtime-verified string tag metadata and the commit handler was not executed"
     },
     {
       "path": "/api/docker/containers/{param}/edit",
@@ -2282,7 +2339,8 @@
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["Enable", "ListenIP", "ListenPort", "NetInterfaceList", "FriendlyName", "DeviceUUID", "MountList"],
-      "schema_evidence": "frontend deliberately rebuilds the GET configure response into these seven fields and passes that normalized object directly to PUT"
+      "request_body_schema": {"type": "object", "properties": {"Enable": {"type": "boolean"}, "ListenIP": {"type": "string"}, "ListenPort": {"type": "integer"}, "NetInterfaceList": {"type": ["array", "null"], "items": {}}, "FriendlyName": {"type": "string"}, "DeviceUUID": {"type": "string"}, "MountList": {"type": ["array", "null"], "items": {}}}},
+      "schema_evidence": "frontend deliberately rebuilds the authorized GET configure response into these seven fields and passes that normalized object directly to PUT; request types are copied from the verified GET configure model and list item shapes remain unspecified"
     },
     {
       "path": "/api/frontend-preferences",

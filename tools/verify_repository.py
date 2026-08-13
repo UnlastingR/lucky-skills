@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 112:
+    if len(untyped_request_routes) > 102:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 112 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 102 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     explicit_small_request_schemas = {
@@ -582,6 +582,77 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     )
     if custom_ipdb_path_schema != {"type": "string"}:
         fail("IPDB custom path runtime evidence regressed")
+
+    crosschecked_resource_request_schemas = {
+        ("PUT", "/api/modules/hidden"): {
+            "type": "object", "properties": {"hiddenModules": {"type": ["array", "null"], "items": {}}}
+        },
+        ("POST", "/api/docker/images/pull-async"): {
+            "type": "object", "properties": {"architecture": {"type": "string"}, "image": {"type": "string"}, "tag": {"type": "string"}}
+        },
+        ("POST", "/api/docker/images/push"): {
+            "type": "object", "properties": {"image": {"type": "string"}, "tag": {"type": "string"}}
+        },
+        ("POST", "/api/docker/images/remove-saved-digest"): {
+            "type": "object", "properties": {"image_id": {"type": "string"}}
+        },
+        ("POST", "/api/docker/images/backup-tag"): {
+            "type": "object", "properties": {"image_ref": {"type": "string"}}
+        },
+        ("POST", "/api/docker/images/upgrade-check"): {
+            "type": "object", "properties": {"image_ref": {"type": "string"}}
+        },
+        ("POST", "/api/docker/images/upgrade-dismiss"): {
+            "type": "object", "properties": {"image_id": {"type": "string"}, "image_ref": {"type": "string"}}
+        },
+        ("POST", "/api/docker/images/{param}/tag"): {
+            "type": "object", "properties": {"repository": {"type": "string"}, "tag": {"type": "string"}}
+        },
+        ("POST", "/api/docker/containers/{param}/commit"): {
+            "type": "object", "properties": {"repository": {"type": "string"}, "tag": {"type": "string"}, "comment": {"type": "string"}}
+        },
+    }
+    for route_key, expected in crosschecked_resource_request_schemas.items():
+        request_schema = merged_by_key[route_key].request_body_schema
+        if request_schema != expected:
+            fail(f"cross-checked resource request schema regressed for {route_key}")
+        if isinstance(request_schema, dict) and "required" in request_schema:
+            fail(f"cross-checked resource request schema must not invent required fields for {route_key}")
+
+    modules_list = merged_by_key[("GET", "/api/modules/list")].response_schema
+    hidden_modules_schema = (
+        modules_list.get("properties", {}).get("hiddenModules")
+        if isinstance(modules_list, dict)
+        else None
+    )
+    if hidden_modules_schema != {"type": ["array", "null"], "items": {}}:
+        fail("modules hiddenModules runtime evidence regressed")
+
+    docker_images = merged_by_key[("GET", "/api/docker/images")].response_schema
+    docker_image_props = (
+        docker_images.get("properties", {}).get("images", {}).get("items", {}).get("properties", {})
+        if isinstance(docker_images, dict)
+        else {}
+    )
+    for field in ("Id", "Architecture"):
+        if docker_image_props.get(field) != {"type": "string"}:
+            fail(f"Docker image metadata string evidence regressed for {field}")
+    if docker_image_props.get("RepoTags") != {"type": "array", "items": {"type": "string"}}:
+        fail("Docker image RepoTags evidence regressed")
+
+    dlna_put = merged_by_key[("PUT", "/api/dlnaservice/configure")].request_body_schema
+    dlna_get = merged_by_key[("GET", "/api/dlnaservice/configure")].response_schema
+    dlna_config_props = (
+        dlna_get.get("properties", {}).get("configure", {}).get("properties", {})
+        if isinstance(dlna_get, dict)
+        else {}
+    )
+    dlna_fields = ("Enable", "ListenIP", "ListenPort", "NetInterfaceList", "FriendlyName", "DeviceUUID", "MountList")
+    expected_dlna_put = {"type": "object", "properties": {field: dlna_config_props.get(field) for field in dlna_fields}}
+    if dlna_put != expected_dlna_put:
+        fail("DLNA PUT request schema must match the verified GET configure projection")
+    if isinstance(dlna_put, dict) and "required" in dlna_put:
+        fail("DLNA PUT request schema must not invent required fields")
 
     read_model_put_schemas = {
         "/api/webterminal/config": "config",
