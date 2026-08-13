@@ -2092,7 +2092,8 @@
       "risk": "mutating",
       "body_keys": ["Alias", "Type", "Path", "RcloneKey", "RcloneRoot", "StoreKey", "StoreRoot", "Enable", "Description"],
       "request_body_schema": {"type": "object", "properties": {"Alias": {"type": "string"}, "Type": {"type": "string"}, "Path": {"type": "string"}, "RcloneKey": {"type": "string"}, "RcloneRoot": {"type": "string"}, "StoreKey": {"type": "string"}, "StoreRoot": {"type": "string"}, "Enable": {"type": "boolean"}, "Description": {"type": "string"}}},
-      "schema_evidence": "frontend source editor passes this model to POST + authorized GET /api/iconlib/sources observed the same source field names and JSON types"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend source editor passes this model to POST + authorized GET /api/iconlib/sources observed the same source field names and JSON types; an authorized disposable Type=local source with Enable=false and Path=/tmp returned ret-only success, and cleanup restored the exact pre-probe sources hash"
     },
     {
       "path": "/api/iconlib/sources",
@@ -2100,7 +2101,22 @@
       "risk": "mutating",
       "body_keys": ["Alias", "Type", "Path", "RcloneKey", "RcloneRoot", "StoreKey", "StoreRoot", "Enable", "Description"],
       "request_body_schema": {"type": "object", "properties": {"Alias": {"type": "string"}, "Type": {"type": "string"}, "Path": {"type": "string"}, "RcloneKey": {"type": "string"}, "RcloneRoot": {"type": "string"}, "StoreKey": {"type": "string"}, "StoreRoot": {"type": "string"}, "Enable": {"type": "boolean"}, "Description": {"type": "string"}}},
-      "schema_evidence": "frontend update helper explicitly rebuilds {Alias,Type,Path,RcloneKey,RcloneRoot,StoreKey,StoreRoot,Enable,Description} before PUT + authorized GET /api/iconlib/sources cross-checked the JSON types"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend update helper explicitly rebuilds {Alias,Type,Path,RcloneKey,RcloneRoot,StoreKey,StoreRoot,Enable,Description} before PUT + authorized GET /api/iconlib/sources cross-checked the JSON types; the disabled disposable local source accepted an identical PUT and returned ret-only success"
+    },
+    {
+      "path": "/api/iconlib/sources/{param}/enable/{param2}",
+      "method": "GET",
+      "risk": "mutating",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "authorized disposable-source probe called the source enable route with param2=false while the temporary source was already disabled; it returned ret-only success before cleanup"
+    },
+    {
+      "path": "/api/iconlib/sources/{param}",
+      "method": "DELETE",
+      "risk": "mutating",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "authorized cleanup deleted only the disposable local IconLib source by its unique Alias and returned ret-only success; the full sources response hash exactly returned to the original baseline containing the pre-existing source"
     },
     {
       "path": "/api/storagemanagement/itemorderadjustment",

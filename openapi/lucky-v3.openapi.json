@@ -20455,11 +20455,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -20480,7 +20485,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend source editor passes this model to POST + authorized GET /api/iconlib/sources observed the same source field names and JSON types",
+        "x-schema-evidence": "frontend source editor passes this model to POST + authorized GET /api/iconlib/sources observed the same source field names and JSON types; an authorized disposable Type=local source with Enable=false and Path=/tmp returned ret-only success, and cleanup restored the exact pre-probe sources hash",
         "requestBody": {
           "required": true,
           "content": {
@@ -20535,11 +20540,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -20560,7 +20570,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend update helper explicitly rebuilds {Alias,Type,Path,RcloneKey,RcloneRoot,StoreKey,StoreRoot,Enable,Description} before PUT + authorized GET /api/iconlib/sources cross-checked the JSON types",
+        "x-schema-evidence": "frontend update helper explicitly rebuilds {Alias,Type,Path,RcloneKey,RcloneRoot,StoreKey,StoreRoot,Enable,Description} before PUT + authorized GET /api/iconlib/sources cross-checked the JSON types; the disabled disposable local source accepted an identical PUT and returned ret-only success",
         "requestBody": {
           "required": true,
           "content": {
@@ -20617,11 +20627,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -20642,6 +20657,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized cleanup deleted only the disposable local IconLib source by its unique Alias and returned ret-only success; the full sources response hash exactly returned to the original baseline containing the pre-existing source",
         "parameters": [
           {
             "name": "param",
@@ -20669,11 +20685,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -20694,6 +20715,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized disposable-source probe called the source enable route with param2=false while the temporary source was already disabled; it returned ret-only success before cleanup",
         "parameters": [
           {
             "name": "param",
