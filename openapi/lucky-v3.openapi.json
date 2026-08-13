@@ -6567,7 +6567,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "dangerous",
-        "x-schema-evidence": "wrapper passes request object directly; async sibling UI calls show project_name/project_path/config_file_name/remove_volumes; synchronous handler was not executed",
+        "x-schema-evidence": "wrapper passes request object directly; async sibling UI calls show project_name/project_path/config_file_name/remove_volumes, with project identity strings cross-checked against runtime-verified Compose project name/path/configFileName and remove_volumes coming from the frontend boolean delete option; synchronous handler was not executed",
         "requestBody": {
           "required": true,
           "content": {
@@ -6575,10 +6575,18 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "project_name": {},
-                  "project_path": {},
-                  "config_file_name": {},
-                  "remove_volumes": {}
+                  "project_name": {
+                    "type": "string"
+                  },
+                  "project_path": {
+                    "type": "string"
+                  },
+                  "config_file_name": {
+                    "type": "string"
+                  },
+                  "remove_volumes": {
+                    "type": "boolean"
+                  }
                 }
               }
             }
@@ -6626,7 +6634,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend Compose delete actions construct project_name/project_path and optionally config_file_name/remove_volumes before apiComposeDownAsync",
+        "x-schema-evidence": "frontend Compose delete actions construct project_name/project_path and optionally config_file_name/remove_volumes before apiComposeDownAsync; project identity strings are cross-checked against runtime-verified Compose project summaries and remove_volumes is a frontend boolean option",
         "requestBody": {
           "required": true,
           "content": {
@@ -6634,10 +6642,18 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "project_name": {},
-                  "project_path": {},
-                  "config_file_name": {},
-                  "remove_volumes": {}
+                  "project_name": {
+                    "type": "string"
+                  },
+                  "project_path": {
+                    "type": "string"
+                  },
+                  "config_file_name": {
+                    "type": "string"
+                  },
+                  "remove_volumes": {
+                    "type": "boolean"
+                  }
                 }
               }
             }
@@ -6828,7 +6844,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "dangerous",
-        "x-schema-evidence": "wrapper passes a Compose project request object directly; no authenticated restart was executed and current page does not call the synchronous wrapper",
+        "x-schema-evidence": "wrapper passes a Compose project request object directly; runtime-verified Compose project summaries establish name/path/configFileName as strings, and no authenticated restart was executed",
         "requestBody": {
           "required": true,
           "content": {
@@ -6836,9 +6852,15 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "project_name": {},
-                  "project_path": {},
-                  "config_file_name": {}
+                  "project_name": {
+                    "type": "string"
+                  },
+                  "project_path": {
+                    "type": "string"
+                  },
+                  "config_file_name": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -6957,7 +6979,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "dangerous",
-        "x-schema-evidence": "wrapper passes request object directly; current Compose UI uses equivalent project identity fields on async start paths; handler was not executed",
+        "x-schema-evidence": "wrapper passes request object directly; current Compose UI uses equivalent project identity fields on async start paths, and runtime-verified Compose project summaries establish name/path/configFileName as strings; handler was not executed",
         "requestBody": {
           "required": true,
           "content": {
@@ -6965,9 +6987,15 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "project_name": {},
-                  "project_path": {},
-                  "config_file_name": {}
+                  "project_name": {
+                    "type": "string"
+                  },
+                  "project_path": {
+                    "type": "string"
+                  },
+                  "config_file_name": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -7015,7 +7043,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "dangerous",
-        "x-schema-evidence": "wrapper passes request object directly; current UI uses the async sibling with project_name/project_path/config_file_name; handler was not executed",
+        "x-schema-evidence": "wrapper passes request object directly; current UI uses the async sibling with project_name/project_path/config_file_name, cross-checked against runtime-verified Compose project name/path/configFileName strings; handler was not executed",
         "requestBody": {
           "required": true,
           "content": {
@@ -7023,9 +7051,15 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "project_name": {},
-                  "project_path": {},
-                  "config_file_name": {}
+                  "project_name": {
+                    "type": "string"
+                  },
+                  "project_path": {
+                    "type": "string"
+                  },
+                  "config_file_name": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -7073,7 +7107,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend Compose stop actions construct project_name/project_path/config_file_name before apiComposeStopAsync",
+        "x-schema-evidence": "frontend Compose stop actions construct project_name/project_path/config_file_name before apiComposeStopAsync; field types are cross-checked against runtime-verified Compose project name/path/configFileName strings",
         "requestBody": {
           "required": true,
           "content": {
@@ -7081,9 +7115,15 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "project_name": {},
-                  "project_path": {},
-                  "config_file_name": {}
+                  "project_name": {
+                    "type": "string"
+                  },
+                  "project_path": {
+                    "type": "string"
+                  },
+                  "config_file_name": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -9890,6 +9930,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "dangerous",
+        "x-schema-evidence": "frontend copy request carries a container name; runtime-verified Docker inspect establishes container Name as string and the copy handler was not executed",
         "parameters": [
           {
             "name": "param",
@@ -9907,7 +9948,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": {}
+                  "name": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -11637,6 +11680,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "dangerous",
+        "x-schema-evidence": "frontend rename request carries a container name; runtime-verified Docker inspect establishes container Name as string and the rename handler was not executed",
         "parameters": [
           {
             "name": "param",
@@ -11654,7 +11698,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": {}
+                  "name": {
+                    "type": "string"
+                  }
                 }
               }
             }

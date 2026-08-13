@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 102:
+    if len(untyped_request_routes) > 94:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 102 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 94 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     explicit_small_request_schemas = {
@@ -639,6 +639,62 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             fail(f"Docker image metadata string evidence regressed for {field}")
     if docker_image_props.get("RepoTags") != {"type": "array", "items": {"type": "string"}}:
         fail("Docker image RepoTags evidence regressed")
+
+    compose_identity_schema = {
+        "type": "object",
+        "properties": {
+            "project_name": {"type": "string"},
+            "project_path": {"type": "string"},
+            "config_file_name": {"type": "string"},
+        },
+    }
+    compose_down_schema = {
+        "type": "object",
+        "properties": {
+            **compose_identity_schema["properties"],
+            "remove_volumes": {"type": "boolean"},
+        },
+    }
+    for route_key in {
+        ("POST", "/api/docker/compose/restart"),
+        ("POST", "/api/docker/compose/start"),
+        ("POST", "/api/docker/compose/stop"),
+        ("POST", "/api/docker/compose/stop-async"),
+    }:
+        if merged_by_key[route_key].request_body_schema != compose_identity_schema:
+            fail(f"Docker Compose project identity request schema regressed for {route_key}")
+    for route_key in {
+        ("POST", "/api/docker/compose/down"),
+        ("POST", "/api/docker/compose/down-async"),
+    }:
+        if merged_by_key[route_key].request_body_schema != compose_down_schema:
+            fail(f"Docker Compose down request schema regressed for {route_key}")
+
+    compose_projects = merged_by_key[("GET", "/api/docker/compose/projects")].response_schema
+    compose_project_props = (
+        compose_projects.get("properties", {}).get("projects", {}).get("items", {}).get("properties", {})
+        if isinstance(compose_projects, dict)
+        else {}
+    )
+    for field in ("name", "path", "configFileName"):
+        if compose_project_props.get(field) != {"type": "string"}:
+            fail(f"Docker Compose project string evidence regressed for {field}")
+
+    container_copy_rename_schema = {"type": "object", "properties": {"name": {"type": "string"}}}
+    for route_key in {
+        ("POST", "/api/docker/containers/{param}/copy"),
+        ("POST", "/api/docker/containers/{param}/rename"),
+    }:
+        if merged_by_key[route_key].request_body_schema != container_copy_rename_schema:
+            fail(f"Docker container name request schema regressed for {route_key}")
+    docker_container = merged_by_key[("GET", "/api/docker/containers/{param}")].response_schema
+    docker_container_name = (
+        docker_container.get("properties", {}).get("data", {}).get("properties", {}).get("container", {}).get("properties", {}).get("Name")
+        if isinstance(docker_container, dict)
+        else None
+    )
+    if docker_container_name != {"type": "string"}:
+        fail("Docker container Name runtime evidence regressed")
 
     dlna_put = merged_by_key[("PUT", "/api/dlnaservice/configure")].request_body_schema
     dlna_get = merged_by_key[("GET", "/api/dlnaservice/configure")].response_schema
