@@ -931,7 +931,7 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     docker_compose_up_request = {
         "type": "object",
         "properties": {
-            "project_name": {"type": "string"}, "project_path": {"type": "string"}, "config_file_name": {},
+            "project_name": {"type": "string"}, "project_path": {"type": "string"}, "config_file_name": {"type": "string"},
             "working_dir": {"type": "string"}, "compose_content": {"type": "string"},
             "force_recreate": {"type": "boolean"}, "build": {"type": "boolean"},
         },
@@ -942,8 +942,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             fail(f"Docker Compose-up request schema regressed for {route_key}")
         if set(route.body_keys) != set(docker_compose_up_request["properties"]):
             fail(f"Docker Compose-up request schema must cover exactly the frontend body fields for {route_key}")
-        if route.request_body_schema["properties"]["config_file_name"] != {}:
-            fail("Docker Compose-up config_file_name must remain unspecified after heterogeneous parser acceptance")
+        if route.request_body_schema["properties"]["config_file_name"] != {"type": "string"}:
+            fail("Docker Compose-up config_file_name client contract must remain string")
         if route.response_schema is not None:
             fail(f"Docker Compose-up parser-only evidence must not claim a success response for {route_key}")
 
@@ -2412,6 +2412,11 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     )
     if host_pid_schema != {"type": "integer"}:
         fail("host-process list pid evidence regressed")
+    host_process_properties = host_processes["properties"]["list"]["items"]["properties"]
+    if host_process_properties["listeningPorts"] != {
+        "type": ["array", "null"], "items": {"type": "integer"}
+    }:
+        fail("host-process listeningPorts schema regressed")
 
     local_path_requests = {
         ("POST", "/api/local-path-browser/mkdir"): {
@@ -2448,6 +2453,31 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     if response_schema_count < 323:
         fail(f"response-schema coverage regressed below 323 routes: {response_schema_count}")
 
+    def count_schema_holes(value: object) -> int:
+        if value == {}:
+            return 1
+        if isinstance(value, dict):
+            return sum(count_schema_holes(item) for item in value.values())
+        if isinstance(value, list):
+            return sum(count_schema_holes(item) for item in value)
+        return 0
+
+    request_schema_holes = sum(
+        count_schema_holes(route.request_body_schema)
+        for route in merged.routes
+        if route.request_body_schema is not None
+    )
+    if request_schema_holes > 40:
+        fail(f"nested request-schema coverage regressed above 40 holes: {request_schema_holes}")
+
+    response_schema_holes = sum(
+        count_schema_holes(route.response_schema)
+        for route in merged.routes
+        if route.response_schema is not None
+    )
+    if response_schema_holes > 121:
+        fail(f"nested response-schema coverage regressed above 121 holes: {response_schema_holes}")
+
     top_level_untyped_write_routes = []
     for route in merged.routes:
         if route.method not in {"POST", "PUT", "PATCH"} or not route.has_body:
@@ -2458,9 +2488,9 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         properties = schema.get("properties", {})
         if isinstance(properties, dict) and any(value == {} for value in properties.values()):
             top_level_untyped_write_routes.append((route.method, route.path))
-    if len(top_level_untyped_write_routes) > 3:
+    if len(top_level_untyped_write_routes) > 1:
         fail(
-            "top-level untyped write-schema coverage regressed above 3 routes: "
+            "top-level untyped write-schema coverage regressed above 1 route: "
             f"{len(top_level_untyped_write_routes)}"
         )
 

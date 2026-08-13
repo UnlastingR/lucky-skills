@@ -245,6 +245,10 @@ def write_markdown(snapshot: dict, output: Path) -> None:
     for route in snapshot["routes"]:
         groups[route["module"]].append(route)
     lines = [
+        "---",
+        "pageClass: api-routes-page",
+        "---",
+        "",
         "# API 路由参考",
         "",
         f"> 目标版本：Lucky {snapshot['target']['version']}。共收录 {snapshot['route_count']} 个“路径 + 方法”记录。",

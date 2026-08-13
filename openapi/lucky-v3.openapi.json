@@ -7848,7 +7848,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "wrapper passes request object directly; authorized parser-only probes verified project_name/project_path/working_dir/compose_content strings and force_recreate/build booleans before handler execution. config_file_name accepted heterogeneous JSON values during parser probes, so its schema intentionally remains unspecified",
+        "x-schema-evidence": "wrapper passes request object directly; authorized parser-only probes verified project_name/project_path/working_dir/compose_content strings and force_recreate/build booleans before handler execution. Although the backend decoder permissively accepted heterogeneous JSON for config_file_name, the current Compose UI uses this field as a filename string across start/stop/down/restore flows and runtime-verified project summaries expose configFileName as string, so the documented client contract is string",
         "requestBody": {
           "required": true,
           "content": {
@@ -7862,7 +7862,9 @@
                   "project_path": {
                     "type": "string"
                   },
-                  "config_file_name": {},
+                  "config_file_name": {
+                    "type": "string"
+                  },
                   "working_dir": {
                     "type": "string"
                   },
@@ -7922,7 +7924,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend Compose create/start/rebuild actions construct these fields before apiComposeUpAsync; request types reuse the parser-verified synchronous Compose-up model and the async handler was not executed for schema discovery",
+        "x-schema-evidence": "frontend Compose create/start/rebuild actions construct these fields before apiComposeUpAsync; request types reuse the parser-verified synchronous Compose-up model, while config_file_name follows the same string client contract used by sibling Compose actions and runtime project summaries. The async handler was not executed for schema discovery",
         "requestBody": {
           "required": true,
           "content": {
@@ -7936,7 +7938,9 @@
                   "project_path": {
                     "type": "string"
                   },
-                  "config_file_name": {},
+                  "config_file_name": {
+                    "type": "string"
+                  },
                   "working_dir": {
                     "type": "string"
                   },
@@ -32777,14 +32781,26 @@
                               "array",
                               "null"
                             ],
-                            "items": {}
+                            "items": {
+                              "type": "integer"
+                            }
                           },
                           "listeningEndpoints": {
                             "type": [
                               "array",
                               "null"
                             ],
-                            "items": {}
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "protocol": {
+                                  "type": "string"
+                                },
+                                "port": {
+                                  "type": "integer"
+                                }
+                              }
+                            }
                           },
                           "isCurrentProcess": {
                             "type": "boolean"
@@ -32830,7 +32846,7 @@
           "lucky_Status-C4uRGOYn.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/status/host-processes was reduced to pagination, safe process metadata and summary types; command strings are intentionally omitted because process arguments can contain secrets"
+        "x-schema-evidence": "authorized GET /api/status/host-processes was reduced to pagination and safe process metadata without retaining runtime values; a later read-only type-tree check confirmed listeningPorts as integer[] and listeningEndpoints as {protocol:string,port:integer}[]. Command strings remain intentionally omitted because process arguments may contain sensitive values"
       }
     },
     "/api/status/module-overview": {

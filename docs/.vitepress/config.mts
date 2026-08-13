@@ -14,11 +14,13 @@ export default defineConfig({
     hostname: 'https://docs.fyzure.fyi/lucky-skills/'
   },
   head: [
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/lucky-skills/favicon.svg' }],
     ['meta', { name: 'theme-color', content: '#3451b2' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:site_name', content: 'Lucky Skills' }]
   ],
   themeConfig: {
+    logo: '/lucky-skills/favicon.svg',
     nav: [
       { text: '指南', link: '/quickstart' },
       { text: 'API', link: '/generated/api-routes' },

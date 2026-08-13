@@ -1,3 +1,7 @@
+---
+pageClass: api-routes-page
+---
+
 # API 路由参考
 
 > 目标版本：Lucky 3.0.0。共收录 598 个“路径 + 方法”记录。
