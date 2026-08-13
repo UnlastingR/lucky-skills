@@ -1030,7 +1030,7 @@
           "lucky_cloudflared-CZXQeEtG.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend CNAME helper sends explicit {hostname,proxied:true} object",
+        "x-schema-evidence": "frontend CNAME helper sends explicit {hostname,proxied:true} object, establishing hostname string and proxied boolean without creating a CNAME",
         "parameters": [
           {
             "name": "param",
@@ -1048,8 +1048,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "hostname": {},
-                  "proxied": {}
+                  "hostname": {
+                    "type": "string"
+                  },
+                  "proxied": {
+                    "type": "boolean"
+                  }
                 }
               }
             }
@@ -3294,7 +3298,7 @@
           "lucky_panel-599cSpUA.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend task/group drag handlers explicitly construct {tasksMap,orderList}; tasksMap maps TaskKey to GroupKey and orderList is the TaskKey sequence",
+        "x-schema-evidence": "frontend task/group drag handlers explicitly construct {tasksMap,orderList}; tasksMap maps TaskKey to GroupKey string values and orderList is the TaskKey string sequence",
         "requestBody": {
           "required": true,
           "content": {
@@ -3302,8 +3306,18 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "tasksMap": {},
-                  "orderList": {}
+                  "tasksMap": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "orderList": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -12843,7 +12857,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "current frontend uploads image to a temporary path, then POSTs JSON {path,cleanup:true} to images/load; wrapper also accepts FormData for backward compatibility",
+        "x-schema-evidence": "current frontend uploads image to a temporary path, then POSTs JSON {path,cleanup:true} to images/load, establishing string path and boolean cleanup; wrapper also accepts FormData for backward compatibility and the load handler was not executed",
         "requestBody": {
           "required": true,
           "content": {
@@ -12851,8 +12865,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "path": {},
-                  "cleanup": {}
+                  "path": {
+                    "type": "string"
+                  },
+                  "cleanup": {
+                    "type": "boolean"
+                  }
                 }
               }
             }
@@ -16539,7 +16557,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend preference sync explicitly constructs {theme: currentTheme, language: currentLocale} before PUT",
+        "x-schema-evidence": "frontend preference sync explicitly constructs {theme: currentTheme, language: currentLocale} from string UI identifiers before PUT; no preference write was executed",
         "requestBody": {
           "required": true,
           "content": {
@@ -16547,8 +16565,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "theme": {},
-                  "language": {}
+                  "theme": {
+                    "type": "string"
+                  },
+                  "language": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -19483,7 +19505,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "authorized GET returns customIPDBPath, then the frontend explicitly normalizes it to {CustomIPDBPath} and passes that object to PUT",
+        "x-schema-evidence": "authorized GET verified customIPDBPath as string, then the frontend explicitly normalizes it to {CustomIPDBPath} and passes that object to PUT; no configuration write was executed",
         "requestBody": {
           "required": true,
           "content": {
@@ -19491,7 +19513,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "CustomIPDBPath": {}
+                  "CustomIPDBPath": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -22505,7 +22529,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend first GETs /api/login/challenge, AES-GCM encrypts the account/password/timestamp plaintext locally, and POSTs only {challengeId,cipherText}; no login attempt was sent for schema discovery",
+        "x-schema-evidence": "frontend first GETs /api/login/challenge (runtime-verified challengeId string), AES-GCM encrypts the account/password/timestamp plaintext locally to a string cipherText, and POSTs only {challengeId,cipherText}; no login attempt was sent for schema discovery",
         "requestBody": {
           "required": true,
           "content": {
@@ -22513,8 +22537,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "challengeId": {},
-                  "cipherText": {}
+                  "challengeId": {
+                    "type": "string"
+                  },
+                  "cipherText": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -23413,7 +23441,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend first GETs /api/login/challenge, encrypts the OAuth provider/code/timestamp payload locally, and POSTs only {challengeId,cipherText}; no OAuth login attempt was sent",
+        "x-schema-evidence": "frontend first GETs /api/login/challenge (runtime-verified challengeId string), encrypts the OAuth provider/code/timestamp payload locally to string cipherText, and POSTs only {challengeId,cipherText}; no OAuth login attempt was sent",
         "requestBody": {
           "required": true,
           "content": {
@@ -23421,8 +23449,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "challengeId": {},
-                  "cipherText": {}
+                  "challengeId": {
+                    "type": "string"
+                  },
+                  "cipherText": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -23622,7 +23654,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend password-change workflow explicitly calls password verification with {oldPassword} before any base-config update; no password verification request was sent for schema discovery",
+        "x-schema-evidence": "frontend password-change workflow explicitly calls password verification with the oldPassword form string before any base-config update; no password verification request was sent for schema discovery",
         "requestBody": {
           "required": true,
           "content": {
@@ -23630,7 +23662,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "oldPassword": {}
+                  "oldPassword": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -33540,7 +33574,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend About page explicitly POSTs {v2l: localStorageValue} after startup; this schema was recovered statically and no request was sent",
+        "x-schema-evidence": "frontend About page explicitly POSTs {v2l: localStorageValue}; browser localStorage yields a string value, and this schema was recovered statically without sending the request",
         "requestBody": {
           "required": true,
           "content": {
@@ -33548,7 +33582,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "v2l": {}
+                  "v2l": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -37178,7 +37214,7 @@
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend statistics dialog starts rebuild with explicit {mode:'all'} request object",
+        "x-schema-evidence": "frontend statistics dialog starts rebuild with explicit {mode:'all'} request object, establishing mode as string without executing the rebuild",
         "requestBody": {
           "required": true,
           "content": {
@@ -37186,7 +37222,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "mode": {}
+                  "mode": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -37662,7 +37700,7 @@
           "lucky_reverseproxy-Wnx_PpU0.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend statistics dialog starts refresh with explicit {mode} request object",
+        "x-schema-evidence": "frontend statistics dialog starts refresh with explicit string mode request object; no refresh was executed for schema discovery",
         "requestBody": {
           "required": true,
           "content": {
@@ -37670,7 +37708,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "mode": {}
+                  "mode": {
+                    "type": "string"
+                  }
                 }
               }
             }

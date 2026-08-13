@@ -513,11 +513,75 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 123:
+    if len(untyped_request_routes) > 112:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 123 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 112 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
+
+    explicit_small_request_schemas = {
+        ("PUT", "/api/frontend-preferences"): {
+            "type": "object", "properties": {"theme": {"type": "string"}, "language": {"type": "string"}}
+        },
+        ("POST", "/api/cloudflared/{param}/cname/create"): {
+            "type": "object", "properties": {"hostname": {"type": "string"}, "proxied": {"type": "boolean"}}
+        },
+        ("PUT", "/api/ipdb/configure"): {
+            "type": "object", "properties": {"CustomIPDBPath": {"type": "string"}}
+        },
+        ("POST", "/api/login"): {
+            "type": "object", "properties": {"challengeId": {"type": "string"}, "cipherText": {"type": "string"}}
+        },
+        ("POST", "/api/oauth/login"): {
+            "type": "object", "properties": {"challengeId": {"type": "string"}, "cipherText": {"type": "string"}}
+        },
+        ("PUT", "/api/password/verify"): {
+            "type": "object", "properties": {"oldPassword": {"type": "string"}}
+        },
+        ("POST", "/api/v2l"): {
+            "type": "object", "properties": {"v2l": {"type": "string"}}
+        },
+        ("PUT", "/api/cron/taskgrouporderupdate"): {
+            "type": "object",
+            "properties": {
+                "tasksMap": {"type": "object", "additionalProperties": {"type": "string"}},
+                "orderList": {"type": "array", "items": {"type": "string"}},
+            },
+        },
+        ("POST", "/api/webservice/statistics/geo/rebuild"): {
+            "type": "object", "properties": {"mode": {"type": "string"}}
+        },
+        ("POST", "/api/webservice/statistics/ip-info-refresh"): {
+            "type": "object", "properties": {"mode": {"type": "string"}}
+        },
+        ("POST", "/api/docker/images/load"): {
+            "type": "object", "properties": {"path": {"type": "string"}, "cleanup": {"type": "boolean"}}
+        },
+    }
+    for route_key, expected in explicit_small_request_schemas.items():
+        request_schema = merged_by_key[route_key].request_body_schema
+        if request_schema != expected:
+            fail(f"explicit small request schema regressed for {route_key}")
+        if isinstance(request_schema, dict) and "required" in request_schema:
+            fail(f"explicit small request schema must not invent required fields for {route_key}")
+
+    login_challenge = merged_by_key[("GET", "/api/login/challenge")].response_schema
+    challenge_id_schema = (
+        login_challenge.get("properties", {}).get("challengeId")
+        if isinstance(login_challenge, dict)
+        else None
+    )
+    if challenge_id_schema != {"type": "string"}:
+        fail("login challengeId runtime evidence regressed")
+
+    ipdb_config = merged_by_key[("GET", "/api/ipdb/configure")].response_schema
+    custom_ipdb_path_schema = (
+        ipdb_config.get("properties", {}).get("customIPDBPath")
+        if isinstance(ipdb_config, dict)
+        else None
+    )
+    if custom_ipdb_path_schema != {"type": "string"}:
+        fail("IPDB custom path runtime evidence regressed")
 
     read_model_put_schemas = {
         "/api/webterminal/config": "config",
