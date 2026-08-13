@@ -33470,11 +33470,144 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "rule": {
+                      "type": "object",
+                      "properties": {
+                        "Name": {
+                          "type": "string"
+                        },
+                        "Key": {
+                          "type": "string"
+                        },
+                        "Enable": {
+                          "type": "boolean"
+                        },
+                        "DiaglogShowMode": {
+                          "type": "string"
+                        },
+                        "StunType": {
+                          "type": "string"
+                        },
+                        "UseGlobalStunServerList": {
+                          "type": "boolean"
+                        },
+                        "StunServerList": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "TcpKeepAliveServerList": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "StunListenType": {
+                          "type": "string"
+                        },
+                        "SpecifyNetworkInterface": {
+                          "type": "string"
+                        },
+                        "NetworkInterfaceReg": {
+                          "type": "string"
+                        },
+                        "ListenIP": {
+                          "type": "string"
+                        },
+                        "ListenPort": {
+                          "type": "integer"
+                        },
+                        "AutoOptionsFirewall": {
+                          "type": "boolean"
+                        },
+                        "DisableStunAvalidCheck": {
+                          "type": "boolean"
+                        },
+                        "DisablePortForward": {
+                          "type": "boolean"
+                        },
+                        "TargetAddressList": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "TargetPort": {
+                          "type": "integer"
+                        },
+                        "NatPMP": {
+                          "type": "boolean"
+                        },
+                        "UPnP": {
+                          "type": "boolean"
+                        },
+                        "UPnPGawayIP": {
+                          "type": "string"
+                        },
+                        "UPnPLocalPort": {
+                          "type": "integer"
+                        },
+                        "UPnpLocalHost": {
+                          "type": "string"
+                        },
+                        "UPnPInternalClientIP": {
+                          "type": "string"
+                        },
+                        "NatPMPGateway": {
+                          "type": "string"
+                        },
+                        "StunHeartbeatInterval": {
+                          "type": "integer"
+                        },
+                        "StunTimeout": {
+                          "type": "integer"
+                        },
+                        "StunRetryInterval": {
+                          "type": "integer"
+                        },
+                        "StunAutoRetry": {
+                          "type": "boolean"
+                        },
+                        "GlobalWebhook": {
+                          "type": "boolean"
+                        },
+                        "WebhookEnable": {
+                          "type": "boolean"
+                        },
+                        "WebhookOnlyAddrChange": {
+                          "type": "boolean"
+                        },
+                        "AutoAddPubAddrWhiteList": {
+                          "type": "boolean"
+                        },
+                        "LogLevel": {
+                          "type": "integer"
+                        },
+                        "LogOutputToConsole": {
+                          "type": "boolean"
+                        },
+                        "AccessLogMaxNum": {
+                          "type": "integer"
+                        },
+                        "WebListShowLastLogMaxCount": {
+                          "type": "integer"
+                        },
+                        "CallScript": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -33495,6 +33628,7 @@
           "lucky_stun-DdoTf-uI.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET of the disabled disposable STUN rule observed these safe rule fields and primitive/list types. Secret- or content-bearing fields are intentionally omitted: WebhookProxyPassword, WebhookURL, WebhookHeaders, WebhookRequestBody, UpnPDiyControlAPIUrl, CallScriptContent, and the Options object that can contain TCP/UDP encryption keys",
         "parameters": [
           {
             "name": "param",
@@ -33522,11 +33656,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "lastLogs": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    },
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -33547,6 +33693,7 @@
           "lucky_stun-DdoTf-uI.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET for the disabled disposable STUN rule returned lastLogs=null; the envelope type is verified and log item schema remains unspecified",
         "parameters": [
           {
             "name": "param",
@@ -33574,11 +33721,32 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "logs": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -33599,6 +33767,7 @@
           "lucky_stun-DdoTf-uI.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized paginated log GET for the disabled disposable STUN rule returned logs=null with integer pagination fields; log item schema remains unspecified",
         "parameters": [
           {
             "name": "param",
@@ -33638,11 +33807,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -33663,6 +33837,7 @@
           "lucky_stun-DdoTf-uI.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized cleanup of the disabled disposable STUN rule returned ret-only success and restored the complete /api/stunrulelist response hash to its pre-probe zero-rule baseline",
         "parameters": [
           {
             "name": "key",
@@ -33686,11 +33861,19 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "key": {
+                      "type": "string"
+                    },
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -33711,7 +33894,7 @@
           "lucky_stun-DdoTf-uI.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend STUN rule editor default/submit model + paced authorized parser-only probes verified every top-level field before handler execution; array element probes verified TargetAddressList/StunServerList/TcpKeepAliveServerList/WebhookHeaders/WebhookSuccessContent as string arrays, Options and LogStreamSettings as objects, and the STUN rule baseline remained zero throughout",
+        "x-schema-evidence": "frontend STUN rule editor default/submit model + paced parser probes verified every top-level request field; an authorized disposable rule with Enable=false, DisablePortForward=true, AutoOptionsFirewall=false and no UPnP/NAT-PMP/webhook/script activity then returned key+ret create success. The STUN rule-list baseline was zero before and after cleanup",
         "requestBody": {
           "required": true,
           "content": {
@@ -33916,11 +34099,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -33941,7 +34129,7 @@
           "lucky_stun-DdoTf-uI.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend STUN rule editor submits the same model for update; request types reuse the parser-verified STUN rule field types and no successful STUN update handler was executed",
+        "x-schema-evidence": "frontend STUN rule editor submits the same model for update; the authorized disabled disposable rule accepted an identical PUT with its generated Key and returned ret-only success before deletion restored the zero-rule baseline exactly",
         "requestBody": {
           "required": true,
           "content": {
@@ -34148,11 +34336,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -34173,6 +34366,7 @@
           "lucky_stun-DdoTf-uI.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "current frontend uses GET /api/stunrule/enable?key=...&enable=... as a state-changing toggle. An authorized disposable rule was already disabled; enable=false returned ret-only success and the following detail GET confirmed Enable remained false",
         "parameters": [
           {
             "name": "enable",
@@ -34326,7 +34520,32 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "Key": {
+                            "type": "string"
+                          },
+                          "Name": {
+                            "type": "string"
+                          },
+                          "StunType": {
+                            "type": "string"
+                          },
+                          "Enable": {
+                            "type": "boolean"
+                          },
+                          "DisablePortForward": {
+                            "type": "boolean"
+                          },
+                          "WebhookEnable": {
+                            "type": "boolean"
+                          },
+                          "GlobalWebhook": {
+                            "type": "boolean"
+                          }
+                        }
+                      }
                     },
                     "statistics": {
                       "type": "object"
@@ -34352,7 +34571,7 @@
           "lucky_stun-DdoTf-uI.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/stunrulelist observed module/list/statistics envelope types; current list is null and statistics is an empty dynamic object, so rule/statistic item schemas remain unspecified"
+        "x-schema-evidence": "authorized disposable Enable=false STUN rule populated the list and verified only safe summary fields; logs, network addresses, Options/encryption material and webhook details remain undocumented. Cleanup restored the complete list response hash to the original zero-rule baseline; statistics remains a dynamic object keyed by rule"
       }
     },
     "/api/stunrulelist_lite": {
@@ -34387,7 +34606,17 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "Name": {
+                            "type": "string"
+                          },
+                          "Key": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -34410,7 +34639,7 @@
           "lucky_stun-DdoTf-uI.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/stunrulelist_lite observed the compact module/list envelope; current list is null so rule item schema remains unspecified"
+        "x-schema-evidence": "authorized disposable disabled STUN rule populated the compact list and verified Name/Key string fields; cleanup restored the zero-rule baseline"
       }
     },
     "/api/temp-access-tickets": {

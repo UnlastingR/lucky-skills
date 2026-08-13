@@ -1220,16 +1220,142 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             "LogStreamSettings": {"type": "object"},
         },
     }
-    for route_key in {("POST", "/api/stunrule"), ("PUT", "/api/stunrule")}:
+    stun_ret_only = {"type": "object", "properties": {"ret": {"type": "integer"}}}
+    stun_create_response = {
+        "type": "object",
+        "properties": {"key": {"type": "string"}, "ret": {"type": "integer"}},
+    }
+    for route_key, expected_response in {
+        ("POST", "/api/stunrule"): stun_create_response,
+        ("PUT", "/api/stunrule"): stun_ret_only,
+    }.items():
         route = merged_by_key[route_key]
         if route.request_body_schema != stun_rule_request:
-            fail(f"STUN parser-only request schema regressed for {route_key}")
+            fail(f"STUN parser-verified request schema regressed for {route_key}")
         if set(route.body_keys) != set(stun_rule_request["properties"]):
-            fail(f"STUN parser-only request schema must cover exactly the frontend body fields for {route_key}")
+            fail(f"STUN request schema must cover exactly the frontend body fields for {route_key}")
         if isinstance(route.request_body_schema, dict) and "required" in route.request_body_schema:
-            fail(f"STUN parser-only request schema must not invent required fields for {route_key}")
-        if route.response_schema is not None:
-            fail(f"STUN parser-only request must not claim a success response for {route_key}")
+            fail(f"STUN request schema must not invent required fields for {route_key}")
+        if route.response_schema != expected_response:
+            fail(f"STUN disposable rule success response schema regressed for {route_key}")
+
+    if merged_by_key[("DELETE", "/api/stunrule")].response_schema != stun_ret_only:
+        fail("STUN disposable rule delete response schema regressed")
+    stun_toggle = merged_by_key[("GET", "/api/stunrule/enable")]
+    if stun_toggle.risk is not OperationRisk.MUTATING:
+        fail("STUN enable/disable GET must remain mutating")
+    if stun_toggle.response_schema != stun_ret_only:
+        fail("STUN enable/disable GET ret-only response schema regressed")
+
+    stun_safe_rule_props = {
+        "Name": {"type": "string"},
+        "Key": {"type": "string"},
+        "Enable": {"type": "boolean"},
+        "DiaglogShowMode": {"type": "string"},
+        "StunType": {"type": "string"},
+        "UseGlobalStunServerList": {"type": "boolean"},
+        "StunServerList": {"type": "array", "items": {"type": "string"}},
+        "TcpKeepAliveServerList": {"type": "array", "items": {"type": "string"}},
+        "StunListenType": {"type": "string"},
+        "SpecifyNetworkInterface": {"type": "string"},
+        "NetworkInterfaceReg": {"type": "string"},
+        "ListenIP": {"type": "string"},
+        "ListenPort": {"type": "integer"},
+        "AutoOptionsFirewall": {"type": "boolean"},
+        "DisableStunAvalidCheck": {"type": "boolean"},
+        "DisablePortForward": {"type": "boolean"},
+        "TargetAddressList": {"type": "array", "items": {"type": "string"}},
+        "TargetPort": {"type": "integer"},
+        "NatPMP": {"type": "boolean"},
+        "UPnP": {"type": "boolean"},
+        "UPnPGawayIP": {"type": "string"},
+        "UPnPLocalPort": {"type": "integer"},
+        "UPnpLocalHost": {"type": "string"},
+        "UPnPInternalClientIP": {"type": "string"},
+        "NatPMPGateway": {"type": "string"},
+        "StunHeartbeatInterval": {"type": "integer"},
+        "StunTimeout": {"type": "integer"},
+        "StunRetryInterval": {"type": "integer"},
+        "StunAutoRetry": {"type": "boolean"},
+        "GlobalWebhook": {"type": "boolean"},
+        "WebhookEnable": {"type": "boolean"},
+        "WebhookOnlyAddrChange": {"type": "boolean"},
+        "AutoAddPubAddrWhiteList": {"type": "boolean"},
+        "LogLevel": {"type": "integer"},
+        "LogOutputToConsole": {"type": "boolean"},
+        "AccessLogMaxNum": {"type": "integer"},
+        "WebListShowLastLogMaxCount": {"type": "integer"},
+        "CallScript": {"type": "boolean"},
+    }
+    expected_stun_detail = {
+        "type": "object",
+        "properties": {
+            "ret": {"type": "integer"},
+            "rule": {"type": "object", "properties": stun_safe_rule_props},
+        },
+    }
+    if merged_by_key[("GET", "/api/stun/{param}")].response_schema != expected_stun_detail:
+        fail("STUN disposable rule safe detail response schema regressed")
+
+    stun_nullable_logs = {"type": ["array", "null"], "items": {}}
+    if merged_by_key[("GET", "/api/stun/{param}/lastlogs")].response_schema != {
+        "type": "object",
+        "properties": {"lastLogs": stun_nullable_logs, "ret": {"type": "integer"}},
+    }:
+        fail("STUN disposable rule lastlogs response schema regressed")
+    if merged_by_key[("GET", "/api/stun/{param}/logs")].response_schema != {
+        "type": "object",
+        "properties": {
+            "logs": stun_nullable_logs,
+            "page": {"type": "integer"},
+            "pageSize": {"type": "integer"},
+            "ret": {"type": "integer"},
+            "total": {"type": "integer"},
+        },
+    }:
+        fail("STUN disposable rule paginated logs response schema regressed")
+
+    expected_stun_list = {
+        "type": "object",
+        "properties": {
+            "ret": {"type": "integer"},
+            "ModuleEnable": {"type": "boolean"},
+            "list": {
+                "type": ["array", "null"],
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "Key": {"type": "string"},
+                        "Name": {"type": "string"},
+                        "StunType": {"type": "string"},
+                        "Enable": {"type": "boolean"},
+                        "DisablePortForward": {"type": "boolean"},
+                        "WebhookEnable": {"type": "boolean"},
+                        "GlobalWebhook": {"type": "boolean"},
+                    },
+                },
+            },
+            "statistics": {"type": "object"},
+        },
+    }
+    if merged_by_key[("GET", "/api/stunrulelist")].response_schema != expected_stun_list:
+        fail("STUN disposable rule list safe summary schema regressed")
+    expected_stun_lite = {
+        "type": "object",
+        "properties": {
+            "ret": {"type": "integer"},
+            "ModuleEnable": {"type": "boolean"},
+            "list": {
+                "type": ["array", "null"],
+                "items": {
+                    "type": "object",
+                    "properties": {"Name": {"type": "string"}, "Key": {"type": "string"}},
+                },
+            },
+        },
+    }
+    if merged_by_key[("GET", "/api/stunrulelist_lite")].response_schema != expected_stun_lite:
+        fail("STUN disposable rule lite-list schema regressed")
 
     stun_webhook_request = {
         "type": "object",
@@ -2088,8 +2214,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("Local Path Browser delete response schema regressed")
 
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 279:
-        fail(f"response-schema coverage regressed below 279 routes: {response_schema_count}")
+    if response_schema_count < 286:
+        fail(f"response-schema coverage regressed below 286 routes: {response_schema_count}")
 
     safe_utility_response_routes = {
         ("GET", "/api/baseconfigure"),
@@ -2381,8 +2507,6 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     nullable_list_response_routes = {
         ("GET", "/api/portforwards"): ("list", "Moduledisable"),
         ("GET", "/api/portforwards_lite"): ("list", "Moduledisable"),
-        ("GET", "/api/stunrulelist"): ("list", "ModuleEnable"),
-        ("GET", "/api/stunrulelist_lite"): ("list", "ModuleEnable"),
         ("GET", "/api/ipdb/avalidDBFiles"): ("list", None),
         ("GET", "/api/ssl/syncclients"): ("list", None),
         ("GET", "/api/thirdPartyAuthManager/list"): ("list", None),
@@ -3015,6 +3139,16 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         ("GET", "/api/ipfliter/porttrapconf"): {"WebhookProxyPassword"},
         ("GET", "/api/ipfliter/autorecordipconf"): {"BasicPassword"},
         ("GET", "/api/stun/configure"): {"WebhookProxyPassword"},
+        ("GET", "/api/stun/{param}"): {
+            "WebhookProxyPassword",
+            "WebhookURL",
+            "WebhookHeaders",
+            "WebhookRequestBody",
+            "UpnPDiyControlAPIUrl",
+            "CallScriptContent",
+            "TCPStreamEncryptionKey",
+            "UDPPacketEncryptionKey",
+        },
         ("GET", "/api/ddns/configure"): {"WebhookProxyPassword"},
         ("GET", "/api/ddns/credential-sources"): {"secretValue", "proxyPassword"},
         ("GET", "/api/ddns/task/{param}"): {"Secret", "HttpClientProxyPassword", "WebhookProxyPassword"},

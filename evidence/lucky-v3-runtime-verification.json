@@ -652,7 +652,8 @@
       "risk": "mutating",
       "body_keys": ["Name", "Key", "Enable", "UseGlobalStunServerList", "DiaglogShowMode", "StunHeartbeatInterval", "StunTimeout", "StunRetryInterval", "StunAutoRetry", "AutoAddPubAddrWhiteList", "StunType", "StunListenType", "SpecifyNetworkInterface", "NetworkInterfaceReg", "ListenIP", "AutoOptionsFirewall", "ListenPort", "NatPMP", "UPnPGawayIP", "NatPMPGateway", "UPnP", "UPnPLocalPort", "UPnpLocalHost", "UPnPInternalClientIP", "UpnPDiyControlAPIUrl", "DisableStunAvalidCheck", "DisablePortForward", "TargetAddressList", "TargetPort", "LogLevel", "LogOutputToConsole", "AccessLogMaxNum", "WebListShowLastLogMaxCount", "Options", "StunServerList", "TcpKeepAliveServerList", "GlobalWebhook", "WebhookEnable", "WebhookOnlyAddrChange", "WebhookURL", "WebhookMethod", "WebhookHeaders", "WebhookRequestBody", "WebhookDisableCallbackSuccessContentCheck", "WebhookSuccessContent", "WebhookProxy", "WebhookProxyAddr", "WebhookProxyUser", "WebhookProxyPassword", "CallScript", "CallScriptContent", "RetryCount", "RetryInterval", "LogStreamSettings"],
       "request_body_schema": {"type":"object","properties":{"Name":{"type":"string"},"Key":{"type":"string"},"Enable":{"type":"boolean"},"UseGlobalStunServerList":{"type":"boolean"},"DiaglogShowMode":{"type":"string"},"StunHeartbeatInterval":{"type":"integer"},"StunTimeout":{"type":"integer"},"StunRetryInterval":{"type":"integer"},"StunAutoRetry":{"type":"boolean"},"AutoAddPubAddrWhiteList":{"type":"boolean"},"StunType":{"type":"string"},"StunListenType":{"type":"string"},"SpecifyNetworkInterface":{"type":"string"},"NetworkInterfaceReg":{"type":"string"},"ListenIP":{"type":"string"},"AutoOptionsFirewall":{"type":"boolean"},"ListenPort":{"type":"integer"},"NatPMP":{"type":"boolean"},"UPnPGawayIP":{"type":"string"},"NatPMPGateway":{"type":"string"},"UPnP":{"type":"boolean"},"UPnPLocalPort":{"type":"integer"},"UPnpLocalHost":{"type":"string"},"UPnPInternalClientIP":{"type":"string"},"UpnPDiyControlAPIUrl":{"type":"string"},"DisableStunAvalidCheck":{"type":"boolean"},"DisablePortForward":{"type":"boolean"},"TargetAddressList":{"type":"array","items":{"type":"string"}},"TargetPort":{"type":"integer"},"LogLevel":{"type":"integer"},"LogOutputToConsole":{"type":"boolean"},"AccessLogMaxNum":{"type":"integer"},"WebListShowLastLogMaxCount":{"type":"integer"},"Options":{"type":"object"},"StunServerList":{"type":"array","items":{"type":"string"}},"TcpKeepAliveServerList":{"type":"array","items":{"type":"string"}},"GlobalWebhook":{"type":"boolean"},"WebhookEnable":{"type":"boolean"},"WebhookOnlyAddrChange":{"type":"boolean"},"WebhookURL":{"type":"string"},"WebhookMethod":{"type":"string"},"WebhookHeaders":{"type":"array","items":{"type":"string"}},"WebhookRequestBody":{"type":"string"},"WebhookDisableCallbackSuccessContentCheck":{"type":"boolean"},"WebhookSuccessContent":{"type":"array","items":{"type":"string"}},"WebhookProxy":{"type":"string"},"WebhookProxyAddr":{"type":"string"},"WebhookProxyUser":{"type":"string"},"WebhookProxyPassword":{"type":"string"},"CallScript":{"type":"boolean"},"CallScriptContent":{"type":"string"},"RetryCount":{"type":"integer"},"RetryInterval":{"type":"integer"},"LogStreamSettings":{"type":"object"}}},
-      "schema_evidence": "frontend STUN rule editor default/submit model + paced authorized parser-only probes verified every top-level field before handler execution; array element probes verified TargetAddressList/StunServerList/TcpKeepAliveServerList/WebhookHeaders/WebhookSuccessContent as string arrays, Options and LogStreamSettings as objects, and the STUN rule baseline remained zero throughout"
+      "response_schema": {"type":"object","properties":{"key":{"type":"string"},"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend STUN rule editor default/submit model + paced parser probes verified every top-level request field; an authorized disposable rule with Enable=false, DisablePortForward=true, AutoOptionsFirewall=false and no UPnP/NAT-PMP/webhook/script activity then returned key+ret create success. The STUN rule-list baseline was zero before and after cleanup"
     },
     {
       "path": "/api/stunrule",
@@ -660,7 +661,43 @@
       "risk": "mutating",
       "body_keys": ["Name", "Key", "Enable", "UseGlobalStunServerList", "DiaglogShowMode", "StunHeartbeatInterval", "StunTimeout", "StunRetryInterval", "StunAutoRetry", "AutoAddPubAddrWhiteList", "StunType", "StunListenType", "SpecifyNetworkInterface", "NetworkInterfaceReg", "ListenIP", "AutoOptionsFirewall", "ListenPort", "NatPMP", "UPnPGawayIP", "NatPMPGateway", "UPnP", "UPnPLocalPort", "UPnpLocalHost", "UPnPInternalClientIP", "UpnPDiyControlAPIUrl", "DisableStunAvalidCheck", "DisablePortForward", "TargetAddressList", "TargetPort", "LogLevel", "LogOutputToConsole", "AccessLogMaxNum", "WebListShowLastLogMaxCount", "Options", "StunServerList", "TcpKeepAliveServerList", "GlobalWebhook", "WebhookEnable", "WebhookOnlyAddrChange", "WebhookURL", "WebhookMethod", "WebhookHeaders", "WebhookRequestBody", "WebhookDisableCallbackSuccessContentCheck", "WebhookSuccessContent", "WebhookProxy", "WebhookProxyAddr", "WebhookProxyUser", "WebhookProxyPassword", "CallScript", "CallScriptContent", "RetryCount", "RetryInterval", "LogStreamSettings"],
       "request_body_schema": {"type":"object","properties":{"Name":{"type":"string"},"Key":{"type":"string"},"Enable":{"type":"boolean"},"UseGlobalStunServerList":{"type":"boolean"},"DiaglogShowMode":{"type":"string"},"StunHeartbeatInterval":{"type":"integer"},"StunTimeout":{"type":"integer"},"StunRetryInterval":{"type":"integer"},"StunAutoRetry":{"type":"boolean"},"AutoAddPubAddrWhiteList":{"type":"boolean"},"StunType":{"type":"string"},"StunListenType":{"type":"string"},"SpecifyNetworkInterface":{"type":"string"},"NetworkInterfaceReg":{"type":"string"},"ListenIP":{"type":"string"},"AutoOptionsFirewall":{"type":"boolean"},"ListenPort":{"type":"integer"},"NatPMP":{"type":"boolean"},"UPnPGawayIP":{"type":"string"},"NatPMPGateway":{"type":"string"},"UPnP":{"type":"boolean"},"UPnPLocalPort":{"type":"integer"},"UPnpLocalHost":{"type":"string"},"UPnPInternalClientIP":{"type":"string"},"UpnPDiyControlAPIUrl":{"type":"string"},"DisableStunAvalidCheck":{"type":"boolean"},"DisablePortForward":{"type":"boolean"},"TargetAddressList":{"type":"array","items":{"type":"string"}},"TargetPort":{"type":"integer"},"LogLevel":{"type":"integer"},"LogOutputToConsole":{"type":"boolean"},"AccessLogMaxNum":{"type":"integer"},"WebListShowLastLogMaxCount":{"type":"integer"},"Options":{"type":"object"},"StunServerList":{"type":"array","items":{"type":"string"}},"TcpKeepAliveServerList":{"type":"array","items":{"type":"string"}},"GlobalWebhook":{"type":"boolean"},"WebhookEnable":{"type":"boolean"},"WebhookOnlyAddrChange":{"type":"boolean"},"WebhookURL":{"type":"string"},"WebhookMethod":{"type":"string"},"WebhookHeaders":{"type":"array","items":{"type":"string"}},"WebhookRequestBody":{"type":"string"},"WebhookDisableCallbackSuccessContentCheck":{"type":"boolean"},"WebhookSuccessContent":{"type":"array","items":{"type":"string"}},"WebhookProxy":{"type":"string"},"WebhookProxyAddr":{"type":"string"},"WebhookProxyUser":{"type":"string"},"WebhookProxyPassword":{"type":"string"},"CallScript":{"type":"boolean"},"CallScriptContent":{"type":"string"},"RetryCount":{"type":"integer"},"RetryInterval":{"type":"integer"},"LogStreamSettings":{"type":"object"}}},
-      "schema_evidence": "frontend STUN rule editor submits the same model for update; request types reuse the parser-verified STUN rule field types and no successful STUN update handler was executed"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend STUN rule editor submits the same model for update; the authorized disabled disposable rule accepted an identical PUT with its generated Key and returned ret-only success before deletion restored the zero-rule baseline exactly"
+    },
+    {
+      "path": "/api/stunrule",
+      "method": "DELETE",
+      "risk": "mutating",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "authorized cleanup of the disabled disposable STUN rule returned ret-only success and restored the complete /api/stunrulelist response hash to its pre-probe zero-rule baseline"
+    },
+    {
+      "path": "/api/stunrule/enable",
+      "method": "GET",
+      "risk": "mutating",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "current frontend uses GET /api/stunrule/enable?key=...&enable=... as a state-changing toggle. An authorized disposable rule was already disabled; enable=false returned ret-only success and the following detail GET confirmed Enable remained false"
+    },
+    {
+      "path": "/api/stun/{param}",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"rule":{"type":"object","properties":{"Name":{"type":"string"},"Key":{"type":"string"},"Enable":{"type":"boolean"},"DiaglogShowMode":{"type":"string"},"StunType":{"type":"string"},"UseGlobalStunServerList":{"type":"boolean"},"StunServerList":{"type":"array","items":{"type":"string"}},"TcpKeepAliveServerList":{"type":"array","items":{"type":"string"}},"StunListenType":{"type":"string"},"SpecifyNetworkInterface":{"type":"string"},"NetworkInterfaceReg":{"type":"string"},"ListenIP":{"type":"string"},"ListenPort":{"type":"integer"},"AutoOptionsFirewall":{"type":"boolean"},"DisableStunAvalidCheck":{"type":"boolean"},"DisablePortForward":{"type":"boolean"},"TargetAddressList":{"type":"array","items":{"type":"string"}},"TargetPort":{"type":"integer"},"NatPMP":{"type":"boolean"},"UPnP":{"type":"boolean"},"UPnPGawayIP":{"type":"string"},"UPnPLocalPort":{"type":"integer"},"UPnpLocalHost":{"type":"string"},"UPnPInternalClientIP":{"type":"string"},"NatPMPGateway":{"type":"string"},"StunHeartbeatInterval":{"type":"integer"},"StunTimeout":{"type":"integer"},"StunRetryInterval":{"type":"integer"},"StunAutoRetry":{"type":"boolean"},"GlobalWebhook":{"type":"boolean"},"WebhookEnable":{"type":"boolean"},"WebhookOnlyAddrChange":{"type":"boolean"},"AutoAddPubAddrWhiteList":{"type":"boolean"},"LogLevel":{"type":"integer"},"LogOutputToConsole":{"type":"boolean"},"AccessLogMaxNum":{"type":"integer"},"WebListShowLastLogMaxCount":{"type":"integer"},"CallScript":{"type":"boolean"}}}}},
+      "schema_evidence": "authorized GET of the disabled disposable STUN rule observed these safe rule fields and primitive/list types. Secret- or content-bearing fields are intentionally omitted: WebhookProxyPassword, WebhookURL, WebhookHeaders, WebhookRequestBody, UpnPDiyControlAPIUrl, CallScriptContent, and the Options object that can contain TCP/UDP encryption keys"
+    },
+    {
+      "path": "/api/stun/{param}/lastlogs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"lastLogs":{"type":["array","null"],"items":{}},"ret":{"type":"integer"}}},
+      "schema_evidence": "authorized GET for the disabled disposable STUN rule returned lastLogs=null; the envelope type is verified and log item schema remains unspecified"
+    },
+    {
+      "path": "/api/stun/{param}/logs",
+      "method": "GET",
+      "risk": "read-only",
+      "response_schema": {"type":"object","properties":{"logs":{"type":["array","null"],"items":{}},"page":{"type":"integer"},"pageSize":{"type":"integer"},"ret":{"type":"integer"},"total":{"type":"integer"}}},
+      "schema_evidence": "authorized paginated log GET for the disabled disposable STUN rule returned logs=null with integer pagination fields; log item schema remains unspecified"
     },
     {
       "path": "/api/stunrule/webhooktest",
@@ -2665,15 +2702,15 @@
       "path": "/api/stunrulelist",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "ModuleEnable": {"type": "boolean"}, "list": {"type": ["array", "null"], "items": {}}, "statistics": {"type": "object"}}},
-      "schema_evidence": "authorized GET /api/stunrulelist observed module/list/statistics envelope types; current list is null and statistics is an empty dynamic object, so rule/statistic item schemas remain unspecified"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"ModuleEnable":{"type":"boolean"},"list":{"type":["array","null"],"items":{"type":"object","properties":{"Key":{"type":"string"},"Name":{"type":"string"},"StunType":{"type":"string"},"Enable":{"type":"boolean"},"DisablePortForward":{"type":"boolean"},"WebhookEnable":{"type":"boolean"},"GlobalWebhook":{"type":"boolean"}}}},"statistics":{"type":"object"}}},
+      "schema_evidence": "authorized disposable Enable=false STUN rule populated the list and verified only safe summary fields; logs, network addresses, Options/encryption material and webhook details remain undocumented. Cleanup restored the complete list response hash to the original zero-rule baseline; statistics remains a dynamic object keyed by rule"
     },
     {
       "path": "/api/stunrulelist_lite",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "ModuleEnable": {"type": "boolean"}, "list": {"type": ["array", "null"], "items": {}}}},
-      "schema_evidence": "authorized GET /api/stunrulelist_lite observed the compact module/list envelope; current list is null so rule item schema remains unspecified"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"ModuleEnable":{"type":"boolean"},"list":{"type":["array","null"],"items":{"type":"object","properties":{"Name":{"type":"string"},"Key":{"type":"string"}}}}}},
+      "schema_evidence": "authorized disposable disabled STUN rule populated the compact list and verified Name/Key string fields; cleanup restored the zero-rule baseline"
     },
     {
       "path": "/api/ipdb/avalidDBFiles",
