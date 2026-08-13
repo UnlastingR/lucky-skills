@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 86:
+    if len(untyped_request_routes) > 83:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 86 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 83 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     explicit_small_request_schemas = {
@@ -590,6 +590,12 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         ("POST", "/api/docker/images/pull-async"): {
             "type": "object", "properties": {"architecture": {"type": "string"}, "image": {"type": "string"}, "tag": {"type": "string"}}
         },
+        ("POST", "/api/docker/images/pull-with-backup"): {
+            "type": "object", "properties": {"architecture": {"type": "string"}, "backup_tag": {"type": "string"}, "image_ref": {"type": "string"}}
+        },
+        ("POST", "/api/docker/images/pull-with-backup-async"): {
+            "type": "object", "properties": {"architecture": {"type": "string"}, "backup_tag": {"type": "string"}, "image_ref": {"type": "string"}}
+        },
         ("POST", "/api/docker/images/push"): {
             "type": "object", "properties": {"image": {"type": "string"}, "tag": {"type": "string"}}
         },
@@ -639,6 +645,35 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
             fail(f"Docker image metadata string evidence regressed for {field}")
     if docker_image_props.get("RepoTags") != {"type": "array", "items": {"type": "string"}}:
         fail("Docker image RepoTags evidence regressed")
+
+    docker_search = merged_by_key[("POST", "/api/docker/images/search")]
+    if docker_search.risk is not OperationRisk.READ_ONLY:
+        fail("Docker image search must remain runtime-verified read-only")
+    if docker_search.request_body_schema != {
+        "type": "object",
+        "properties": {"limit": {"type": "integer"}, "term": {"type": "string"}},
+    }:
+        fail("Docker image search request schema regressed")
+    if docker_search.response_schema != {
+        "type": "object",
+        "properties": {
+            "ret": {"type": "integer"},
+            "results": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "star_count": {"type": "integer"},
+                        "is_official": {"type": "boolean"},
+                        "name": {"type": "string"},
+                        "is_automated": {"type": "boolean"},
+                        "description": {"type": "string"},
+                    },
+                },
+            },
+        },
+    }:
+        fail("Docker image search response schema regressed")
 
     compose_identity_schema = {
         "type": "object",
@@ -910,8 +945,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("Local Path Browser delete response schema regressed")
 
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 227:
-        fail(f"response-schema coverage regressed below 227 routes: {response_schema_count}")
+    if response_schema_count < 228:
+        fail(f"response-schema coverage regressed below 228 routes: {response_schema_count}")
 
     safe_utility_response_routes = {
         ("GET", "/api/baseconfigure"),

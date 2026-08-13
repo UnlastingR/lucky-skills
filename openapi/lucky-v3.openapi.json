@@ -13320,6 +13320,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "frontend-call request fields are cross-checked against runtime-verified Docker image Architecture and string tag/reference metadata; pull-with-backup was not executed",
         "requestBody": {
           "required": true,
           "content": {
@@ -13327,9 +13328,15 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "architecture": {},
-                  "backup_tag": {},
-                  "image_ref": {}
+                  "architecture": {
+                    "type": "string"
+                  },
+                  "backup_tag": {
+                    "type": "string"
+                  },
+                  "image_ref": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -13377,6 +13384,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "frontend-call request fields are cross-checked against runtime-verified Docker image Architecture and string tag/reference metadata; async pull-with-backup was not executed",
         "requestBody": {
           "required": true,
           "content": {
@@ -13384,9 +13392,15 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "architecture": {},
-                  "backup_tag": {},
-                  "image_ref": {}
+                  "architecture": {
+                    "type": "string"
+                  },
+                  "backup_tag": {
+                    "type": "string"
+                  },
+                  "image_ref": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -13648,11 +13662,39 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "star_count": {
+                            "type": "integer"
+                          },
+                          "is_official": {
+                            "type": "boolean"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "is_automated": {
+                            "type": "boolean"
+                          },
+                          "description": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -13672,7 +13714,8 @@
         "x-evidence-bundles": [
           "lucky_docker-BCN-OILs.js"
         ],
-        "x-lucky-risk": "mutating",
+        "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized POST /api/docker/images/search with limit=1 and a public registry term returned ret=0 without changing local Docker state; only request/result field names and JSON types were retained, establishing this POST as read-only",
         "requestBody": {
           "required": true,
           "content": {
@@ -13680,8 +13723,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "limit": {},
-                  "term": {}
+                  "limit": {
+                    "type": "integer"
+                  },
+                  "term": {
+                    "type": "string"
+                  }
                 }
               }
             }
