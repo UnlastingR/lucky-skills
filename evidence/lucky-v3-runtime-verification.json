@@ -3114,7 +3114,8 @@
       "risk": "mutating",
       "body_keys": ["theme", "language"],
       "request_body_schema": {"type": "object", "properties": {"theme": {"type": "string"}, "language": {"type": "string"}}},
-      "schema_evidence": "frontend preference sync explicitly constructs {theme: currentTheme, language: currentLocale} from string UI identifiers before PUT; no preference write was executed"
+      "response_schema": {"type":"object","properties":{"preferences":{"type":"object","properties":{"BackgroundBlur":{"type":"integer"},"BackgroundColor":{"type":"string"},"BackgroundImage":{"type":"string"},"EnableCustomBackgroundColor":{"type":"boolean"},"EnableCustomBackgroundImage":{"type":"boolean"},"FrontendDisableAutoExpandLeftMenu":{"type":"boolean"},"FrontendLanguage":{"type":"string"},"FrontendTheme":{"type":"string"}}},"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend preference sync explicitly constructs {theme: currentTheme, language: currentLocale} from string UI identifiers before PUT; an authorized same-value write using the current light/zh_CN preference returned ret=0 plus a preferences object containing only frontend theme/language/background/menu fields. A read of /api/baseconfigure before and after confirmed FrontendTheme and FrontendLanguage remained unchanged"
     },
     {
       "path": "/api/ftpserver/configure",
