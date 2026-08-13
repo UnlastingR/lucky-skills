@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 11:
+    if len(untyped_request_routes) > 8:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 11 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 8 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     coraza_request = {
@@ -863,6 +863,52 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     }
     if merged_by_key[("GET", "/api/docker/registry/mirrors")].response_schema != expected_mirror_list:
         fail("Docker registry-mirror list schema regressed")
+
+    webservice_cgi_request = {
+        "type": "object",
+        "properties": {
+            "Key": {"type": "string"}, "Name": {"type": "string"}, "Enable": {"type": "boolean"},
+            "CGIType": {"type": "string"}, "Network": {"type": "string"}, "Address": {"type": "string"},
+            "MaxConns": {"type": "integer"}, "ConnectTimeout": {"type": "integer"},
+            "ForbiddenPaths": {"type": "string"}, "DefaultDocRoot": {"type": "string"},
+            "DefaultIndexNames": {"type": "string"}, "FileExtensions": {"type": "string"},
+        },
+    }
+    webservice_ret_only = {"type": "object", "properties": {"ret": {"type": "integer"}}}
+    for route_key in {("POST", "/api/webservice/cgi"), ("PUT", "/api/webservice/cgi/{param}")}:
+        route = merged_by_key[route_key]
+        if route.request_body_schema != webservice_cgi_request:
+            fail(f"WebService disposable CGI request schema regressed for {route_key}")
+        if set(route.body_keys) != set(webservice_cgi_request["properties"]):
+            fail(f"WebService CGI request schema must cover exactly the frontend body fields for {route_key}")
+        if route.response_schema != webservice_ret_only:
+            fail(f"WebService disposable CGI ret-only response schema regressed for {route_key}")
+    if merged_by_key[("DELETE", "/api/webservice/cgi/{param}")].response_schema != webservice_ret_only:
+        fail("WebService disposable CGI delete response schema regressed")
+
+    cgi_list_schema = merged_by_key[("GET", "/api/webservice/cgi/list")].response_schema
+    cgi_item_props = (
+        cgi_list_schema.get("properties", {}).get("list", {}).get("items", {}).get("properties", {})
+        if isinstance(cgi_list_schema, dict)
+        else {}
+    )
+    expected_cgi_item_props = {
+        "Key": {"type": "string"}, "Name": {"type": "string"}, "Enable": {"type": "boolean"},
+        "Remark": {"type": "string"}, "CGIType": {"type": "string"}, "Network": {"type": "string"},
+        "Address": {"type": "string"}, "MaxConns": {"type": "integer"}, "ConnectTimeout": {"type": "integer"},
+        "ReadTimeout": {"type": "integer"}, "WriteTimeout": {"type": "integer"},
+        "ForbiddenPaths": {"type": "string"}, "DefaultDocRoot": {"type": "string"},
+        "DefaultIndexNames": {"type": "string"}, "FileExtensions": {"type": "string"},
+        "ActiveConns": {"type": "integer"}, "LastError": {"type": "string"},
+    }
+    if cgi_item_props != expected_cgi_item_props:
+        fail("WebService disposable CGI list item schema regressed")
+
+    discovery_cancel = merged_by_key[("POST", "/api/webservice/discovery/cancel")]
+    if discovery_cancel.request_body_schema != {"type": "object", "properties": {"jobId": {"type": "string"}}}:
+        fail("WebService discovery-cancel request schema regressed")
+    if discovery_cancel.response_schema is not None:
+        fail("WebService nonexistent-job cancel evidence must not claim a success response")
 
     stun_rule_request = {
         "type": "object",
@@ -1898,8 +1944,11 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
 
     cgi_schema = merged_by_key[("GET", "/api/webservice/cgi/list")].response_schema
     cgi_list = cgi_schema.get("properties", {}).get("list") if isinstance(cgi_schema, dict) else None
-    if cgi_list != {"type": ["array", "null"], "items": {}}:
-        fail("WebService CGI item schema must remain unspecified")
+    if cgi_list != {
+        "type": ["array", "null"],
+        "items": {"type": "object", "properties": expected_cgi_item_props},
+    }:
+        fail("WebService CGI item schema must remain limited to the verified disposable-item fields")
 
     twofa_status = merged_by_key[("GET", "/api/modules/{param}/2fa/status")].response_schema
     twofa_props = (

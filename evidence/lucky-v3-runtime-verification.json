@@ -259,14 +259,26 @@
       "method": "POST",
       "risk": "mutating",
       "body_keys": ["Key", "Name", "Enable", "CGIType", "Network", "Address", "MaxConns", "ConnectTimeout", "ForbiddenPaths", "DefaultDocRoot", "DefaultIndexNames", "FileExtensions"],
-      "schema_evidence": "frontend CGI editor model is passed directly as request data"
+      "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"Name":{"type":"string"},"Enable":{"type":"boolean"},"CGIType":{"type":"string"},"Network":{"type":"string"},"Address":{"type":"string"},"MaxConns":{"type":"integer"},"ConnectTimeout":{"type":"integer"},"ForbiddenPaths":{"type":"string"},"DefaultDocRoot":{"type":"string"},"DefaultIndexNames":{"type":"string"},"FileExtensions":{"type":"string"}}},
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend CGI editor model is passed directly; an authorized disposable probe created one disabled CGI from the minimal Name/Enable model, GET list exposed the server-filled model and verified all 12 write-field types, POST returned ret-only success, and cleanup later restored the zero-CGI baseline"
     },
     {
       "path": "/api/webservice/cgi/{param}",
       "method": "PUT",
       "risk": "mutating",
       "body_keys": ["Key", "Name", "Enable", "CGIType", "Network", "Address", "MaxConns", "ConnectTimeout", "ForbiddenPaths", "DefaultDocRoot", "DefaultIndexNames", "FileExtensions"],
-      "schema_evidence": "frontend CGI editor model is passed directly as request data"
+      "request_body_schema": {"type":"object","properties":{"Key":{"type":"string"},"Name":{"type":"string"},"Enable":{"type":"boolean"},"CGIType":{"type":"string"},"Network":{"type":"string"},"Address":{"type":"string"},"MaxConns":{"type":"integer"},"ConnectTimeout":{"type":"integer"},"ForbiddenPaths":{"type":"string"},"DefaultDocRoot":{"type":"string"},"DefaultIndexNames":{"type":"string"},"FileExtensions":{"type":"string"}}},
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend CGI editor model is passed directly; the disposable disabled CGI's full GET-list object was PUT back successfully with a ret-only response, confirming the same write-field types before deletion restored the zero-CGI baseline"
+    },
+    {
+      "path": "/api/webservice/discovery/cancel",
+      "method": "POST",
+      "risk": "mutating",
+      "body_keys": ["jobId"],
+      "request_body_schema": {"type":"object","properties":{"jobId":{"type":"string"}}},
+      "schema_evidence": "authorized probe first confirmed discovery active=false; a nonexistent string jobId passed request parsing and reached DiscoveryJobNotRunning, and discovery remained inactive afterward. No running job was cancelled"
     },
     {
       "path": "/api/webservice/discovery/start",
@@ -2563,8 +2575,15 @@
       "path": "/api/webservice/cgi/list",
       "method": "GET",
       "risk": "read-only",
-      "response_schema": {"type": "object", "properties": {"ret": {"type": "integer"}, "list": {"type": ["array", "null"], "items": {}}}},
-      "schema_evidence": "authorized GET /api/webservice/cgi/list observed list=null on this instance; CGI item fields, commands and paths remain unspecified"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"},"list":{"type":["array","null"],"items":{"type":"object","properties":{"Key":{"type":"string"},"Name":{"type":"string"},"Enable":{"type":"boolean"},"Remark":{"type":"string"},"CGIType":{"type":"string"},"Network":{"type":"string"},"Address":{"type":"string"},"MaxConns":{"type":"integer"},"ConnectTimeout":{"type":"integer"},"ReadTimeout":{"type":"integer"},"WriteTimeout":{"type":"integer"},"ForbiddenPaths":{"type":"string"},"DefaultDocRoot":{"type":"string"},"DefaultIndexNames":{"type":"string"},"FileExtensions":{"type":"string"},"ActiveConns":{"type":"integer"},"LastError":{"type":"string"}}}}}},
+      "schema_evidence": "authorized disposable disabled CGI made the list contain exactly one server-filled item; only field names and JSON types were retained, then DELETE restored list=null. Command/path/address values were not retained"
+    },
+    {
+      "path": "/api/webservice/cgi/{param}",
+      "method": "DELETE",
+      "risk": "mutating",
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "authorized DELETE of the disposable disabled CGI returned ret=0 and restored the zero-CGI baseline"
     },
     {
       "path": "/api/webservice/groups/subrulecount",
