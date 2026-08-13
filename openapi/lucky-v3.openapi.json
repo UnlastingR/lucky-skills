@@ -200,7 +200,7 @@
           "lucky_index-DND3_xvE.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend normalizes the remote/backend About content to {version,display,cards} and passes that object directly to PUT; authorized GET observed the same top-level shape",
+        "x-schema-evidence": "frontend normalizes the remote/backend About content to {version,display,cards} and passes that object directly to PUT; request types are copied exactly from the authorized GET public-content model without inventing required fields",
         "requestBody": {
           "required": true,
           "content": {
@@ -208,9 +208,43 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "version": {},
-                  "display": {},
-                  "cards": {}
+                  "version": {
+                    "type": "integer"
+                  },
+                  "cards": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "enabled": {
+                          "type": "boolean"
+                        },
+                        "html": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "type": "string"
+                        },
+                        "kind": {
+                          "type": "string"
+                        },
+                        "priority": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  },
+                  "display": {
+                    "type": "object",
+                    "properties": {
+                      "maxPromotionItems": {
+                        "type": "integer"
+                      },
+                      "promotionSelection": {
+                        "type": "string"
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -2280,11 +2314,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -2305,6 +2344,7 @@
           "lucky_panel-599cSpUA.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized disposable Cron group cleanup used DELETE /api/cron/groups?key=... and observed a ret-only success response; the post-cleanup group count returned to zero",
         "parameters": [
           {
             "name": "key",
@@ -2339,7 +2379,17 @@
                     },
                     "list": {
                       "type": "array",
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "Key": {
+                            "type": "string"
+                          },
+                          "Name": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -2362,7 +2412,7 @@
           "lucky_panel-599cSpUA.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/cron/groups returned an empty list; envelope is verified while group item schema remains unspecified"
+        "x-schema-evidence": "authorized disposable empty-group probe observed one GET /api/cron/groups item with Key/Name string fields only; temporary key/name values were not retained and the group was deleted afterward"
       },
       "post": {
         "summary": "Lucky frontend call: POST /api/cron/groups",
@@ -2378,11 +2428,19 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "key": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -2403,7 +2461,7 @@
           "lucky_panel-599cSpUA.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend group management dialog sends explicit {Name} for create; current authorized group list is empty",
+        "x-schema-evidence": "frontend group management dialog sends explicit {Name} for create; an authorized disposable empty-group probe verified Name string input and ret/key response types, then deleted the group and restored the zero-group baseline",
         "requestBody": {
           "required": true,
           "content": {
@@ -2411,7 +2469,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Name": {}
+                  "Name": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -2432,11 +2492,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -2457,7 +2522,7 @@
           "lucky_panel-599cSpUA.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend group management dialog passes {Key,Name} for update; current authorized group list is empty",
+        "x-schema-evidence": "frontend group management dialog passes {Key,Name} for update; the authorized disposable empty-group probe verified string Key/Name input and a ret-only success response before cleanup",
         "requestBody": {
           "required": true,
           "content": {
@@ -2465,8 +2530,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Key": {},
-                  "Name": {}
+                  "Key": {
+                    "type": "string"
+                  },
+                  "Name": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -2489,11 +2558,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -2514,6 +2588,7 @@
           "lucky_panel-599cSpUA.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized disposable empty-group probe set collapsed=true for the temporary group and observed a ret-only success response; the temporary group was deleted and baseline restored",
         "requestBody": {
           "required": true,
           "content": {
@@ -2521,8 +2596,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "collapsed": {},
-                  "key": {}
+                  "collapsed": {
+                    "type": "boolean"
+                  },
+                  "key": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -2555,7 +2634,10 @@
                       "type": "integer"
                     },
                     "states": {
-                      "type": "object"
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "boolean"
+                      }
                     }
                   }
                 }
@@ -2578,7 +2660,7 @@
           "lucky_panel-599cSpUA.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/cron/groups/collapsed/states returned an empty dynamic state object; value schema is intentionally unspecified"
+        "x-schema-evidence": "authorized disposable empty-group probe observed collapsed-state values as booleans keyed dynamically by group key; the group key value itself was not retained and the temporary group was deleted afterward"
       }
     },
     "/api/cron/groups/orderadjustment": {

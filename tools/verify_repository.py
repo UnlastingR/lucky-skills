@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 137:
+    if len(untyped_request_routes) > 133:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 137 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 133 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     read_model_put_schemas = {
@@ -551,9 +551,69 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     if "WebhookProxyPassword" in wol_server_props:
         fail("WOL safe read-model PUT schema must not document request-only proxy password")
 
+    about_put = merged_by_key[("PUT", "/api/about-content")].request_body_schema
+    about_get = merged_by_key[("GET", "/api/about-content")].response_schema
+    if about_put != about_get:
+        fail("About-content PUT request schema must match verified GET public-content model")
+    if isinstance(about_put, dict) and "required" in about_put:
+        fail("About-content PUT schema must not invent required fields")
+
+    cron_group_requests = {
+        ("POST", "/api/cron/groups"): {
+            "type": "object",
+            "properties": {"Name": {"type": "string"}},
+        },
+        ("PUT", "/api/cron/groups"): {
+            "type": "object",
+            "properties": {"Key": {"type": "string"}, "Name": {"type": "string"}},
+        },
+        ("PUT", "/api/cron/groups/collapsed"): {
+            "type": "object",
+            "properties": {"collapsed": {"type": "boolean"}, "key": {"type": "string"}},
+        },
+    }
+    for route_key, expected in cron_group_requests.items():
+        if merged_by_key[route_key].request_body_schema != expected:
+            fail(f"Cron disposable-group request schema regressed for {route_key}")
+
+    ret_only_schema = {"type": "object", "properties": {"ret": {"type": "integer"}}}
+    if merged_by_key[("POST", "/api/cron/groups")].response_schema != {
+        "type": "object",
+        "properties": {"ret": {"type": "integer"}, "key": {"type": "string"}},
+    }:
+        fail("Cron group create response schema regressed")
+    for route_key in {
+        ("PUT", "/api/cron/groups"),
+        ("PUT", "/api/cron/groups/collapsed"),
+        ("DELETE", "/api/cron/groups"),
+    }:
+        if merged_by_key[route_key].response_schema != ret_only_schema:
+            fail(f"Cron disposable-group ret-only response schema regressed for {route_key}")
+
+    cron_groups = merged_by_key[("GET", "/api/cron/groups")].response_schema
+    cron_group_item = (
+        cron_groups.get("properties", {}).get("list", {}).get("items")
+        if isinstance(cron_groups, dict)
+        else None
+    )
+    if cron_group_item != {
+        "type": "object",
+        "properties": {"Key": {"type": "string"}, "Name": {"type": "string"}},
+    }:
+        fail("Cron group list item schema regressed")
+
+    collapsed_states = merged_by_key[("GET", "/api/cron/groups/collapsed/states")].response_schema
+    states_schema = (
+        collapsed_states.get("properties", {}).get("states")
+        if isinstance(collapsed_states, dict)
+        else None
+    )
+    if states_schema != {"type": "object", "additionalProperties": {"type": "boolean"}}:
+        fail("Cron group collapsed-state map schema regressed")
+
     response_schema_count = sum(route.response_schema is not None for route in merged.routes)
-    if response_schema_count < 204:
-        fail(f"response-schema coverage regressed below 204 routes: {response_schema_count}")
+    if response_schema_count < 208:
+        fail(f"response-schema coverage regressed below 208 routes: {response_schema_count}")
 
     safe_utility_response_routes = {
         ("GET", "/api/baseconfigure"),
@@ -561,6 +621,8 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         ("GET", "/api/ipfliter/porttrap/blockedips"),
         ("GET", "/api/ipfliter/porttrap/blockedips/search"),
         ("GET", "/api/cron/expressioncheck"),
+        ("GET", "/api/cron/groups"),
+        ("GET", "/api/cron/groups/collapsed/states"),
         ("GET", "/api/cron/groups/taskcount"),
         ("GET", "/api/modules/{param}/2fa/status"),
         ("GET", "/api/webservice/cgi/list"),
