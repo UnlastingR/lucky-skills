@@ -8651,11 +8651,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "container_id": {
+                      "type": "string"
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -8676,7 +8688,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend create-container dialog explicitly transforms its form into Lucky body {name,config,hostConfig}; no container was created for schema discovery",
+        "x-schema-evidence": "frontend create-container dialog explicitly transforms its form into Lucky body {name,config,hostConfig}; authorized isolated BusyBox probe created one network-disabled disposable container and observed ret/container_id/warnings response types, then removed the container and restored the five-container baseline",
         "requestBody": {
           "required": true,
           "content": {
@@ -9387,11 +9399,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -9412,6 +9429,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized isolated BusyBox cleanup force-removed only the disposable probe container and observed a ret-only success response; container count returned to its five-container baseline",
         "parameters": [
           {
             "name": "param",
@@ -11208,11 +11226,19 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "logs": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -11233,6 +11259,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET on the disposable BusyBox container observed ret/logs response types with tail/timestamps query parameters; log contents were not retained",
         "parameters": [
           {
             "name": "param",
@@ -11324,11 +11351,36 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "processes": {
+                      "type": "object",
+                      "properties": {
+                        "Titles": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "Processes": {
+                          "type": "array",
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -11349,6 +11401,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET on the disposable BusyBox container observed process-table title strings and row arrays of strings only; process values were not retained",
         "parameters": [
           {
             "name": "param",
@@ -11506,11 +11559,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -11531,6 +11589,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "dangerous",
+        "x-schema-evidence": "authorized isolated BusyBox probe started only the newly created network-disabled disposable container and observed a ret-only success response",
         "parameters": [
           {
             "name": "param",
@@ -12675,11 +12734,19 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "output": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -12700,6 +12767,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized isolated BusyBox probe pulled one dedicated lightweight image through Lucky API, verifying string image/tag request fields and ret/output response types; pull output and tag values were not retained, and the image was removed after testing",
         "requestBody": {
           "required": true,
           "content": {
@@ -12707,8 +12775,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "image": {},
-                  "tag": {}
+                  "image": {
+                    "type": "string"
+                  },
+                  "tag": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -12958,11 +13030,20 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "removed": {
+                      "type": "array",
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -12983,6 +13064,7 @@
           "lucky_docker-BCN-OILs.js"
         ],
         "x-lucky-risk": "dangerous",
+        "x-schema-evidence": "authorized isolated BusyBox cleanup removed only the image pulled for the probe and observed a removed-event array plus ret; removal-event item fields remain unspecified and image count returned to its five-image baseline",
         "parameters": [
           {
             "name": "force",
