@@ -17594,7 +17594,39 @@
                     "list": {
                       "type": "array",
                       "items": {
-                        "type": "object"
+                        "type": "object",
+                        "properties": {
+                          "Key": {
+                            "type": "string"
+                          },
+                          "Remark": {
+                            "type": "string"
+                          },
+                          "Type": {
+                            "type": "string"
+                          },
+                          "ConfigMode": {
+                            "type": "string"
+                          },
+                          "Enable": {
+                            "type": "boolean"
+                          },
+                          "Running": {
+                            "type": "boolean"
+                          },
+                          "RunErrorMsg": {
+                            "type": "string"
+                          },
+                          "ServerAddr": {
+                            "type": "string"
+                          },
+                          "ProxyCount": {
+                            "type": "integer"
+                          },
+                          "VisitorCount": {
+                            "type": "integer"
+                          }
+                        }
                       }
                     }
                   }
@@ -17618,7 +17650,7 @@
           "lucky_panel-BjQOfwVI.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/frp/list returned an empty list on this instance; only the envelope and array type are claimed"
+        "x-schema-evidence": "authorized disposable Enable=false text-mode FRP client populated one list item and verified the public summary fields/types; the client was deleted and the list returned to its zero-instance baseline"
       },
       "post": {
         "summary": "Lucky frontend call: POST /api/frp/list",
@@ -17634,11 +17666,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -17659,7 +17696,7 @@
           "lucky_panel-BjQOfwVI.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "current frontend instance form normalizes Type to client/server, ConfigMode to form/text, Params to an object, and Proxies/Visitors to arrays before submit; authorized FRP list is currently empty",
+        "x-schema-evidence": "current frontend instance form normalizes Type to client/server, ConfigMode to form/text, Params to an object, and Proxies/Visitors to arrays before submit; an authorized disposable Enable=false text-mode client pointed only at loopback and returned ret-only create success before cleanup restored the zero-instance baseline",
         "requestBody": {
           "required": true,
           "content": {
@@ -17728,11 +17765,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -17753,7 +17795,7 @@
           "lucky_panel-BjQOfwVI.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "current frontend instance form normalizes Type to client/server, ConfigMode to form/text, Params to an object, and Proxies/Visitors to arrays before submit; authorized FRP list is currently empty",
+        "x-schema-evidence": "current frontend instance form normalizes Type to client/server, ConfigMode to form/text, Params to an object, and Proxies/Visitors to arrays before submit; the same authorized disabled disposable text-mode client was PUT back successfully with a ret-only response and then deleted",
         "requestBody": {
           "required": true,
           "content": {
@@ -17824,11 +17866,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -17849,6 +17896,7 @@
           "lucky_panel-BjQOfwVI.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized disposable disabled FRP client cleanup returned a ret-only success response and restored the zero-instance baseline",
         "parameters": [
           {
             "name": "param",
@@ -17874,11 +17922,45 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "instance": {
+                      "type": "object",
+                      "properties": {
+                        "Key": {
+                          "type": "string"
+                        },
+                        "Enable": {
+                          "type": "boolean"
+                        },
+                        "Remark": {
+                          "type": "string"
+                        },
+                        "Type": {
+                          "type": "string"
+                        },
+                        "ConfigMode": {
+                          "type": "string"
+                        },
+                        "ConfigText": {
+                          "type": "string"
+                        },
+                        "Params": {
+                          "type": [
+                            "object",
+                            "null"
+                          ]
+                        }
+                      }
+                    },
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -17899,6 +17981,7 @@
           "lucky_panel-BjQOfwVI.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET of the disposable Enable=false text-mode FRP client observed the detail envelope and public instance field types; Params was null in text mode and no credential-bearing nested form parameters are documented",
         "parameters": [
           {
             "name": "param",
@@ -17926,11 +18009,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -17950,7 +18038,8 @@
         "x-evidence-bundles": [
           "lucky_panel-BjQOfwVI.js"
         ],
-        "x-lucky-risk": "read-only",
+        "x-lucky-risk": "mutating",
+        "x-schema-evidence": "current Lucky 3.0.0 frontend calls GET /api/frp/list/{Key}/{desiredEnable} from the enable/disable toggle, proving this GET has side effects. An authorized disabled disposable client was called with desiredEnable=false; it remained disabled, returned ret-only success, and was then deleted",
         "parameters": [
           {
             "name": "param",
@@ -18120,11 +18209,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "lastLogs": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    },
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -18145,6 +18246,7 @@
           "lucky_panel-BjQOfwVI.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET for the disabled disposable FRP client's last logs returned lastLogs=null; envelope type is verified and log item schema remains unspecified",
         "parameters": [
           {
             "name": "param",
@@ -18172,11 +18274,32 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "logs": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -18197,6 +18320,7 @@
           "lucky_panel-BjQOfwVI.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized paginated log GET for the disabled disposable FRP client returned logs=null with integer pagination fields; log item schema remains unspecified",
         "parameters": [
           {
             "name": "param",
@@ -18236,11 +18360,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "proxies": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    },
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -18261,6 +18397,7 @@
           "lucky_panel-BjQOfwVI.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET for the disposable text-mode FRP client returned proxies=null; envelope is verified and proxy item schema is intentionally not inferred from write models",
         "parameters": [
           {
             "name": "param",
@@ -18711,11 +18848,45 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "type": "string"
+                        },
+                        "remark": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "running": {
+                          "type": "boolean"
+                        },
+                        "enable": {
+                          "type": "boolean"
+                        },
+                        "serverAddr": {
+                          "type": "string"
+                        },
+                        "proxyCount": {
+                          "type": "integer"
+                        },
+                        "visitorCount": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -18736,6 +18907,7 @@
           "lucky_panel-BjQOfwVI.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized status GET for the disabled disposable FRP client observed only the stable summary fields and primitive types; running-only nested status collections were absent and are not guessed",
         "parameters": [
           {
             "name": "param",
@@ -18763,11 +18935,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "visitors": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    }
+                  }
                 }
               }
             }
@@ -18788,6 +18972,7 @@
           "lucky_panel-BjQOfwVI.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET for the disposable text-mode FRP client returned visitors=null; envelope is verified and visitor item schema is intentionally not inferred from write models",
         "parameters": [
           {
             "name": "param",

@@ -300,7 +300,7 @@
 | `PUT` | `/api/frp/list` | `mutating` | — | `Key`, `Remark`, `Enable`, `Type`, `ConfigMode`, `ConfigText`, `Params`, `Proxies`, `Visitors` | `json` | `frontend-call` |
 | `DELETE` | `/api/frp/list/{param}` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/frp/list/{param}` | `read-only` | — | — | `json` | `frontend-call` |
-| `GET` | `/api/frp/list/{param}/{param2}` | `read-only` | — | — | `json` | `frontend-call` |
+| `GET` | `/api/frp/list/{param}/{param2}` | `mutating` | — | — | `json` | `frontend-call` |
 | `GET` | `/api/frp/logs` | `read-only` | `page`, `pageSize` | — | `json` | `frontend-call` |
 | `PUT` | `/api/frp/orderadjustment` | `mutating` | — | `array<string>` | `json` | `frontend-call` |
 | `GET` | `/api/frp/{param}/lastlogs` | `read-only` | — | — | `json` | `frontend-call` |
