@@ -61,3 +61,31 @@ jobs:
 
       - name: Check whitespace errors
         run: git diff --check
+
+  vitepress:
+    name: VitePress + Worker
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install VitePress
+        run: npm install --include=dev --no-package-lock
+
+      - name: Build Worker assets
+        run: npm run docs:worker
+
+      - name: Check output
+        run: |
+          test -f dist/lucky-skills/index.html
+          test -f worker/index.ts
+          test -f wrangler.jsonc
+
+      - name: Validate Worker configuration
+        run: npx wrangler deploy --dry-run

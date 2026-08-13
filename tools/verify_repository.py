@@ -31,6 +31,15 @@ SEMVER = re.compile(
 )
 HEX_COLOR = re.compile(r"^#[0-9A-F]{6}$", re.IGNORECASE)
 TODO_MARKER = "[TODO:"
+IGNORED_REPOSITORY_PARTS = {
+    ".git",
+    ".pytest_cache",
+    ".venv",
+    ".wrangler",
+    "__pycache__",
+    "dist",
+    "node_modules",
+}
 PLUGIN_MANIFEST_FIELDS = {
     "id",
     "name",
@@ -70,6 +79,14 @@ PLUGIN_INTERFACE_FIELDS = {
 def fail(message: str) -> None:
     print(f"ERROR: {message}", file=sys.stderr)
     raise SystemExit(1)
+
+
+def is_ignored_repository_path(path: Path) -> bool:
+    try:
+        relative = path.relative_to(ROOT)
+    except ValueError:
+        return False
+    return any(part in IGNORED_REPOSITORY_PARTS for part in relative.parts)
 
 
 def require_non_empty_string(payload: dict[str, object], field: str, *, prefix: str = "") -> str:
@@ -228,7 +245,7 @@ def validate_app_manifest() -> None:
 
 def check_secrets() -> None:
     for path in ROOT.rglob("*"):
-        if not path.is_file() or ".git" in path.parts:
+        if not path.is_file() or is_ignored_repository_path(path):
             continue
         if path.suffix.lower() not in {".md", ".json", ".yaml", ".yml", ".py", ".sh", ".txt"}:
             continue
@@ -239,7 +256,7 @@ def check_secrets() -> None:
 
 def check_local_links() -> None:
     for path in ROOT.rglob("*.md"):
-        if ".git" in path.parts:
+        if is_ignored_repository_path(path):
             continue
         text = path.read_text(encoding="utf-8")
         for target in MARKDOWN_LINK.findall(text):

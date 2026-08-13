@@ -1,5 +1,7 @@
 # Lucky OpenToken API 文档（非官方）
 
+> 在线文档：<https://docs.fyzure.fyi/lucky-skills/> · GitHub：<https://github.com/UnlastingR/lucky-skills>
+
 这是面向 Lucky 管理后台 OpenToken 的可复现、尽可能完整的中文 API 文档仓库。它不是 Lucky 上游发布的稳定接口规范，而是基于以下证据整理：
 
 - Lucky v3 Web 前端构建产物的静态调用分析；
@@ -76,6 +78,17 @@ python3 tools/extract_lucky_frontend.py tests/fixtures \
 ```
 
 GitHub Actions 会在 Python 3.10–3.13 上云端编译并运行全部测试，同时执行密钥误提交检测、文档本地链接检查、端点快照/OpenAPI 一致性检查和生成产物可复现性检查。
+
+文档站使用 VitePress，并由 Cloudflare Worker + Static Assets 托管。开发、构建与部署：
+
+```bash
+npm install --include=dev --no-package-lock
+npm run docs:dev
+npm run docs:worker
+npm run worker:deploy
+```
+
+文档由 Cloudflare Worker + Static Assets 托管，Worker 覆盖 `docs.fyzure.fyi/*`，当前正式文档路径为 `/lucky-skills/`。部署与 CDN 拓扑见[文档站部署](docs/deployment.md)。
 
 ## 准确性边界
 

@@ -1,0 +1,16 @@
+{
+  "name": "lucky-skills-docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "docs:dev": "vitepress docs",
+    "docs:build": "vitepress build docs",
+    "docs:worker": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "worker:deploy": "npm run docs:worker && wrangler deploy"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.4",
+    "wrangler": "^4.116.0"
+  }
+}
