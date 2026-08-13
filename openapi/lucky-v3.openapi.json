@@ -17936,7 +17936,7 @@
           "lucky_panel-Tg1eQCBM.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend loads authorized GET /api/ftpserver/configure into its form and passes the normalized form object directly to PUT; the observed API field named 'DisableLISTArgs ' includes a trailing space",
+        "x-schema-evidence": "frontend loads authorized GET /api/ftpserver/configure into its form and passes the normalized form object directly to PUT; request types are copied from the matching verified GET configure model, Users item shape remains unspecified, and the observed API field named 'DisableLISTArgs ' includes a trailing space",
         "requestBody": {
           "required": true,
           "content": {
@@ -17944,32 +17944,88 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "ActiveConnectionsCheck": {},
-                  "ActiveTransferPortNon20": {},
-                  "AdvancedParametersShow": {},
-                  "AutoFireWall": {},
-                  "ConfVersion": {},
-                  "ConnectionTimeout": {},
-                  "DefaultTransferType": {},
-                  "DisableActiveMode": {},
-                  "DisableLISTArgs ": {},
-                  "DisableMFMT": {},
-                  "DisableMLSD": {},
-                  "DisableMLST": {},
-                  "DisableSTAT": {},
-                  "DisableSYST": {},
-                  "DisableSite": {},
-                  "Enable": {},
-                  "EnableCOMB": {},
-                  "EnableHASH": {},
-                  "IdleTimeout": {},
-                  "Network": {},
-                  "PassivePortEnd": {},
-                  "PassivePortStart": {},
-                  "PasvConnectionsCheck": {},
-                  "Port": {},
-                  "TLSRequired": {},
-                  "Users": {}
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "Network": {
+                    "type": "string"
+                  },
+                  "Port": {
+                    "type": "integer"
+                  },
+                  "PassivePortStart": {
+                    "type": "integer"
+                  },
+                  "PassivePortEnd": {
+                    "type": "integer"
+                  },
+                  "Users": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {}
+                  },
+                  "AutoFireWall": {
+                    "type": "boolean"
+                  },
+                  "AdvancedParametersShow": {
+                    "type": "boolean"
+                  },
+                  "TLSRequired": {
+                    "type": "integer"
+                  },
+                  "ActiveTransferPortNon20": {
+                    "type": "boolean"
+                  },
+                  "IdleTimeout": {
+                    "type": "integer"
+                  },
+                  "ConnectionTimeout": {
+                    "type": "integer"
+                  },
+                  "DisableMLSD": {
+                    "type": "boolean"
+                  },
+                  "DisableMLST": {
+                    "type": "boolean"
+                  },
+                  "DisableMFMT": {
+                    "type": "boolean"
+                  },
+                  "DisableLISTArgs ": {
+                    "type": "boolean"
+                  },
+                  "DisableSite": {
+                    "type": "boolean"
+                  },
+                  "DisableActiveMode": {
+                    "type": "boolean"
+                  },
+                  "DisableSTAT": {
+                    "type": "boolean"
+                  },
+                  "DisableSYST": {
+                    "type": "boolean"
+                  },
+                  "EnableHASH": {
+                    "type": "boolean"
+                  },
+                  "EnableCOMB": {
+                    "type": "boolean"
+                  },
+                  "DefaultTransferType": {
+                    "type": "integer"
+                  },
+                  "ActiveConnectionsCheck": {
+                    "type": "integer"
+                  },
+                  "PasvConnectionsCheck": {
+                    "type": "integer"
+                  },
+                  "ConfVersion": {
+                    "type": "integer"
+                  }
                 }
               }
             }
@@ -27294,7 +27350,7 @@
           "lucky_panel-cAWqYdFv.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend loads authorized GET /api/smb/configure, normalizes mount/user lists and passes the full configure model directly to PUT",
+        "x-schema-evidence": "frontend loads authorized GET /api/smb/configure, normalizes mount/user lists and passes the full configure model directly to PUT; request types are copied from the matching verified GET configure model while mount/user item shapes remain unspecified",
         "requestBody": {
           "required": true,
           "content": {
@@ -27302,27 +27358,77 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "AutoFirewall": {},
-                  "DiscoveryIP": {},
-                  "Enable": {},
-                  "EnableMDNS": {},
-                  "EnableNBNS": {},
-                  "EnableWSDD": {},
-                  "Encryption": {},
-                  "GuestEnable": {},
-                  "ListenIP": {},
-                  "ListenNetwork": {},
-                  "ListenPort": {},
-                  "LiteSMBLogLevel": {},
-                  "LiteSMBLogToTerminal": {},
-                  "MaxConnections": {},
-                  "Multichannel": {},
-                  "PublicMountList": {},
-                  "SMBConfVersion": {},
-                  "ServerName": {},
-                  "Signing": {},
-                  "Users": {},
-                  "Workgroup": {}
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "ListenIP": {
+                    "type": "string"
+                  },
+                  "ListenPort": {
+                    "type": "integer"
+                  },
+                  "DiscoveryIP": {
+                    "type": "string"
+                  },
+                  "PublicMountList": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {}
+                  },
+                  "Users": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {}
+                  },
+                  "ListenNetwork": {
+                    "type": "string"
+                  },
+                  "AutoFirewall": {
+                    "type": "boolean"
+                  },
+                  "ServerName": {
+                    "type": "string"
+                  },
+                  "Workgroup": {
+                    "type": "string"
+                  },
+                  "Signing": {
+                    "type": "string"
+                  },
+                  "Encryption": {
+                    "type": "string"
+                  },
+                  "Multichannel": {
+                    "type": "boolean"
+                  },
+                  "GuestEnable": {
+                    "type": "boolean"
+                  },
+                  "MaxConnections": {
+                    "type": "integer"
+                  },
+                  "LiteSMBLogLevel": {
+                    "type": "string"
+                  },
+                  "LiteSMBLogToTerminal": {
+                    "type": "boolean"
+                  },
+                  "EnableWSDD": {
+                    "type": "boolean"
+                  },
+                  "EnableMDNS": {
+                    "type": "boolean"
+                  },
+                  "EnableNBNS": {
+                    "type": "boolean"
+                  },
+                  "SMBConfVersion": {
+                    "type": "integer"
+                  }
                 }
               }
             }
@@ -33237,7 +33343,7 @@
           "lucky_panel-gGesqQ2b.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend loads authorized GET /api/webdav/configure into its normalized form and passes that full form object directly to PUT",
+        "x-schema-evidence": "frontend loads authorized GET /api/webdav/configure into its normalized form and passes that full form object directly to PUT; request types are copied from the matching verified GET configure model while Users item shape remains unspecified",
         "requestBody": {
           "required": true,
           "content": {
@@ -33245,17 +33351,43 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "AutoFirewall": {},
-                  "Enable": {},
-                  "HTTPEnable": {},
-                  "ListenIP": {},
-                  "ListenNetwork": {},
-                  "ListenPort": {},
-                  "TLSEnable": {},
-                  "TLSListenPort": {},
-                  "TrustHostList": {},
-                  "Users": {},
-                  "WebDavConfVersion": {}
+                  "Enable": {
+                    "type": "boolean"
+                  },
+                  "ListenIP": {
+                    "type": "string"
+                  },
+                  "ListenPort": {
+                    "type": "integer"
+                  },
+                  "Users": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {}
+                  },
+                  "ListenNetwork": {
+                    "type": "string"
+                  },
+                  "TLSEnable": {
+                    "type": "boolean"
+                  },
+                  "TLSListenPort": {
+                    "type": "integer"
+                  },
+                  "HTTPEnable": {
+                    "type": "boolean"
+                  },
+                  "AutoFirewall": {
+                    "type": "boolean"
+                  },
+                  "TrustHostList": {
+                    "type": "string"
+                  },
+                  "WebDavConfVersion": {
+                    "type": "integer"
+                  }
                 }
               }
             }
@@ -42044,7 +42176,7 @@
           "lucky_useWolI18n-D9PD6Ww6.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend settings page passes the full {Client,Server} configure object directly + authorized GET observed the nested Client/Server field shapes; only field names/types are recorded",
+        "x-schema-evidence": "frontend settings page passes the full {Client,Server} configure object directly + authorized GET observed the nested Client/Server field shapes; PUT request types reuse that verified safe read-model projection, request-only secret fields remain intentionally undocumented, and no required fields are invented",
         "requestBody": {
           "required": true,
           "content": {
@@ -42052,8 +42184,126 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Client": {},
-                  "Server": {}
+                  "Server": {
+                    "type": "object",
+                    "properties": {
+                      "Enable": {
+                        "type": "boolean"
+                      },
+                      "QuickControl": {
+                        "type": "boolean"
+                      },
+                      "QuickControlBasicAuth": {
+                        "type": "boolean"
+                      },
+                      "QuickControlBasicAuthUser": {
+                        "type": "string"
+                      },
+                      "WebhookEnable": {
+                        "type": "boolean"
+                      },
+                      "WebhookUpLine": {
+                        "type": "boolean"
+                      },
+                      "WebhookDownLine": {
+                        "type": "boolean"
+                      },
+                      "WebhookURL": {
+                        "type": "string"
+                      },
+                      "WebhookMethod": {
+                        "type": "string"
+                      },
+                      "WebhookHeaders": {
+                        "type": [
+                          "array",
+                          "null"
+                        ],
+                        "items": {}
+                      },
+                      "WebhookRequestBody": {
+                        "type": "string"
+                      },
+                      "WebhookDisableCallbackSuccessContentCheck": {
+                        "type": "boolean"
+                      },
+                      "WebhookSuccessContent": {
+                        "type": [
+                          "array",
+                          "null"
+                        ],
+                        "items": {}
+                      },
+                      "WebhookNetworkType": {
+                        "type": "string"
+                      },
+                      "WebhookLocalAddr": {
+                        "type": "string"
+                      },
+                      "WebhookProxy": {
+                        "type": "string"
+                      },
+                      "WebhookProxyAddr": {
+                        "type": "string"
+                      },
+                      "WebhookProxyUser": {
+                        "type": "string"
+                      },
+                      "WebhookInsecureSkipVerify": {
+                        "type": "boolean"
+                      },
+                      "WebHookTimeout": {
+                        "type": "integer"
+                      },
+                      "RetryCount": {
+                        "type": "integer"
+                      },
+                      "RetryInterval": {
+                        "type": "integer"
+                      }
+                    }
+                  },
+                  "Client": {
+                    "type": "object",
+                    "properties": {
+                      "Enable": {
+                        "type": "boolean"
+                      },
+                      "ServerURL": {
+                        "type": "string"
+                      },
+                      "InsecureSkipVerify": {
+                        "type": "boolean"
+                      },
+                      "Relay": {
+                        "type": "boolean"
+                      },
+                      "Key": {
+                        "type": "string"
+                      },
+                      "DeviceName": {
+                        "type": "string"
+                      },
+                      "Mac": {
+                        "type": "string"
+                      },
+                      "BroadcastIP": {
+                        "type": "string"
+                      },
+                      "Port": {
+                        "type": "integer"
+                      },
+                      "Repeat": {
+                        "type": "integer"
+                      },
+                      "PowerOffCMD": {
+                        "type": "string"
+                      },
+                      "UpdateTime": {
+                        "type": "integer"
+                      }
+                    }
+                  }
                 }
               }
             }
