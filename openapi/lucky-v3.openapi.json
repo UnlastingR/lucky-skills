@@ -626,7 +626,41 @@
                         "array",
                         "null"
                       ],
-                      "items": {}
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "Key": {
+                            "type": "string"
+                          },
+                          "Remark": {
+                            "type": "string"
+                          },
+                          "Type": {
+                            "type": "string"
+                          },
+                          "Enable": {
+                            "type": "boolean"
+                          },
+                          "RunErrorMsg": {
+                            "type": "string"
+                          },
+                          "Running": {
+                            "type": "boolean"
+                          },
+                          "Connected": {
+                            "type": "boolean"
+                          },
+                          "Reconnecting": {
+                            "type": "boolean"
+                          },
+                          "LocalURL": {
+                            "type": "string"
+                          },
+                          "AccessTarget": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -649,7 +683,7 @@
           "lucky_cloudflared-CZXQeEtG.js"
         ],
         "x-lucky-risk": "read-only",
-        "x-schema-evidence": "authorized GET /api/cloudflared/list returned list=null on this instance; envelope is verified while instance item schema remains frontend-only"
+        "x-schema-evidence": "authorized disabled disposable Cloudflared access instance populated the list and verified its public summary field types; cleanup restored the zero-instance baseline. The list remains nullable because the empty baseline returns null"
       },
       "post": {
         "summary": "Lucky frontend call: POST /api/cloudflared/list",
@@ -665,11 +699,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -690,7 +729,7 @@
           "lucky_cloudflared-CZXQeEtG.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend Cloudflared instance editor submits {Key,Remark,Enable,Type,Params}; an authorized semantic-invalid sentinel with string Key/Remark/Type, boolean Enable and object Params parsed successfully and stopped at InstanceTypeIsNotAvailable, while each field changed to an array failed JSON parsing. The Cloudflared instance baseline remained zero",
+        "x-schema-evidence": "frontend Cloudflared instance editor submits {Key,Remark,Enable,Type,Params}; parser probes verified the top-level types, then an authorized Enable=false access instance using example.invalid and loopback-only URL/listener values returned ret-only create success. It used no Cloudflare credentials and was deleted with the zero-instance baseline restored",
         "requestBody": {
           "required": true,
           "content": {
@@ -733,11 +772,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -758,7 +802,7 @@
           "lucky_cloudflared-CZXQeEtG.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend Cloudflared instance editor submits the same model for update; request types reuse the semantic-sentinel/parser-verified instance model and no Cloudflared instance update handler was executed",
+        "x-schema-evidence": "frontend Cloudflared instance editor submits the same model for update; an authorized disabled disposable access instance accepted the same model in PUT and returned ret-only success before cleanup restored the zero-instance baseline",
         "requestBody": {
           "required": true,
           "content": {
@@ -803,11 +847,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -828,6 +877,7 @@
           "lucky_cloudflared-CZXQeEtG.js"
         ],
         "x-lucky-risk": "mutating",
+        "x-schema-evidence": "authorized cleanup of the disabled disposable Cloudflared access instance returned a ret-only success response and restored the zero-instance baseline",
         "parameters": [
           {
             "name": "param",
@@ -853,11 +903,62 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "instance": {
+                      "type": "object",
+                      "properties": {
+                        "Key": {
+                          "type": "string"
+                        },
+                        "Enable": {
+                          "type": "boolean"
+                        },
+                        "Remark": {
+                          "type": "string"
+                        },
+                        "Type": {
+                          "type": "string"
+                        },
+                        "Params": {
+                          "type": "object",
+                          "properties": {
+                            "Hostname": {
+                              "type": "string"
+                            },
+                            "Network": {
+                              "type": "string"
+                            },
+                            "ListenIP": {
+                              "type": "string"
+                            },
+                            "ListenPort": {
+                              "type": "integer"
+                            },
+                            "NoTlsVerify": {
+                              "type": "boolean"
+                            },
+                            "Destination": {
+                              "type": "string"
+                            },
+                            "ConnectTo": {
+                              "type": "string"
+                            },
+                            "UserAgent": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -878,6 +979,7 @@
           "lucky_cloudflared-CZXQeEtG.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET of an Enable=false disposable Cloudflared access instance observed the detail envelope and safe access-parameter field types. TokenId, TokenSecret, HeaderList and the upstream URL are intentionally omitted from response documentation; the instance was deleted afterward",
         "parameters": [
           {
             "name": "param",
@@ -905,11 +1007,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -929,7 +1036,8 @@
         "x-evidence-bundles": [
           "lucky_cloudflared-CZXQeEtG.js"
         ],
-        "x-lucky-risk": "read-only",
+        "x-lucky-risk": "mutating",
+        "x-schema-evidence": "live Lucky 3.0.0 cloudflared wrapper exposes GET /api/cloudflared/list/{Key}/{desiredEnable} as the enable/disable action. An authorized disabled disposable access instance was called with desiredEnable=false, remained disabled, returned ret-only success, and was then deleted",
         "parameters": [
           {
             "name": "param",
@@ -1561,11 +1669,23 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "lastLogs": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    },
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -1586,6 +1706,7 @@
           "lucky_cloudflared-CZXQeEtG.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized GET for the disabled disposable Cloudflared access instance returned lastLogs=null; the envelope is verified and log item schema remains unspecified",
         "parameters": [
           {
             "name": "param",
@@ -1613,11 +1734,32 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "logs": {
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {}
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "ret": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -1638,6 +1780,7 @@
           "lucky_cloudflared-CZXQeEtG.js"
         ],
         "x-lucky-risk": "read-only",
+        "x-schema-evidence": "authorized paginated log GET for the disabled disposable Cloudflared access instance returned logs=null with integer pagination fields; log item schema remains unspecified",
         "parameters": [
           {
             "name": "param",
