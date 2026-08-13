@@ -513,10 +513,10 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         and route.body_keys
         and route.request_body_schema is None
     ]
-    if len(untyped_request_routes) > 4:
+    if len(untyped_request_routes) > 1:
         fail(
             "typed request-schema coverage regressed; "
-            f"expected at most 4 field-bearing write routes without explicit schemas, got {len(untyped_request_routes)}"
+            f"expected at most 1 field-bearing write route without explicit schemas, got {len(untyped_request_routes)}"
         )
 
     coraza_request = {
@@ -951,6 +951,62 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
         fail("Cloudflared ingress PUT request schema regressed")
     if cloudflared_ingress_put.response_schema is not None:
         fail("Cloudflared missing-instance ingress PUT must not claim a success response")
+
+    global_2fa_request = {
+        "type": "object",
+        "properties": {
+            "TwoFAEnable": {"type": "boolean"},
+            "TwoFAKey": {"type": "string"},
+            "TwoFACode": {"type": "string"},
+        },
+    }
+    global_2fa = merged_by_key[("PUT", "/api/2fa/setting")]
+    if global_2fa.request_body_schema != global_2fa_request:
+        fail("global 2FA cross-evidence request schema regressed")
+    if set(global_2fa.body_keys) != set(global_2fa_request["properties"]):
+        fail("global 2FA request schema must cover exactly the frontend body fields")
+    if global_2fa.response_schema is not None:
+        fail("global 2FA cross-evidence must not claim a success response")
+
+    module_2fa_request = {
+        "type": "object",
+        "properties": {
+            "enable": {"type": "boolean"},
+            "key": {"type": "string"},
+            "secret": {"type": "string"},
+            "validated": {"type": "boolean"},
+            "code": {"type": "string"},
+            "oldSecret": {"type": "string"},
+            "oldCode": {"type": "string"},
+        },
+    }
+    module_2fa = merged_by_key[("PUT", "/api/modules/{param}/2fa/config")]
+    if module_2fa.request_body_schema != module_2fa_request:
+        fail("module 2FA cross-evidence request schema regressed")
+    if set(module_2fa.body_keys) != set(module_2fa_request["properties"]):
+        fail("module 2FA request schema must cover exactly the frontend body fields")
+    if module_2fa.response_schema is not None:
+        fail("module 2FA cross-evidence must not claim a success response")
+
+    module_verify = merged_by_key[("POST", "/api/modules/{param}/verify2fa")]
+    if module_verify.request_body_schema != {"type": "object", "properties": {"code": {"type": "string"}}}:
+        fail("module verify2fa request schema regressed")
+    if module_verify.response_schema is not None:
+        fail("module verify2fa request-only evidence must not claim a success response")
+
+    expected_module_2fa_config_response = {
+        "type": "object",
+        "properties": {
+            "ret": {"type": "integer"},
+            "config": {"type": "object", "properties": {
+                "enable": {"type": "boolean"},
+                "hasKey": {"type": "boolean"},
+                "validated": {"type": "boolean"},
+            }},
+        },
+    }
+    if merged_by_key[("GET", "/api/modules/{param}/2fa/config")].response_schema != expected_module_2fa_config_response:
+        fail("module 2FA safe config response schema regressed")
 
     stun_rule_request = {
         "type": "object",
