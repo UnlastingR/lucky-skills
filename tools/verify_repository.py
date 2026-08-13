@@ -2263,6 +2263,25 @@ def check_runtime_verification(snapshot_path: Path, snapshot: dict[str, object])
     if states_schema != {"type": "object", "additionalProperties": {"type": "boolean"}}:
         fail("Cron group collapsed-state map schema regressed")
 
+    empty_order_response_routes = {
+        ("PUT", "/api/cloudflared/orderadjustment"),
+        ("PUT", "/api/portforward/ruleorderadjustment"),
+        ("PUT", "/api/stun/ruleorderadjustment"),
+        ("PUT", "/api/frp/orderadjustment"),
+        ("PUT", "/api/rclone/itemorderadjustment"),
+        ("PUT", "/api/coraza/instanceorderadjustment"),
+        ("PUT", "/api/wol/deviceorderadjustment"),
+        ("PUT", "/api/storagemanagement/itemorderadjustment"),
+        ("PUT", "/api/thirdPartyAuthManager/orderadjustment"),
+    }
+    empty_order_request_schema = {"type": "array", "items": {"type": "string"}}
+    for route_key in empty_order_response_routes:
+        route = merged_by_key[route_key]
+        if route.request_body_schema != empty_order_request_schema:
+            fail(f"empty-baseline order-adjustment request schema regressed for {route_key}")
+        if route.response_schema != ret_only_schema:
+            fail(f"empty-baseline order-adjustment ret-only response schema regressed for {route_key}")
+
     host_kill = merged_by_key[("POST", "/api/status/host-process-kill")].request_body_schema
     if host_kill != {
         "type": "object",

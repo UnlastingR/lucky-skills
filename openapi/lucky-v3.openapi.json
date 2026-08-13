@@ -1151,11 +1151,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -1176,7 +1181,7 @@
           "lucky_cloudflared-CZXQeEtG.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend maps reordered Cloudflared instances to Key string array",
+        "x-schema-evidence": "frontend maps reordered Cloudflared instances to Key string array; with the instance list empty, an authorized [] no-op reorder returned ret-only success and the exact list-response hash remained unchanged",
         "requestBody": {
           "required": true,
           "content": {
@@ -2008,11 +2013,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -2033,7 +2043,7 @@
           "lucky_coraza-D1zcK8x_.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend Coraza list drag handler maps reordered instances to Key string array",
+        "x-schema-evidence": "frontend Coraza list drag handler maps reordered instances to Key string array; with the instance list empty, an authorized [] no-op reorder returned ret-only success and the exact list-response hash remained unchanged",
         "requestBody": {
           "required": true,
           "content": {
@@ -18417,11 +18427,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -18442,7 +18457,7 @@
           "lucky_panel-BjQOfwVI.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend maps reordered FRP instances to Key string array",
+        "x-schema-evidence": "frontend maps reordered FRP instances to Key string array; with the instance list empty, an authorized [] no-op reorder returned ret-only success and the exact list-response hash remained unchanged",
         "requestBody": {
           "required": true,
           "content": {
@@ -25994,11 +26009,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -26019,7 +26039,7 @@
           "lucky_portforward-13uBauEz.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend maps reordered PortForward rules to Key string array",
+        "x-schema-evidence": "frontend maps reordered PortForward rules to Key string array; with the rule list empty, an authorized [] no-op reorder returned ret-only success and the exact list-response hash remained unchanged",
         "requestBody": {
           "required": true,
           "content": {
@@ -26554,11 +26574,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -26579,7 +26604,7 @@
           "lucky_rclone-sFF3mpk8.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend remote-list drag handler maps reordered remotes to Key string array",
+        "x-schema-evidence": "frontend remote-list drag handler maps reordered remotes to Key string array; with the remote list empty, an authorized [] no-op reorder returned ret-only success and the exact list-response hash remained unchanged",
         "requestBody": {
           "required": true,
           "content": {
@@ -33076,11 +33101,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -33101,7 +33131,7 @@
           "lucky_storagemanagement-CxTMWo8S.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend storage drag handler maps reordered storage items to Key string array",
+        "x-schema-evidence": "frontend storage drag handler maps reordered storage items to Key string array; with the storage list empty, an authorized [] no-op reorder returned ret-only success and the exact lite-list response hash remained unchanged",
         "requestBody": {
           "required": true,
           "content": {
@@ -33786,11 +33816,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -33811,7 +33846,7 @@
           "lucky_stun-DdoTf-uI.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend maps reordered STUN rules to Key string array",
+        "x-schema-evidence": "frontend maps reordered STUN rules to Key string array; with the rule list empty, an authorized [] no-op reorder returned ret-only success and the exact list-response hash remained unchanged",
         "requestBody": {
           "required": true,
           "content": {
@@ -36308,11 +36343,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -36333,7 +36373,7 @@
           "lucky_thirdPartyAuthManager-C0VqZjAx.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend third-party auth drag handler maps reordered users to Key string array",
+        "x-schema-evidence": "frontend third-party auth drag handler maps reordered users to Key string array; with the user list empty, an authorized [] no-op reorder returned ret-only success and the exact list-response hash remained unchanged",
         "requestBody": {
           "required": true,
           "content": {
@@ -45674,11 +45714,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Lucky JSON response; envelope shape varies by endpoint.",
+            "description": "Response schema observed from runtime evidence; see x-schema-evidence for provenance.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LuckyEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "ret": {
+                      "type": "integer"
+                    }
+                  }
                 }
               }
             }
@@ -45699,7 +45744,7 @@
           "lucky_useWolI18n-D9PD6Ww6.js"
         ],
         "x-lucky-risk": "mutating",
-        "x-schema-evidence": "frontend WOL device drag handler maps reordered devices to Key string array",
+        "x-schema-evidence": "frontend WOL device drag handler maps reordered devices to Key string array; with the device list empty, an authorized [] no-op reorder returned ret-only success and the exact devices-response hash remained unchanged",
         "requestBody": {
           "required": true,
           "content": {

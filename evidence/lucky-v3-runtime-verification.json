@@ -544,7 +544,8 @@
       "method": "PUT",
       "risk": "mutating",
       "request_body_schema": {"type": "array", "items": {"type": "string"}},
-      "schema_evidence": "frontend maps reordered Cloudflared instances to Key string array"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend maps reordered Cloudflared instances to Key string array; with the instance list empty, an authorized [] no-op reorder returned ret-only success and the exact list-response hash remained unchanged"
     },
     {
       "path": "/api/cloudflared/{param}/cname/create",
@@ -622,7 +623,8 @@
       "method": "PUT",
       "risk": "mutating",
       "request_body_schema": {"type": "array", "items": {"type": "string"}},
-      "schema_evidence": "frontend maps reordered PortForward rules to Key string array"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend maps reordered PortForward rules to Key string array; with the rule list empty, an authorized [] no-op reorder returned ret-only success and the exact list-response hash remained unchanged"
     },
     {
       "path": "/api/stun/configure",
@@ -644,7 +646,8 @@
       "method": "PUT",
       "risk": "mutating",
       "request_body_schema": {"type": "array", "items": {"type": "string"}},
-      "schema_evidence": "frontend maps reordered STUN rules to Key string array"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend maps reordered STUN rules to Key string array; with the rule list empty, an authorized [] no-op reorder returned ret-only success and the exact list-response hash remained unchanged"
     },
     {
       "path": "/api/stunrule",
@@ -786,7 +789,8 @@
       "method": "PUT",
       "risk": "mutating",
       "request_body_schema": {"type": "array", "items": {"type": "string"}},
-      "schema_evidence": "frontend maps reordered FRP instances to Key string array"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend maps reordered FRP instances to Key string array; with the instance list empty, an authorized [] no-op reorder returned ret-only success and the exact list-response hash remained unchanged"
     },
     {
       "path": "/api/frp/{param}/proxies",
@@ -1566,7 +1570,8 @@
       "method": "PUT",
       "risk": "mutating",
       "request_body_schema": {"type": "array", "items": {"type": "string"}},
-      "schema_evidence": "frontend remote-list drag handler maps reordered remotes to Key string array"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend remote-list drag handler maps reordered remotes to Key string array; with the remote list empty, an authorized [] no-op reorder returned ret-only success and the exact list-response hash remained unchanged"
     },
     {
       "path": "/api/rclone/remotelist",
@@ -1651,7 +1656,8 @@
       "method": "PUT",
       "risk": "mutating",
       "request_body_schema": {"type": "array", "items": {"type": "string"}},
-      "schema_evidence": "frontend Coraza list drag handler maps reordered instances to Key string array"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend Coraza list drag handler maps reordered instances to Key string array; with the instance list empty, an authorized [] no-op reorder returned ret-only success and the exact list-response hash remained unchanged"
     },
     {
       "path": "/api/coraza/list",
@@ -2046,7 +2052,8 @@
       "method": "PUT",
       "risk": "mutating",
       "request_body_schema": {"type": "array", "items": {"type": "string"}},
-      "schema_evidence": "frontend WOL device drag handler maps reordered devices to Key string array"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend WOL device drag handler maps reordered devices to Key string array; with the device list empty, an authorized [] no-op reorder returned ret-only success and the exact devices-response hash remained unchanged"
     },
     {
       "path": "/api/ipdb/configure",
@@ -2100,7 +2107,8 @@
       "method": "PUT",
       "risk": "mutating",
       "request_body_schema": {"type": "array", "items": {"type": "string"}},
-      "schema_evidence": "frontend storage drag handler maps reordered storage items to Key string array"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend storage drag handler maps reordered storage items to Key string array; with the storage list empty, an authorized [] no-op reorder returned ret-only success and the exact lite-list response hash remained unchanged"
     },
     {
       "path": "/api/storagemanagement/list",
@@ -2147,7 +2155,8 @@
       "method": "PUT",
       "risk": "mutating",
       "request_body_schema": {"type": "array", "items": {"type": "string"}},
-      "schema_evidence": "frontend third-party auth drag handler maps reordered users to Key string array"
+      "response_schema": {"type":"object","properties":{"ret":{"type":"integer"}}},
+      "schema_evidence": "frontend third-party auth drag handler maps reordered users to Key string array; with the user list empty, an authorized [] no-op reorder returned ret-only success and the exact list-response hash remained unchanged"
     },
     {
       "path": "/api/2fa/setting",
