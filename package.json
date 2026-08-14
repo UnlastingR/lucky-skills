@@ -4,8 +4,9 @@
   "type": "module",
   "scripts": {
     "docs:dev": "vitepress docs",
-    "docs:build": "vitepress build docs",
-    "docs:worker": "vitepress build docs",
+    "docs:clean": "node -e \"require('node:fs').rmSync('dist/lucky-skills',{recursive:true,force:true})\"",
+    "docs:build": "npm run docs:clean && vitepress build docs && node tools/publish_docs_evidence.mjs",
+    "docs:worker": "npm run docs:build",
     "docs:preview": "vitepress preview docs",
     "worker:deploy": "npm run docs:worker && wrangler deploy"
   },

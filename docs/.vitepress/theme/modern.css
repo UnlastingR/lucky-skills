@@ -1,0 +1,1080 @@
+/* VitePress' original monospace stack is ideal for Latin code, but on
+   Windows its generic CJK fallback can become SimSun. This face only covers
+   CJK code points, so Latin characters still use the untouched VitePress
+   monospace stack while Chinese code comments/placeholder text use a sans
+   fallback instead of a serif Song font. */
+@font-face {
+  font-family: "Lucky Code CJK";
+  src: local("Sarasa Mono SC"), local("Noto Sans Mono CJK SC"),
+    local("Microsoft YaHei UI"), local("Microsoft YaHei"),
+    local("PingFang SC"), local("Hiragino Sans GB"),
+    local("Noto Sans CJK SC"), local("Source Han Sans SC");
+  font-display: swap;
+  unicode-range: U+2E80-2FFF, U+3000-303F, U+31C0-31EF, U+3400-4DBF,
+    U+4E00-9FFF, U+F900-FAFF, U+FF00-FFEF;
+}
+
+:root {
+  color-scheme: light;
+  --site-bg: #ffffff;
+  --site-bg-soft: #f6f6f7;
+  --site-bg-mute: #ebebef;
+  --site-text: #3c3c43;
+  --site-text-2: #67676c;
+  --site-line: #e2e2e3;
+  --site-brand: #3451b2;
+  --site-brand-strong: #3a5ccc;
+  --site-brand-soft: rgb(100 108 255 / 14%);
+  --site-code: #f6f6f7;
+  --site-header: rgb(255 255 255 / 86%);
+  --site-shadow: 0 18px 50px rgb(30 42 70 / 10%);
+  --vp-c-divider: var(--site-line);
+  --vp-c-text-1: var(--site-text);
+  --vp-c-text-2: var(--site-text-2);
+  --vp-c-brand-1: var(--site-brand);
+  --vp-c-bg: var(--site-bg);
+  --vp-c-bg-soft: var(--site-bg-soft);
+  --vp-shadow-5: var(--site-shadow);
+  --vp-font-family-mono: "Lucky Code CJK", ui-monospace, "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", monospace;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  scrollbar-gutter: stable;
+}
+
+html.dark {
+  color-scheme: dark;
+  --site-bg: #1b1b1f;
+  --site-bg-soft: #202127;
+  --site-bg-mute: #242429;
+  --site-text: #dfdfd6;
+  --site-text-2: #98989f;
+  --site-line: #2e2e32;
+  --site-brand: #a8b1ff;
+  --site-brand-strong: #c4caff;
+  --site-brand-soft: rgb(100 108 255 / 16%);
+  --site-code: #161618;
+  --site-header: rgb(27 27 31 / 86%);
+  --site-shadow: 0 18px 55px rgb(0 0 0 / 28%);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 86px;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  color: var(--site-text);
+  background: var(--site-bg);
+  font-size: 16px;
+  line-height: 1.68;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+a {
+  color: var(--site-brand);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  color: var(--site-brand-strong);
+}
+
+/* Quiet external-link marker. VitePress already marks Markdown external
+   links with target=_blank; custom layout links do the same. */
+a[target="_blank"]::after {
+  content: "↗";
+  display: inline-block;
+  margin-left: 0.22em;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.72em;
+  font-weight: 650;
+  line-height: 1;
+  opacity: 0.68;
+  transform: translateY(-0.08em);
+}
+
+a[target="_blank"]:hover::after {
+  opacity: 1;
+}
+
+:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--site-brand) 52%, transparent);
+  outline-offset: 3px;
+}
+
+.skip-link {
+  position: fixed;
+  z-index: 1000;
+  top: 10px;
+  left: 10px;
+  padding: 8px 12px;
+  color: #fff;
+  background: #111;
+  border-radius: 8px;
+  transform: translateY(-160%);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+.site-header {
+  position: sticky;
+  z-index: 50;
+  top: 0;
+  border-bottom: 1px solid var(--site-line);
+  background: var(--site-header);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  width: min(1720px, 100%);
+  min-height: 64px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.brand {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 10px;
+  color: var(--site-text);
+  font-weight: 760;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+
+.brand img {
+  width: 28px;
+  height: 28px;
+}
+
+.top-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.top-nav a {
+  padding: 7px 10px;
+  color: var(--site-text-2);
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.top-nav a:hover,
+.top-nav a.active {
+  color: var(--site-text);
+  background: var(--site-bg-soft);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.DocSearch-Button,
+.theme-toggle,
+.github-link {
+  min-height: 36px;
+  color: var(--site-text-2);
+  background: var(--site-bg-soft);
+  border: 1px solid var(--site-line);
+  border-radius: 10px;
+  text-decoration: none;
+}
+
+.DocSearch-Button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+.DocSearch-Button kbd {
+  padding: 1px 5px;
+  color: var(--site-text-2);
+  background: var(--site-bg);
+  border: 1px solid var(--site-line);
+  border-radius: 5px;
+  font-family: var(--vp-font-family-mono);
+  font-size: 11px;
+}
+
+.theme-toggle {
+  width: 38px;
+  cursor: pointer;
+}
+
+.github-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.home-main {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+}
+
+.hero {
+  display: grid;
+  align-content: center;
+  min-height: calc(100svh - 64px);
+  padding: clamp(72px, 11vw, 132px) 0 74px;
+}
+
+.hero-eyebrow {
+  margin: 0 0 18px;
+  color: var(--site-brand);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  display: grid;
+  gap: 10px;
+  max-width: 980px;
+  margin: 0 auto;
+  font-size: clamp(38px, 6.5vw, 72px);
+  line-height: 1.08;
+  letter-spacing: -0.055em;
+  text-align: center;
+}
+
+.hero-name {
+  color: var(--site-brand);
+  font-size: 0.58em;
+  letter-spacing: -0.03em;
+}
+
+.hero-tagline {
+  max-width: 760px;
+  margin: 26px auto 0;
+  color: var(--site-text-2);
+  font-size: clamp(17px, 2vw, 20px);
+  text-align: center;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 34px;
+}
+
+.hero-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 17px;
+  border: 1px solid var(--site-line);
+  border-radius: 11px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.hero-button.primary {
+  color: #fff;
+  background: #304fa4;
+  border-color: #304fa4;
+}
+
+.hero-button.secondary {
+  color: var(--site-text);
+  background: var(--site-bg-soft);
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0 0 72px;
+}
+
+.feature-card {
+  padding: 24px;
+  background: var(--site-bg-soft);
+  border: 1px solid var(--site-line);
+  border-radius: 16px;
+  box-shadow: 0 1px 0 rgb(255 255 255 / 4%) inset;
+}
+
+.feature-icon {
+  margin-bottom: 10px;
+  font-size: 24px;
+}
+
+.feature-card h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.feature-card p {
+  margin: 0;
+  color: var(--site-text-2);
+}
+
+.feature-card a {
+  display: inline-block;
+  margin-top: 13px;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.docs-shell {
+  display: grid;
+  grid-template-columns: 238px minmax(0, 920px);
+  justify-content: center;
+  gap: 44px;
+  width: min(1540px, 100%);
+  min-height: calc(100vh - 140px);
+  margin: 0 auto;
+  padding: 42px 28px 72px;
+}
+
+.docs-shell.api-routes-page {
+  grid-template-columns: 220px minmax(0, 1080px) 210px;
+  gap: 30px;
+  width: min(1740px, 100%);
+}
+
+.desktop-sidebar,
+.right-outline {
+  align-self: start;
+  position: sticky;
+  top: 94px;
+  max-height: calc(100vh - 118px);
+  overflow: auto;
+}
+
+.desktop-sidebar {
+  padding-right: 16px;
+  border-right: 1px solid var(--site-line);
+}
+
+.sidebar-group + .sidebar-group {
+  margin-top: 22px;
+}
+
+.sidebar-group h2 {
+  margin: 0 0 6px;
+  color: var(--site-text);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.sidebar-group a {
+  display: block;
+  margin: 2px 0;
+  padding: 5px 8px;
+  color: var(--site-text-2);
+  border-radius: 8px;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.sidebar-group a:hover,
+.sidebar-group a.active {
+  color: var(--site-brand-strong);
+  background: var(--site-brand-soft);
+}
+
+.mobile-nav-wrap {
+  display: none;
+}
+
+.main-content {
+  min-width: 0;
+}
+
+.doc-content {
+  color: var(--site-text);
+}
+
+.home-content {
+  max-width: 920px;
+  margin: 0 auto 72px;
+}
+
+.doc-content > :first-child {
+  margin-top: 0;
+}
+
+.doc-content h1,
+.doc-content h2,
+.doc-content h3,
+.doc-content h4 {
+  color: var(--site-text);
+  font-weight: 600;
+}
+
+.doc-content h1 {
+  margin: 0 0 26px;
+  font-size: 32px;
+  line-height: 40px;
+  letter-spacing: -0.02em;
+}
+
+.doc-content h2 {
+  margin: 48px 0 16px;
+  padding-top: 24px;
+  border-top: 1px solid var(--site-line);
+  font-size: 24px;
+  line-height: 32px;
+  letter-spacing: -0.02em;
+}
+
+.doc-content h3 {
+  margin: 32px 0 0;
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: -0.01em;
+}
+
+.doc-content h4 {
+  margin: 24px 0 0;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: -0.01em;
+}
+
+.doc-content p,
+.doc-content ul,
+.doc-content ol,
+.doc-content blockquote {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.doc-content ul,
+.doc-content ol {
+  padding-left: 24px;
+}
+
+.doc-content li + li {
+  margin-top: 5px;
+}
+
+.doc-content strong {
+  font-weight: 600;
+}
+
+.doc-content .header-anchor {
+  margin-left: 6px;
+  color: var(--site-brand);
+  font-size: 0.72em;
+  font-weight: 500;
+  opacity: 0;
+  text-decoration: none;
+}
+
+.doc-content h2:hover .header-anchor,
+.doc-content h3:hover .header-anchor,
+.doc-content .header-anchor:focus-visible {
+  opacity: 1;
+}
+
+.doc-content :not(pre) > code {
+  padding: 3px 6px;
+  color: var(--site-brand-strong);
+  background: var(--site-code);
+  border: 0;
+  border-radius: 4px;
+  font-family: var(--vp-font-family-mono);
+  font-synthesis: none;
+  font-size: 0.875em;
+  overflow-wrap: anywhere;
+}
+
+.doc-content div[class*="language-"] {
+  position: relative;
+  margin: 16px 0;
+  overflow: hidden;
+  background: var(--site-code);
+  border: 0;
+  border-radius: 8px;
+}
+
+.doc-content div[class*="language-"] > span.lang {
+  position: absolute;
+  z-index: 2;
+  top: 10px;
+  right: 12px;
+  color: var(--site-text-2);
+  font-family: var(--vp-font-family-mono);
+  font-size: 11px;
+}
+
+.doc-content pre {
+  margin: 0;
+  padding: 20px 24px;
+  overflow: auto;
+  font-family: var(--vp-font-family-mono);
+  font-synthesis: none;
+  font-size: 0.875em;
+  line-height: 1.7;
+  tab-size: 4;
+}
+
+.doc-content pre code {
+  display: block;
+  min-width: max-content;
+  font-family: inherit;
+}
+
+.doc-content .shiki span {
+  /* GitHub's light Shiki palette assumes a white canvas. Our VitePress-like
+     soft code background is slightly darker, so darken tokens just enough to
+     keep every generated syntax color at WCAG AA contrast. */
+  color: color-mix(in srgb, var(--shiki-light) 82%, #000);
+}
+
+html.dark .doc-content .shiki span {
+  color: var(--shiki-dark);
+}
+
+.doc-content img {
+  max-width: 100%;
+  height: auto;
+}
+
+.doc-content button.copy {
+  position: absolute;
+  z-index: 3;
+  top: 8px;
+  right: 48px;
+  min-width: 48px;
+  height: 28px;
+  color: var(--site-text-2);
+  background: var(--site-bg);
+  border: 1px solid var(--site-line);
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.doc-content button.copy::before {
+  content: "复制";
+  font-size: 11px;
+}
+
+.doc-content button.copy.copied::before {
+  content: "已复制";
+}
+
+.doc-content table {
+  width: 100%;
+  margin: 20px 0;
+  border-spacing: 0;
+  border-collapse: separate;
+  border: 1px solid var(--site-line);
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.api-routes-page .doc-content table {
+  table-layout: fixed;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.api-routes-page .doc-content th:nth-child(1) { width: 7%; }
+.api-routes-page .doc-content th:nth-child(2) { width: 19%; }
+.api-routes-page .doc-content th:nth-child(3) { width: 9%; }
+.api-routes-page .doc-content th:nth-child(4) { width: 14%; }
+.api-routes-page .doc-content th:nth-child(5) { width: 31%; }
+.api-routes-page .doc-content th:nth-child(6) { width: 8%; }
+.api-routes-page .doc-content th:nth-child(7) { width: 12%; }
+
+.doc-content th,
+.doc-content td {
+  padding: 9px 11px;
+  overflow-wrap: anywhere;
+  text-align: left;
+  vertical-align: top;
+  border-right: 1px solid var(--site-line);
+  border-bottom: 1px solid var(--site-line);
+}
+
+.doc-content th {
+  background: var(--site-bg-soft);
+  font-weight: 750;
+}
+
+.doc-content tr:last-child > * {
+  border-bottom: 0;
+}
+
+.doc-content tr > *:last-child {
+  border-right: 0;
+}
+
+.cell-fold {
+  display: inline;
+  margin-left: 6px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.cell-fold > summary {
+  display: inline-flex;
+  align-items: center;
+  margin: 2px 0;
+  padding: 2px 7px;
+  color: var(--site-text-2);
+  background: color-mix(in srgb, var(--site-bg-soft) 72%, transparent);
+  border: 1px solid var(--site-line);
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+  list-style: none;
+  user-select: none;
+  vertical-align: baseline;
+}
+
+.cell-fold > summary::-webkit-details-marker {
+  display: none;
+}
+
+.cell-fold > summary:hover {
+  color: var(--site-brand);
+  border-color: color-mix(in srgb, var(--site-brand) 34%, var(--site-line));
+}
+
+.cell-fold-less,
+.cell-fold-rest {
+  display: none;
+}
+
+.cell-fold[open] .cell-fold-more {
+  display: none;
+}
+
+.cell-fold[open] .cell-fold-less {
+  display: inline;
+}
+
+.cell-fold[open] .cell-fold-rest {
+  display: inline;
+  margin-left: 5px;
+}
+
+.doc-content blockquote {
+  padding: 2px 0 2px 16px;
+  color: var(--site-text-2);
+  border-left: 3px solid var(--site-brand);
+}
+
+.doc-content hr {
+  margin: 42px 0;
+  border: 0;
+  border-top: 1px solid var(--site-line);
+}
+
+.custom-block {
+  margin: 20px 0;
+  padding: 15px 17px;
+  background: var(--site-bg-soft);
+  border: 1px solid var(--site-line);
+  border-left: 4px solid var(--site-brand);
+  border-radius: 10px;
+}
+
+.custom-block-title {
+  margin: 0 0 6px !important;
+  font-weight: 800;
+}
+
+.custom-block p:last-child {
+  margin-bottom: 0;
+}
+
+.doc-content details {
+  margin: 16px 0;
+  padding: 10px 13px;
+  background: var(--site-bg-soft);
+  border: 1px solid var(--site-line);
+  border-radius: 9px;
+}
+
+.doc-content summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+/* Dense API cells use details only as a tiny disclosure control. Keep it
+   visually inline instead of inheriting the full document-details card. */
+.doc-content details.cell-fold {
+  display: inline;
+  margin: 0 0 0 6px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.doc-content details.cell-fold > summary {
+  display: inline-flex;
+  font-weight: 600;
+}
+
+.page-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 56px;
+  padding-top: 18px;
+  color: var(--site-text-2);
+  border-top: 1px solid var(--site-line);
+  font-size: 13px;
+}
+
+.pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.pager-link {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  padding: 14px 16px;
+  color: var(--site-text);
+  background: var(--site-bg-soft);
+  border: 1px solid var(--site-line);
+  border-radius: 11px;
+  text-decoration: none;
+}
+
+.pager-link.next {
+  text-align: right;
+}
+
+.pager-link small {
+  color: var(--site-text-2);
+}
+
+.right-outline {
+  padding-left: 4px;
+}
+
+.site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 24px;
+  padding: 28px 20px 42px;
+  color: var(--site-text-2);
+  border-top: 1px solid var(--site-line);
+  font-size: 12px;
+  text-align: center;
+}
+
+.site-footer p {
+  margin: 0;
+}
+
+.LuckySearchDialog {
+  width: min(760px, calc(100vw - 28px));
+  max-height: min(720px, calc(100dvh - 36px));
+  margin: auto;
+  padding: 0;
+  overflow: hidden;
+  color: var(--site-text);
+  background: var(--site-bg);
+  border: 1px solid var(--site-line);
+  border-radius: 16px;
+  box-shadow: var(--site-shadow);
+}
+
+.LuckySearchDialog::backdrop {
+  background: rgb(0 0 0 / 44%);
+}
+
+.LuckySearchForm {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  padding: 16px;
+  border-bottom: 1px solid var(--site-line);
+}
+
+.LuckySearchInput {
+  min-width: 0;
+  padding: 10px 12px;
+  color: var(--site-text);
+  background: var(--site-bg-soft);
+  border: 1px solid var(--site-line);
+  border-radius: 10px;
+  outline: none;
+}
+
+.LuckySearchInput:focus-visible {
+  border-color: var(--site-brand);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--site-brand) 20%, transparent);
+}
+
+.LuckySearchClose {
+  padding: 8px 12px;
+  color: var(--site-text-2);
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.LuckySearchResults {
+  max-height: min(600px, calc(100dvh - 132px));
+  margin: 0;
+  padding: 8px;
+  overflow: auto;
+  list-style: none;
+}
+
+.LuckySearchResult a {
+  display: block;
+  padding: 12px;
+  color: var(--site-text);
+  border-radius: 10px;
+  text-decoration: none;
+}
+
+.LuckySearchResult a:hover,
+.LuckySearchResult a:focus-visible {
+  background: var(--site-bg-soft);
+  outline: none;
+}
+
+.LuckySearchResult strong,
+.LuckySearchResult small {
+  display: block;
+}
+
+.LuckySearchResult small,
+.LuckySearchStatus {
+  margin-top: 4px;
+  color: var(--site-text-2);
+}
+
+.LuckySearchStatus {
+  padding: 18px 20px;
+}
+
+@media (max-width: 1240px) {
+  .docs-shell.api-routes-page {
+    grid-template-columns: 220px minmax(0, 1fr);
+  }
+
+  .right-outline {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .header-inner {
+    gap: 12px;
+    padding: 0 16px;
+  }
+
+  .github-link,
+  .DocSearch-Button kbd {
+    display: none;
+  }
+
+  .docs-shell,
+  .docs-shell.api-routes-page {
+    display: block;
+    width: 100%;
+    padding: 22px 20px 58px;
+  }
+
+  .desktop-sidebar {
+    display: none;
+  }
+
+  .mobile-nav-wrap {
+    display: block;
+    margin-bottom: 28px;
+  }
+
+  .mobile-doc-nav {
+    padding: 10px 12px;
+    background: var(--site-bg-soft);
+    border: 1px solid var(--site-line);
+    border-radius: 10px;
+  }
+
+  .mobile-doc-nav > summary {
+    cursor: pointer;
+    font-weight: 750;
+  }
+
+  .mobile-doc-nav nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    margin-top: 14px;
+  }
+
+  .features {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .brand span {
+    display: none;
+  }
+
+  .search-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .header-inner {
+    min-height: 58px;
+  }
+
+  .top-nav {
+    gap: 0;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .top-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .top-nav a {
+    padding: 6px 7px;
+    font-size: 13px;
+  }
+
+  .header-actions {
+    gap: 5px;
+  }
+
+  .DocSearch-Button,
+  .theme-toggle {
+    min-width: 34px;
+    width: 34px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .home-main {
+    width: min(100% - 30px, 1180px);
+  }
+
+  .hero {
+    padding-top: 62px;
+  }
+
+  .hero h1 {
+    font-size: clamp(35px, 12vw, 52px);
+  }
+
+  .hero-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .mobile-doc-nav nav {
+    grid-template-columns: 1fr;
+  }
+
+  .doc-content h1 {
+    font-size: 32px;
+  }
+
+  .doc-content h2 {
+    font-size: 24px;
+  }
+
+  .doc-content table {
+    font-size: 12px;
+  }
+
+  .doc-content th,
+  .doc-content td {
+    padding: 7px 8px;
+  }
+
+  .pager {
+    grid-template-columns: 1fr;
+  }
+}
+
+@supports (content-visibility: auto) {
+  .features,
+  .home-content {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 560px;
+  }
+
+  .api-routes-page .route-module {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 900px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
