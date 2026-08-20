@@ -7,6 +7,9 @@ hero:
   tagline: 从前端静态分析、脱敏运行时验证到 OpenAPI、CLI 和 Agent Skill，一套可复现的 Lucky v3 管理接口文档。
   actions:
     - theme: brand
+      text: 开始安装
+      link: /installation
+    - theme: alt
       text: 快速开始
       link: /quickstart
     - theme: alt
@@ -29,14 +32,15 @@ features:
 
 ## 当前覆盖
 
-当前快照目标为 **Lucky 3.0.0 wanji / Linux x86_64**。仓库以 Lucky v3 Web 前端的静态调用面为基础，再叠加获授权实例上的脱敏运行时核验结果。
+当前目标为 **Lucky 3.0.0 wanji / Linux x86_64**。接口目录由前端静态分析与脱敏运行时验证合并生成。
 
-默认合并目录已经把静态快照中的 `UNKNOWN` 路由完成归类或确认为字面量误报；对写接口的请求体字段与 JSON Schema 也持续补充。详细数字、证据等级与限制请以[证据与覆盖范围](./evidence-and-limitations.md)和[完整 API 路由](./generated/api-routes.md)为准。
+详细统计和限制见[证据与覆盖范围](./evidence-and-limitations.md)。
 
 ## 最常用的入口
 
 | 目标 | 文档 |
 | --- | --- |
+| 安装 Lucky Skills | [安装指南](./installation.md) |
 | 第一次连接 Lucky | [快速开始](./quickstart.md) |
 | 安全保存 OpenToken | [凭据管理](./credentials.md) |
 | 理解安全入口与鉴权 | [鉴权与安全](./authentication.md) |
@@ -52,7 +56,35 @@ python3 tools/lucky_credentials.py doctor
 python3 tools/lucky_api.py status
 ```
 
-请求地址必须包含 Lucky 的**安全入口**。推荐通过 `openToken` 请求头传递密钥，不要把 Token 放进查询参数、命令行历史、日志或仓库。
+请求地址必须包含 Lucky 的**安全入口**，OpenToken 不应出现在查询参数、日志或仓库中。
+
+## 架构概览
+
+```text
+用户 / Agent
+    │
+    ├── Lucky Agent Skill ──┐
+    └───────────────────────┤
+                            ▼
+                    tools/lucky_api.py
+                       │          │
+               私有凭据文件      合并路由目录
+                                  ▲       ▲
+                                  │       │
+                           静态端点快照   运行时验证证据
+                                  │
+                                  ▼
+                            路由 / 风险策略
+                          ┌───────┼────────┐
+                          ▼       ▼        ▼
+                       只读允许  写入确认   默认拒绝
+                          │       │
+                          └───┬───┘
+                              ▼
+                    Lucky v3 OpenToken API
+```
+
+完整架构见仓库 [README](https://github.com/UnlastingR/lucky-skills#架构)。
 
 ::: warning 不要仅凭 GET / POST 判断安全性
 Lucky 存在具有副作用或敏感输出的 `GET` 接口。仓库客户端会结合已验证的路由风险覆盖层进行判断，并对未知、写入和危险调用 fail-closed。

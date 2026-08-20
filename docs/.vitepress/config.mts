@@ -91,7 +91,7 @@ export default defineConfig({
       alt: 'Lucky Skills'
     },
     nav: [
-      { text: '指南', link: '/quickstart' },
+      { text: '指南', link: '/installation' },
       { text: 'API', link: '/generated/api-routes' },
       { text: 'OpenAPI', link: `${repository}/blob/main/openapi/lucky-v3.openapi.json` }
     ],
@@ -100,6 +100,7 @@ export default defineConfig({
         text: '开始使用',
         items: [
           { text: '项目概览', link: '/' },
+          { text: '安装', link: '/installation' },
           { text: '快速开始', link: '/quickstart' },
           { text: '凭据管理', link: '/credentials' },
           { text: '鉴权与安全', link: '/authentication' }
