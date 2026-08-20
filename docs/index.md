@@ -17,7 +17,7 @@ hero:
       link: /generated/api-routes
     - theme: alt
       text: GitHub 仓库
-      link: https://github.com/UnlastingR/lucky-skills
+      link: https://github.com/fyzure/lucky-skills
 
 features:
   - title: 安全优先
@@ -46,7 +46,7 @@ features:
 | 理解安全入口与鉴权 | [鉴权与安全](./authentication.md) |
 | 使用 Python 客户端 / CLI | [API 客户端与 CLI](./api-client.md) |
 | 找具体接口 | [完整 API 路由](./generated/api-routes.md) |
-| 导入接口定义 | [OpenAPI 3.1](https://github.com/UnlastingR/lucky-skills/blob/main/openapi/lucky-v3.openapi.json) |
+| 导入接口定义 | [OpenAPI 3.1](https://github.com/fyzure/lucky-skills/blob/main/openapi/lucky-v3.openapi.json) |
 
 ## 安全调用模型
 
@@ -84,7 +84,7 @@ python3 tools/lucky_api.py status
                     Lucky v3 OpenToken API
 ```
 
-完整架构见仓库 [README](https://github.com/UnlastingR/lucky-skills#架构)。
+完整架构见仓库 [README](https://github.com/fyzure/lucky-skills#架构)。
 
 ::: warning 不要仅凭 GET / POST 判断安全性
 Lucky 存在具有副作用或敏感输出的 `GET` 接口。仓库客户端会结合已验证的路由风险覆盖层进行判断，并对未知、写入和危险调用 fail-closed。
@@ -94,6 +94,6 @@ Lucky 存在具有副作用或敏感输出的 `GET` 接口。仓库客户端会�
 
 源码、Skill、OpenAPI、测试与证据文件统一维护在：
 
-**[UnlastingR/lucky-skills](https://github.com/UnlastingR/lucky-skills)**
+**[UnlastingR/lucky-skills](https://github.com/fyzure/lucky-skills)**
 
 本项目与 Lucky 作者无隶属关系。Lucky 官方项目见 [gdy666/lucky](https://github.com/gdy666/lucky)。

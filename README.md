@@ -25,7 +25,7 @@ Lucky Skills 不是 Lucky 官方 SDK。它面向你**拥有或获授权管理**�
 ### 1. 获取项目
 
 ```bash
-git clone https://github.com/UnlastingR/lucky-skills.git
+git clone https://github.com/fyzure/lucky-skills.git
 cd lucky-skills
 ```
 

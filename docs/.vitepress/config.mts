@@ -1,6 +1,6 @@
 import { defineConfig } from 'vitepress'
 
-const repository = 'https://github.com/UnlastingR/lucky-skills'
+const repository = 'https://github.com/fyzure/lucky-skills'
 
 function optimizeApiRouteSections(html: string) {
   if (!html.includes('<h2 id="_2fa" tabindex="-1">')) return html

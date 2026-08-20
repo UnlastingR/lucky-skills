@@ -15,7 +15,7 @@ Lucky Skills 的核心 CLI 只依赖 Python 标准库，正常使用**不需要 
 ## 1. 获取项目
 
 ```bash
-git clone https://github.com/UnlastingR/lucky-skills.git
+git clone https://github.com/fyzure/lucky-skills.git
 cd lucky-skills
 ```
 

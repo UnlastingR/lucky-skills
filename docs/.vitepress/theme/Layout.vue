@@ -6,7 +6,7 @@ import ApiRoutesOutline from './ApiRoutesOutline.vue'
 const { frontmatter, page, theme } = useData()
 const route = useRoute()
 
-const repository = 'https://github.com/UnlastingR/lucky-skills'
+const repository = 'https://github.com/fyzure/lucky-skills'
 const isHome = computed(() => frontmatter.value.layout === 'home')
 const isApiRoutes = computed(() => route.path.includes('/generated/api-routes'))
 const navItems = computed(() => theme.value.nav ?? [])

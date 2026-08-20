@@ -6,8 +6,8 @@
     "name": "UnlastingR",
     "url": "https://github.com/UnlastingR"
   },
-  "homepage": "https://github.com/UnlastingR/lucky-skills",
-  "repository": "https://github.com/UnlastingR/lucky-skills",
+  "homepage": "https://github.com/fyzure/lucky-skills",
+  "repository": "https://github.com/fyzure/lucky-skills",
   "keywords": [
     "lucky",
     "opentoken",
@@ -27,7 +27,7 @@
       "Read",
       "Write"
     ],
-    "websiteURL": "https://github.com/UnlastingR/lucky-skills",
+    "websiteURL": "https://github.com/fyzure/lucky-skills",
     "defaultPrompt": [
       "Check my Lucky status and summarize anything unusual.",
       "Inspect my Lucky reverse-proxy rules without changing them.",
